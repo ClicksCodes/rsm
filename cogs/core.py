@@ -51,6 +51,9 @@ class Logs(commands.Cog):
         self.bot = bot
         with open("./data/core.json") as rfile: self.data = json.load(rfile)
         self.session = aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10.0))
+        with open("./data/template.json") as rfile:
+            for guild in bot.guilds:
+                if str(guild.id) not in self.data: self.data[str(guild.id)] = json.load(rfile)
     
     def cog_unload(self): 
         with open("./data/core.json", "w") as wfile: json.dump(self.data, wfile, indent=2)
@@ -123,14 +126,14 @@ class Logs(commands.Cog):
         for x in range(0, len(descs)):
             message = discord.Embed(
                 title=f"{'Here is what you are logging:' if x == 0 else ''}",
-                description=f"{'[You can edit your guild settings here](https://rsm.clicksminuteper.net/dashboard)' if x == 0 else ''}\n{descs[x]}",
+                description=f"{'[You can edit your guild settings here](https://rsm.clcks.dev/dashboard)' if x == 0 else ''}\n{descs[x]}",
                 color=colours['create']
             )
             await ctx.channel.send(embed=message)
 
     @settings.command(name="ignore")
     @commands.has_permissions(manage_guild=True)
-    @commands.guild_only()
+
     async def ignore(self, ctx: commands.Context, things: commands.Greedy[typing.Union[discord.Member, discord.TextChannel, discord.Role]]):
         """[write docstring here]"""
         channels, members, roles = [], [], []
@@ -142,6 +145,23 @@ class Logs(commands.Cog):
             elif isinstance(thing, (discord.Role)):
                 roles.append(thing.id)
         await ctx.send(f"{channels, members, roles}")
+        self.data[str(ctx.guild.id)]["ignoredChannels"] = channels # these 4 jsons dont work
+        self.data[str(ctx.guild.id)]["ignoredRoles"] = roles # 2
+        self.data[str(ctx.guild.id)]["ignoredMembers"] = members # 3
+    
+    @settings.command(name="log")
+    @commands.has_permissions(manage_guild=True)
+    @commands.guild_only()
+    async def log(self, ctx, channel: discord.TextChannel):
+        try:
+            e = discord.Embed(
+                title="You set your log channel",
+                description=f"Your log channel is now {channel.mention}"
+            )
+            await ctx.send(embed=e)
+            self.data[str(ctx.guild.id)]["logChannel"] = channel.id # 4
+        except Exception as e:
+            print(e)
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.NoPrivateMessage): return await ctx.send(f"Sorry, but you need to use this command in a server so I know what data to read!")
