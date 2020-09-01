@@ -90,6 +90,10 @@ class Users(commands.Cog):
 
     async def vbl(self, guild, e: NotLogging):
         """VerboseLog: Log NotLogging events if verbose is enabled"""
+        if not self.data.get(str(guild.id)):
+            with open("./data/template.json") as rfile:
+                self.data[str(guild.id)] = json.load(rfile)
+
         if not self.data[str(guild.id)]["verbose"]: return False
         # print(f"Not logging event {e.etype}:\n> {e.reason}\n\n> {e.details}")
         return True 

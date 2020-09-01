@@ -76,7 +76,6 @@ class ImageDetect(commands.Cog):
                         conf = str(resp['output'])
                     end = time.time()
                     
-                    # Send
                     e = discord.Embed(
                         title="Image sent",
                         description=f"**Size:** {dimensions[0]}x{dimensions[1]}\n"
