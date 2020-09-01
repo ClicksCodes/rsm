@@ -1,0 +1,66 @@
+{
+  "0": {
+    "logType": "messageEdit",
+    "occurredAt": 1597909062,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "tset",
+      "messageContentAfter": "test",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 728994145544437770,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "1": {
+    "logType": "messageDelete",
+    "occurredAt": 1597909063,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "test",
+      "mentions": 0,
+      "occurredIn": 728994145544437770,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "2": {
+    "logType": "messageDelete",
+    "occurredAt": 1597909555,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "m",
+      "mentions": 0,
+      "occurredIn": 728994145544437770,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "3": {
+    "logType": "messageDelete",
+    "occurredAt": 1597910293,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "hi",
+      "mentions": 0,
+      "occurredIn": 728994145544437770,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "4": {
+    "logType": "nickChange",
+    "occurredAt": 1597910527,
+    "content": {
+      "username": 438733159748599813,
+      "nameBefore": "PineappleFan",
+      "nameAfter": "Pinea",
+      "user": 438733159748599813
+    }
+  }
+}
