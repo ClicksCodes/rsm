@@ -21,7 +21,7 @@ class Commands(commands.Cog):
         )
         noPing = discord.Embed(
             title=f"Who do you want to punish?",
-            description="Please mention the user you'd like to ping.",
+            description="Please mention the user you'd like to punish.",
             color=colours["create"]
         )
         if len(ctx.message.mentions) > 1: 
