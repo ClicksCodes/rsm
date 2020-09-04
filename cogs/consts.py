@@ -30,7 +30,7 @@ events = {
     "roles":                [colours[ "edit" ], '`Role mentions    `', emojis['role_ping'],      'Messages'],
     "channel_create":       [colours["create"], '`Created channel  `', emojis['channel_create'], 'Channels'],
     "channel_delete":       [colours["delete"], '`Deleted channel  `', emojis['channel_delete'], 'Channels'],
-    "nsfw_update":          [colours[ "edit" ], '`Nsfw toggle      `', emojis['nsfw_on'],        'Channels'],
+    "nsfw_update":          [colours[ "edit" ], '`Channel NSFW     `', emojis['nsfw_on'],        'Channels'],
     "channel_title_update": [colours[ "edit" ], '`Name changed     `', emojis['TitleUpdate'],    'Channels'],
     "channel_desc_update":  [colours[ "edit" ], '`Topic changed    `', emojis['TopicUpdate'],    'Channels'],
     "member_join":          [colours["create"], '`Member joins     `', emojis['join'],           'Members'],
