@@ -256,8 +256,8 @@ class Messages(commands.Cog):
             edited = humanize.naturaltime(message.edited_at) if message.edited_at else "Never"
             e = discord.Embed(
                 title=emojis["edit"] + " Message Edited",
-                description=f"**Before:** {('```' + shorten(discord.utils.escape_markdown(before.clean_content), 1024) + '```') if len(before.clean_content) > 0 else ''}\n"
-                            f"**After:** {('```' + shorten(discord.utils.escape_markdown(after.clean_content), 1024) + '```') if len(after.clean_content) > 0 else ''}\n"
+                description=f"**Before:** {('```' + shorten(discord.utils.escape_markdown(before.clean_content), 500) + '```') if len(before.clean_content) > 0 else ''}\n"
+                            f"**After:** {('```' + shorten(discord.utils.escape_markdown(after.clean_content), 500) + '```') if len(after.clean_content) > 0 else ''}\n"
                             f"**Sent By:** {emojis[message.author.status.value]} {message.author.mention}\n"
                             f"**Sent In:** {message.channel.mention}\n"
                             f"**Sent:** {sent.capitalize()}\n"

@@ -1,0 +1,787 @@
+{
+  "0": {
+    "logType": "nickChange",
+    "occurredAt": 1599300082,
+    "content": {
+      "username": 438733159748599813,
+      "nameBefore": "[DEV] Pineapple",
+      "nameAfter": "[DEV] PineappleFan",
+      "user": 438733159748599813
+    }
+  },
+  "1": {
+    "logType": "messageEdit",
+    "occurredAt": 1599300092,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "a",
+      "messageContentAfter": "aaaa",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "2": {
+    "logType": "messageDelete",
+    "occurredAt": 1599300094,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "aaaa",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "3": {
+    "logType": "messageDelete",
+    "occurredAt": 1599303784,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "<@!715989276382462053>",
+      "mentions": 1,
+      "occurredIn": 697415004403793920,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "4": {
+    "logType": "messageEdit",
+    "occurredAt": 1599308204,
+    "content": {
+      "username": 511655498676699136,
+      "messageContent": "Codes gave me a CMP email",
+      "messageContentAfter": "Coded gave me a CMP email",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "5": {
+    "logType": "nickChange",
+    "occurredAt": 1599308982,
+    "content": {
+      "username": 561565119201673216,
+      "nameBefore": "[MOD] DogsRock",
+      "nameAfter": "Dogs rock",
+      "user": 561565119201673216
+    }
+  },
+  "6": {
+    "logType": "nickChange",
+    "occurredAt": 1599309001,
+    "content": {
+      "username": 561565119201673216,
+      "nameBefore": "Dogs rock",
+      "nameAfter": "[MOD] DogsRock",
+      "user": 561565119201673216
+    }
+  },
+  "7": {
+    "logType": "nickChange",
+    "occurredAt": 1599309100,
+    "content": {
+      "username": 511655498676699136,
+      "nameBefore": "[DEV] Zanderp25",
+      "nameAfter": "[DEV] Zanderp25 \u30b7",
+      "user": 511655498676699136
+    }
+  },
+  "8": {
+    "logType": "messageDelete",
+    "occurredAt": 1599309165,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "<@!506456730843086859>",
+      "mentions": 1,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "9": {
+    "logType": "messageEdit",
+    "occurredAt": 1599309218,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "im working on changing tha",
+      "messageContentAfter": "im working on changing that",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "10": {
+    "logType": "messageDelete",
+    "occurredAt": 1599309251,
+    "content": {
+      "username": 561565119201673216,
+      "messageContent": "<@!506456730843086859>",
+      "mentions": 1,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "11": {
+    "logType": "memberLeave",
+    "occurredAt": 1599309332,
+    "content": {
+      "username": 506456730843086859,
+      "memberCount": 234,
+      "mutuals": 0,
+      "created": "1 year, 10 months ago",
+      "joined": "5 hours ago"
+    }
+  },
+  "12": {
+    "logType": "messagePurge",
+    "occurredAt": 1599309333,
+    "content": {
+      "username": 715989276382462053,
+      "messageContent": "https://mystb.in/LinearSeptemberFeof",
+      "occurredIn": 726843668660617350,
+      "amount": 5
+    }
+  },
+  "13": {
+    "logType": "memberJoin",
+    "occurredAt": 1599309364,
+    "content": {
+      "username": 506456730843086859,
+      "memberCount": 235,
+      "mutuals": 1,
+      "created": "1 year, 10 months ago"
+    }
+  },
+  "14": {
+    "logType": "messageDelete",
+    "occurredAt": 1599309431,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "50",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "15": {
+    "logType": "messagePurge",
+    "occurredAt": 1599309432,
+    "content": {
+      "username": 715989276382462053,
+      "messageContent": "https://mystb.in/AnniversaryScotlandTamil",
+      "occurredIn": 726843668660617350,
+      "amount": 4
+    }
+  },
+  "16": {
+    "logType": "messageEdit",
+    "occurredAt": 1599309698,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "do OCT",
+      "messageContentAfter": "do OCR",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "17": {
+    "logType": "messageEdit",
+    "occurredAt": 1599309717,
+    "content": {
+      "username": 561565119201673216,
+      "messageContent": "i like how that was instant logging the second you pressed enter",
+      "messageContentAfter": "i like how that was instant logging the second you pressed enter seeee",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "18": {
+    "logType": "nickChange",
+    "occurredAt": 1599310080,
+    "content": {
+      "username": 561565119201673216,
+      "nameBefore": "[MOD] DogsRock",
+      "nameAfter": "Dogs rock",
+      "user": 561565119201673216
+    }
+  },
+  "19": {
+    "logType": "messageDelete",
+    "occurredAt": 1599310097,
+    "content": {
+      "username": 511655498676699136,
+      "messageContent": "Lol",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "20": {
+    "logType": "nickChange",
+    "occurredAt": 1599310100,
+    "content": {
+      "username": 561565119201673216,
+      "nameBefore": "Dogs rock",
+      "nameAfter": "[MOD] DogsRock",
+      "user": 561565119201673216
+    }
+  },
+  "21": {
+    "logType": "memberJoin",
+    "occurredAt": 1599310261,
+    "content": {
+      "username": 628719618902589451,
+      "memberCount": 236,
+      "mutuals": 1,
+      "created": "11 months ago"
+    }
+  },
+  "22": {
+    "logType": "messageDelete",
+    "occurredAt": 1599310276,
+    "content": {
+      "username": 628719618902589451,
+      "messageContent": "cmp verify",
+      "mentions": 0,
+      "occurredIn": 697880694692642856,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "23": {
+    "logType": "messageDelete",
+    "occurredAt": 1599310388,
+    "content": {
+      "username": 561565119201673216,
+      "messageContent": "<@!511655498676699136>",
+      "mentions": 1,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "24": {
+    "logType": "messageDelete",
+    "occurredAt": 1599310518,
+    "content": {
+      "username": 511655498676699136,
+      "messageContent": "No u",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "25": {
+    "logType": "memberLeave",
+    "occurredAt": 1599310519,
+    "content": {
+      "username": 628719618902589451,
+      "memberCount": 235,
+      "mutuals": 0,
+      "created": "11 months ago",
+      "joined": "an hour ago"
+    }
+  },
+  "26": {
+    "logType": "messageDelete",
+    "occurredAt": 1599310519,
+    "content": {
+      "username": 628719618902589451,
+      "messageContent": "",
+      "mentions": 0,
+      "occurredIn": 692138822514900993,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "27": {
+    "logType": "messagePurge",
+    "occurredAt": 1599310520,
+    "content": {
+      "username": 715989276382462053,
+      "messageContent": "https://mystb.in/GodsChesterExec",
+      "occurredIn": 726843668660617350,
+      "amount": 4
+    }
+  },
+  "28": {
+    "logType": "memberJoin",
+    "occurredAt": 1599310802,
+    "content": {
+      "username": 628719618902589451,
+      "memberCount": 236,
+      "mutuals": 1,
+      "created": "11 months ago"
+    }
+  },
+  "29": {
+    "logType": "messageDelete",
+    "occurredAt": 1599310815,
+    "content": {
+      "username": 628719618902589451,
+      "messageContent": "cmp verify",
+      "mentions": 0,
+      "occurredIn": 697880694692642856,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "30": {
+    "logType": "messageDelete",
+    "occurredAt": 1599311046,
+    "content": {
+      "username": 561565119201673216,
+      "messageContent": "<:slap:500660862110138369> \ud83d\udc62 <a:bye:645602671725641728>",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "31": {
+    "logType": "messageDelete",
+    "occurredAt": 1599311170,
+    "content": {
+      "username": 561565119201673216,
+      "messageContent": "\\*slaps\\* \ud83d\udc4b \ud83d\udc62",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "32": {
+    "logType": "messageDelete",
+    "occurredAt": 1599311202,
+    "content": {
+      "username": 561565119201673216,
+      "messageContent": "\\*slaps\\* \\*waves\\*",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "33": {
+    "logType": "messageEdit",
+    "occurredAt": 1599311226,
+    "content": {
+      "username": 421698654189912064,
+      "messageContent": "https://ptb.discordapp.com/channels/684492926528651336/726843668660617350/751789664742015047 this message edited itself really fast about 7 or 8 times",
+      "messageContentAfter": "https://ptb.discordapp.com/channels/684492926528651336/726843668660617350/751789664742015047 this message edited itself really fast about 7 or 8 times <@!438733159748599813>",
+      "mentions": 0,
+      "mentionsAfter": 1,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "34": {
+    "logType": "messageEdit",
+    "occurredAt": 1599311232,
+    "content": {
+      "username": 421698654189912064,
+      "messageContent": "https://ptb.discordapp.com/channels/684492926528651336/726843668660617350/751789664742015047 this message edited itself really fast about 7 or 8 times <@!438733159748599813>",
+      "messageContentAfter": "https://ptb.discordapp.com/channels/684492926528651336/726843668660617350/751789664742015047 this message edited itself really fast about 7 or 8 times <@!438733159748599813> when dogs reacted",
+      "mentions": 1,
+      "mentionsAfter": 1,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "35": {
+    "logType": "messageEdit",
+    "occurredAt": 1599311403,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "but do you like settings and info>",
+      "messageContentAfter": "but do you like settings and info?",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "36": {
+    "logType": "messageEdit",
+    "occurredAt": 1599311576,
+    "content": {
+      "username": 421698654189912064,
+      "messageContent": "I use gino for everything kmao",
+      "messageContentAfter": "I use gino for everything lmao",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "37": {
+    "logType": "messageDelete",
+    "occurredAt": 1599313611,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "<@!506456730843086859>",
+      "mentions": 1,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "38": {
+    "logType": "messageDelete",
+    "occurredAt": 1599314587,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "<@!421698654189912064>",
+      "mentions": 1,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "39": {
+    "logType": "messageDelete",
+    "occurredAt": 1599314854,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "100",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "40": {
+    "logType": "messageEdit",
+    "occurredAt": 1599315120,
+    "content": {
+      "username": 421698654189912064,
+      "messageContent": "Because, what if someone joined, said a few things and you just wanted to mute them instead of banning>",
+      "messageContentAfter": "Because, what if someone joined, said a few things and you just wanted to mute them instead of banning?",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "41": {
+    "logType": "messageEdit",
+    "occurredAt": 1599315959,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "vigin media",
+      "messageContentAfter": "virgin media",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "42": {
+    "logType": "pinsUpdate",
+    "occurredAt": 1599316204,
+    "content": {
+      "username": 421698654189912064,
+      "messageBy": 715989276382462053,
+      "in": 726843668660617350,
+      "content": ""
+    }
+  },
+  "43": {
+    "logType": "messageDelete",
+    "occurredAt": 1599316204,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "spam",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "44": {
+    "logType": "messageEdit",
+    "occurredAt": 1599317836,
+    "content": {
+      "username": 511655498676699136,
+      "messageContent": "cordless",
+      "messageContentAfter": "cordless?",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "45": {
+    "logType": "memberJoin",
+    "occurredAt": 1599317955,
+    "content": {
+      "username": 579433859855286275,
+      "memberCount": 237,
+      "mutuals": 1,
+      "created": "1 year, 3 months ago"
+    }
+  },
+  "46": {
+    "logType": "messageDelete",
+    "occurredAt": 1599318001,
+    "content": {
+      "username": 579433859855286275,
+      "messageContent": "cmp verify",
+      "mentions": 0,
+      "occurredIn": 697880694692642856,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "47": {
+    "logType": "memberLeave",
+    "occurredAt": 1599318098,
+    "content": {
+      "username": 579433859855286275,
+      "memberCount": 236,
+      "mutuals": 0,
+      "created": "1 year, 3 months ago",
+      "joined": "an hour ago"
+    }
+  },
+  "48": {
+    "logType": "messageEdit",
+    "occurredAt": 1599318151,
+    "content": {
+      "username": 511655498676699136,
+      "messageContent": "oh wait \\`there's a snap with that name\\`",
+      "messageContentAfter": "oh wait \\`there is a snap with that name\\`",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "49": {
+    "logType": "messageDelete",
+    "occurredAt": 1599319428,
+    "content": {
+      "username": 511655498676699136,
+      "messageContent": "lol",
+      "mentions": 0,
+      "occurredIn": 697880694692642856,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "50": {
+    "logType": "messageEdit",
+    "occurredAt": 1599319833,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "@which",
+      "messageContentAfter": "<@!511655498676699136>  which",
+      "mentions": 0,
+      "mentionsAfter": 1,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "51": {
+    "logType": "messageDelete",
+    "occurredAt": 1599320409,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "having a good bot",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "52": {
+    "logType": "messageDelete",
+    "occurredAt": 1599320587,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "smh my head",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "53": {
+    "logType": "messageDelete",
+    "occurredAt": 1599320622,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "aaaaaaaaaaa",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "54": {
+    "logType": "messageDelete",
+    "occurredAt": 1599320763,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "aaaaaaaaaaaaaaaaaaaaa",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "55": {
+    "logType": "messageDelete",
+    "occurredAt": 1599324760,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "<@!438733159748599813>",
+      "mentions": 1,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "56": {
+    "logType": "rolePing",
+    "occurredAt": 1599329460,
+    "content": {
+      "username": 421698654189912064,
+      "messageContent": "<@&684493117017161963> pls restart cmp server",
+      "mentions": 0,
+      "occurredIn": 697446083919610007,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "57": {
+    "logType": "nickChange",
+    "occurredAt": 1599329611,
+    "content": {
+      "username": 438733159748599813,
+      "nameBefore": "RSM",
+      "nameAfter": "[BOT] RSM",
+      "user": 715989276382462053
+    }
+  },
+  "58": {
+    "logType": "messageEdit",
+    "occurredAt": 1599333982,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "partnershi[",
+      "messageContentAfter": "partnership",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "59": {
+    "logType": "messageDelete",
+    "occurredAt": 1599334536,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "being part of DDS",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "60": {
+    "logType": "messageDelete",
+    "occurredAt": 1599334578,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "dogs dont rock",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "61": {
+    "logType": "messageDelete",
+    "occurredAt": 1599334697,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "https://prod.liveshare.vsengsaas.visualstudio.com/join?BEC80A940342B0CAF3FF2FA8D87AD2EDA31E",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  }
+}

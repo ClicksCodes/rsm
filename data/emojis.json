@@ -56,5 +56,9 @@
     "spam":              "<:Spam:730438422853845042>",
     "raid":              "<:Raid:730438422313041971>",
     "invisible":         "<:Invisible:730438422690398238>",
-    "image_swear":       "<:ImageSwearing:730438422627614810>"
+    "image_swear":       "<:ImageSwearing:730438422627614810>",
+    "rsm":               "<:RSM:751751467014029322>",
+    "about":             "<:About:751762088346517504>",
+    "commands":          "<:Commands:751762088229339136>",
+    "support":           "<:Support:751762087780286495>"
 }

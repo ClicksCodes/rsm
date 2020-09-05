@@ -1,4 +1,4 @@
-import copy, discord, json, humanize, aiohttp, traceback, typing, time
+import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio
 
 from datetime import datetime
 from discord.ext import commands
@@ -109,27 +109,49 @@ class Logs(commands.Cog):
     @commands.has_permissions(manage_guild=True)
     @commands.guild_only()
     async def settings(self, ctx: commands.Context):
-        """Shows all settings"""
-        entry = self.data.get(str(ctx.guild.id))
-        desc = []
-        for event in events:
-            ev = events[event]
-            desc.append(f"{ev[2]} {ev[1]} | {emojis['tick'] if event in entry['toLog'] else emojis['cross']}")
-        descs = []
-        descx = ''
-        for x in range(0, len(entry['toLog'])):
-            if x % 14 == 0:
-                if descx != '': descs.append(descx)
-                descx = ''
-            descx += f"{desc[x]}\n"
-        descs.append(descx)
-        for x in range(0, len(descs)):
-            message = discord.Embed(
-                title=f"{'Here is what you are logging:' if x == 0 else ''}",
-                description=f"{'[You can edit your guild settings here](https://rsm.clcks.dev/dashboard)' if x == 0 else ''}\n{descs[x]}",
-                color=colours['create']
+        page = 0
+        catList = [*categories]
+        entry = self.data.get(str(ctx.guild.id))['toLog']
+        m = await ctx.send(embed=discord.Embed(title="Loading"))
+        for emoji in [729762938411548694, 729762938843430952, 729064530310594601]: await m.add_reaction(ctx.bot.get_emoji(emoji))
+        bn = '\n'
+        for x in range(0,50):
+            if x == 0: 
+                for emoji in [729065958584614925, 729066924943737033, 729762939023917086, 729066519337762878]: await m.add_reaction(ctx.bot.get_emoji(emoji))
+            header = " | ".join([f"**{item}**" if catList[page] == item else categories[item] for item in catList]) + '\nYou can edit your log settings [here](https://rsm.clcks.dev/dashboard)\n'
+            description = " ".join([ (((emojis['tick'] if item in entry else emojis['cross']) + " | " + events[item][1] + bn) if events[item][3] == catList[page] else '') for item in list(events.keys())])
+            emb = discord.Embed (
+                title=emojis["settings"] + " Settings",
+                description=header + description,
+                color=colours["create"]
             )
-            await ctx.channel.send(embed=message)
+            await m.edit(embed=emb)
+            
+            reaction = None
+            try: reaction = await ctx.bot.wait_for('reaction_add', timeout=60, check=lambda _, user : user == ctx.author)
+            except asyncio.TimeoutError: break
+
+            try: await m.remove_reaction(reaction[0].emoji, ctx.author)
+            except: pass
+
+            if reaction == None: break
+            elif reaction[0].emoji.name == "Left":          page -= 1
+            elif reaction[0].emoji.name == "Right":         page += 1
+            elif reaction[0].emoji.name == "MessageEdit":   page =  0
+            elif reaction[0].emoji.name == "ChannelCreate": page =  1
+            elif reaction[0].emoji.name == "Settings":      page =  2
+            elif reaction[0].emoji.name == "MemberJoin":    page =  3
+            else: break
+
+            page = min(len(catList)-1, max(0, page))
+        
+        emb = discord.Embed (
+            title=emojis["settings"] + " Settings",
+            description=header + description,
+            color=colours["delete"]
+        )
+        await m.clear_reactions()
+        await m.edit(embed=emb)
 
     @settings.command(name="ignore")
     @commands.has_permissions(manage_guild=True)
