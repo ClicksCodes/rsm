@@ -783,5 +783,57 @@
       "edited": "Never",
       "attachments": []
     }
+  },
+  "62": {
+    "logType": "messageDelete",
+    "occurredAt": 1599335981,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "<@!438733159748599813>",
+      "mentions": 1,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "63": {
+    "logType": "messageDelete",
+    "occurredAt": 1599336010,
+    "content": {
+      "username": 561565119201673216,
+      "messageContent": "<@!561565119201673216>",
+      "mentions": 1,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "64": {
+    "logType": "messageDelete",
+    "occurredAt": 1599337280,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "<@!438733159748599813>",
+      "mentions": 1,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "65": {
+    "logType": "messageDelete",
+    "occurredAt": 1599337430,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "<@!261900651230003201>",
+      "mentions": 1,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
   }
 }
