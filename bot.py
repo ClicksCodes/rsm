@@ -6,6 +6,7 @@ import traceback
 from discord.ext import commands
 import discord
 import config
+from database import db
 
 class Bot(commands.Bot):
     def __init__(self, **kwargs):
@@ -26,9 +27,8 @@ class Bot(commands.Bot):
         print('Ignoring exception in {}'.format(event_method), file=sys.stderr)
         traceback.print_exc()
 
-
 bot = Bot(owner_ids=[438733159748599813, 421698654189912064, 261900651230003201, 317731855317336067], case_insensitive=True)
+bot.loop.create_task(db.main(bot))
 
-# write general commands here
 
 bot.run(config.token)

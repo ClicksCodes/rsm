@@ -32,7 +32,7 @@ class ImageDetect(commands.Cog):
                     # OCR
                     img = cv2.imread(f_name)
                     low_thresh = 16
-                    up_thresh  = 2045
+                    up_thresh  = 4097
                     dimensions = [img.shape[0], img.shape[1]]
                     if min(dimensions) < low_thresh: await message.channel.send('Too small')
                     if max(dimensions) > up_thresh:  await message.channel.send('Too large')

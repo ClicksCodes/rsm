@@ -194,7 +194,7 @@ class Users(commands.Cog):
     async def on_member_unban(self, guild, member: discord.Member):
         if not self.is_logging(guild=guild, member=member, eventname="member_unban"): return
         else:
-            audit = await get_alog_entry(member, type=discord.AuditLogAction.unban)
+            audit = await get_alog_entry(guild, type=discord.AuditLogAction.unban)
             e = discord.Embed(
                 title=emojis["unban"] + f" Member Unbanned",
                 description=f"**Name:** {member.name}\n"
