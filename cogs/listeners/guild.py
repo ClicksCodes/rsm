@@ -12,7 +12,6 @@ class NotLogging:
         self.etype = etype
         self.reason = reason
         self.details = details
-        # print(self.__repr__())
         if cog and guild:
             cog.bot.loop.create_task(cog.vbl(guild, self))
         else:
@@ -237,19 +236,25 @@ class Guild(commands.Cog):
                     title=emojis["webhook_update"] + f" Webhook Updated",
                     description=f"**Edited By:** {emojis[audit.user.status.value]} {audit.user.mention}\n" +
                                 f"**Changes:**\n" +
-                                (f"`Channel:` {before.channel.mention} -> {after.channel.mention}\n" if before.channel != after.channel else "") +
-                                (f"`Name:   ` `{before.name}` -> `{after.name}`\n" if before.name != after.name else "") +
-                                (f"`Avatar: ` [Image before](https://cdn.discordapp.com/avatars/{audit.target.id}/{before.avatar}) -> [Image after](https://cdn.discordapp.com/avatars/{audit.target.id}/{after.avatar})\n" if before.avatar != after.avatar else ""),
+                                (f"{before.channel.mention} -> {after.channel.mention}\n" if before.channel != after.channel else "") +
+                                (f"{before.name}` -> `{after.name}`\n" if before.name != after.name else "") +
+                                (f"[Image before](https://cdn.discordapp.com/avatars/{audit.target.id}/{before.avatar}) -> [Image after](https://cdn.discordapp.com/avatars/{audit.target.id}/{after.avatar})\n" if before.avatar != after.avatar else ""),
                     color=colours[t],
                     timestamp=datetime.utcnow()
                 ) 
                 await log.send(embed=e)
                 return await self.log(
-                    logType="webhookCreate", 
+                    logType="webhookUpdate", 
                     occurredAt=round(time.time()),
                     guild=channel.guild.id,
                     content={
-                        "username": audit.user.id
+                        "username":      audit.user.id,
+                        "beforeChannel": before.channel.id,
+                        "afterChannel":  after.channel.id,
+                        "beforeName":    before.name,
+                        "afterName":     after.name,
+                        "beforeAvatar":  f"https://cdn.discordapp.com/avatars/{audit.target.id}/{before.avatar}",
+                        "afterAvatar":   f"https://cdn.discordapp.com/avatars/{audit.target.id}/{after.avatar}"
                     }
                 )
             elif t == 'delete':
