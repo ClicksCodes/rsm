@@ -27,7 +27,8 @@
       "invite_delete",
       "icon_update",
       "mod_changed",
-      "name_changed"
+      "name_changed",
+      "webhook_create"
     ],
     "ignoredChannels": [],
     "ignoredMembers": [],

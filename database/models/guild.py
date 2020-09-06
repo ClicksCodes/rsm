@@ -48,6 +48,7 @@ class Guild(db.Model):
     icon_update = db.Column(db.Boolean(), default=True)
     mod_changed = db.Column(db.Boolean(), default=True)
     name_change = db.Column(db.Boolean(), default=True)
+    webhook = db.Column(db.Boolean(), default=True)
     ignore_bots = db.Column(db.Boolean(), default=True)
     log_channel = db.Column(db.Integer(), default=None, nullable=True)
     enabled = db.Column(db.Boolean(), default=True)

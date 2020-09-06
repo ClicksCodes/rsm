@@ -9,7 +9,8 @@ with open("./data/template.json") as rfile: template = json.load(rfile)
 colours = {
     "delete": 0xF27878,
     "create": 0x68D49E,
-    "edit":   0xF2D478
+    "edit":   0xF2D478,
+    "update": 0xF2D478
 }
 
 categories = {
@@ -33,6 +34,7 @@ events = {
     "nsfw_update":          [colours[ "edit" ], '`Channel NSFW     `', emojis['nsfw_on'],        'Channels'],
     "channel_title_update": [colours[ "edit" ], '`Name changed     `', emojis['TitleUpdate'],    'Channels'],
     "channel_desc_update":  [colours[ "edit" ], '`Topic changed    `', emojis['TopicUpdate'],    'Channels'],
+    "webhook_create":       [colours[ "edit" ], '`Webhook updated  `', emojis['webhook_create'], 'Channels'],
     "member_join":          [colours["create"], '`Member joins     `', emojis['join'],           'Members'],
     "member_leave":         [colours["delete"], '`Member leaves    `', emojis['leave'],          'Members'],
     "member_kick":          [colours["delete"], '`Member kicked    `', emojis['kick'],           'Members'],

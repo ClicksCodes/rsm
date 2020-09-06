@@ -60,5 +60,8 @@
     "rsm":               "<:RSM:751751467014029322>",
     "about":             "<:About:751762088346517504>",
     "commands":          "<:Commands:751762088229339136>",
-    "support":           "<:Support:751762087780286495>"
+    "support":           "<:Support:751762087780286495>",
+    "webhook_create":    "<:WebhookCreate:752070251906203679>",
+    "webhook_delete":    "<:WebhookDelete:752070251948146768>",
+    "webhook_update":    "<:WebhookUpdate:752073772823216191>"
 }

@@ -56,9 +56,9 @@ class Commands(commands.Cog):
             return None
         for future in done: future.exception()
 
-    async def intHandler(self, m, dict):
+    async def intHandler(self, m, dict, ctx):
         await m.delete()
-        m = await ctx.send(embed=createEmbed(
+        m = await ctx.send(embed=self.createEmbed(
             dict["prompt"]["title"], 
             dict["prompt"]["desc"] + "\n" + f"Select {emojis['tick']} to select {dict['default']} or {emojis['cross']} to cancel", 
             dict["prompt"]["col"]
@@ -89,34 +89,42 @@ class Commands(commands.Cog):
             return None
         for future in done: future.exception()
 
-    async def warnPun(self, m, member, ctx):
+    async def warnPun(self, m, member, ctx, reason=None):
         createEmbed = self.createEmbed
         try:
             if not ctx.author.guild_permissions.kick_members: 
                 await ctx.send(embed=createEmbed(f"{emojis['PunWarn']} Looks like you don't have permissions", "You need the `kick_members` permission to warn someone.", colours["delete"]))
-                return await m.delete()
-            reason, m = await self.reasonHandler(m, {
+        except Exception as e: print(e)
+
+        if reason == None:
+            reason, m = await self.reasonHandler(
+                m, 
+                {
                     "cancel": {"title": f"{emojis['PunWarn']} Warning", "desc": f"Warning cancelled.", "col": colours["delete"]},
                     "prompt": {"title": f"{emojis['PunWarn']} Warning", "desc": f"Please enter a reason for warning {member.mention}.", "col": colours["create"]}
                 },
                 ctx
             )
-            if reason != None:
-                try: return await member.send(embed=createEmbed(f"{emojis['PunWarn']} Warning", f"You were warned in {ctx.guild.name} {('for ' + reason) if reason is not False else 'with no reason provided'}.", colours["edit"]))
-                except: pass
-                await m.edit(embed=createEmbed(f"{emojis['PunWarn']} Warning", f"User {member.mention} was successfully warned for {reason if reason is not False else 'No reason provided'}.", colours["create"]))
-                await m.clear_reactions()
-        except Exception as e: print(e)
+        if reason != None:
+            try: await member.send(embed=createEmbed(f"{emojis['PunWarn']} Warning", f"You were warned in {ctx.guild.name} {('for ' + reason) if reason is not False else 'with no reason provided'}.", colours["edit"]))
+            except: return
+            await m.edit(embed=createEmbed(f"{emojis['PunWarn']} Warning", f"User {member.mention} was successfully warned for {reason if reason is not False else 'No reason provided'}.", colours["create"]))
+            await m.clear_reactions()
     
-    async def kickPun(self, m, member, ctx):
+    async def kickPun(self, m, member, ctx, reason=None):
         createEmbed = self.createEmbed
         if not ctx.author.guild_permissions.kick_members: 
             await ctx.send(embed=createEmbed(f"{emojis['PunKick']} Looks like you don't have permissions", "You need the `kick_members` permission to kick someone.", colours["delete"]))
             return await m.delete()
-        reason, m = await reasonHandler(m, {
-                "cancel": {"title": f"{emojis['PunKick']} Kick", "desc": f"Kick cancelled.", "col": colours["delete"]},
-                "prompt": {"title": f"{emojis['PunKick']} Kick", "desc": f"Please enter a reason for kicking {member.mention}.", "col": colours["create"]}
-            })
+        if reason == None:
+            reason, m = await self.reasonHandler(
+                m, 
+                {
+                    "cancel": {"title": f"{emojis['PunKick']} Kick", "desc": f"Kick cancelled.", "col": colours["delete"]},
+                    "prompt": {"title": f"{emojis['PunKick']} Kick", "desc": f"Please enter a reason for kicking {member.mention}.", "col": colours["create"]}
+                },
+                ctx
+            )
         if reason != None:
             try:
                 try: 
@@ -128,15 +136,20 @@ class Commands(commands.Cog):
                 await m.edit(embed=createEmbed(f"{emojis['PunKick']} Kick", f"Something went wrong. I may not have permissions, or the user couldn't be kicked.", colours["delete"]))
             await m.clear_reactions()
     
-    async def banPun(self, member, m, ctx):
+    async def banPun(self, m, member, ctx, reason=None):
         createEmbed = self.createEmbed
         if not ctx.author.guild_permissions.ban_members: 
             await ctx.send(embed=createEmbed(f"{emojis['PunBan']} Looks like you don't have permissions", "You need the `ban_members` permission to ban someone.", colours["delete"]))
             return await m.delete()
-        reason, m = await reasonHandler(m, {
-                "cancel": {"title": f"{emojis['PunBan']} Ban", "desc": f"Ban cancelled.", "col": colours["delete"]},
-                "prompt": {"title": f"{emojis['PunBan']} Ban", "desc": f"Please enter a reason for banning {member.mention}.", "col": colours["create"]}
-            })
+        if reason == None:
+            reason, m = await self.reasonHandler(
+                m, 
+                {
+                    "cancel": {"title": f"{emojis['PunBan']} Ban", "desc": f"Ban cancelled.", "col": colours["delete"]},
+                    "prompt": {"title": f"{emojis['PunBan']} Ban", "desc": f"Please enter a reason for banning {member.mention}.", "col": colours["create"]}
+                },
+                ctx
+            )
         if reason != None:
             try: 
                 try: 
@@ -149,15 +162,20 @@ class Commands(commands.Cog):
                 print(e)
             await m.clear_reactions()
     
-    async def softBanPun(self, member, m, ctx):
-        createEmbed = self.createEmebd
+    async def softBanPun(self, m, member, ctx, reason=None):
+        createEmbed = self.createEmbed
         if not ctx.author.guild_permissions.ban_members: 
-            await ctx.send(embed=createEmbed(f"{emojis['PunSoftBan']} Looks like you don't have permissions", "You need the `ban_members` permission to soft ban someone.", colours["delete"]))
+            await ctx.send(embed=self.createEmbed(f"{emojis['PunSoftBan']} Looks like you don't have permissions", "You need the `ban_members` permission to soft ban someone.", colours["delete"]))
             return await m.delete()
-        reason, m = await reasonHandler(m, {
-                "cancel": {"title": f"{emojis['PunSoftBan']} Soft Ban", "desc": f"Soft ban cancelled.", "col": colours["delete"]},
-                "prompt": {"title": f"{emojis['PunSoftBan']} Soft Ban", "desc": f"Please enter a reason for soft banning {member.mention}.", "col": colours["create"]}
-            })
+        if reason == None:
+            reason, m = await self.reasonHandler(
+                m, 
+                {
+                    "cancel": {"title": f"{emojis['PunSoftBan']} Soft Ban", "desc": f"Soft ban cancelled.", "col": colours["delete"]},
+                    "prompt": {"title": f"{emojis['PunSoftBan']} Soft Ban", "desc": f"Please enter a reason for soft banning {member.mention}.", "col": colours["create"]}
+                },
+                ctx
+            )
         if reason != None:
             try: 
                 try: 
@@ -170,16 +188,21 @@ class Commands(commands.Cog):
                 await m.edit(embed=createEmbed(f"{emojis['PunSoftBan']} Soft Ban", f"Something went wrong. I may not have permissions, or the user couldn't be banned.", colours["delete"]))
                 print(e)
             await m.clear_reactions()
-    async def delHistoryPun(self, member, m, ctx):
+    async def delHistoryPun(self, m, member, ctx, out=None):
         createEmbed = self.createEmbed
         if not ctx.author.guild_permissions.manage_messages: 
-            await ctx.send(embed=createEmbed(f"{emojis['PunishHistory']} Looks like you don't have permissions", "You need the `manage_messages` permission to delete someone's history.", colours["delete"]))
+            await ctx.send(embed=self.createEmbed(f"{emojis['PunishHistory']} Looks like you don't have permissions", "You need the `manage_messages` permission to delete someone's history.", colours["delete"]))
             return await m.delete()
-        out, m = await intHandler(m, {
-                "cancel": {"title": f"{emojis['PunHistory']} Delete History", "desc": f"Delete history cancelled.", "col": colours["delete"]},
-                "prompt": {"title": f"{emojis['PunHistory']} Delete History", "desc": f"How many messages in this channel should I check? Max 100", "col": colours["create"]},
-                "default": 50
-            })
+        if out == None:
+            out, m = await self.intHandler(
+                m, 
+                {
+                    "cancel": {"title": f"{emojis['PunHistory']} Delete History", "desc": f"Delete history cancelled.", "col": colours["delete"]},
+                    "prompt": {"title": f"{emojis['PunHistory']} Delete History", "desc": f"How many messages in this channel should I check? Max 100", "col": colours["create"]},
+                    "default": 50
+                },
+                ctx
+            )
         if out != None:
             try: 
                 try: out = int(out)
@@ -200,7 +223,7 @@ class Commands(commands.Cog):
         tooMany = discord.Embed(
             title=f'{events["nsfw_update"][2]} You mentioned too many people there',
             description="You can only punish one person at a time.",
-            color=colours["edit"]
+            color=colours["delete"]
         )
         noPing = discord.Embed(
             title=f"Who do you want to punish?",
@@ -271,19 +294,18 @@ class Commands(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(manage_messages=True)
-    async def warn(self, ctx, *member: discord.Member):
+    async def warn(self, ctx, member: typing.Optional[discord.Member], *reason:str):
+        reason = str(' '.join(reason))
         tooMany = discord.Embed(
             title=f'{events["nsfw_update"][2]} You mentioned too many people there',
             description="You can only punish one person at a time.",
-            color=colours["edit"]
+            color=colours["delete"]
         )
         noPing = discord.Embed(
             title=f"Who do you want to warn?",
-            description="Please mention the user you'd like to punish.",
+            description="Please mention the user you'd like to warn.",
             color=colours["create"]
         )
-        if len(member) > 1: 
-            return await ctx.send(embed=tooMany)
         if not member: 
             m = await ctx.send(embed=noPing)
             msg = await ctx.bot.wait_for('message', timeout=60, check=lambda message : message.author == ctx.author)
@@ -291,9 +313,108 @@ class Commands(commands.Cog):
             await m.delete()
             if len(msg.mentions) != 1: return await ctx.send(embed=tooMany)
             else: member = msg.mentions[0]
-        else: member = member[0]
         m = await ctx.send(embed=discord.Embed(title="Loading"))
-        await self.warnPun(m, member, ctx)
+        await self.warnPun(m, member, ctx, reason if len(reason) > 0 else None)
+    
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(kick_members=True)
+    async def kick(self, ctx, member: typing.Optional[discord.Member], *reason:str):
+        reason = str(' '.join(reason))
+        tooMany = discord.Embed(
+            title=f'{events["nsfw_update"][2]} You mentioned too many people there',
+            description="You can only punish one person at a time.",
+            color=colours["delete"]
+        )
+        noPing = discord.Embed(
+            title=f"Who do you want to kick?",
+            description="Please mention the user you'd like to kick.",
+            color=colours["create"]
+        )
+        if not member: 
+            m = await ctx.send(embed=noPing)
+            msg = await ctx.bot.wait_for('message', timeout=60, check=lambda message : message.author == ctx.author)
+            await msg.delete()
+            await m.delete()
+            if len(msg.mentions) != 1: return await ctx.send(embed=tooMany)
+            else: member = msg.mentions[0]
+        m = await ctx.send(embed=discord.Embed(title="Loading"))
+        await self.kickPun(m, member, ctx, reason)
+    
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(manage_messages=True)
+    async def clear(self, ctx, member: typing.Optional[discord.Member], *t:int):
+        t = int(''.join(t))
+        tooMany = discord.Embed(
+            title=f'{events["nsfw_update"][2]} You mentioned too many people there',
+            description="You can only punish one person at a time.",
+            color=colours["delete"]
+        )
+        noPing = discord.Embed(
+            title=f"Who's history would you like to clear?",
+            description="Please mention the user you'd like to clear the history of.",
+            color=colours["create"]
+        )
+        if not member: 
+            m = await ctx.send(embed=noPing)
+            msg = await ctx.bot.wait_for('message', timeout=60, check=lambda message : message.author == ctx.author)
+            await msg.delete()
+            await m.delete()
+            if len(msg.mentions) != 1: return await ctx.send(embed=tooMany)
+            else: member = msg.mentions[0]
+        m = await ctx.send(embed=discord.Embed(title="Loading"))
+        await self.delHistoryPun(m, member, ctx, t)
+    
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(ban_members=True)
+    async def softBan(self, ctx, member: typing.Optional[discord.Member], *reason:str):
+        reason = str(' '.join(reason))
+        tooMany = discord.Embed(
+            title=f'{events["nsfw_update"][2]} You mentioned too many people there',
+            description="You can only punish one person at a time.",
+            color=colours["edit"]
+        )
+        noPing = discord.Embed(
+            title=f"Who do you want to soft ban?",
+            description="Please mention the user you'd like to soft ban.",
+            color=colours["create"]
+        )
+        if not member: 
+            m = await ctx.send(embed=noPing)
+            msg = await ctx.bot.wait_for('message', timeout=60, check=lambda message : message.author == ctx.author)
+            await msg.delete()
+            await m.delete()
+            if len(msg.mentions) != 1: return await ctx.send(embed=tooMany)
+            else: member = msg.mentions[0]
+        m = await ctx.send(embed=discord.Embed(title="Loading"))
+        await self.softBanPun(m, member, ctx, reason)
+    
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(ban_members=True)
+    async def ban(self, ctx, member: typing.Optional[discord.Member], *reason:str):
+        reason = str(' '.join(reason))
+        tooMany = discord.Embed(
+            title=f'{events["nsfw_update"][2]} You mentioned too many people there',
+            description="You can only punish one person at a time.",
+            color=colours["delete"]
+        )
+        noPing = discord.Embed(
+            title=f"Who do you want to ban?",
+            description="Please mention the user you'd like to ban.",
+            color=colours["create"]
+        )
+        if not member: 
+            m = await ctx.send(embed=noPing)
+            msg = await ctx.bot.wait_for('message', timeout=60, check=lambda message : message.author == ctx.author)
+            await msg.delete()
+            await m.delete()
+            if len(msg.mentions) != 1: return await ctx.send(embed=tooMany)
+            else: member = msg.mentions[0]
+        m = await ctx.send(embed=discord.Embed(title="Loading"))
+        await self.banPun(m, member, ctx, reason)
 
 def setup(bot):
     bot.add_cog(Commands(bot))
