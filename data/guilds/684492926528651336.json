@@ -1099,5 +1099,405 @@
       "edited": "Never",
       "attachments": []
     }
+  },
+  "96": {
+    "logType": "memberLeave",
+    "occurredAt": 1599389158,
+    "content": {
+      "username": 644248347078557702,
+      "memberCount": 236,
+      "mutuals": 0,
+      "created": "9 months ago",
+      "joined": "2 hours ago"
+    }
+  },
+  "97": {
+    "logType": "memberJoin",
+    "occurredAt": 1599389341,
+    "content": {
+      "username": 669156768265404429,
+      "memberCount": 237,
+      "mutuals": 1,
+      "created": "7 months ago"
+    }
+  },
+  "98": {
+    "logType": "messageEdit",
+    "occurredAt": 1599389406,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "o ahead",
+      "messageContentAfter": "go ahead",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 684492926528651342,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "99": {
+    "logType": "rolePing",
+    "occurredAt": 1599389499,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "<@&704391679419089030>",
+      "mentions": 0,
+      "occurredIn": 684492926528651342,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "100": {
+    "logType": "messageEdit",
+    "occurredAt": 1599389561,
+    "content": {
+      "username": 669156768265404429,
+      "messageContent": "it not good",
+      "messageContentAfter": "its not good",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 684492926528651342,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "101": {
+    "logType": "memberJoin",
+    "occurredAt": 1599389806,
+    "content": {
+      "username": 644248347078557702,
+      "memberCount": 238,
+      "mutuals": 1,
+      "created": "9 months ago"
+    }
+  },
+  "102": {
+    "logType": "everyonePing",
+    "occurredAt": 1599390067,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "<:Rejected:686989620008714285> @everyone We are taking down <@!679361555732627476> (Cardboard Against Humankind) temporarily. \nWe will keep you updated later on",
+      "mentions": 1,
+      "occurredIn": 687005419725652124,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "103": {
+    "logType": "memberJoin",
+    "occurredAt": 1599390701,
+    "content": {
+      "username": 502517571027992576,
+      "memberCount": 239,
+      "mutuals": 1,
+      "created": "1 year, 10 months ago"
+    }
+  },
+  "104": {
+    "logType": "messageDelete",
+    "occurredAt": 1599394348,
+    "content": {
+      "username": 511655498676699136,
+      "messageContent": "I pranked myself",
+      "mentions": 0,
+      "occurredIn": 695678190978334722,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": [
+        "https://media.discordapp.net/attachments/695678190978334722/752139112416280636/video0.mov"
+      ]
+    }
+  },
+  "105": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599397762,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "106": {
+    "logType": "messageDelete",
+    "occurredAt": 1599398673,
+    "content": {
+      "username": 317731855317336067,
+      "messageContent": "<@!679361555732627476> jsk",
+      "mentions": 1,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "107": {
+    "logType": "messageDelete",
+    "occurredAt": 1599398678,
+    "content": {
+      "username": 317731855317336067,
+      "messageContent": "<@!679361555732627476> help",
+      "mentions": 1,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "108": {
+    "logType": "messageDelete",
+    "occurredAt": 1599398681,
+    "content": {
+      "username": 317731855317336067,
+      "messageContent": "$jsk",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "109": {
+    "logType": "channelCreate",
+    "occurredAt": 1599402661,
+    "content": {
+      "username": 438733159748599813,
+      "channel": 752174017204715542,
+      "category": 726842113073086484,
+      "type": "text"
+    }
+  },
+  "110": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599402680,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "111": {
+    "logType": "messageEdit",
+    "occurredAt": 1599406826,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "hecl",
+      "messageContentAfter": "heck",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "112": {
+    "logType": "messageEdit",
+    "occurredAt": 1599407317,
+    "content": {
+      "username": 561565119201673216,
+      "messageContent": "wdym my listerner will never run",
+      "messageContentAfter": "wdym my listener will never run",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "113": {
+    "logType": "memberLeave",
+    "occurredAt": 1599407952,
+    "content": {
+      "username": 502517571027992576,
+      "memberCount": 238,
+      "mutuals": 0,
+      "created": "1 year, 10 months ago",
+      "joined": "5 hours ago"
+    }
+  },
+  "114": {
+    "logType": "rolePing",
+    "occurredAt": 1599410145,
+    "content": {
+      "username": 561565119201673216,
+      "messageContent": "how is it a <@&725093019530821675> bot",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "115": {
+    "logType": "messageEdit",
+    "occurredAt": 1599410349,
+    "content": {
+      "username": 561565119201673216,
+      "messageContent": "cu i want it here",
+      "messageContentAfter": "cuz i want it here",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "116": {
+    "logType": "messageDelete",
+    "occurredAt": 1599410534,
+    "content": {
+      "username": 561565119201673216,
+      "messageContent": "shut",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "117": {
+    "logType": "rolePing",
+    "occurredAt": 1599410789,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "<@&684493117017161963> was i kicked?",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "118": {
+    "logType": "messageEdit",
+    "occurredAt": 1599410839,
+    "content": {
+      "username": 261900651230003201,
+      "messageContent": "oh brolly",
+      "messageContentAfter": "oh prolly",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "119": {
+    "logType": "messageEdit",
+    "occurredAt": 1599410998,
+    "content": {
+      "username": 317731855317336067,
+      "messageContent": "that's a reason why o",
+      "messageContentAfter": "that's a reason why it wouldn't work",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "120": {
+    "logType": "messageEdit",
+    "occurredAt": 1599411096,
+    "content": {
+      "username": 561565119201673216,
+      "messageContent": "when they called it CMP im like uh not its CMP",
+      "messageContentAfter": "when they called it CMP im like uh not its CPM",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "121": {
+    "logType": "roleCreate",
+    "occurredAt": 1599415888,
+    "content": {
+      "username": 438733159748599813,
+      "name": "Hooks gone hooky",
+      "id": 752229493548122133
+    }
+  },
+  "122": {
+    "logType": "nickChange",
+    "occurredAt": 1599415936,
+    "content": {
+      "username": 317731855317336067,
+      "nameBefore": "Hooks gone hooky",
+      "nameAfter": "[BOT] hooky",
+      "user": 752188923505279037
+    }
+  },
+  "123": {
+    "logType": "nickChange",
+    "occurredAt": 1599415941,
+    "content": {
+      "username": 317731855317336067,
+      "nameBefore": "[BOT] hooky",
+      "nameAfter": "[BOT] Hooky",
+      "user": 752188923505279037
+    }
+  },
+  "124": {
+    "logType": "rolePing",
+    "occurredAt": 1599416180,
+    "content": {
+      "username": 317731855317336067,
+      "messageContent": "\\> -- \\*\\*Ping:\\*\\* <@&704391679419089030> --\n> -- \\*\\*Voting on:\\*\\* --\n> You might notice a new bot in this server. It's called <@!752188923505279037>. It looks at your webhooks and if it sees one of them ping someone it deletes it. \\*\\*\\\\poof\\\\\\*\\*. Can we take this bot on as a project, it's written in discord.js and is a little under 130 lines long. Logo coming soon.\n> -- \\*\\*Extra:\\*\\* --\n> It was invited and made an \"our bot\" without a vote, due to the urgency of the raiding situation classifying it as an urgent matter. I'm now retroactively voting on if we can keep it as an <@&688851594468786231> or if it should be moved to <@&725093019530821675> \n> -- \\*\\*What to react:\\*\\* --\n> \u2705 or \u274c to say yes or no\n> -- \\*\\*How many votes are needed?\\*\\* --\n> Project vote, 50%\n> -- \\*\\*When will this vote end?\\*\\*\n> This vote will end 24 hours from this message being sent or when all devs have voted",
+      "mentions": 1,
+      "occurredIn": 734460741285052527,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "125": {
+    "logType": "messageEdit",
+    "occurredAt": 1599416468,
+    "content": {
+      "username": 317731855317336067,
+      "messageContent": "\\*me being stupid probabbly\\*",
+      "messageContentAfter": "\\*me being stupid probably\\*",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 734453399113826435,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "126": {
+    "logType": "rolePing",
+    "occurredAt": 1599417817,
+    "content": {
+      "username": 603606238046978059,
+      "messageContent": "I would like to remove the ambiguity of \"yes or no\":\n\nI believe this to mean that:\n:tick: means stay as <@&688851594468786231>, and\n\u271d\ufe0f means to be moved to <@&725093019530821675>.\n\nPlease correct this message / amend the vote <@317731855317336067> to specify more clearly the options.",
+      "mentions": 1,
+      "occurredIn": 734460741285052527,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "127": {
+    "logType": "messageEdit",
+    "occurredAt": 1599417857,
+    "content": {
+      "username": 603606238046978059,
+      "messageContent": "I would like to remove the ambiguity of \"yes or no\":\n\nI believe this to mean that:\n:tick: means stay as <@&688851594468786231>, and\n\u271d\ufe0f means to be moved to <@&725093019530821675>.\n\nPlease correct this message / amend the vote <@317731855317336067> to specify more clearly the options.",
+      "messageContentAfter": "I would like to remove the ambiguity of \"yes or no\":\n\nI believe this to mean that:\n:\u2705: means stay as <@&688851594468786231>, and\n\u274cmeans to be moved to <@&725093019530821675>.\n\nPlease correct this message / amend the vote <@317731855317336067> to specify more clearly the options.",
+      "mentions": 1,
+      "mentionsAfter": 1,
+      "occurredIn": 734460741285052527,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
   }
 }

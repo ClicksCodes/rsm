@@ -63,5 +63,6 @@
     "support":           "<:Support:751762087780286495>",
     "webhook_create":    "<:WebhookCreate:752070251906203679>",
     "webhook_delete":    "<:WebhookDelete:752070251948146768>",
-    "webhook_update":    "<:WebhookUpdate:752073772823216191>"
+    "webhook_update":    "<:WebhookUpdate:752073772823216191>",
+    "graphs":            "<:Graphs:752214059159650396>"
 }
