@@ -835,5 +835,269 @@
       "edited": "Never",
       "attachments": []
     }
+  },
+  "66": {
+    "logType": "webhookUpdate",
+    "occurredAt": 1599379611,
+    "content": {
+      "username": 438733159748599813,
+      "channel": 686681905353064504,
+      "category": 697424827258241074
+    }
+  },
+  "67": {
+    "logType": "webhookUpdate",
+    "occurredAt": 1599379615,
+    "content": {
+      "username": 438733159748599813,
+      "channel": 686681905353064504,
+      "category": 697424827258241074
+    }
+  },
+  "68": {
+    "logType": "webhookUpdate",
+    "occurredAt": 1599379787,
+    "content": {
+      "username": 438733159748599813,
+      "channel": 711139788794626048,
+      "category": 697424827258241074
+    }
+  },
+  "69": {
+    "logType": "webhookUpdate",
+    "occurredAt": 1599379790,
+    "content": {
+      "username": 438733159748599813,
+      "channel": 711139788794626048,
+      "category": 697424827258241074
+    }
+  },
+  "70": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599380649,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "71": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599380679,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "72": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599380822,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "73": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599381033,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "74": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599381173,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "75": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599381895,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "76": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599381946,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "77": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599381996,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "78": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599382045,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "79": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599382079,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "80": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599382149,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "81": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599382206,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "82": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599382575,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "83": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599382714,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "84": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599382717,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "85": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599382728,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "86": {
+    "logType": "webhookCreate",
+    "occurredAt": 1599382737,
+    "content": {
+      "username": 438733159748599813
+    }
+  },
+  "87": {
+    "logType": "messageDelete",
+    "occurredAt": 1599382842,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "<@!438733159748599813>",
+      "mentions": 1,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "88": {
+    "logType": "messageDelete",
+    "occurredAt": 1599382869,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "being a brother",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "89": {
+    "logType": "messageDelete",
+    "occurredAt": 1599383354,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "aaaaaa",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "90": {
+    "logType": "memberJoin",
+    "occurredAt": 1599383360,
+    "content": {
+      "username": 644248347078557702,
+      "memberCount": 238,
+      "mutuals": 1,
+      "created": "9 months ago"
+    }
+  },
+  "91": {
+    "logType": "messageDelete",
+    "occurredAt": 1599383423,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "welcome <@!644248347078557702>",
+      "mentions": 1,
+      "occurredIn": 697880694692642856,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "92": {
+    "logType": "memberLeave",
+    "occurredAt": 1599384990,
+    "content": {
+      "username": 479055712379731981,
+      "memberCount": 237,
+      "mutuals": 0,
+      "created": "2 years ago",
+      "joined": "7 hours ago"
+    }
+  },
+  "93": {
+    "logType": "messageDelete",
+    "occurredAt": 1599386980,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "100",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "94": {
+    "logType": "messagePurge",
+    "occurredAt": 1599386982,
+    "content": {
+      "username": 715989276382462053,
+      "messageContent": "https://mystb.in/BleedingAlienMan",
+      "occurredIn": 726843668660617350,
+      "amount": 1
+    }
+  },
+  "95": {
+    "logType": "messageDelete",
+    "occurredAt": 1599388839,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "<@!438733159748599813>",
+      "mentions": 1,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
   }
 }

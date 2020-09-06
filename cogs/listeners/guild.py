@@ -200,6 +200,75 @@ class Guild(commands.Cog):
                     "type": c_type
                 }
             )
+    
+    @commands.Cog.listener()
+    async def on_webhooks_update(self, channel): 
+        if not self.is_logging(channel.guild, channel=channel, member=None, eventname="webhook_create"): return
+        else:
+            auditCreate = await get_alog_entry(channel, type=discord.AuditLogAction.webhook_create)
+            auditUpdate = await get_alog_entry(channel, type=discord.AuditLogAction.webhook_update)
+            auditDelete = await get_alog_entry(channel, type=discord.AuditLogAction.webhook_delete)
+            if   auditCreate.created_at > max(auditUpdate.created_at, auditDelete.created_at): audit = auditCreate; t = "create"
+            elif auditUpdate.created_at > max(auditCreate.created_at, auditDelete.created_at): audit = auditUpdate; t = "update"
+            elif auditDelete.created_at > max(auditUpdate.created_at, auditCreate.created_at): audit = auditDelete; t = "delete"
+            else: return
+
+            log = self.get_log(channel.guild)
+            c_type = str(channel.type).split('.')[-1]
+            if t == 'create':
+                e = discord.Embed(
+                    title=emojis["webhook_create"] + f" Webhook Created",
+                    description=f"**Created By:** {emojis[audit.user.status.value]} {audit.user.mention}\n",
+                    color=colours[t],
+                    timestamp=datetime.utcnow()
+                ) 
+                await log.send(embed=e)
+                return await self.log(
+                    logType="webhookCreate", 
+                    occurredAt=round(time.time()),
+                    guild=channel.guild.id,
+                    content={
+                        "username": audit.user.id
+                    }
+                )
+            elif t == 'update':
+                before, after = audit.before, audit.after
+                e = discord.Embed(
+                    title=emojis["webhook_update"] + f" Webhook Updated",
+                    description=f"**Edited By:** {emojis[audit.user.status.value]} {audit.user.mention}\n" +
+                                f"**Changes:**\n" +
+                                (f"`Channel:` {before.channel.mention} -> {after.channel.mention}\n" if before.channel != after.channel else "") +
+                                (f"`Name:   ` `{before.name}` -> `{after.name}`\n" if before.name != after.name else "") +
+                                (f"`Avatar: ` [Image before](https://cdn.discordapp.com/avatars/{audit.target.id}/{before.avatar}) -> [Image after](https://cdn.discordapp.com/avatars/{audit.target.id}/{after.avatar})\n" if before.avatar != after.avatar else ""),
+                    color=colours[t],
+                    timestamp=datetime.utcnow()
+                ) 
+                await log.send(embed=e)
+                return await self.log(
+                    logType="webhookCreate", 
+                    occurredAt=round(time.time()),
+                    guild=channel.guild.id,
+                    content={
+                        "username": audit.user.id
+                    }
+                )
+            elif t == 'delete':
+                e = discord.Embed(
+                    title=emojis["webhook_delete"] + f" Webhook Deleted",
+                    description=f"**Deleted By:** {emojis[audit.user.status.value]} {audit.user.mention}\n"
+                                f"**Name:** `{audit.action.name}`\n",
+                    color=colours[t],
+                    timestamp=datetime.utcnow()
+                ) 
+                await log.send(embed=e)
+                return await self.log(
+                    logType="webhookCreate", 
+                    occurredAt=round(time.time()),
+                    guild=channel.guild.id,
+                    content={
+                        "username": audit.user.id
+                    }
+                )
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, channel): 
