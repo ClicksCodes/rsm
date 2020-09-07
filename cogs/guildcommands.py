@@ -56,7 +56,7 @@ class GuildCommands(commands.Cog):
                 m = await m.edit(
                     embed=e
                 )
-                return await m.remove_reactions()
+                return await n.clear_reactions()
         
         async def GraphRoles(ctx, m, g, final=False):
             g = ctx.guild
@@ -98,7 +98,7 @@ class GuildCommands(commands.Cog):
                 m = await m.edit(
                     embed=e
                 )
-                return await m.remove_reactions()
+                return await n.clear_reactions()
         
         async def GraphChannels(ctx, m, g, final=False):
             g = ctx.guild
@@ -140,7 +140,7 @@ class GuildCommands(commands.Cog):
                 m = await m.edit(
                     embed=e
                 )
-                return await m.remove_reactions()
+                return await n.clear_reactions()
         
         async def GraphEmojis(ctx, m, g, final=False):
             g = ctx.guild
@@ -182,7 +182,7 @@ class GuildCommands(commands.Cog):
                 m = await m.edit(
                     embed=e
                 )
-                return await m.remove_reactions()
+                return await m.clear_reactions()
 
         async def genInfo(ctx, m, g, final=False):
             g = ctx.guild
@@ -228,7 +228,7 @@ class GuildCommands(commands.Cog):
                 m = await m.edit(
                     embed=e
                 )
-                return await m.remove_reactions()
+                return await m.clear_reactions()
             return m
 
         m = await ctx.send(embed=discord.Embed(title="Loading"))
@@ -278,6 +278,122 @@ class GuildCommands(commands.Cog):
         elif page == 4: m = await GraphChannels(ctx, m, g, True)
         elif page == 5: m = await GraphEmojis(ctx, m, g, True)
         else:           m = await genInfo(ctx, m, g, True)
+    
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(manage_messages=True)
+    async def role(self, ctx, *, r:discord.Role):
+        n = '\n'
+        p = r.permissions
+        def getBool(val):
+            return (emojis['tick'] if val else emojis['cross'])
+
+        perms = {
+            "Server": [
+                f"**View audit logs:** {getBool(p.view_audit_log) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**View server insights:** {getBool(p.view_guild_insights) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Manage server:** {getBool(p.manage_guild) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Manage roles:** {getBool(p.manage_roles) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Manage channels:** {getBool(p.manage_channels) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Manage webhooks:** {getBool(p.manage_webhooks) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Manage emojis:** {getBool(p.manage_emojis) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Create instant invite:** {getBool(p.create_instant_invite) if not p.administrator else getBool(p.administrator)}{n}"
+            ],
+            "Members": [
+                f"**Kick members:** {getBool(p.kick_members) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Ban members:** {getBool(p.ban_members) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Change nickname:** {getBool(p.change_nickname) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Change other people's nicknames:** {getBool(p.manage_nicknames) if not p.administrator else getBool(p.administrator)}{n}"
+            ],
+            "Messages": [
+                f"**Read channels and see Voice channels:** {getBool(p.read_messages) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Send messages:** {getBool(p.read_messages) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Send TTS messages:** {getBool(p.send_tts_messages) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Manage messages:** {getBool(p.manage_messages) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Embed links:** {getBool(p.embed_links) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Attach files:** {getBool(p.attach_files) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Read message history:** {getBool(p.read_message_history) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Mention @everyone, @here and @roles:** {getBool(p.mention_everyone) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Use nitro emojis:** {getBool(p.use_external_emojis) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Add reactions:** {getBool(p.add_reactions) if not p.administrator else getBool(p.administrator)}{n}"
+            ],
+            "Voice": [
+                f"**Join voice channels:** {getBool(p.connect) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Talk in voice channels:** {getBool(p.speak) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Stream in voice channels:** {getBool(p.stream) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Server mute members:** {getBool(p.mute_members) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Server deafen members:** {getBool(p.deafen_members) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Move members between voice channels:** {getBool(p.move_members) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Use voice activity:** {getBool(p.use_voice_activation) if not p.administrator else getBool(p.administrator)}{n}",
+                f"**Priority speaker:** {getBool(p.priority_speaker) if not p.administrator else getBool(p.administrator)}{n}"
+            ]
+        }
+
+        async def genInfo(ctx, m, final=False):
+            await m.edit(embed=discord.Embed(
+                title="Role Info",
+                description=f"**ID:** `{r.id}`{n}"
+                            f"**Name:** {r.name}{n}"
+                            f"**Shown in member list:** {getBool(r.hoist)}{n}"
+                            f"**Mentionable by anyone:** {getBool(r.mentionable)}{n}"
+                            f"**Colour:** [#{str(hex(r.colour.value))[2:]}](https://coolors.co/{str(hex(r.colour.value))[2:]}){n}"
+                            f"**Made:** {humanize.naturaldate(r.created_at)}{n}"
+                            f"**People with this role:** {len(r.members)}",
+                color=colours["create"] if not final else colours["delete"]
+            ))
+            return m
+        
+        async def genPage(ctx, m, page, final=False):
+            await m.edit(embed=discord.Embed(
+                title="Role Info",
+                description=page + n + ''.join([thing for thing in perms[page]]),
+                color=colours["create"] if not final else colours["delete"]
+            ))
+            return m
+        
+        m = await ctx.send(embed=discord.Embed(title="Loading"))
+        page = 0
+        for re in [729762938411548694, 729762938843430952, 729064530310594601, 752570111256297496, 752570111063228507, 752570111373606942, 752570111281594509, 752570111088525354]: await m.add_reaction(ctx.bot.get_emoji(re))
+        for _ in range(0, 50):
+            page = min(4, max(0, page))
+            
+            pages = {1: "Server", 2: "Messages", 3: "Members", 4: "Voice"}
+            if page == 0: m = await genInfo(ctx, m)
+            else:         m = await genPage(ctx, m, pages[page])
+
+            reaction = None
+            try: reaction = await ctx.bot.wait_for('reaction_add', timeout=60, check=lambda _, user : user == ctx.author)
+            except asyncio.TimeoutError: break
+
+            try: await m.remove_reaction(reaction[0].emoji, ctx.author)
+            except: pass
+            reaction = reaction[0].emoji
+
+            if   reaction.name == "Left":  page -= 1
+            elif reaction.name == "Right": page += 1
+
+            elif reaction.name == "GeneralRole":  page = 0
+            elif reaction.name == "ServerRole":   page = 1
+            elif reaction.name == "MessagesRole": page = 2
+            elif reaction.name == "MembersRole":  page = 3
+            elif reaction.name == "VoiceRole":    page = 4
+            else: break
+        
+        pages = {1: "Server", 2: "Messages", 3: "Members", 4: "Voice"}
+        if page == 0: m = await genInfo(ctx, m, True)
+        else:         m = await genPage(ctx, m, pages[page], True)
+        await m.clear_reactions()
+    
+    @role.error
+    async def role_error(self, ctx, error):
+        if isinstance(error, commands.BadArgument):
+            await ctx.send(embed=discord.Embed(
+                title="I couldn't find that role", 
+                description=f"Make sure it is capitalised correctly.\nYou can use the role ID to make sure that I can find it.", 
+                color=colours["delete"
+            ]))
+        else: print(error)
+
 
 def setup(bot):
     bot.add_cog(GuildCommands(bot))
