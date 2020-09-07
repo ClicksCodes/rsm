@@ -64,5 +64,10 @@
     "webhook_create":    "<:WebhookCreate:752070251906203679>",
     "webhook_delete":    "<:WebhookDelete:752070251948146768>",
     "webhook_update":    "<:WebhookUpdate:752073772823216191>",
-    "graphs":            "<:Graphs:752214059159650396>"
+    "graphs":            "<:Graphs:752214059159650396>",
+    "rserver":           "<:ServerRole:752570111063228507>",
+    "rvoice":            "<:VoiceRole:752570111088525354>",
+    "rgeneral":          "<:GeneralRole:752570111256297496>",
+    "rmessages":         "<:MessagesRole:752570111373606942>",
+    "rmembers":          "<:MembersRole:752570111281594509>"
 }

@@ -1499,5 +1499,56 @@
       "edited": "An hour ago",
       "attachments": []
     }
+  },
+  "128": {
+    "logType": "memberLeave",
+    "occurredAt": 1599498251,
+    "content": {
+      "username": 280571403168645122,
+      "memberCount": 239,
+      "mutuals": 0,
+      "created": "3 years ago",
+      "joined": "11 days ago"
+    }
+  },
+  "129": {
+    "logType": "nickChange",
+    "occurredAt": 1599499845,
+    "content": {
+      "username": 438733159748599813,
+      "nameBefore": "Clicks Minute Publish",
+      "nameAfter": "[BOT] Clicks Minute Publish",
+      "user": 739472176633085972
+    }
+  },
+  "130": {
+    "logType": "messageEdit",
+    "occurredAt": 1599506682,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "why tf did i do thT",
+      "messageContentAfter": "why tf did i do that",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "131": {
+    "logType": "messageEdit",
+    "occurredAt": 1599506735,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "ok thats eack",
+      "messageContentAfter": "ok thats wack",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
   }
 }
