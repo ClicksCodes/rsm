@@ -69,5 +69,7 @@
     "rvoice":            "<:VoiceRole:752570111088525354>",
     "rgeneral":          "<:GeneralRole:752570111256297496>",
     "rmessages":         "<:MessagesRole:752570111373606942>",
-    "rmembers":          "<:MembersRole:752570111281594509>"
+    "rmembers":          "<:MembersRole:752570111281594509>",
+    "cicon":             "<:ChannelIcon:752971441351426089>",
+    "vicon":             "<:VoiceIcon:752971441586307091>"
 }

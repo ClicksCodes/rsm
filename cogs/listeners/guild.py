@@ -360,7 +360,7 @@ class Guild(commands.Cog):
                 occurredAt=round(time.time()),
                 guild=invite.guild.id,
                 content={
-                    "username": invite.inviter.id,
+                    "username": audit.user.id,
                     "maxAge": invite.max_age / 3600 if invite.max_age else 'Infinite',
                     "maxUses": humanize.intcomma(invite.max_uses or 'infinite'),
                     "url": invite.url,
@@ -411,7 +411,7 @@ class Guild(commands.Cog):
                             f"**ID:** `{role.id}`\n**Hoisted:** {'yes' if role.hoist else 'No'}\n"
                             f"**Mentionable by everyone:** {'yes' if role.mentionable else 'no'}\n"
                             f"**Members:** {len(role.members)}\n"
-                            f"**Created:** {humanize.naturaltime(role.created_at)}"
+                            f"**Created:** {humanize.naturaltime(role.created_at)}\n"
                             f"**Deleted By:** {audit.user.mention}",
                 color=events["guild_role_delete"][0], 
                 timestamp=datetime.utcnow()
