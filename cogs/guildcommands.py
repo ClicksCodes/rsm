@@ -53,7 +53,7 @@ class GuildCommands(commands.Cog):
                 )
                 return m
             else:
-                m = await m.edit(
+                await m.edit(
                     embed=e
                 )
                 return await n.clear_reactions()
@@ -67,7 +67,7 @@ class GuildCommands(commands.Cog):
             fig, ax = plt.subplots(figsize=(10, 6))
             ax.plot(joins_x_values, tuple(range(1, len(joins_x_values) + 1)), 'k', lw=2, label="Roles in server")
             ax.xaxis.set_major_formatter(mdates.DateFormatter("%a %d-%m-%Y"))
-            ax.xaxis.set_major_locator(mdates.DayLocator(interval=5))
+            ax.xaxis.set_major_locator(mdates.DayLocator(interval=round(len(g.roles)/10)))
             fig.autofmt_xdate()
             plt.title("Guild Roles")
             plt.xlabel('Time (UTC)')
@@ -95,7 +95,7 @@ class GuildCommands(commands.Cog):
                 )
                 return m
             else:
-                m = await m.edit(
+                await m.edit(
                     embed=e
                 )
                 return await n.clear_reactions()
@@ -137,7 +137,7 @@ class GuildCommands(commands.Cog):
                 )
                 return m
             else:
-                m = await m.edit(
+                await m.edit(
                     embed=e
                 )
                 return await n.clear_reactions()
@@ -179,7 +179,7 @@ class GuildCommands(commands.Cog):
                 )
                 return m
             else:
-                m = await m.edit(
+                await m.edit(
                     embed=e
                 )
                 return await m.clear_reactions()
@@ -225,7 +225,7 @@ class GuildCommands(commands.Cog):
                 )
                 return m
             else:
-                m = await m.edit(
+                await m.edit(
                     embed=e
                 )
                 return await m.clear_reactions()
@@ -393,7 +393,100 @@ class GuildCommands(commands.Cog):
                 color=colours["delete"
             ]))
         else: print(error)
+    
+    @commands.command(aliases=['viewas', 'serveras', 'serverfrom'])
+    @commands.guild_only()
+    @commands.has_permissions(manage_messages=True)
+    async def viewfrom(self, ctx, m:typing.Optional[discord.Member]):
+        tooMany = discord.Embed(
+            title=f'{events["nsfw_update"][2]} You mentioned too many people there',
+            description="You can only punish one person at a time.",
+            color=colours["delete"]
+        )
+        noPing = discord.Embed(
+            title=f"Who's history would you like to clear?",
+            description="Please mention the user you'd like to clear the history of.",
+            color=colours["create"]
+        )
+        if not m: 
+            m = await ctx.send(embed=noPing)
+            msg = await ctx.bot.wait_for('message', timeout=60, check=lambda message : message.author == ctx.author)
+            await msg.delete()
+            await m.delete()
+            if len(msg.mentions) != 1: return await ctx.send(embed=tooMany)
+            else: m = msg.mentions[0]
+        
+        mess = await ctx.send(embed=discord.Embed(title="Loading"))
 
+        server = {0: []}
+        visible = {0: []}
+        g = ctx.guild
+        for cat in g.categories: server[cat] = []; visible[cat] = []
+        for c in g.channels:       server[c.category if c.category else 0].append(c)
+
+        for cat in server:
+            for channel in server[cat]:
+                if channel.type in [discord.ChannelType.news, discord.ChannelType.text, discord.ChannelType.voice]:
+                    if (m.permissions_in(channel).read_messages) or (channel.type is discord.ChannelType.voice and m.permissions_in(channel).connect):
+                        visible[cat].append(channel)
+        
+        desc = ""
+        n = '\n'
+        findescs, descs = [], []
+        page, i = 0, 0
+
+        visibleCopy = visible.copy()
+        totalcats = set()
+        for key, value in visibleCopy.items():
+            if value != []: totalcats.add(key)
+        for key in totalcats:
+            del visibleCopy[key]
+
+        for key, value in visible.items():
+            if len(value) > 0: i += 1
+            desc = ""
+            if len(value) == 0: continue
+            elif key == 0: desc += f"**Uncategorised**:{n}"
+            else: desc += f"**{key.name}**:{n}"
+            for item in value:
+                desc += f"{emojis['vicon'] if item.type == discord.ChannelType.voice else emojis['cicon']}{item.name}{n}"
+
+            e1 = discord.Embed(
+                title=f"Channels {m.name} can see:",
+                description=''.join(desc),
+                color=colours["create"]
+            )
+            e2 = discord.Embed(
+                title=f"Channels {m.name} can see:",
+                description=''.join(desc),
+                color=colours["delete"]
+            )
+            e2.set_footer(text=f"Category {i} of {len(totalcats)}")
+            e1.set_footer(text=f"Category {i} of {len(totalcats)}")
+
+            descs.append(e1)
+            findescs.append(e2)
+
+        for r in [729762938411548694, 729762938843430952, 729064530310594601]: await mess.add_reaction(ctx.bot.get_emoji(r))
+        for _ in range(0, 50):
+            await mess.edit(embed=descs[page])
+
+            reaction = None
+            try: reaction = await ctx.bot.wait_for('reaction_add', timeout=60, check=lambda _, user : user == ctx.author)
+            except asyncio.TimeoutError: break
+            reaction = reaction[0].emoji
+
+            if   reaction.name == "Left":  page -= 1
+            elif reaction.name == "Right": page += 1
+            else: break
+
+            page = min(len(descs)-1, max(0, page))
+
+            try: await mess.remove_reaction(reaction, ctx.author)
+            except Exception as e: print(e)
+
+        await mess.edit(embed=findescs[page])
+        await mess.clear_reactions()
 
 def setup(bot):
     bot.add_cog(GuildCommands(bot))
