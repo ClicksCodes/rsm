@@ -96,5 +96,178 @@
       "edited": "An hour ago",
       "attachments": []
     }
+  },
+  "7": {
+    "logType": "messageEdit",
+    "occurredAt": 1599662887,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "ah cmpm has i",
+      "messageContentAfter": "ah cmpm has it",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "8": {
+    "logType": "messagePurge",
+    "occurredAt": 1599666801,
+    "content": {
+      "username": 729335748670783488,
+      "messageContent": "https://mystb.in/TransmissionAnnounceCheaper",
+      "occurredIn": 695678190978334722,
+      "amount": 33
+    }
+  },
+  "9": {
+    "logType": "messageDelete",
+    "occurredAt": 1599666871,
+    "content": {
+      "username": 448837653144797205,
+      "messageContent": "/save https://cdn.discordapp.com/attachments/738479449053462609/751543704853938276/VID-20200716-WA0000.mp4",
+      "mentions": 0,
+      "occurredIn": 695678190978334722,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "10": {
+    "logType": "messageDelete",
+    "occurredAt": 1599666925,
+    "content": {
+      "username": 448837653144797205,
+      "messageContent": "/save https://cdn.discordapp.com/attachments/702552736436191313/752502185484484648/unknown.png",
+      "mentions": 0,
+      "occurredIn": 695678190978334722,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "11": {
+    "logType": "memberJoin",
+    "occurredAt": 1599667927,
+    "content": {
+      "username": 412255469445447680,
+      "memberCount": 242,
+      "mutuals": 1,
+      "created": "2 years ago"
+    }
+  },
+  "12": {
+    "logType": "messageDelete",
+    "occurredAt": 1599667957,
+    "content": {
+      "username": 412255469445447680,
+      "messageContent": "cmp verify",
+      "mentions": 0,
+      "occurredIn": 697880694692642856,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "13": {
+    "logType": "messageDelete",
+    "occurredAt": 1599671186,
+    "content": {
+      "username": 448837653144797205,
+      "messageContent": "efe",
+      "mentions": 0,
+      "occurredIn": 684492926528651342,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": [
+        "https://media.discordapp.net/attachments/684492926528651342/753300265502900234/unknown.png"
+      ]
+    }
+  },
+  "14": {
+    "logType": "messageDelete",
+    "occurredAt": 1599673153,
+    "content": {
+      "username": 448837653144797205,
+      "messageContent": "nok",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "15": {
+    "logType": "messageDelete",
+    "occurredAt": 1599673410,
+    "content": {
+      "username": 448837653144797205,
+      "messageContent": "b=ping",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "16": {
+    "logType": "messageDelete",
+    "occurredAt": 1599673489,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "thats why i check what i copy",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "17": {
+    "logType": "messageEdit",
+    "occurredAt": 1599674088,
+    "content": {
+      "username": 511655498676699136,
+      "messageContent": "how many emois do you have?",
+      "messageContentAfter": "how many emojis do you have?",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "18": {
+    "logType": "messageEdit",
+    "occurredAt": 1599675404,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "this wont wor",
+      "messageContentAfter": "this wont work",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "19": {
+    "logType": "messageEdit",
+    "occurredAt": 1599679907,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "thats off",
+      "messageContentAfter": "thats odd",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
   }
 }
