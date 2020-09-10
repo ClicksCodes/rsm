@@ -484,7 +484,7 @@ class Guild(commands.Cog):
                     "now": after.name
                 }
             )
-        elif (before.topic != after.topic) and self.is_logging(after.guild, eventname="channel_desc_update"):
+        elif (before.topic != after.topic) and not (before.topic == "" and after.topic == None) and self.is_logging(after.guild, eventname="channel_desc_update"):
             audit = await get_alog_entry(after, type=discord.AuditLogAction.channel_update)
             e = discord.Embed(
                 title=emojis["TopicUpdate"] + f" Channel Topic Changed",

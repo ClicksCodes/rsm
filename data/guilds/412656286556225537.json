@@ -1,0 +1,70 @@
+{
+  "0": {
+    "logType": "topicUpdate",
+    "occurredAt": 1599767423,
+    "content": {
+      "username": 412255469445447680,
+      "channel": 476316711789002772,
+      "was": "",
+      "now": null
+    }
+  },
+  "1": {
+    "logType": "everyonePing",
+    "occurredAt": 1599767813,
+    "content": {
+      "username": 412255469445447680,
+      "messageContent": "@here You will now be able to use to use two new bots invited into this server! The first one is <@&753701106521211385> which will allow staff members to change roles without having to go into server settings, made by my friend <@!438733159748599813> and the second is a Starboard bot that can now use 4 stars to get something to the starboard!",
+      "mentions": 1,
+      "occurredIn": 476316711789002772,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "2": {
+    "logType": "messageEdit",
+    "occurredAt": 1599768012,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "oh fun fac",
+      "messageContentAfter": "oh fun facy",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 412945061441961994,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "3": {
+    "logType": "messageEdit",
+    "occurredAt": 1599768013,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "oh fun facy",
+      "messageContentAfter": "oh fun fact",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 412945061441961994,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "4": {
+    "logType": "messageEdit",
+    "occurredAt": 1599768025,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "its gonna have a web dasjboard",
+      "messageContentAfter": "its gonna have a web dashboard",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 412945061441961994,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  }
+}

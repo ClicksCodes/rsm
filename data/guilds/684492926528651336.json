@@ -269,5 +269,145 @@
       "edited": "An hour ago",
       "attachments": []
     }
+  },
+  "20": {
+    "logType": "topicUpdate",
+    "occurredAt": 1599681961,
+    "content": {
+      "username": 261900651230003201,
+      "channel": 686318288409722964,
+      "was": "",
+      "now": null
+    }
+  },
+  "21": {
+    "logType": "topicUpdate",
+    "occurredAt": 1599681961,
+    "content": {
+      "username": 261900651230003201,
+      "channel": 729161433023250472,
+      "was": "",
+      "now": null
+    }
+  },
+  "22": {
+    "logType": "topicUpdate",
+    "occurredAt": 1599681961,
+    "content": {
+      "username": 261900651230003201,
+      "channel": 697415004403793920,
+      "was": "",
+      "now": null
+    }
+  },
+  "23": {
+    "logType": "topicUpdate",
+    "occurredAt": 1599681962,
+    "content": {
+      "username": 261900651230003201,
+      "channel": 726846255426437171,
+      "was": "",
+      "now": null
+    }
+  },
+  "24": {
+    "logType": "topicUpdate",
+    "occurredAt": 1599681962,
+    "content": {
+      "username": 261900651230003201,
+      "channel": 722007371412537374,
+      "was": "",
+      "now": null
+    }
+  },
+  "25": {
+    "logType": "messageEdit",
+    "occurredAt": 1599750931,
+    "content": {
+      "username": 261900651230003201,
+      "messageContent": "TREEEEEEEEEEEEEEE",
+      "messageContentAfter": "REEEEEEEEEEEEEEE",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "26": {
+    "logType": "messageEdit",
+    "occurredAt": 1599750973,
+    "content": {
+      "username": 421698654189912064,
+      "messageContent": "\\*\\*\\*dont list roles\\*\\*\\*",
+      "messageContentAfter": "\\*\\*\\*dont list roles outside of embeds\\*\\*\\*",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "27": {
+    "logType": "messageEdit",
+    "occurredAt": 1599756760,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "accuraye",
+      "messageContentAfter": "accurate",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 695678190978334722,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "28": {
+    "logType": "messageEdit",
+    "occurredAt": 1599765393,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "add a use",
+      "messageContentAfter": "add a user",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "29": {
+    "logType": "messageEdit",
+    "occurredAt": 1599767160,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "im gonna make m!role show all guild roles",
+      "messageContentAfter": "im gonna make m!roles show all guild roles",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "30": {
+    "logType": "messageEdit",
+    "occurredAt": 1599767238,
+    "content": {
+      "username": 317731855317336067,
+      "messageContent": "add options to not show the ones that you have or something",
+      "messageContentAfter": "add options to not show the ones that you don't or something",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
   }
 }

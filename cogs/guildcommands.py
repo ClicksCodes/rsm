@@ -390,6 +390,7 @@ class GuildCommands(commands.Cog):
             roles = r.roles
             groles = ctx.guild.roles
             groles.reverse()
+            groleIDs = [r.id for r in groles]
             pages = math.ceil(len(groles)/10)
             page = 0
 
@@ -444,16 +445,14 @@ class GuildCommands(commands.Cog):
                 currentReactions = [(r.emoji.name if r.me else "") for r in m.reactions]
                 reactions = [item for item in currentReactions if item != ""]
 
-                if page == pages-1 or page == pages-2 or page == 0:
-                    for x in range(0, 10):
-                        if (rolesOnPage >= x) and (f"{x}_" not in reactions): bot.loop.create_task(m.add_reaction(bot.get_emoji(numbers[x])))
-                        if (rolesOnPage-1 < x)  and (f"{x}_" in reactions):     
-                            bot.loop.create_task(m.clear_reaction(bot.get_emoji(numbers[x])))
+                for x in range(0, 10):
+                    if (rolesOnPage <= x if page == pages-1 else rolesOnPage < x)  and (f"{x}_" in reactions): await m.clear_reaction(bot.get_emoji(numbers[x]))
+                    if (rolesOnPage >= x) and (f"{x}_" not in reactions): await m.add_reaction(bot.get_emoji(numbers[x]))
 
                 desc = f'Page {page+1} of {pages}\n'
                 for x in range((page*10), (page*10)+(rolesOnPage+(0 if page == pages-1 else 1))): 
                     desc += f"{bot.get_emoji(tick if groles[x] in roles else cross)}{bot.get_emoji(PILNumbers[str(groles[x] in roles)][x%10])} {groles[x]}\n"
-                await m.edit(embed=discord.Embed(title="Roles", description=desc))
+                await m.edit(embed=discord.Embed(title="Roles", description=desc, color=colours["create"]))
 
                 try: await m.remove_reaction(reaction, ctx.author)
                 except: pass
@@ -466,7 +465,27 @@ class GuildCommands(commands.Cog):
 
                 if   reaction.name == "Left":  page -= 1
                 elif reaction.name == "Right": page += 1
-                else: break
+                elif reaction.name == "Cross": break
+                else:
+                    try: 
+                        roleToChange = ctx.guild.get_role(groleIDs[(page*10)+int(reaction.name[:1])])
+                        if       ctx.guild.me.top_role.position <= roleToChange.position: await ctx.send(embed=discord.Embed(title=f"{emojis['PunWarn']} I can't do that", description="I can't change that role", colour=colours["delete"]), delete_after=5)
+                        elif     ctx.author.top_role.position   <= roleToChange.position: await ctx.send(embed=discord.Embed(title=f"{emojis['PunWarn']} You can't do that", description="You can't change that role", colour=colours["delete"]), delete_after=5)
+                        elif     roleToChange.managed:                                    await ctx.send(embed=discord.Embed(title=f"{emojis['PunWarn']} You can't do that", description="This role is for a bot", colour=colours["delete"]), delete_after=5)
+                        elif     roleToChange.position          == 0:                     await ctx.send(embed=discord.Embed(title=f"{emojis['PunWarn']} You can't do that", description="You can't remove this role", colour=colours["delete"]), delete_after=5)
+                        elif not ctx.author.guild_permissions.manage_roles:               await ctx.send(embed=discord.Embed(title=f"{emojis['PunWarn']} Looks like you don't have permissions", description="You need the `manage_roles` permission to change roles.", colour=colours["delete"]), delete_after=5)
+                        elif not ctx.guild.me.guild_permissions.manage_roles:             await ctx.send(embed=discord.Embed(title=f"{emojis['PunWarn']} Looks like I don't have permissions", description="I need the `manage_roles` permission to change roles.", colour=colours["delete"]), delete_after=5)
+                        else: 
+                            if roleToChange in r.roles: await r.remove_roles(roleToChange)
+                            else: await r.add_roles(roleToChange)
+                            r = await ctx.guild.fetch_member(r.id)
+                            roles = r.roles
+                            groles = ctx.guild.roles
+                            groles.reverse()
+                            groleIDs = [r.id for r in groles]
+                    except Exception as e: print(e); break
+            await m.edit(embed=discord.Embed(title="Roles", description=desc, color=colours["delete"]))
+            await m.clear_reactions()
 
     @role.error
     async def role_error(self, ctx, error):
