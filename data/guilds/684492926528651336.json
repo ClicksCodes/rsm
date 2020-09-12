@@ -520,5 +520,136 @@
       "occurredIn": 726843668660617350,
       "amount": 2
     }
+  },
+  "41": {
+    "logType": "messageEdit",
+    "occurredAt": 1599938477,
+    "content": {
+      "username": 511655498676699136,
+      "messageContent": "in the list",
+      "messageContentAfter": "in the user list",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 697415004403793920,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "42": {
+    "logType": "messageEdit",
+    "occurredAt": 1599938829,
+    "content": {
+      "username": 421698654189912064,
+      "messageContent": "\\`<@&684492926528651336>\\`",
+      "messageContentAfter": "\\`<@&684492926528651336>\\` (this is safe to call)",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 697415004403793920,
+      "sent": "An hour ago",
+      "edited": "An hour ago",
+      "attachments": []
+    }
+  },
+  "43": {
+    "logType": "rolePing",
+    "occurredAt": 1599938835,
+    "content": {
+      "username": 421698654189912064,
+      "messageContent": "<@&684492926528651336>",
+      "mentions": 0,
+      "occurredIn": 697415004403793920,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "44": {
+    "logType": "everyonePing",
+    "occurredAt": 1599938886,
+    "content": {
+      "username": 261900651230003201,
+      "messageContent": "it pings @everyone",
+      "mentions": 0,
+      "occurredIn": 697415004403793920,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "45": {
+    "logType": "messageDelete",
+    "occurredAt": 1599938896,
+    "content": {
+      "username": 261900651230003201,
+      "messageContent": "",
+      "mentions": 0,
+      "occurredIn": 697415004403793920,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": [
+        "https://media.discordapp.net/attachments/697415004403793920/754423071745507339/unknown.png"
+      ]
+    }
+  },
+  "46": {
+    "logType": "rolePing",
+    "occurredAt": 1599938949,
+    "content": {
+      "username": 421698654189912064,
+      "messageContent": "/ri <@&684492926528651336>",
+      "mentions": 0,
+      "occurredIn": 697415004403793920,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "47": {
+    "logType": "nickChange",
+    "occurredAt": 1599938957,
+    "content": {
+      "username": 261236127581601793,
+      "nameBefore": "[YEET] Burrito",
+      "nameAfter": "[SOCIAL] Burrito",
+      "user": 261236127581601793
+    }
+  },
+  "48": {
+    "logType": "rolePing",
+    "occurredAt": 1599938976,
+    "content": {
+      "username": 261900651230003201,
+      "messageContent": "<@&684492926528651336>",
+      "mentions": 0,
+      "occurredIn": 697415004403793920,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "49": {
+    "logType": "rolePing",
+    "occurredAt": 1599938986,
+    "content": {
+      "username": 261236127581601793,
+      "messageContent": "<@&684492926528651336>",
+      "mentions": 0,
+      "occurredIn": 697415004403793920,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "50": {
+    "logType": "memberLeave",
+    "occurredAt": 1599939492,
+    "content": {
+      "username": 309181385816539136,
+      "memberCount": 240,
+      "mutuals": 0,
+      "created": "3 years ago",
+      "joined": "6 days ago"
+    }
   }
 }
