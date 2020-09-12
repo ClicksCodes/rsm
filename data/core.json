@@ -77,44 +77,6 @@
     "verbose": false,
     "enabled": true
   },
-  "573240252177580032": {
-    "toLog": [
-      "message_delete",
-      "message_edit",
-      "bulk_message_delete",
-      "channel_pins_update",
-      "reaction_clear",
-      "everyone_here",
-      "mass_mention",
-      "roles",
-      "channel_create",
-      "channel_delete",
-      "nsfw_update",
-      "channel_title_update",
-      "channel_desc_update",
-      "member_join",
-      "member_leave",
-      "member_kick",
-      "member_ban",
-      "member_unban",
-      "nickname_change",
-      "guild_role_create",
-      "guild_role_delete",
-      "guild_emojis_update",
-      "invite_create",
-      "invite_delete",
-      "icon_update",
-      "mod_changed",
-      "name_changed"
-    ],
-    "ignoredChannels": [],
-    "ignoredMembers": [],
-    "ignoredRoles": [],
-    "ignoreBots": true,
-    "logChannel": null,
-    "verbose": false,
-    "enabled": true
-  },
   "728976985400934500": {
     "toLog": [
       "message_delete",
@@ -191,7 +153,7 @@
     "verbose": false,
     "enabled": true
   },
-  "753312192165838938": {
+  "573240252177580032": {
     "toLog": [
       "message_delete",
       "message_edit",
@@ -305,7 +267,7 @@
     "verbose": false,
     "enabled": true
   },
-  "693225390130331661": {
+  "753312192165838938": {
     "toLog": [
       "message_delete",
       "message_edit",

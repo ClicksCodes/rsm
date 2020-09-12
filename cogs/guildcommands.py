@@ -11,7 +11,7 @@ import matplotlib.dates as mdates
 from cogs.consts import *
 
 class GuildCommands(commands.Cog):
-    @commands.command()
+    @commands.command(aliases=["server"])
     @commands.guild_only()
     async def guild(self, ctx):
         g = ctx.guild
@@ -471,8 +471,8 @@ class GuildCommands(commands.Cog):
                         roleToChange = ctx.guild.get_role(groleIDs[(page*10)+int(reaction.name[:1])])
                         if       ctx.guild.me.top_role.position <= roleToChange.position: await ctx.send(embed=discord.Embed(title=f"{emojis['PunWarn']} I can't do that", description="I can't change that role", colour=colours["delete"]), delete_after=5)
                         elif     ctx.author.top_role.position   <= roleToChange.position: await ctx.send(embed=discord.Embed(title=f"{emojis['PunWarn']} You can't do that", description="You can't change that role", colour=colours["delete"]), delete_after=5)
-                        elif     roleToChange.managed:                                    await ctx.send(embed=discord.Embed(title=f"{emojis['PunWarn']} You can't do that", description="This role is for a bot", colour=colours["delete"]), delete_after=5)
                         elif     roleToChange.position          == 0:                     await ctx.send(embed=discord.Embed(title=f"{emojis['PunWarn']} You can't do that", description="You can't remove this role", colour=colours["delete"]), delete_after=5)
+                        elif     roleToChange.managed:                                    await ctx.send(embed=discord.Embed(title=f"{emojis['PunWarn']} You can't do that", description="This role is for a bot", colour=colours["delete"]), delete_after=5)
                         elif not ctx.author.guild_permissions.manage_roles:               await ctx.send(embed=discord.Embed(title=f"{emojis['PunWarn']} Looks like you don't have permissions", description="You need the `manage_roles` permission to change roles.", colour=colours["delete"]), delete_after=5)
                         elif not ctx.guild.me.guild_permissions.manage_roles:             await ctx.send(embed=discord.Embed(title=f"{emojis['PunWarn']} Looks like I don't have permissions", description="I need the `manage_roles` permission to change roles.", colour=colours["delete"]), delete_after=5)
                         else: 

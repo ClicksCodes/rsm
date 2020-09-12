@@ -12,16 +12,30 @@ class InfoCommands(commands.Cog):
     async def info(self, ctx: commands.Context):
         page = 0
         descriptions = [
-            f"**Commands** - {emojis['about']} - {emojis['support']}\n\n"
-            f"{emojis['rsm']     } `info    ` Shows all commands and info.\n"
-            f"{emojis['PunWarn'] } `punish  ` Punishes a user. Asks for punishment type.\n"
-            f"{emojis['settings']} `settings` Shows what events your server is logging.\n",
+            f"**Commands** - {emojis['PunWarn']} - {emojis['about']} - {emojis['support']}\n\n"
+            f"{emojis['rsm']           } `m!info       ` Shows all commands and info.\n"
+            f"{emojis['settings']      } `m!settings   ` Shows your servers log settings.\n"
+            f"{emojis['PunWarn']       } `m!punish     ` Punishes a user.\n"
+            f"{emojis['mod_update']    } `m!server     ` Shows all information about your server.\n"
+            f"{emojis['role_create']   } `m!role [Role]` With `Text`: Shows information about a role.\n"
+            f"{emojis['role_create']   } `m!role [@]   ` With `Mention`: Lets you edit or view a users roles.\n"
+            f"{emojis['channel_create']} `m!viewas [@] ` Shows the channels that [@] can see.\n",
 
-            f"{emojis['commands']} - **About** - {emojis['support']}\n\n"
+            f"{emojis['commands']} - **Moderation** - {emojis['about']} - {emojis['support']}\n\n"
+            f"{emojis['PunWarn']     } `m!warn    [*@] [*T] ` Warns [@] for reason [T].\n"
+          # f"{emojis['PunMute']     } `m!mute    [*@] [*T] ` Mutes [@] for time [T].\n"
+          # f"{emojis['PunVoiceMute']} `m!warn    [*@] [*T] ` Mutes [@] in voice channels for time [T].\n"
+            f"{emojis['PunHistory']  } `m!clear   [*@] [*N] ` Clears [N] messages from [@].\n"
+            f"{emojis['PunKick']     } `m!kick    [*@] [*T] ` Kicks [@] for reason [T].\n"
+            f"{emojis['PunSoftBan']  } `m!softban [*@] [*T] ` Soft bans [@] for reason [T].\n"
+            f"{emojis['PunBan']      } `m!ban     [*@] [*T] ` Bans [@] for reason [T].\n"
+            f"{emojis['purge']       } `m!purge        [*N] ` Deletes [N] messages in the channel.\n",
+
+            f"{emojis['commands']} - {emojis['PunWarn']} - **About** - {emojis['support']}\n\n"
             f"RSM by [ClicksMinutePer](https://clicksminuteper.net)\n"
             f"Designed to make moderation easier.",
 
-            f"{emojis['commands']} - {emojis['about']} - **Support**\n\n"
+            f"{emojis['commands']} - {emojis['PunWarn']} - {emojis['about']} - **Support**\n\n"
             f"For support, visit the [ClicksMinutePer Support](https://clicksminuteper.net/contact-us.html) page."
         ]
 
@@ -33,6 +47,7 @@ class InfoCommands(commands.Cog):
                 description=descriptions[page],
                 color=colours["create"]
             )
+            emb.set_footer(text="[@] = Mention | [T] = Text | [N] = Number | [* ] = Optional")
             await m.edit(embed=emb)
 
             for emoji in [729762938411548694, 729762938843430952, 729064530310594601]: await m.add_reaction(ctx.bot.get_emoji(emoji))
@@ -56,6 +71,7 @@ class InfoCommands(commands.Cog):
             description=descriptions[page],
             color=colours["delete"]
         )
+        emb.set_footer(text="[@] = Mention | [T] = Text | [N] = Number | [* ] = Optional")
         await m.clear_reactions()
         await m.edit(embed=emb)
 

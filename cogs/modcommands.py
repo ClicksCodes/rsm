@@ -79,12 +79,12 @@ class Commands(commands.Cog):
                 await response.delete()
             else:
                 if response[0].emoji.name == 'Tick': reason = dict["default"]
-                if response[0].emoji.name == 'Cross': await m.edit(embed=createEmbed(dict["cancel"]["title"], dict["cancel"]["desc"], dict["cancel"]["col"]), delete_after=10)
+                if response[0].emoji.name == 'Cross': await m.edit(embed=self.createEmbed(dict["cancel"]["title"], dict["cancel"]["desc"], dict["cancel"]["col"]), delete_after=10)
             if reason is not None:
                 return reason, m
             await m.clear_reactions()
         except Exception as e:
-            await m.edit(embed=createEmbed(dict["cancel"]["title"], dict["cancel"]["desc"], dict["cancel"]["col"]), delete_after=10)
+            await m.edit(embed=self.createEmbed(dict["cancel"]["title"], dict["cancel"]["desc"], dict["cancel"]["col"]), delete_after=10)
             await m.clear_reactions()
             return None
         for future in done: future.exception()
@@ -191,7 +191,7 @@ class Commands(commands.Cog):
     async def delHistoryPun(self, m, member, ctx, out=None):
         createEmbed = self.createEmbed
         if not ctx.author.guild_permissions.manage_messages: 
-            await ctx.send(embed=self.createEmbed(f"{emojis['PunishHistory']} Looks like you don't have permissions", "You need the `manage_messages` permission to delete someone's history.", colours["delete"]))
+            await ctx.send(embed=createEmbed(f"{emojis['PunishHistory']} Looks like you don't have permissions", "You need the `manage_messages` permission to delete someone's history.", colours["delete"]))
             return await m.delete()
         if out == None:
             out, m = await self.intHandler(
@@ -214,6 +214,39 @@ class Commands(commands.Cog):
                 await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Delete History", f"Something went wrong. I may not have permissions, or the users history couldn't be deleted.", colours["delete"]))
                 print(e)
             await m.clear_reactions() 
+    
+    async def purgeChannel(self, m, ctx, out=None):
+        createEmbed = self.createEmbed
+        if not ctx.author.guild_permissions.manage_messages: 
+            await ctx.send(embed=createEmbed(f"{emojis['PunishHistory']} Looks like you don't have permissions", "You need the `manage_messages` permission to purge a channel.", colours["delete"]))
+            return await m.delete()
+        if out == None:
+            out, m = await self.intHandler(
+                m, 
+                {
+                    "cancel": {"title": f"{emojis['PunHistory']} Purge Channel", "desc": f"Purge Channel cancelled.", "col": colours["delete"]},
+                    "prompt": {"title": f"{emojis['PunHistory']} Purge Channel", "desc": f"How many messages in this channel should I clear? Max 100", "col": colours["create"]},
+                    "default": 50
+                },
+                ctx
+            )
+        if out != None:
+            try: 
+                try: out = int(out)
+                except: return await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Purge Channel", f"Something went wrong, I couldn't delete that many messages.", colours["create"]))
+                out += 2
+                if out > 100: out = 100
+                deleted = await ctx.channel.purge(limit=int(out))
+                try: await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Purge Channel", f"I deleted {len(deleted)-2} messages.", colours["create"]), delete_after=10)
+                except discord.ext.commands.errors.CommandInvokeError: await ctx.send(embed=createEmbed(f"{emojis['PunHistory']} Purge Channel", f"I deleted {len(deleted)-2} messages.", colours["create"]), delete_after=10)
+                except discord.errors.NotFound: await ctx.send(embed=createEmbed(f"{emojis['PunHistory']} Purge Channel", f"I deleted {len(deleted)-2} messages.", colours["create"]), delete_after=10)
+            except Exception as e:
+                try: await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Purge Channel", f"Something went wrong. I may not have permission to do that.", colours["delete"]), delete_after=10)
+                except discord.ext.commands.errors.CommandInvokeError: await ctx.send(embed=createEmbed(f"{emojis['PunHistory']} Purge Channel", f"Something went wrong. I may not have permission to do that.", colours["delete"]), delete_after=10)
+                except discord.NotFound: await ctx.send(embed=createEmbed(f"{emojis['PunHistory']} Purge Channel", f"Something went wrong. I may not have permission to do that.", colours["delete"]), delete_after=10)
+                print(e)
+            try: await m.clear_reactions() 
+            except: pass
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)
@@ -364,6 +397,13 @@ class Commands(commands.Cog):
             else: member = msg.mentions[0]
         m = await ctx.send(embed=discord.Embed(title="Loading"))
         await self.delHistoryPun(m, member, ctx, t)
+    
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(manage_messages=True)
+    async def purge(self, ctx, t:typing.Optional[int]):
+        m = await ctx.send(embed=discord.Embed(title="Loading"))
+        await self.purgeChannel(m, ctx, t)
     
     @commands.command()
     @commands.guild_only()
