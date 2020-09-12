@@ -8,7 +8,7 @@ from discord.ext import menus
 from cogs.consts import *
 
 class InfoCommands(commands.Cog):
-    @commands.Command
+    @commands.command(aliases=["help"])
     async def info(self, ctx: commands.Context):
         page = 0
         descriptions = [
