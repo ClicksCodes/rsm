@@ -337,7 +337,7 @@ class GuildCommands(commands.Cog):
                                 f"**Name:** {r.name}{n}"
                                 f"**Shown in member list:** {getBool(r.hoist)}{n}"
                                 f"**Mentionable by anyone:** {getBool(r.mentionable)}{n}"
-                                f'**Colour:** {("#" + str(hex(r.colour.value))[2:] + "(https://apps.clicksminuteper.net/colours/" + str(hex(r.colour.value))[2:] + ")" + n) if r.colour.value > 0 else ("**Colour:** None" + n)}'
+                                f'**Colour:** {("[#" + str(hex(r.colour.value))[2:] + "](https://apps.clicksminuteper.net/colours/" + str(hex(r.colour.value))[2:] + ")" + n) if r.colour.value > 0 else ("**Colour:** None" + n)}'
                                 f"**Made:** {humanize.naturaldate(r.created_at)}{n}"
                                 f"**People with this role:** {len(r.members)}",
                     color=colours["create"] if not final else colours["delete"]
