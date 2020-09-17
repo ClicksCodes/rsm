@@ -188,7 +188,7 @@ class Commands(commands.Cog):
                 await m.edit(embed=createEmbed(f"{emojis['PunSoftBan']} Soft Ban", f"Something went wrong. I may not have permissions, or the user couldn't be banned.", colours["delete"]))
                 print(e)
             await m.clear_reactions()
-    async def delHistoryPun(self, m, member, ctx, out=None):
+    async def delHistoryPun(self, m, member, ctx, out=None, mod=None):
         createEmbed = self.createEmbed
         if not ctx.author.guild_permissions.manage_messages: 
             await ctx.send(embed=createEmbed(f"{emojis['PunishHistory']} Looks like you don't have permissions", "You need the `manage_messages` permission to delete someone's history.", colours["delete"]))
@@ -207,8 +207,9 @@ class Commands(commands.Cog):
             try: 
                 try: out = int(out)
                 except: return await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Delete History", f"Something went wrong, I couldn't delete that many messages.", colours["create"]))
-                deleted = await ctx.channel.purge(limit=int(out), check=lambda m: m.author == member)
-                try: await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Delete History", f"I deleted {len(deleted)} of {member.mention}'s messages.", colours["create"]))
+                if mod not in ["!", "not", "only"]: deleted = await ctx.channel.purge(limit=int(out), check=lambda m: m.author == member)
+                else:                               deleted = await ctx.channel.purge(limit=int(out), check=lambda m: m.author != member)
+                try: await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Delete History", f"I deleted {len(deleted)} messages {'not ' if mod in ['only', 'not', '!'] else ''}by {member.mention}.", colours["create"]))
                 except discord.ext.commands.errors.CommandInvokeError: await ctx.send(embed=createEmbed(f"{emojis['PunHistory']} Delete History", f"I deleted {len(deleted)} of {member.mention}'s messages.", colours["create"]))
             except Exception as e:
                 await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Delete History", f"Something went wrong. I may not have permissions, or the users history couldn't be deleted.", colours["delete"]))
@@ -377,7 +378,7 @@ class Commands(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(manage_messages=True)
-    async def clear(self, ctx, member: typing.Optional[discord.Member], t:typing.Optional[int]):
+    async def clear(self, ctx, member: typing.Optional[discord.Member], t:typing.Optional[int], mod: typing.Optional[str]):
         tooMany = discord.Embed(
             title=f'{events["nsfw_update"][2]} You mentioned too many people there',
             description="You can only punish one person at a time.",
@@ -396,7 +397,7 @@ class Commands(commands.Cog):
             if len(msg.mentions) != 1: return await ctx.send(embed=tooMany)
             else: member = msg.mentions[0]
         m = await ctx.send(embed=discord.Embed(title="Loading"))
-        await self.delHistoryPun(m, member, ctx, t)
+        await self.delHistoryPun(m, member, ctx, t, mod=mod)
     
     @commands.command()
     @commands.guild_only()
