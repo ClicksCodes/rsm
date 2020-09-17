@@ -32,8 +32,7 @@ class Bot(commands.Bot):
 
 
 
-bot = Bot(owner_ids=[438733159748599813, 421698654189912064, 261900651230003201, 317731855317336067], case_insensitive=True)
+bot = Bot(owner_ids=[438733159748599813, 421698654189912064, 261900651230003201, 317731855317336067], case_insensitive=True, presence=None)
 bot.loop.create_task(db.main(bot))
-
 
 bot.run(config.token)
