@@ -342,7 +342,7 @@ class GuildCommands(commands.Cog):
                                 f"**People with this role:** {len(r.members)}",
                     color=colours["create"] if not final else colours["delete"]
                 ))
-                return m
+                return
             
             async def genPage(ctx, m, page, final=False):
                 await m.edit(embed=discord.Embed(

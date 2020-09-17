@@ -651,5 +651,54 @@
       "created": "3 years ago",
       "joined": "6 days ago"
     }
+  },
+  "51": {
+    "logType": "messageDelete",
+    "occurredAt": 1600367666,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "<@!715989276382462053>",
+      "mentions": 1,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "52": {
+    "logType": "messageDelete",
+    "occurredAt": 1600367690,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "10",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "53": {
+    "logType": "messageDelete",
+    "occurredAt": 1600367719,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "what",
+      "mentions": 0,
+      "occurredIn": 726843668660617350,
+      "sent": "An hour ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "54": {
+    "logType": "messagePurge",
+    "occurredAt": 1600368397,
+    "content": {
+      "username": 715989276382462053,
+      "messageContent": "https://mystb.in/StartupChiefHardwood",
+      "occurredIn": 726843668660617350,
+      "amount": 1
+    }
   }
 }
