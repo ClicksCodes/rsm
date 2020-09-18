@@ -211,7 +211,7 @@ class GuildCommands(commands.Cog):
                             f"**Explicit Content Filter:** {'Nobody' if g.explicit_content_filter == 0 else 'Only members with no role' if g.explicit_content_filter == 1 else 'Everyone'}{n}"
                             f"**Default Notifications:** {'All messages' if g.default_notifications == discord.NotificationLevel.all_messages else 'Only mentions'}{n}"
                             f"**Nitro Boost Level:** {g.premium_tier}{n}"
-                            f"**Channels:** {len(g.channels)}{n}"
+                            f"**Channels:** {len(g.channels)-len(g.categories)}{n}"
                             f"**Categories:**: {len(g.categories)}{n}"
                             f"**Roles:** {len(g.roles)}{n}"
                             f"**Members:** {g.member_count}{n}",
