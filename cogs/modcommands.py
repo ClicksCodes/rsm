@@ -455,6 +455,24 @@ class Commands(commands.Cog):
             else: member = msg.mentions[0]
         m = await ctx.send(embed=discord.Embed(title="Loading"))
         await self.banPun(m, member, ctx, reason)
+    
+    @commands.command()
+    @commands.guild_only()
+    async def userinfo(self, ctx, member: typing.Optional[discord.Member]):
+        if not member: member = ctx.author
+        embeds = {
+            0: [
+                "Info",
+                f"**ID**: `{member.id}`\n"
+                f""
+            ],
+            1: [
+                "Roles"
+            ],
+            2: [
+                "Permissions"
+            ]
+        }
 
 def setup(bot):
     bot.add_cog(Commands(bot))
