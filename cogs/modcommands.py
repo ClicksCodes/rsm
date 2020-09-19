@@ -329,7 +329,7 @@ class Commands(commands.Cog):
     @commands.guild_only()
     @commands.has_permissions(manage_messages=True)
     async def warn(self, ctx, member: typing.Optional[discord.Member], reason:typing.Optional[str]):
-        reason = str(' '.join(reason))
+        reason = str(''.join(reason))
         tooMany = discord.Embed(
             title=f'{events["nsfw_update"][2]} You mentioned too many people there',
             description="You can only punish one person at a time.",
@@ -354,7 +354,7 @@ class Commands(commands.Cog):
     @commands.guild_only()
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: typing.Optional[discord.Member], reason:typing.Optional[str]):
-        reason = str(' '.join(reason))
+        reason = str(''.join(reason))
         tooMany = discord.Embed(
             title=f'{events["nsfw_update"][2]} You mentioned too many people there',
             description="You can only punish one person at a time.",
@@ -410,7 +410,7 @@ class Commands(commands.Cog):
     @commands.guild_only()
     @commands.has_permissions(ban_members=True)
     async def softBan(self, ctx, member: typing.Optional[discord.Member], reason:typing.Optional[str]):
-        reason = str(' '.join(reason))
+        reason = str(''.join(reason))
         tooMany = discord.Embed(
             title=f'{events["nsfw_update"][2]} You mentioned too many people there',
             description="You can only punish one person at a time.",
@@ -435,7 +435,7 @@ class Commands(commands.Cog):
     @commands.guild_only()
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: typing.Optional[discord.Member], reason:typing.Optional[str]):
-        reason = str(' '.join(reason))
+        reason = str(''.join(reason))
         tooMany = discord.Embed(
             title=f'{events["nsfw_update"][2]} You mentioned too many people there',
             description="You can only punish one person at a time.",
