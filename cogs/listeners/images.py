@@ -88,8 +88,7 @@ class ImageDetect(commands.Cog):
                                     f"**Web Request Time Taken:** {round(end - start, 2)}s",
                         color=discord.Color(0x00ff00)
                     )
-                    return
-                    if message.author.bot == False: await message.channel.send(embed=e)
+                    #if message.author.bot == False: await message.channel.send(embed=e)
                 except Exception as e: print(e)
                 finally:
                     try: os.rename(f"{f_name}", f"cogs/{'nsfw' if nsfw else 'sfw'}/{f_name}")

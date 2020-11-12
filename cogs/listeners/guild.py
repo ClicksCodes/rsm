@@ -51,6 +51,8 @@ class Guild(commands.Cog):
         with open("./data/core.json") as rfile: self.data = json.load(rfile)
         self.session = aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10.0))
     
+    def tohex(self, i): return hex(i).split('x')[-1]
+    
     def cog_unload(self): 
         with open("./data/core.json", "w") as wfile: json.dump(self.data, wfile, indent=2)
         self.bot.loop.create_task(self.session.close())
@@ -65,8 +67,9 @@ class Guild(commands.Cog):
         
         try: entry = self.data[str(guild.id)]
         except: 
-            json.dump(f"{guild.id}: {template}", open(f"data/core.json", "w+"), indent=2)
-            entry = self.data[str(guild.id)]
+            # json.dump(f"{guild.id}: {template}", open(f"data/core.json", "w+"), indent=2)
+            # entry = self.data[str(guild.id)]
+            pass
         if member:
             if member.bot and entry["ignoreBots"] is True:
                 return bool(NotLogging(eventname, f"You are ignoring bots.", cog=self, guild=guild))
@@ -89,7 +92,7 @@ class Guild(commands.Cog):
 
     async def vbl(self, guild, e: NotLogging):
         """VerboseLog: Log NotLogging events if verbose is enabled"""
-        if not self.data[str(guild.id)]["verbose"]: return False
+        # if not self.data[str(guild.id)]["verbose"]: return False
         # print(f"Not logging event {e.etype}:\n> {e.reason}\n\n> {e.details}")
         return True 
     
@@ -181,9 +184,9 @@ class Guild(commands.Cog):
             c_type = str(channel.type).split('.')[-1]
             e = discord.Embed(
                 title=emojis["voice_create" if c_type == "voice" else "store_create" if c_type == "store" else "channel_create"] + " Channel Created",
-                description=f"**Channel:**: {channel.mention}\n"
-                            f"**Category**: {channel.category.name}\n"
-                            f"**Created By:** {emojis[audit.user.status.value]} {audit.user.mention}\n",
+                description=f"**Channel:** {channel.mention}\n"
+                            f"**Category:** {channel.category.name}\n"
+                            f"**Created By:** {audit.user.mention}\n",
                 color=events["channel_create"][0],
                 timestamp=datetime.utcnow()
             ) 
@@ -217,7 +220,7 @@ class Guild(commands.Cog):
             if t == 'create':
                 e = discord.Embed(
                     title=emojis["webhook_create"] + f" Webhook Created",
-                    description=f"**Created By:** {emojis[audit.user.status.value]} {audit.user.mention}\n",
+                    description=f"**Created By:** {audit.user.mention}\n",
                     color=colours[t],
                     timestamp=datetime.utcnow()
                 ) 
@@ -234,7 +237,7 @@ class Guild(commands.Cog):
                 before, after = audit.before, audit.after
                 e = discord.Embed(
                     title=emojis["webhook_update"] + f" Webhook Updated",
-                    description=f"**Edited By:** {emojis[audit.user.status.value]} {audit.user.mention}\n" +
+                    description=f"**Edited By:** {audit.user.mention}\n" +
                                 f"**Changes:**\n" +
                                 (f"{before.channel.mention} -> {after.channel.mention}\n" if before.channel != after.channel else "") +
                                 (f"{before.name}` -> `{after.name}`\n" if before.name != after.name else "") +
@@ -260,7 +263,7 @@ class Guild(commands.Cog):
             elif t == 'delete':
                 e = discord.Embed(
                     title=emojis["webhook_delete"] + f" Webhook Deleted",
-                    description=f"**Deleted By:** {emojis[audit.user.status.value]} {audit.user.mention}\n"
+                    description=f"**Deleted By:** {audit.user.mention}\n"
                                 f"**Name:** `{audit.action.name}`\n",
                     color=colours[t],
                     timestamp=datetime.utcnow()
@@ -284,9 +287,9 @@ class Guild(commands.Cog):
             c_type = str(channel.type).split('.')[-1]
             e = discord.Embed(
                 title=emojis["voice_delete" if c_type == "voice" else "store_delete" if c_type == "store" else "channel_delete"] + " Channel Deleted",
-                description=f"**Channel deleted**: #{channel.name}\n"
-                            f"**Category**: {channel.category.name}\n"
-                            f"**Deleted By:** {emojis[audit.user.status.value]} {audit.user.mention}\n",
+                description=f"**Channel deleted:** #{channel.name}\n"
+                            f"**Category:** {channel.category.name}\n"
+                            f"**Deleted By:** {audit.user.mention}\n",
                 color=events["channel_delete"][0],
                 timestamp=datetime.utcnow()
             ) 
@@ -306,7 +309,8 @@ class Guild(commands.Cog):
     @commands.Cog.listener()
     async def on_invite_create(self, invite: discord.Invite):
         if not isinstance(invite.guild, discord.Guild): return
-        if not self.is_logging(invite.channel, channel=invite.channel, member=None, eventname="invite_create"): return
+        if not self.is_logging(invite.channel.guild, channel=invite.channel, member=None, eventname="invite_create"): return
+        if False: pass
         else:
             log = self.get_log(invite.guild)
             e = discord.Embed(
@@ -315,8 +319,8 @@ class Guild(commands.Cog):
                             f"**Max Uses:** {humanize.intcomma(invite.max_uses or 'infinite')}\n"
                             f"**Invite:** {invite.url}\n"
                             f"**Temporary:** {emojis['tick'] if invite.temporary else emojis['cross']}\n"
-                            f"**Channel:** {invite.channel.mention}"
-                            f"**Created By:** {emojis[invite.inviter.status.value]} {invite.inviter.mention}\n",
+                            f"**Channel:** {invite.channel.mention}\n"
+                            f"**Created By:** {invite.inviter.mention}\n",
                 color=events["invite_create"][0],
                 timestamp=datetime.utcnow()
             )
@@ -350,7 +354,7 @@ class Guild(commands.Cog):
                             f"**Temporary:** {emojis['tick'] if invite.temporary else emojis['cross']}\n"
                             f"**Channel:** {invite.channel.mention}\n"
                             f"**Uses:** {humanize.intcomma(invite.uses)}\n"
-                            f"**Deleted By:** {emojis[audit.user.status.value]} {audit.user.mention}",
+                            f"**Deleted By:** {audit.user.mention}",
                 color=events["invite_delete"][0],
                 timestamp=datetime.utcnow()
             )
@@ -395,6 +399,37 @@ class Guild(commands.Cog):
                     "id": role.id
                 }
             )
+    
+    @commands.Cog.listener()
+    async def on_guild_role_update(self, before: discord.Role, after: discord.Role):
+        if not self.is_logging(after.guild, eventname="roles"): return
+        else:
+            audit = await get_alog_entry(before, type=discord.AuditLogAction.role_update)
+            e = discord.Embed(
+                title=emojis["role_edit"] + f" Role Edited",
+                description=(f"**ID:** `{after.id}`") + \
+                            (f"**Name:** {before.name} > {after.name}\n" if before.name != after.name else f"**Name:** {after.name}\n") + \
+                            (f"**Position:** {before.position} > {after.position}\n" if before.position != after.position else "") + \
+                            (f"**Colour:** {self.tohex(before.colour.value)} > {self.tohex(after.colour.value)}\n" if before.colour.value != after.colour.value else "") + \
+                            f"**Edited by:** {audit.user.mention}",
+                color=events["roles"][0],
+                timestamp=datetime.utcnow()
+            )
+            log = self.get_log(after.guild)
+            await log.send(embed=e)
+            return await self.log(
+                logType="roleEdit", 
+                occurredAt=round(time.time()),
+                guild=after.guild.id,
+                content={
+                    "username": audit.user.id,
+                    "name": after.name,
+                    "id": after.id,
+                    "colour": after.colour.value,
+                    "position": after.position,
+                    "name": after.name
+                }
+            )
 
     @commands.Cog.listener()
     async def on_guild_role_delete(self, role: discord.Role):
@@ -427,7 +462,7 @@ class Guild(commands.Cog):
                     "name": role.name,
                     "id": role.id,
                     "permissions": dapi,
-                    "colour": role.colour,
+                    "colour": role.colour.value,
                     "position": role.position,
                     "mentionableByEveryone": 'true' if role.mentionable else 'false',
                     "members": len(role.members),

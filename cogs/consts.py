@@ -50,4 +50,3 @@ events = {
     "mod_changed":          [colours[ "edit" ], '`Mod level changed`', emojis['mod_update'],     'Server'],
     "name_changed":         [colours[ "edit" ], '`Name changed     `', emojis['name_change'],    'Server']
 }
-

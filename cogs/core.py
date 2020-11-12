@@ -69,8 +69,9 @@ class Logs(commands.Cog):
         
         try: entry = self.data[str(guild.id)]
         except: 
-            json.dump(f"{guild.id}: {template}", open(f"data/core.json", "w+"), indent=2)
-            entry = self.data[str(guild.id)]
+            # json.dump(f"{guild.id}: {template}", open(f"data/core.json", "w+"), indent=2)
+            # entry = self.data[str(guild.id)]
+            pass
         if member:
             if member.bot and entry["ignoreBots"] is True:
                 return bool(NotLogging(eventname, f"You are ignoring bots.", cog=self, guild=guild))
@@ -184,13 +185,6 @@ class Logs(commands.Cog):
             self.data[str(ctx.guild.id)]["logChannel"] = channel.id # 4
         except Exception as e:
             print(e)
-
-    async def cog_command_error(self, ctx, error):
-        if isinstance(error, commands.NoPrivateMessage): return await ctx.send(f"Sorry, but you need to use this command in a server so I know what data to read!")
-        else:
-            try: await ctx.send(f"```py\n{traceback.format_exc()}\n```")
-            except: await ctx.send(error)
-            raise error
 
 
 def setup(bot):

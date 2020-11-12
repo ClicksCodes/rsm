@@ -66,8 +66,9 @@ class Users(commands.Cog):
         
         try: entry = self.data[str(guild.id)]
         except: 
-            json.dump(f"{guild.id}: {template}", open(f"data/core.json", "w+"), indent=2)
-            entry = self.data[str(guild.id)]
+            # json.dump(f"{guild.id}: {template}", open(f"data/core.json", "w+"), indent=2)
+            # entry = self.data[str(guild.id)]
+            pass
         if member:
             if member.bot and entry["ignoreBots"] is True:
                 return bool(NotLogging(eventname, f"You are ignoring bots.", cog=self, guild=guild))
@@ -112,7 +113,7 @@ class Users(commands.Cog):
         else:
             e = discord.Embed(
                 title=(emojis["bot_join"] if member.bot else emojis["join"]) + f" Member Joined",
-                description=f"**Name:** {emojis[member.status.value]} {member.mention}\n"
+                description=f"**Name:** {member.mention}\n"
                             f"**Server member count:** {member.guild.member_count}\n"
                             f"**Mutual servers:** {len([x for x in self.bot.guilds if member in x.members])}\n"
                             f"**Account Created:** {humanize.naturaltime(member.created_at)}\n"
@@ -140,7 +141,7 @@ class Users(commands.Cog):
         else:
             e = discord.Embed(
                 title=(emojis["bot_leave"] if member.bot else emojis["leave"]) + f" Member Left",
-                description=f"**Name:** {emojis[member.status.value]} {member.name}\n"
+                description=f"**Name:** {member.name}\n"
                             f"**Server member count:** {member.guild.member_count}\n"
                             f"**Mutual servers:** {len([x for x in self.bot.guilds if member in x.members])}\n"
                             f"**Account Created:** {humanize.naturaltime(member.created_at)}\n"
@@ -172,7 +173,7 @@ class Users(commands.Cog):
             e = discord.Embed(
                 title=emojis["ban"] + f" Member Banned",
                 description=f"**Name:** {member.name}\n"
-                            f"**Banned By:** {emojis[audit.user.status.value]} {audit.user.mention}"
+                            f"**Banned By:** {audit.user.mention}"
                             f"**Reason:** {audit.reason if audit.reason != None else 'No reason provided'}",
                 color=events["member_ban"][0],
                 timestamp=datetime.utcnow()
@@ -198,7 +199,7 @@ class Users(commands.Cog):
             e = discord.Embed(
                 title=emojis["unban"] + f" Member Unbanned",
                 description=f"**Name:** {member.name}\n"
-                            f"**Unbanned By:** {emojis[audit.user.status.value]} {audit.user.mention}",
+                            f"**Unbanned By:** {audit.user.mention}",
                 color=events["member_unban"][0],
                 timestamp=datetime.utcnow()
             )

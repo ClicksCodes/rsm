@@ -44,7 +44,7 @@ class InfoCommands(commands.Cog):
         for _ in range(0,25):
             emb = discord.Embed (
                 title=emojis["rsm"] + " RSM",
-                description=descriptions[page],
+                description=descriptions[page] + "Trello: https://trello.com/b/pBvhvzbY/rsm",
                 color=colours["create"]
             )
             emb.set_footer(text="[@] = Mention | [T] = Text | [N] = Number | [* ] = Optional")

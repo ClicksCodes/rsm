@@ -20,6 +20,8 @@ class Commands(commands.Cog):
             "PunBan": [729764053861400637, "Ban"],
             "Stop": [751161404442279966, "Cancel"]
         }
+        self.bot = bot
+
     def createEmbed(self, title, description, color=0x000000):
         return discord.Embed(
             title=title,
@@ -93,8 +95,9 @@ class Commands(commands.Cog):
         createEmbed = self.createEmbed
         try:
             if not ctx.author.guild_permissions.kick_members: 
-                await ctx.send(embed=createEmbed(f"{emojis['PunWarn']} Looks like you don't have permissions", "You need the `kick_members` permission to warn someone.", colours["delete"]))
-        except Exception as e: print(e)
+                return await m.edit(embed=createEmbed(f"{emojis['PunWarn']} Looks like you don't have permissions", "You need the `kick_members` permission to warn someone.", colours["delete"]))
+        except Exception as e: 
+            return print(e)
 
         if reason == None:
             reason, m = await self.reasonHandler(
@@ -113,9 +116,12 @@ class Commands(commands.Cog):
     
     async def kickPun(self, m, member, ctx, reason=None):
         createEmbed = self.createEmbed
-        if not ctx.author.guild_permissions.kick_members: 
-            await ctx.send(embed=createEmbed(f"{emojis['PunKick']} Looks like you don't have permissions", "You need the `kick_members` permission to kick someone.", colours["delete"]))
-            return await m.delete()
+        try:
+            if not ctx.author.guild_permissions.kick_members: 
+                return await m.edit(embed=createEmbed(f"{emojis['PunKick']} Looks like you don't have permissions", "You need the `kick_members` permission to kick someone.", colours["delete"]))
+        except Exception as e:
+            return print(e)
+
         if reason == None:
             reason, m = await self.reasonHandler(
                 m, 
@@ -138,9 +144,11 @@ class Commands(commands.Cog):
     
     async def banPun(self, m, member, ctx, reason=None):
         createEmbed = self.createEmbed
-        if not ctx.author.guild_permissions.ban_members: 
-            await ctx.send(embed=createEmbed(f"{emojis['PunBan']} Looks like you don't have permissions", "You need the `ban_members` permission to ban someone.", colours["delete"]))
-            return await m.delete()
+        try:
+            if not ctx.author.guild_permissions.ban_members: 
+                return await m.edit(embed=createEmbed(f"{emojis['PunBan']} Looks like you don't have permissions", "You need the `ban_members` permission to ban someone.", colours["delete"]))
+        except Exception as e:
+            return print(e)
         if reason == None:
             reason, m = await self.reasonHandler(
                 m, 
@@ -164,9 +172,11 @@ class Commands(commands.Cog):
     
     async def softBanPun(self, m, member, ctx, reason=None):
         createEmbed = self.createEmbed
-        if not ctx.author.guild_permissions.ban_members: 
-            await ctx.send(embed=self.createEmbed(f"{emojis['PunSoftBan']} Looks like you don't have permissions", "You need the `ban_members` permission to soft ban someone.", colours["delete"]))
-            return await m.delete()
+        try:
+            if not ctx.author.guild_permissions.ban_members: 
+                return await m.edit(embed=self.createEmbed(f"{emojis['PunSoftBan']} Looks like you don't have permissions", "You need the `ban_members` permission to soft ban someone.", colours["delete"]))
+        except Exception as e:
+            return print(e)
         if reason == None:
             reason, m = await self.reasonHandler(
                 m, 
@@ -190,9 +200,11 @@ class Commands(commands.Cog):
             await m.clear_reactions()
     async def delHistoryPun(self, m, member, ctx, out=None, mod=None):
         createEmbed = self.createEmbed
-        if not ctx.author.guild_permissions.manage_messages: 
-            await ctx.send(embed=createEmbed(f"{emojis['PunishHistory']} Looks like you don't have permissions", "You need the `manage_messages` permission to delete someone's history.", colours["delete"]))
-            return await m.delete()
+        try:
+            if not ctx.author.guild_permissions.manage_messages: 
+                return await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Looks like you don't have permissions", "You need the `manage_messages` permission to delete someone's history.", colours["delete"]))
+        except Exception as e:
+            return print(e)
         if out == None:
             out, m = await self.intHandler(
                 m, 
@@ -209,18 +221,24 @@ class Commands(commands.Cog):
                 except: return await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Delete History", f"Something went wrong, I couldn't delete that many messages.", colours["create"]))
                 if mod not in ["!", "not", "only"]: deleted = await ctx.channel.purge(limit=int(out), check=lambda m: m.author == member)
                 else:                               deleted = await ctx.channel.purge(limit=int(out), check=lambda m: m.author != member)
-                try: await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Delete History", f"I deleted {len(deleted)} messages {'not ' if mod in ['only', 'not', '!'] else ''}by {member.mention}.", colours["create"]))
+                try: await ctx.channel.send(embed=createEmbed(f"{emojis['PunHistory']} Delete History", f"I deleted {len(deleted)} messages {'not ' if mod in ['only', 'not', '!'] else ''}by {member.mention}.", colours["create"]))
                 except discord.ext.commands.errors.CommandInvokeError: await ctx.send(embed=createEmbed(f"{emojis['PunHistory']} Delete History", f"I deleted {len(deleted)} of {member.mention}'s messages.", colours["create"]))
             except Exception as e:
-                await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Delete History", f"Something went wrong. I may not have permissions, or the users history couldn't be deleted.", colours["delete"]))
+                await ctx.channel.send(embed=createEmbed(f"{emojis['PunHistory']} Delete History", f"Something went wrong. I may not have permissions, or the users history couldn't be deleted.", colours["delete"]))
                 print(e)
-            await m.clear_reactions() 
+            await m.clear_reactions()
+            try:
+                await m.delete()
+            except Exception as e: print(e) 
     
     async def purgeChannel(self, m, ctx, out=None):
         createEmbed = self.createEmbed
-        if not ctx.author.guild_permissions.manage_messages: 
-            await ctx.send(embed=createEmbed(f"{emojis['PunishHistory']} Looks like you don't have permissions", "You need the `manage_messages` permission to purge a channel.", colours["delete"]))
-            return await m.delete()
+        try:
+            if not ctx.author.guild_permissions.manage_messages: 
+                await ctx.send(embed=createEmbed(f"{emojis['PunHistory']} Looks like you don't have permissions", "You need the `manage_messages` permission to purge a channel.", colours["delete"]))
+                return await m.delete()
+        except Exception as e:
+            return print(e)
         if out == None:
             out, m = await self.intHandler(
                 m, 
@@ -327,9 +345,9 @@ class Commands(commands.Cog):
     
     @commands.command()
     @commands.guild_only()
-    @commands.has_permissions(manage_messages=True)
     async def warn(self, ctx, member: typing.Optional[discord.Member], reason:typing.Optional[str]):
-        reason = str(''.join(reason))
+        try: reason = str(''.join(reason))
+        except: reason = None
         tooMany = discord.Embed(
             title=f'{events["nsfw_update"][2]} You mentioned too many people there',
             description="You can only punish one person at a time.",
@@ -352,9 +370,9 @@ class Commands(commands.Cog):
     
     @commands.command()
     @commands.guild_only()
-    @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: typing.Optional[discord.Member], reason:typing.Optional[str]):
-        reason = str(''.join(reason))
+        try: reason = str(''.join(reason))
+        except: reason = ""
         tooMany = discord.Embed(
             title=f'{events["nsfw_update"][2]} You mentioned too many people there',
             description="You can only punish one person at a time.",
@@ -377,7 +395,6 @@ class Commands(commands.Cog):
     
     @commands.command()
     @commands.guild_only()
-    @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, member: typing.Optional[discord.Member], t:typing.Optional[int], mod: typing.Optional[str]):
         tooMany = discord.Embed(
             title=f'{events["nsfw_update"][2]} You mentioned too many people there',
@@ -401,16 +418,15 @@ class Commands(commands.Cog):
     
     @commands.command()
     @commands.guild_only()
-    @commands.has_permissions(manage_messages=True)
     async def purge(self, ctx, t:typing.Optional[int]):
         m = await ctx.send(embed=discord.Embed(title="Loading"))
         await self.purgeChannel(m, ctx, t)
     
     @commands.command()
     @commands.guild_only()
-    @commands.has_permissions(ban_members=True)
     async def softBan(self, ctx, member: typing.Optional[discord.Member], reason:typing.Optional[str]):
-        reason = str(''.join(reason))
+        try: reason = str(''.join(reason))
+        except: reason = ""
         tooMany = discord.Embed(
             title=f'{events["nsfw_update"][2]} You mentioned too many people there',
             description="You can only punish one person at a time.",
@@ -433,9 +449,9 @@ class Commands(commands.Cog):
     
     @commands.command()
     @commands.guild_only()
-    @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: typing.Optional[discord.Member], reason:typing.Optional[str]):
-        reason = str(''.join(reason))
+        try: reason = str(''.join(reason))
+        except: reason = ""
         tooMany = discord.Embed(
             title=f'{events["nsfw_update"][2]} You mentioned too many people there',
             description="You can only punish one person at a time.",
@@ -456,15 +472,60 @@ class Commands(commands.Cog):
         m = await ctx.send(embed=discord.Embed(title="Loading"))
         await self.banPun(m, member, ctx, reason)
     
-    @commands.command()
+    @commands.command(aliases=["user", "whois"])
     @commands.guild_only()
     async def userinfo(self, ctx, member: typing.Optional[discord.Member]):
         if not member: member = ctx.author
+
+        ms = []
+        guild = self.bot.get_guild(684492926528651336)
+        role = guild.get_role(760896837866749972)
+
+        flags = []
+        if member.id in [317731855317336067, 438733159748599813, 715989276382462053, 261900651230003201, 421698654189912064]: flags.append("rsm_developer")
+        if member in role.members: flags.append("clicks_developer")
+        if member.id in ms: flags.append("clicks_developer")
+        if member in guild.premium_subscribers: flags.append("booster")
+        if member.is_avatar_animated() or str(member.discriminator).startswith("000"): flags.append("nitro")
+        if member.bot: flags.append("bot")
+        for flag, val in member.public_flags:
+            if val: flags.append(flag)
+
+        flagemojis = {
+            "hypesquad_bravery": ["<:hypesquad_bravery:775783765930016789>", "Hypesquad Bravery"],
+            "early_supporter": ["<:early_supporter:775783766055452693>", "Early Supporter"],
+            "bug_hunter_2": ["<:bug_hunter_2:775783766130950234>", "Bug Hunter level 2"],
+            "booster": ["<:Boosting1y:775783766131605545>", "Server Booster"],
+            "rsm_developer": ["<:rsm_developer:775783766147858534>", "**RSM Developer**"],
+            "hypesquad_brilliance": ["<:hypesquad_brilliance:775783766152577095>", "Hypesquad Brilliance"],
+            "partner": ["<:partner:775783766178005033>", "Partner"],
+            "hypesquad": ["<:hypesquad:775783766194126908>", "Hypesquad Events"],
+            "bug_hunter_1": ["<:bug_hunter_1:775783766252847154>", "Bug Hunter level 1"],
+            "hypesquad_balance": ["<:hypesquad_balance:775783766303440937>", "Hypesquad Balance"],
+            "staff": ["<:staff:775783766383788082>", "Discord Staff"],
+            "verified_bot_developer": ["<:verified_bot_developer:775783766425600060>", "Verified Bot Developer"],
+            "clicks_developer": ["<:clicks_developer:776140126156881950>", "Clicks Developer"],
+            "nitro": ["<:Nitro:776149266775146546>", "Nitro"],
+            "bot": ["<:Bot:776375959108190239>", "Bot"]
+        }
+
+        flagstring = ""
+        for flag in flags:
+            try: flagstring += flagemojis[flag][0] + f" | {flagemojis[flag][1]}\n"
+            except: print(flag)
+
         embeds = {
             0: [
-                "Info",
-                f"**ID**: `{member.id}`\n"
-                f""
+                flagstring,
+                f"**ID:** `{member.id}`",
+                f"**Mention:** {member.mention}",
+                f"**Name:** {member.name}",
+                f"**Nickname:** {member.display_name if member.display_name != member.name else 'No nickname'}",
+                f"**Status:** {emojis[member.status.name]} {member.status.name.capitalize() if member.status.name != 'dnd' else 'DND'}" + (' - Mobile' if member.mobile_status.name == 'online' else ''),
+                f"**Roles:** {len(member.roles)} | **Highest Role:** {member.top_role.mention}",
+                f"**Started boosting:** {humanize.naturaltime(member.premium_since) if member.premium_since != None else 'Not boosting'}" ,
+                f"**Joined Discord:** {humanize.naturaltime(member.created_at)}",
+                f"**Joined the server:** {humanize.naturaltime(member.joined_at)}"
             ],
             1: [
                 "Roles"
@@ -473,6 +534,15 @@ class Commands(commands.Cog):
                 "Permissions"
             ]
         }
+
+        e = discord.Embed(
+            title=f"Userinfo for {member.name}",
+            description="\n".join(embeds[0]),
+            color=colours["create"]
+        )
+        e.set_thumbnail(url=member.avatar_url)
+
+        await ctx.send(embed=e)
 
 def setup(bot):
     bot.add_cog(Commands(bot))

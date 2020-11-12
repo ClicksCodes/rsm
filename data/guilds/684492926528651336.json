@@ -1,704 +1,815 @@
 {
   "0": {
-    "logType": "titleUpdate",
-    "occurredAt": 1599584061,
+    "logType": "roleCreate",
+    "occurredAt": 1605111889,
     "content": {
-      "username": 261900651230003201,
-      "channel": 726843779805347951,
-      "was": "fun",
-      "now": "Fun"
+      "username": 438733159748599813,
+      "name": "new role",
+      "id": 776120253436395520
     }
   },
   "1": {
-    "logType": "messageDelete",
-    "occurredAt": 1599586274,
+    "logType": "roleEdit",
+    "occurredAt": 1605111892,
     "content": {
       "username": 438733159748599813,
-      "messageContent": "<@!715989276382462053>",
-      "mentions": 1,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "Never",
-      "attachments": []
+      "name": "new role!",
+      "id": 776120253436395520,
+      "colour": 0,
+      "position": 1
     }
   },
   "2": {
-    "logType": "messageEdit",
-    "occurredAt": 1599586694,
+    "logType": "roleDelete",
+    "occurredAt": 1605111895,
     "content": {
       "username": 438733159748599813,
-      "messageContent": "just no commands which are triggered from no prefic",
-      "messageContentAfter": "just no commands which are triggered from no prefi",
-      "mentions": 0,
-      "mentionsAfter": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "An hour ago",
-      "attachments": []
+      "name": "new role!",
+      "id": 776120253436395520,
+      "permissions": "https://discordapi.com/permissions.html#65536",
+      "colour": 0,
+      "position": 1,
+      "mentionableByEveryone": "false",
+      "members": 0,
+      "created": "6 seconds ago"
     }
   },
   "3": {
-    "logType": "messageEdit",
-    "occurredAt": 1599586694,
+    "logType": "topicUpdate",
+    "occurredAt": 1605111962,
     "content": {
       "username": 438733159748599813,
-      "messageContent": "just no commands which are triggered from no prefi",
-      "messageContentAfter": "just no commands which are triggered from no prefix",
-      "mentions": 0,
-      "mentionsAfter": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "An hour ago",
-      "attachments": []
+      "channel": 760907664573202483,
+      "was": null,
+      "now": "commands init"
     }
   },
   "4": {
-    "logType": "messageEdit",
-    "occurredAt": 1599593665,
+    "logType": "messagePurge",
+    "occurredAt": 1605111999,
     "content": {
-      "username": 438733159748599813,
-      "messageContent": "try using the arroes",
-      "messageContentAfter": "try using the arrows",
-      "mentions": 0,
-      "mentionsAfter": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "An hour ago",
-      "attachments": []
+      "username": 715989276382462053,
+      "messageContent": "https://mystb.in/CoversPillNetherlands",
+      "occurredIn": 760907664573202483,
+      "amount": 2
     }
   },
   "5": {
-    "logType": "messageEdit",
-    "occurredAt": 1599594467,
+    "logType": "messageDelete",
+    "occurredAt": 1605113322,
     "content": {
-      "username": 267689225112125441,
-      "messageContent": "its nbot showing?",
-      "messageContentAfter": "its not showing?",
-      "mentions": 0,
-      "mentionsAfter": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "An hour ago",
+      "username": 438733159748599813,
+      "messageContent": "yo <@!487443883127472129>",
+      "mentions": 1,
+      "occurredIn": 763078201391317052,
+      "sent": "13 seconds ago",
+      "edited": "Never",
       "attachments": []
     }
   },
   "6": {
-    "logType": "messageEdit",
-    "occurredAt": 1599594575,
+    "logType": "messageDelete",
+    "occurredAt": 1605113432,
     "content": {
       "username": 438733159748599813,
-      "messageContent": "\"takes 1 positional arguments but 2 were given\"",
-      "messageContentAfter": "\"takes 1 positional argument but 2 were given\"",
-      "mentions": 0,
-      "mentionsAfter": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "An hour ago",
+      "messageContent": "<@!715989276382462053>",
+      "mentions": 1,
+      "occurredIn": 760907664573202483,
+      "sent": "Now",
+      "edited": "Never",
       "attachments": []
     }
   },
   "7": {
-    "logType": "messageEdit",
-    "occurredAt": 1599662887,
+    "logType": "messageDelete",
+    "occurredAt": 1605113628,
     "content": {
-      "username": 438733159748599813,
-      "messageContent": "ah cmpm has i",
-      "messageContentAfter": "ah cmpm has it",
-      "mentions": 0,
-      "mentionsAfter": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "An hour ago",
+      "username": 487443883127472129,
+      "messageContent": "m!warn <@!487443883127472129> a",
+      "mentions": 1,
+      "occurredIn": 760907664573202483,
+      "sent": "Now",
+      "edited": "Never",
       "attachments": []
     }
   },
   "8": {
-    "logType": "messagePurge",
-    "occurredAt": 1599666801,
+    "logType": "messageDelete",
+    "occurredAt": 1605113749,
     "content": {
-      "username": 729335748670783488,
-      "messageContent": "https://mystb.in/TransmissionAnnounceCheaper",
-      "occurredIn": 695678190978334722,
-      "amount": 33
+      "username": 487443883127472129,
+      "messageContent": "m!warn <@!438733159748599813> a",
+      "mentions": 1,
+      "occurredIn": 760907664573202483,
+      "sent": "Now",
+      "edited": "Never",
+      "attachments": []
     }
   },
   "9": {
-    "logType": "messageDelete",
-    "occurredAt": 1599666871,
+    "logType": "messageEdit",
+    "occurredAt": 1605113846,
     "content": {
-      "username": 448837653144797205,
-      "messageContent": "/save https://cdn.discordapp.com/attachments/738479449053462609/751543704853938276/VID-20200716-WA0000.mp4",
+      "username": 438733159748599813,
+      "messageContent": "fuckj",
+      "messageContentAfter": "fuck",
       "mentions": 0,
-      "occurredIn": 695678190978334722,
-      "sent": "An hour ago",
-      "edited": "Never",
+      "mentionsAfter": 0,
+      "occurredIn": 760907664573202483,
+      "sent": "A second ago",
+      "edited": "Now",
       "attachments": []
     }
   },
   "10": {
     "logType": "messageDelete",
-    "occurredAt": 1599666925,
+    "occurredAt": 1605113991,
     "content": {
-      "username": 448837653144797205,
-      "messageContent": "/save https://cdn.discordapp.com/attachments/702552736436191313/752502185484484648/unknown.png",
-      "mentions": 0,
-      "occurredIn": 695678190978334722,
-      "sent": "An hour ago",
+      "username": 438733159748599813,
+      "messageContent": "<@!438733159748599813>",
+      "mentions": 1,
+      "occurredIn": 760907664573202483,
+      "sent": "Now",
       "edited": "Never",
       "attachments": []
     }
   },
   "11": {
-    "logType": "memberJoin",
-    "occurredAt": 1599667927,
+    "logType": "messageDelete",
+    "occurredAt": 1605114201,
     "content": {
-      "username": 412255469445447680,
-      "memberCount": 242,
-      "mutuals": 1,
-      "created": "2 years ago"
+      "username": 487443883127472129,
+      "messageContent": "m!warn <@!438733159748599813> no",
+      "mentions": 1,
+      "occurredIn": 760907664573202483,
+      "sent": "Now",
+      "edited": "Never",
+      "attachments": []
     }
   },
   "12": {
-    "logType": "messageDelete",
-    "occurredAt": 1599667957,
+    "logType": "messageEdit",
+    "occurredAt": 1605114534,
     "content": {
-      "username": 412255469445447680,
-      "messageContent": "cmp verify",
+      "username": 487443883127472129,
+      "messageContent": "it also uses role color for the embed",
+      "messageContentAfter": "it also uses role color for the embed color",
       "mentions": 0,
-      "occurredIn": 697880694692642856,
-      "sent": "An hour ago",
-      "edited": "Never",
+      "mentionsAfter": 0,
+      "occurredIn": 760907664573202483,
+      "sent": "4 seconds ago",
+      "edited": "Now",
       "attachments": []
     }
   },
   "13": {
-    "logType": "messageDelete",
-    "occurredAt": 1599671186,
+    "logType": "messageEdit",
+    "occurredAt": 1605115599,
     "content": {
-      "username": 448837653144797205,
-      "messageContent": "efe",
+      "username": 438733159748599813,
+      "messageContent": "very nic",
+      "messageContentAfter": "very nice",
       "mentions": 0,
-      "occurredIn": 684492926528651342,
-      "sent": "An hour ago",
-      "edited": "Never",
-      "attachments": [
-        "https://media.discordapp.net/attachments/684492926528651342/753300265502900234/unknown.png"
-      ]
+      "mentionsAfter": 0,
+      "occurredIn": 760907664573202483,
+      "sent": "A second ago",
+      "edited": "Now",
+      "attachments": []
     }
   },
   "14": {
-    "logType": "messageDelete",
-    "occurredAt": 1599673153,
+    "logType": "messageEdit",
+    "occurredAt": 1605116885,
     "content": {
-      "username": 448837653144797205,
-      "messageContent": "nok",
+      "username": 487443883127472129,
+      "messageContent": "if they are both enabled it should be fin",
+      "messageContentAfter": "if they are both enabled it should be fine",
       "mentions": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "Never",
+      "mentionsAfter": 0,
+      "occurredIn": 760907664573202483,
+      "sent": "A second ago",
+      "edited": "Now",
       "attachments": []
     }
   },
   "15": {
-    "logType": "messageDelete",
-    "occurredAt": 1599673410,
+    "logType": "messageEdit",
+    "occurredAt": 1605116910,
     "content": {
-      "username": 448837653144797205,
-      "messageContent": "b=ping",
+      "username": 438733159748599813,
+      "messageContent": "o",
+      "messageContentAfter": "no",
       "mentions": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "Never",
+      "mentionsAfter": 0,
+      "occurredIn": 760907664573202483,
+      "sent": "3 seconds ago",
+      "edited": "Now",
       "attachments": []
     }
   },
   "16": {
-    "logType": "messageDelete",
-    "occurredAt": 1599673489,
+    "logType": "messageEdit",
+    "occurredAt": 1605117683,
     "content": {
       "username": 438733159748599813,
-      "messageContent": "thats why i check what i copy",
+      "messageContent": "do \\`jsk src help\\`",
+      "messageContentAfter": "do \\`/jsk src help\\`",
       "mentions": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "Never",
+      "mentionsAfter": 0,
+      "occurredIn": 760907664573202483,
+      "sent": "4 seconds ago",
+      "edited": "Now",
       "attachments": []
     }
   },
   "17": {
     "logType": "messageEdit",
-    "occurredAt": 1599674088,
+    "occurredAt": 1605117697,
     "content": {
-      "username": 511655498676699136,
-      "messageContent": "how many emois do you have?",
-      "messageContentAfter": "how many emojis do you have?",
+      "username": 421698654189912064,
+      "messageContent": "leave me along",
+      "messageContentAfter": "leave me alone",
       "mentions": 0,
       "mentionsAfter": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "An hour ago",
+      "occurredIn": 760907664573202483,
+      "sent": "A second ago",
+      "edited": "Now",
       "attachments": []
     }
   },
   "18": {
     "logType": "messageEdit",
-    "occurredAt": 1599675404,
+    "occurredAt": 1605117775,
     "content": {
-      "username": 438733159748599813,
-      "messageContent": "this wont wor",
-      "messageContentAfter": "this wont work",
+      "username": 421698654189912064,
+      "messageContent": "I dp",
+      "messageContentAfter": "I do",
       "mentions": 0,
       "mentionsAfter": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "An hour ago",
+      "occurredIn": 760907664573202483,
+      "sent": "A second ago",
+      "edited": "Now",
       "attachments": []
     }
   },
   "19": {
     "logType": "messageEdit",
-    "occurredAt": 1599679907,
+    "occurredAt": 1605117867,
     "content": {
       "username": 438733159748599813,
-      "messageContent": "thats off",
-      "messageContentAfter": "thats odd",
+      "messageContent": "that",
+      "messageContentAfter": "thats",
       "mentions": 0,
       "mentionsAfter": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "An hour ago",
+      "occurredIn": 760916763172012084,
+      "sent": "A second ago",
+      "edited": "Now",
       "attachments": []
     }
   },
   "20": {
-    "logType": "topicUpdate",
-    "occurredAt": 1599681961,
+    "logType": "messageEdit",
+    "occurredAt": 1605118004,
     "content": {
-      "username": 261900651230003201,
-      "channel": 686318288409722964,
-      "was": "",
-      "now": null
+      "username": 438733159748599813,
+      "messageContent": "the moist noe",
+      "messageContentAfter": "the moist one",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 760916763172012084,
+      "sent": "2 seconds ago",
+      "edited": "Now",
+      "attachments": []
     }
   },
   "21": {
-    "logType": "topicUpdate",
-    "occurredAt": 1599681961,
+    "logType": "messageEdit",
+    "occurredAt": 1605118106,
     "content": {
-      "username": 261900651230003201,
-      "channel": 729161433023250472,
-      "was": "",
-      "now": null
+      "username": 421698654189912064,
+      "messageContent": "https://cdn-cf-east.streamable.com/video/mp4/diplld.mp4?Expires=1605377280&Signature=AWK~UxAFzVa02D298spt17zLeu7ho2LNM-dWalpyvrPkCDWBNyUfy-NEhF149OAUwZpkBFuf3~vy5otFpUw7qhseCnWdigvSn4dPNVYLJndZJWXFv9OytrdhTRTpcYs~YlfRqYQmuTyUC2uqIvpZNwupzVnu~hK33vfQiUbvb-~O3R5ziPUyx6fNvVS8YVPdayiil87YE-6qFHc-Gh~~EpOcFqVwQ-MHPHNTP8uSOBH7VVueGjLYSDPe2yuph4sW5LaOAj5xVsX9B9PfA5bBTvj5hxKs5ftJNcb5YjU62AgOZymKVcQMWgPyrfDNdhjXG~2c7Gh8nofthvnqLDszHA__&Key-Pair-Id=APKAIEYUVEN4EVB2OKEQ here's how easy it is to handle them",
+      "messageContentAfter": "https://cdn-cf-east.streamable.com/video/mp4/diplld.mp4?Expires=1605377280&Signature=AWK~UxAFzVa02D298spt17zLeu7ho2LNM-dWalpyvrPkCDWBNyUfy-NEhF149OAUwZpkBFuf3~vy5otFpUw7qhseCnWdigvSn4dPNVYLJndZJWXFv9OytrdhTRTpcYs~YlfRqYQmuTyUC2uqIvpZNwupzVnu~hK33vfQiUbvb-~O3R5ziPUyx6fNvVS8YVPdayiil87YE-6qFHc-Gh~~EpOcFqVwQ-MHPHNTP8uSOBH7VVueGjLYSDPe2yuph4sW5LaOAj5xVsX9B9PfA5bBTvj5hxKs5ftJNcb5YjU62AgOZymKVcQMWgPyrfDNdhjXG~2c7Gh8nofthvnqLDszHA__&Key-Pair-Id=APKAIEYUVEN4EVB2OKEQ here's how easy it is to enable them",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 760916763172012084,
+      "sent": "10 seconds ago",
+      "edited": "Now",
+      "attachments": []
     }
   },
   "22": {
-    "logType": "topicUpdate",
-    "occurredAt": 1599681961,
+    "logType": "messageDelete",
+    "occurredAt": 1605118167,
     "content": {
-      "username": 261900651230003201,
-      "channel": 697415004403793920,
-      "was": "",
-      "now": null
+      "username": 438733159748599813,
+      "messageContent": "",
+      "mentions": 0,
+      "occurredIn": 760916763172012084,
+      "sent": "4 seconds ago",
+      "edited": "Never",
+      "attachments": [
+        "https://media.discordapp.net/attachments/760916763172012084/776146564233035816/unknown.png"
+      ]
     }
   },
   "23": {
-    "logType": "topicUpdate",
-    "occurredAt": 1599681962,
+    "logType": "messageDelete",
+    "occurredAt": 1605118177,
     "content": {
-      "username": 261900651230003201,
-      "channel": 726846255426437171,
-      "was": "",
-      "now": null
+      "username": 438733159748599813,
+      "messageContent": "",
+      "mentions": 0,
+      "occurredIn": 760916763172012084,
+      "sent": "4 seconds ago",
+      "edited": "Never",
+      "attachments": [
+        "https://media.discordapp.net/attachments/760916763172012084/776146608596320256/unknown.png"
+      ]
     }
   },
   "24": {
-    "logType": "topicUpdate",
-    "occurredAt": 1599681962,
+    "logType": "messageEdit",
+    "occurredAt": 1605119451,
     "content": {
-      "username": 261900651230003201,
-      "channel": 722007371412537374,
-      "was": "",
-      "now": null
+      "username": 487443883127472129,
+      "messageContent": "maybe a small little",
+      "messageContentAfter": "maybe a small little (mobile)",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 760916763172012084,
+      "sent": "4 seconds ago",
+      "edited": "Now",
+      "attachments": []
     }
   },
   "25": {
     "logType": "messageEdit",
-    "occurredAt": 1599750931,
+    "occurredAt": 1605119500,
     "content": {
-      "username": 261900651230003201,
-      "messageContent": "TREEEEEEEEEEEEEEE",
-      "messageContentAfter": "REEEEEEEEEEEEEEE",
+      "username": 438733159748599813,
+      "messageContent": "and now capitalized)(",
+      "messageContentAfter": "and now capitalized()",
       "mentions": 0,
       "mentionsAfter": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "An hour ago",
+      "occurredIn": 760916763172012084,
+      "sent": "A second ago",
+      "edited": "Now",
       "attachments": []
     }
   },
   "26": {
     "logType": "messageEdit",
-    "occurredAt": 1599750973,
+    "occurredAt": 1605119514,
     "content": {
-      "username": 421698654189912064,
-      "messageContent": "\\*\\*\\*dont list roles\\*\\*\\*",
-      "messageContentAfter": "\\*\\*\\*dont list roles outside of embeds\\*\\*\\*",
+      "username": 487443883127472129,
+      "messageContent": "looks like the target symbol",
+      "messageContentAfter": "looks like the target logo",
       "mentions": 0,
       "mentionsAfter": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "An hour ago",
+      "occurredIn": 760916763172012084,
+      "sent": "9 seconds ago",
+      "edited": "Now",
       "attachments": []
     }
   },
   "27": {
-    "logType": "messageEdit",
-    "occurredAt": 1599756760,
+    "logType": "rolePing",
+    "occurredAt": 1605120270,
     "content": {
-      "username": 438733159748599813,
-      "messageContent": "accuraye",
-      "messageContentAfter": "accurate",
+      "username": 317731855317336067,
+      "messageContent": "<@&760896658862243911> if it's slow, you can add a typing option\nbut you've got to remember to say that's a possibility",
       "mentions": 0,
-      "mentionsAfter": 0,
-      "occurredIn": 695678190978334722,
-      "sent": "An hour ago",
-      "edited": "An hour ago",
+      "occurredIn": 760916763172012084,
+      "sent": "Now",
+      "edited": "Never",
       "attachments": []
     }
   },
   "28": {
-    "logType": "messageEdit",
-    "occurredAt": 1599765393,
+    "logType": "messageDelete",
+    "occurredAt": 1605120736,
     "content": {
-      "username": 438733159748599813,
-      "messageContent": "add a use",
-      "messageContentAfter": "add a user",
+      "username": 317731855317336067,
+      "messageContent": "\ud83d\ude86",
       "mentions": 0,
-      "mentionsAfter": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "An hour ago",
+      "occurredIn": 769625167826780190,
+      "sent": "3 seconds ago",
+      "edited": "Never",
       "attachments": []
     }
   },
   "29": {
-    "logType": "messageEdit",
-    "occurredAt": 1599767160,
+    "logType": "rolePing",
+    "occurredAt": 1605120914,
     "content": {
       "username": 438733159748599813,
-      "messageContent": "im gonna make m!role show all guild roles",
-      "messageContentAfter": "im gonna make m!roles show all guild roles",
+      "messageContent": "<@&760896658862243911>",
       "mentions": 0,
-      "mentionsAfter": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "An hour ago",
+      "occurredIn": 760916763172012084,
+      "sent": "Now",
+      "edited": "Never",
       "attachments": []
     }
   },
   "30": {
     "logType": "messageEdit",
-    "occurredAt": 1599767238,
+    "occurredAt": 1605122164,
     "content": {
-      "username": 317731855317336067,
-      "messageContent": "add options to not show the ones that you have or something",
-      "messageContentAfter": "add options to not show the ones that you don't or something",
+      "username": 561565119201673216,
+      "messageContent": "lol no kiddin",
+      "messageContentAfter": "lol no kidding",
       "mentions": 0,
       "mentionsAfter": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "An hour ago",
+      "occurredIn": 769625167826780190,
+      "sent": "A second ago",
+      "edited": "Now",
       "attachments": []
     }
   },
   "31": {
     "logType": "messageEdit",
-    "occurredAt": 1599841854,
+    "occurredAt": 1605122529,
     "content": {
-      "username": 438733159748599813,
-      "messageContent": "i get notifications on mobile for role ping",
-      "messageContentAfter": "i get notifications on mobile for role pings",
+      "username": 487443883127472129,
+      "messageContent": "sets are wierd",
+      "messageContentAfter": "sets are weird",
       "mentions": 0,
       "mentionsAfter": 0,
-      "occurredIn": 695678190978334722,
-      "sent": "An hour ago",
-      "edited": "An hour ago",
+      "occurredIn": 760916763172012084,
+      "sent": "13 seconds ago",
+      "edited": "Now",
       "attachments": []
     }
   },
   "32": {
-    "logType": "messageDelete",
-    "occurredAt": 1599900195,
+    "logType": "messageEdit",
+    "occurredAt": 1605122550,
     "content": {
-      "username": 438733159748599813,
-      "messageContent": "<@!715989276382462053>",
-      "mentions": 1,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "Never",
+      "username": 487443883127472129,
+      "messageContent": "I already flled the thing",
+      "messageContentAfter": "I already filled the thing",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 697446083919610007,
+      "sent": "3 seconds ago",
+      "edited": "Now",
       "attachments": []
     }
   },
   "33": {
-    "logType": "messagePurge",
-    "occurredAt": 1599900961,
+    "logType": "messageEdit",
+    "occurredAt": 1605122615,
     "content": {
-      "username": 715989276382462053,
-      "messageContent": "https://mystb.in/TongueDistributedFat",
-      "occurredIn": 726843668660617350,
-      "amount": 2
+      "username": 438733159748599813,
+      "messageContent": "stf::cout",
+      "messageContentAfter": "std::cout",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 760916763172012084,
+      "sent": "2 seconds ago",
+      "edited": "Now",
+      "attachments": []
     }
   },
   "34": {
-    "logType": "messageDelete",
-    "occurredAt": 1599901046,
+    "logType": "messageEdit",
+    "occurredAt": 1605122929,
     "content": {
       "username": 438733159748599813,
-      "messageContent": "2",
+      "messageContent": "so i got :3\\_:",
+      "messageContentAfter": "so i got \\`:3\\_:\\`",
       "mentions": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "Never",
+      "mentionsAfter": 0,
+      "occurredIn": 760916763172012084,
+      "sent": "7 seconds ago",
+      "edited": "Now",
       "attachments": []
     }
   },
   "35": {
-    "logType": "messagePurge",
-    "occurredAt": 1599901048,
+    "logType": "messageEdit",
+    "occurredAt": 1605122936,
     "content": {
-      "username": 715989276382462053,
-      "messageContent": "https://mystb.in/FindlawAddressedDifficult",
-      "occurredIn": 726843668660617350,
-      "amount": 2
+      "username": 438733159748599813,
+      "messageContent": "so i got \\`:3\\_:\\`",
+      "messageContentAfter": "so i got \\`<:3\\_ :753259024358703205>\\`",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 760916763172012084,
+      "sent": "15 seconds ago",
+      "edited": "Now",
+      "attachments": []
     }
   },
   "36": {
-    "logType": "messagePurge",
-    "occurredAt": 1599901057,
+    "logType": "messageEdit",
+    "occurredAt": 1605173482,
     "content": {
-      "username": 715989276382462053,
-      "messageContent": "https://mystb.in/VisualDaddyHope",
-      "occurredIn": 726843668660617350,
-      "amount": 2
+      "username": 438733159748599813,
+      "messageContent": "m!jsk py \\_bot.get\\_user(585557868238077957).mobile\\_status",
+      "messageContentAfter": "m!jsk py \\_guild.get\\_user(585557868238077957).mobile\\_status",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 760907664573202483,
+      "sent": "14 seconds ago",
+      "edited": "Now",
+      "attachments": []
     }
   },
   "37": {
-    "logType": "messagePurge",
-    "occurredAt": 1599901075,
+    "logType": "inviteCreate",
+    "occurredAt": 1605174468,
     "content": {
-      "username": 715989276382462053,
-      "messageContent": "https://mystb.in/MigrationTrademarkLloyd",
-      "occurredIn": 726843668660617350,
-      "amount": 2
+      "username": 438733159748599813,
+      "maxAge": 24.0,
+      "maxUses": "infinite",
+      "url": "https://discord.gg/VaZZZ85n",
+      "temporary": "false",
+      "channel": 763817489083531324
     }
   },
   "38": {
-    "logType": "messagePurge",
-    "occurredAt": 1599901174,
+    "logType": "memberJoin",
+    "occurredAt": 1605174478,
     "content": {
-      "username": 715989276382462053,
-      "messageContent": "https://mystb.in/ReplicationWorseLoaded",
-      "occurredIn": 726843668660617350,
-      "amount": 2
+      "username": 528217801480077312,
+      "memberCount": 236,
+      "mutuals": 1,
+      "created": "1 year, 10 months ago"
     }
   },
   "39": {
-    "logType": "messagePurge",
-    "occurredAt": 1599901219,
+    "logType": "inviteDelete",
+    "occurredAt": 1605174488,
     "content": {
-      "username": 715989276382462053,
-      "messageContent": "https://mystb.in/FillingEntertainmentNewly",
-      "occurredIn": 726843668660617350,
-      "amount": 2
+      "username": 438733159748599813,
+      "maxAge": "Infinite",
+      "maxUses": "infinite",
+      "url": "https://discord.gg/VaZZZ85n",
+      "temporary": "false",
+      "channel": 763817489083531324,
+      "uses": null
     }
   },
   "40": {
-    "logType": "messagePurge",
-    "occurredAt": 1599901308,
+    "logType": "messageDelete",
+    "occurredAt": 1605174499,
     "content": {
-      "username": 715989276382462053,
-      "messageContent": "https://mystb.in/LlpHansenPetite",
-      "occurredIn": 726843668660617350,
-      "amount": 2
+      "username": 528217801480077312,
+      "messageContent": "a message",
+      "mentions": 0,
+      "occurredIn": 763817489083531324,
+      "sent": "10 seconds ago",
+      "edited": "Never",
+      "attachments": []
     }
   },
   "41": {
     "logType": "messageEdit",
-    "occurredAt": 1599938477,
+    "occurredAt": 1605174667,
     "content": {
-      "username": 511655498676699136,
-      "messageContent": "in the list",
-      "messageContentAfter": "in the user list",
+      "username": 438733159748599813,
+      "messageContent": "they get added instantly, but discord takes a while to process the,",
+      "messageContentAfter": "they get added instantly, but discord takes a while to process them",
       "mentions": 0,
       "mentionsAfter": 0,
-      "occurredIn": 697415004403793920,
-      "sent": "An hour ago",
-      "edited": "An hour ago",
+      "occurredIn": 760907664573202483,
+      "sent": "A second ago",
+      "edited": "Now",
       "attachments": []
     }
   },
   "42": {
     "logType": "messageEdit",
-    "occurredAt": 1599938829,
+    "occurredAt": 1605182877,
     "content": {
-      "username": 421698654189912064,
-      "messageContent": "\\`<@&684492926528651336>\\`",
-      "messageContentAfter": "\\`<@&684492926528651336>\\` (this is safe to call)",
+      "username": 561565119201673216,
+      "messageContent": "well i gtg have fun or dont't \u00af\\\\\\_(\u30c4)\\_/\u00af",
+      "messageContentAfter": "well i gtg have fun or don't \u00af\\\\\\_(\u30c4)\\_/\u00af",
       "mentions": 0,
       "mentionsAfter": 0,
-      "occurredIn": 697415004403793920,
-      "sent": "An hour ago",
-      "edited": "An hour ago",
+      "occurredIn": 760907664573202483,
+      "sent": "4 seconds ago",
+      "edited": "Now",
       "attachments": []
     }
   },
   "43": {
-    "logType": "rolePing",
-    "occurredAt": 1599938835,
+    "logType": "channelCreate",
+    "occurredAt": 1605182889,
     "content": {
-      "username": 421698654189912064,
-      "messageContent": "<@&684492926528651336>",
-      "mentions": 0,
-      "occurredIn": 697415004403793920,
-      "sent": "An hour ago",
-      "edited": "Never",
-      "attachments": []
+      "username": 438733159748599813,
+      "channel": 776418051003777034,
+      "category": 765245521929175061,
+      "type": "text"
     }
   },
   "44": {
-    "logType": "everyonePing",
-    "occurredAt": 1599938886,
+    "logType": "messageDelete",
+    "occurredAt": 1605183102,
     "content": {
-      "username": 261900651230003201,
-      "messageContent": "it pings @everyone",
+      "username": 438733159748599813,
+      "messageContent": "m!heiwers",
       "mentions": 0,
-      "occurredIn": 697415004403793920,
-      "sent": "An hour ago",
+      "occurredIn": 763078201391317052,
+      "sent": "2 seconds ago",
       "edited": "Never",
       "attachments": []
     }
   },
   "45": {
-    "logType": "messageDelete",
-    "occurredAt": 1599938896,
+    "logType": "inviteCreate",
+    "occurredAt": 1605196521,
     "content": {
-      "username": 261900651230003201,
-      "messageContent": "",
-      "mentions": 0,
-      "occurredIn": 697415004403793920,
-      "sent": "An hour ago",
-      "edited": "Never",
-      "attachments": [
-        "https://media.discordapp.net/attachments/697415004403793920/754423071745507339/unknown.png"
-      ]
+      "username": 438733159748599813,
+      "maxAge": 24.0,
+      "maxUses": "infinite",
+      "url": "https://discord.gg/57GNgneb",
+      "temporary": "false",
+      "channel": 763817489083531324
     }
   },
   "46": {
-    "logType": "rolePing",
-    "occurredAt": 1599938949,
+    "logType": "memberJoin",
+    "occurredAt": 1605196563,
     "content": {
-      "username": 421698654189912064,
-      "messageContent": "/ri <@&684492926528651336>",
-      "mentions": 0,
-      "occurredIn": 697415004403793920,
-      "sent": "An hour ago",
-      "edited": "Never",
-      "attachments": []
+      "username": 368880176970596352,
+      "memberCount": 237,
+      "mutuals": 1,
+      "created": "3 years ago"
     }
   },
   "47": {
-    "logType": "nickChange",
-    "occurredAt": 1599938957,
+    "logType": "inviteDelete",
+    "occurredAt": 1605196600,
     "content": {
-      "username": 261236127581601793,
-      "nameBefore": "[YEET] Burrito",
-      "nameAfter": "[SOCIAL] Burrito",
-      "user": 261236127581601793
+      "username": 438733159748599813,
+      "maxAge": "Infinite",
+      "maxUses": "infinite",
+      "url": "https://discord.gg/57GNgneb",
+      "temporary": "false",
+      "channel": 763817489083531324,
+      "uses": null
     }
   },
   "48": {
-    "logType": "rolePing",
-    "occurredAt": 1599938976,
+    "logType": "messageDelete",
+    "occurredAt": 1605196614,
     "content": {
-      "username": 261900651230003201,
-      "messageContent": "<@&684492926528651336>",
+      "username": 368880176970596352,
+      "messageContent": "damn can't use patjug",
       "mentions": 0,
-      "occurredIn": 697415004403793920,
-      "sent": "An hour ago",
+      "occurredIn": 763817489083531324,
+      "sent": "9 seconds ago",
       "edited": "Never",
       "attachments": []
     }
   },
   "49": {
-    "logType": "rolePing",
-    "occurredAt": 1599938986,
+    "logType": "messageDelete",
+    "occurredAt": 1605196756,
     "content": {
-      "username": 261236127581601793,
-      "messageContent": "<@&684492926528651336>",
+      "username": 368880176970596352,
+      "messageContent": "o",
       "mentions": 0,
-      "occurredIn": 697415004403793920,
-      "sent": "An hour ago",
+      "occurredIn": 760907664573202483,
+      "sent": "Now",
       "edited": "Never",
       "attachments": []
     }
   },
   "50": {
-    "logType": "memberLeave",
-    "occurredAt": 1599939492,
+    "logType": "messageDelete",
+    "occurredAt": 1605196792,
     "content": {
-      "username": 309181385816539136,
-      "memberCount": 240,
-      "mutuals": 0,
-      "created": "3 years ago",
-      "joined": "6 days ago"
+      "username": 368880176970596352,
+      "messageContent": "<@!438733159748599813>",
+      "mentions": 1,
+      "occurredIn": 760907664573202483,
+      "sent": "Now",
+      "edited": "Never",
+      "attachments": []
     }
   },
   "51": {
-    "logType": "messageDelete",
-    "occurredAt": 1600367666,
+    "logType": "messageEdit",
+    "occurredAt": 1605196899,
     "content": {
       "username": 438733159748599813,
-      "messageContent": "<@!715989276382462053>",
-      "mentions": 1,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "Never",
+      "messageContent": "and one with boh",
+      "messageContentAfter": "and one with both",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 760907664573202483,
+      "sent": "A second ago",
+      "edited": "Now",
       "attachments": []
     }
   },
   "52": {
     "logType": "messageDelete",
-    "occurredAt": 1600367690,
+    "occurredAt": 1605196986,
     "content": {
-      "username": 438733159748599813,
-      "messageContent": "10",
-      "mentions": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
+      "username": 368880176970596352,
+      "messageContent": "<@!438733159748599813>",
+      "mentions": 1,
+      "occurredIn": 760907664573202483,
+      "sent": "Now",
       "edited": "Never",
       "attachments": []
     }
   },
   "53": {
-    "logType": "messageDelete",
-    "occurredAt": 1600367719,
+    "logType": "messageEdit",
+    "occurredAt": 1605197265,
     "content": {
       "username": 438733159748599813,
-      "messageContent": "what",
+      "messageContent": "now try softban pleas",
+      "messageContentAfter": "now try softban please",
       "mentions": 0,
-      "occurredIn": 726843668660617350,
-      "sent": "An hour ago",
-      "edited": "Never",
+      "mentionsAfter": 0,
+      "occurredIn": 760907664573202483,
+      "sent": "Now",
+      "edited": "Now",
       "attachments": []
     }
   },
   "54": {
-    "logType": "messagePurge",
-    "occurredAt": 1600368397,
+    "logType": "messageDelete",
+    "occurredAt": 1605197326,
     "content": {
-      "username": 715989276382462053,
-      "messageContent": "https://mystb.in/StartupChiefHardwood",
-      "occurredIn": 726843668660617350,
-      "amount": 1
+      "username": 438733159748599813,
+      "messageContent": "<@!715989276382462053>",
+      "mentions": 1,
+      "occurredIn": 760907664573202483,
+      "sent": "Now",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "55": {
+    "logType": "messageDelete",
+    "occurredAt": 1605197625,
+    "content": {
+      "username": 421698654189912064,
+      "messageContent": "horny",
+      "mentions": 0,
+      "occurredIn": 760907664573202483,
+      "sent": "A second ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "56": {
+    "logType": "messageDelete",
+    "occurredAt": 1605197917,
+    "content": {
+      "username": 421698654189912064,
+      "messageContent": "#",
+      "mentions": 0,
+      "occurredIn": 760907664573202483,
+      "sent": "2 seconds ago",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "57": {
+    "logType": "messageDelete",
+    "occurredAt": 1605197944,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "<@!368880176970596352>",
+      "mentions": 1,
+      "occurredIn": 760907664573202483,
+      "sent": "Now",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "58": {
+    "logType": "messageDelete",
+    "occurredAt": 1605198067,
+    "content": {
+      "username": 368880176970596352,
+      "messageContent": "<@!438733159748599813>",
+      "mentions": 1,
+      "occurredIn": 760907664573202483,
+      "sent": "Now",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "59": {
+    "logType": "messageDelete",
+    "occurredAt": 1605198932,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "i have the console open",
+      "mentions": 0,
+      "occurredIn": 760907664573202483,
+      "sent": "2 seconds ago",
+      "edited": "Never",
+      "attachments": []
     }
   }
 }

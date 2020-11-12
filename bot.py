@@ -6,7 +6,24 @@ import traceback
 from discord.ext import commands
 import discord
 import config
-from database import db
+#from database import db
+
+class c:
+    c = '\033[0m'
+
+    RedDark = '\033[31m'
+    GreenDark = '\033[32m'
+    YellowDark = '\033[33m'
+    BlueDark = '\033[34m'
+    PinkDark = '\033[35m'
+    CyanDark = '\033[36m'
+
+    Red = '\033[91m'
+    Green = '\033[92m'
+    Yellow = '\033[93m'
+    Blue = '\033[94m'
+    Pink = '\033[95m'
+    Cyan = '\033[96m'
 
 class Bot(commands.Bot):
     def __init__(self, **kwargs):
@@ -18,21 +35,12 @@ class Bot(commands.Bot):
             try:
                 self.load_extension(cog)
             except Exception as exc:
-                print('Could not load extension {0} due to {1.__class__.__name__}: {1}'.format(cog, exc))
+                print(f'{c.RedDark}[E] {c.Red}Could not load extension {cog} due to {exc.__class__.__name__}: {exc}{c.c}')
 
     async def on_ready(self):
-        print('Logged on as {0} (ID: {0.id})'.format(self.user))
-
-    async def on_error(self, event_method, *args, **kwargs):
-        fmt = traceback.format_exc()
-        if "AttributeError: 'NoneType' object has no attribute 'send'" in fmt:
-            return  # ignore
-        print('Ignoring exception in {}'.format(event_method), file=sys.stderr)
-        traceback.print_exc()
-
-
+        print(f'{c.Cyan}[S] {c.CyanDark}Logged on as {self.user} (ID: {self.user.id}){c.c}')
 
 bot = Bot(owner_ids=[438733159748599813, 421698654189912064, 261900651230003201, 317731855317336067], case_insensitive=True, presence=None)
-bot.loop.create_task(db.main(bot))
+#bot.loop.create_task(db.main(bot))
 
 bot.run(config.token)
