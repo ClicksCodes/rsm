@@ -33,10 +33,10 @@ class InfoCommands(commands.Cog):
 
             f"{emojis['commands']} - {emojis['PunWarn']} - **About** - {emojis['support']}\n\n"
             f"RSM by [ClicksMinutePer](https://clicksminuteper.net)\n"
-            f"Designed to make moderation easier.",
+            f"Designed to make moderation easier.\n",
 
             f"{emojis['commands']} - {emojis['PunWarn']} - {emojis['about']} - **Support**\n\n"
-            f"For support, visit the [ClicksMinutePer Support](https://clicksminuteper.net/contact-us.html) page."
+            f"For support, visit the [ClicksMinutePer Support](https://clicksminuteper.net/contact-us.html) page.\n"
         ]
 
         m = await ctx.send(embed=discord.Embed(title="Loading"))
@@ -44,7 +44,7 @@ class InfoCommands(commands.Cog):
         for _ in range(0,25):
             emb = discord.Embed (
                 title=emojis["rsm"] + " RSM",
-                description=descriptions[page] + "Trello: https://trello.com/b/pBvhvzbY/rsm",
+                description=descriptions[page] + "[Trello](https://trello.com/b/pBvhvzbY/rsm) | [Invite](https://discord.com/api/oauth2/authorize?client_id=715989276382462053&permissions=499510486&redirect_uri=https%3A%2F%2Frsm.clicksminuteper.net%2Foauth&response_type=code&scope=bot%20identify) | [Support](https://discord.gg/bPaNnxe)",
                 color=colours["create"]
             )
             emb.set_footer(text="[@] = Mention | [T] = Text | [N] = Number | [* ] = Optional")
