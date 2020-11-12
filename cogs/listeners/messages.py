@@ -66,8 +66,9 @@ class Messages(commands.Cog):
         
         try: entry = self.data[str(guild.id)]
         except: 
-            json.dump(f"{guild.id}: {template}", open(f"data/core.json", "w+"), indent=2)
-            entry = self.data[str(guild.id)]
+            # json.dump(f"{guild.id}: {template}", open(f"data/core.json", "w+"), indent=2)
+            # entry = self.data[str(guild.id)]
+            pass
         if member:
             if member.bot and entry["ignoreBots"] is True:
                 return bool(NotLogging(eventname, f"You are ignoring bots.", cog=self, guild=guild))
@@ -217,7 +218,7 @@ class Messages(commands.Cog):
             e = discord.Embed(
                 title=emojis['delete'] + " Message Deleted",
                 description=f"{f'**Content:** ```{shorten(discord.utils.escape_markdown(message.clean_content), 1024)}```' if len(message.clean_content) > 0 else ''}\n"
-                            f"**Sent By:** {emojis[message.author.status.value]} {message.author.mention}\n"
+                            f"**Sent By:** {message.author.mention}\n"
                             f"**Mentions:** {len(message.mentions)}\n"
                             f"**Sent In:** {message.channel.mention}\n"
                             f"**Sent:** {sent.capitalize()}\n"
@@ -258,7 +259,7 @@ class Messages(commands.Cog):
                 title=emojis["edit"] + " Message Edited",
                 description=f"**Before:** {('```' + shorten(discord.utils.escape_markdown(before.clean_content), 500) + '```') if len(before.clean_content) > 0 else ''}\n"
                             f"**After:** {('```' + shorten(discord.utils.escape_markdown(after.clean_content), 500) + '```') if len(after.clean_content) > 0 else ''}\n"
-                            f"**Sent By:** {emojis[message.author.status.value]} {message.author.mention}\n"
+                            f"**Sent By:** {message.author.mention}\n"
                             f"**Sent In:** {message.channel.mention}\n"
                             f"**Sent:** {sent.capitalize()}\n"
                             f"**Edited:** {edited.capitalize()}\n"
@@ -304,7 +305,7 @@ class Messages(commands.Cog):
                 title=emojis["purge"] + " Messages Purged",
                 description=f"**Messages Deleted:** {len(messages)}\n"
                             f"**In:** {message.channel.mention}\n"
-                            f"**Deleted By:** {emojis[audit.user.status.value]} {audit.user.mention}"
+                            f"**Deleted By:** {audit.user.mention}"
                             f"{dump}",
                 color=events["message_delete"][0],
                 timestamp=datetime.utcnow()
@@ -330,7 +331,7 @@ class Messages(commands.Cog):
             e = discord.Embed(
                 title=emojis["reaction_clear"] + " Reactions Cleared",
                 description=f"**Content:** {('```' + shorten(message.clean_content, 1024) + '```') if len(message.clean_content) > 0 else ''}\n"
-                            f"**Sent By:** {emojis[message.author.status.value]} {message.author.mention}\n"
+                            f"**Sent By:** {message.author.mention}\n"
                             f"**Sent In:** {message.channel.mention}\n"
                             f"**Reactions:** {', '.join(str(m) for m in reactions)}\n"
                             f"[Jump to message]({message.jump_url})",
@@ -362,7 +363,7 @@ class Messages(commands.Cog):
             e = discord.Embed(
                 title=emojis["pinned"] + f" Pins Updated",
                 description=f"**Message:** {discord.utils.escape_markdown(message.content)}\n"
-                            f"**Message by:** {emojis[message.author.status.value]} {message.author.mention}\n"
+                            f"**Message by:** {message.author.mention}\n"
                             f"**In:** {message.channel.mention}\n",
                 color=events["channel_pins_update"][0],
                 timestamp=datetime.utcnow()

@@ -31,6 +31,7 @@
     "invite_create":   "<:CreateInvite:729064529274601482>",
     "invite_delete":   "<:DeleteInvite:729064531103580230>",
     "role_create":     "<:RoleCreate:729064530763579413>",
+    "role_edit":       "<:RoleEdit:776109664793919489>",
     "role_delete":     "<:RoleDelete:729064530885476392>",
     "everyone_ping":   "<:EveryonePing:729064531073957909>",
     "role_ping":       "<:RolePing:729263536915742770>",

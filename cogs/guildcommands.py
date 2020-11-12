@@ -7,6 +7,7 @@ from discord.ext import menus
 from create_machine_utils.minidiscord import menus
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+from re import findall
 
 from cogs.consts import *
 
@@ -15,49 +16,7 @@ class GuildCommands(commands.Cog):
     @commands.guild_only()
     async def guild(self, ctx):
         g = ctx.guild
-        n = '\n'
-        async def GraphUser(ctx, m, g, final=False):
-            g = ctx.guild
-            n = '\n'
-
-            joins_x_values = sorted(m.joined_at for m in g.members)
-            plt.grid(True)
-            fig, ax = plt.subplots(figsize=(10, 6))
-            ax.plot(joins_x_values, tuple(range(1, len(joins_x_values) + 1)), 'k', lw=2, label="Members in server")
-            ax.xaxis.set_major_formatter(mdates.DateFormatter("%a %d-%m-%Y"))
-            ax.xaxis.set_major_locator(mdates.DayLocator(interval=round(len(g.members)/(len(g.members)/20))))
-            fig.autofmt_xdate()
-            plt.title("Guild Members")
-            plt.xlabel('Time (UTC)')
-            plt.ylabel('Members')
-            plt.legend()
-            buf = io.BytesIO()
-            fig.savefig(buf, format='png')
-            buf.seek(0)
-            image = discord.File(buf, filename="growth.png")
-            buf.close()
-            plt.close()
-
-            e=discord.Embed(
-                title="Server stats",
-                color=colours["create"] if not final else colours["delete"],
-                image=discord.File(buf, "growth.png")
-            )
-
-            e.set_image(url="attachment://growth.png")
-            if final == False:
-                await m.delete()
-                m = await ctx.send(
-                    embed=e,
-                    file=image
-                )
-                return m
-            else:
-                await m.edit(
-                    embed=e
-                )
-                return await n.clear_reactions()
-        
+        n = '\n'        
         async def GraphRoles(ctx, m, g, final=False):
             g = ctx.guild
             n = '\n'
@@ -204,15 +163,15 @@ class GuildCommands(commands.Cog):
                             f"**Region:** {flag} {str(g.region).replace('-', ' ').capitalize()}{n}"
                             f"**Emojis:** {len(g.emojis)}{n}"
                             f"**Icon:** [Discord.com](https://cdn.discordapp.com/icons/{g.id}/{g.icon}){n}"
-                            f"**ID:**: `{g.id}`{n}"
-                            f"**Owner**: {g.owner.mention}{n}"
+                            f"**ID:** `{g.id}`{n}"
+                            #f"**Owner:** {g.owner.mention}{n}"
                             f"**2FA Required:** {emojis['tick'] if g.mfa_level else emojis['cross']}{n}"
-                            f"**Verification Level:**: {str(g.verification_level).replace('_', ' ').capitalize()}{n}"
+                            f"**Verification Level:** {str(g.verification_level).replace('_', ' ').capitalize()}{n}"
                             f"**Explicit Content Filter:** {'Nobody' if g.explicit_content_filter == 0 else 'Only members with no role' if g.explicit_content_filter == 1 else 'Everyone'}{n}"
                             f"**Default Notifications:** {'All messages' if g.default_notifications == discord.NotificationLevel.all_messages else 'Only mentions'}{n}"
                             f"**Nitro Boost Level:** {g.premium_tier}{n}"
                             f"**Channels:** {len(g.channels)-len(g.categories)}{n}"
-                            f"**Categories:**: {len(g.categories)}{n}"
+                            f"**Categories:** {len(g.categories)}{n}"
                             f"**Roles:** {len(g.roles)}{n}"
                             f"**Members:** {g.member_count}{n}",
 
@@ -240,18 +199,16 @@ class GuildCommands(commands.Cog):
             if 752214059159650396 not in [r.id for r in m.reactions]: await m.add_reaction(ctx.bot.get_emoji(752214059159650396))
             if 729064530310594601 not in [r.id for r in m.reactions]: await m.add_reaction(ctx.bot.get_emoji(729064530310594601))
             if page == 1:
-                if 729066519337762878 in [r.id for r in m.reactions]: await m.remove_reaction(ctx.bot.get_emoji(729066519337762878))
                 if 729763053352124529 in [r.id for r in m.reactions]: await m.remove_reaction(ctx.bot.get_emoji(729763053352124529))
                 if 729066924943737033 in [r.id for r in m.reactions]: await m.remove_reaction(ctx.bot.get_emoji(729066924943737033))
                 if 729066518549233795 in [r.id for r in m.reactions]: await m.remove_reaction(ctx.bot.get_emoji(729066518549233795))
             if page > 1:
-                if 729066519337762878 not in [r.id for r in m.reactions]: await m.add_reaction(ctx.bot.get_emoji(729066519337762878))
                 if 729763053352124529 not in [r.id for r in m.reactions]: await m.add_reaction(ctx.bot.get_emoji(729763053352124529))
                 if 729066924943737033 not in [r.id for r in m.reactions]: await m.add_reaction(ctx.bot.get_emoji(729066924943737033))
                 if 729066518549233795 not in [r.id for r in m.reactions]: await m.add_reaction(ctx.bot.get_emoji(729066518549233795))
 
             reaction = None
-            try: reaction = await ctx.bot.wait_for('reaction_add', timeout=60, check=lambda _, user : user == ctx.author)
+            try: reaction = await ctx.bot.wait_for('reaction_add', timeout=60, check=lambda r, user : r.message.id == m.id and user == ctx.author)
             except asyncio.TimeoutError: break
 
             try: await m.remove_reaction(reaction[0].emoji, ctx.author)
@@ -260,23 +217,20 @@ class GuildCommands(commands.Cog):
             if reaction == None: break
             elif reaction[0].emoji.name == "Settings":               page = 1
             elif reaction[0].emoji.name == "Graphs":                 page = 2
-            elif reaction[0].emoji.name == "MemberJoin":             page = 2
             elif reaction[0].emoji.name == "ServerModerationUpdate": page = 3
             elif reaction[0].emoji.name == "ChannelCreate":          page = 4
             elif reaction[0].emoji.name == "EmojisUpdate":           page = 5
             else: break
             
             if   page == 1: m = await genInfo(ctx, m, g)
-            elif page == 2: m = await GraphUser(ctx, m, g)
-            elif page == 3: m = await GraphRoles(ctx, m, g)
-            elif page == 4: m = await GraphChannels(ctx, m, g)
-            elif page == 5: m = await GraphEmojis(ctx, m, g)
+            elif page == 2: m = await GraphRoles(ctx, m, g)
+            elif page == 3: m = await GraphChannels(ctx, m, g)
+            elif page == 4: m = await GraphEmojis(ctx, m, g)
             else: break
 
-        if   page == 2: m = await GraphUser(ctx, m, g, True)
-        elif page == 3: m = await GraphRoles(ctx, m, g, True)
-        elif page == 4: m = await GraphChannels(ctx, m, g, True)
-        elif page == 5: m = await GraphEmojis(ctx, m, g, True)
+        if page == 2: m = await GraphRoles(ctx, m, g, True)
+        elif page == 3: m = await GraphChannels(ctx, m, g, True)
+        elif page == 4: m = await GraphEmojis(ctx, m, g, True)
         else:           m = await genInfo(ctx, m, g, True)
     
     @commands.command(aliases=["roles"])
@@ -363,7 +317,7 @@ class GuildCommands(commands.Cog):
                 else:         m = await genPage(ctx, m, pages[page])
 
                 reaction = None
-                try: reaction = await ctx.bot.wait_for('reaction_add', timeout=60, check=lambda _, user : user == ctx.author)
+                try: reaction = await ctx.bot.wait_for('reaction_add', timeout=60, check=lambda r, user : r.message.id == m.id and user == ctx.author)
                 except asyncio.TimeoutError: break
 
                 try: await m.remove_reaction(reaction[0].emoji, ctx.author)
@@ -457,9 +411,12 @@ class GuildCommands(commands.Cog):
                 try: await m.remove_reaction(reaction, ctx.author)
                 except: pass
 
-                reaction = None
-                try: reaction = await ctx.bot.wait_for('reaction_add', timeout=60, check=lambda _, user : user == ctx.author)
+                out = None
+                try: reaction = await ctx.bot.wait_for('reaction_add', timeout=60, check=lambda r, user : r.message.id == m.id and user == ctx.author)
                 except asyncio.TimeoutError: break
+
+                try: await m.remove_reaction(reaction[0].emoji, ctx.author)
+                except: pass
 
                 reaction = reaction[0].emoji
 
@@ -493,9 +450,8 @@ class GuildCommands(commands.Cog):
             await ctx.send(embed=discord.Embed(
                 title="I couldn't find that role", 
                 description=f"Make sure it is capitalised correctly.\nYou can use the role ID to make sure that I can find it.", 
-                color=colours["delete"
-            ]))
-        else: print(error)
+                color=colours["delete"]
+            ))
     
     @commands.command(aliases=['viewas', 'serveras', 'serverfrom'])
     @commands.guild_only()
@@ -549,8 +505,8 @@ class GuildCommands(commands.Cog):
             if len(value) > 0: i += 1
             desc = ""
             if len(value) == 0: continue
-            elif key == 0: desc += f"**Uncategorised**:{n}"
-            else: desc += f"**{key.name}**:{n}"
+            elif key == 0: desc += f"**Uncategorised:** {n}"
+            else: desc += f"**{key.name}:** {n}"
             for item in value:
                 desc += f"{emojis['vicon'] if item.type == discord.ChannelType.voice else emojis['cicon']}{item.name}{n}"
 
@@ -575,7 +531,7 @@ class GuildCommands(commands.Cog):
             await mess.edit(embed=descs[page])
 
             reaction = None
-            try: reaction = await ctx.bot.wait_for('reaction_add', timeout=60, check=lambda _, user : user == ctx.author)
+            try: reaction = await ctx.bot.wait_for('reaction_add', timeout=60, check=lambda r, user : r.message.id == mess.id and user == ctx.author)
             except asyncio.TimeoutError: break
             reaction = reaction[0].emoji
 
@@ -590,6 +546,17 @@ class GuildCommands(commands.Cog):
 
         await mess.edit(embed=findescs[page])
         await mess.clear_reactions()
+
+    @viewfrom.error
+    async def viewfrom_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send(embed=discord.Embed(
+                title="Looks like you don't have permissions", 
+                description=f"Make sure you have the `manage_messages` permission to use this command.", 
+                color=colours["delete"]
+            ))
+        else:
+            print('\n'.join(['[x] ' + n for n in (str(error).split('\n'))]))
 
 def setup(bot):
     bot.add_cog(GuildCommands(bot))
