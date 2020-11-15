@@ -62,11 +62,11 @@ class InfoCommands(commands.Cog):
             f"{emojis['raidlock']  } `m!raid     [*T]`\nLocks down the entire server. All roles are denied `send_messages` if they do not have `manage_messages`. You can type `m!raid off` to end a raid, and type `m!raid` during a raid to view options like ban members.\n\n",
 
             f"{emojis['commands']} - {emojis['PunWarn']} - {emojis['lock']} - **About** - {emojis['support']}\n\n"
-            f"RSM by [ClicksMinutePer](https://clicksminuteper.net)\n"
+            f"RSM by ClicksMinutePer\n"
             f"Designed to make moderation easier.\n",
 
             f"{emojis['commands']} - {emojis['PunWarn']} - {emojis['about']} - **Support**\n\n"
-            f"For support, visit the [ClicksMinutePer Support](https://clicksminuteper.net/contact-us.html) page.\n"
+            f"For support, use `m!contact`.\n"
         ]
 
         m = await ctx.send(embed=self.loadingEmbed)
@@ -74,7 +74,7 @@ class InfoCommands(commands.Cog):
         for _ in range(0,25):
             emb = discord.Embed (
                 title=emojis["rsm"] + " RSM",
-                description=descriptions[page] + "[Trello](https://trello.com/b/pBvhvzbY/rsm) | [Invite](https://discord.com/api/oauth2/authorize?client_id=715989276382462053&permissions=499510486&redirect_uri=https%3A%2F%2Frsm.clicksminuteper.net%2Foauth&response_type=code&scope=bot%20identify) | [Support](https://discord.gg/bPaNnxe)",
+                description=descriptions[page] + "[Trello](https://trello.com/b/pBvhvzbY/rsm) | [Invite](https://discord.com/api/oauth2/authorize?client_id=715989276382462053&permissions=499510486&response_type=code&scope=bot) | [Support](https://discord.gg/bPaNnxe)",
                 color=colours["create"]
             )
             emb.set_footer(text="[@] = Mention | [T] = Text | [N] = Number | [R] = Role | [C] = Channel | [* ] = Optional")
@@ -98,7 +98,7 @@ class InfoCommands(commands.Cog):
 
         emb = discord.Embed (
             title=emojis["rsm"] + " RSM",
-            description=descriptions[page] + "[Trello](https://trello.com/b/pBvhvzbY/rsm) | [Invite](https://discord.com/api/oauth2/authorize?client_id=715989276382462053&permissions=499510486&redirect_uri=https%3A%2F%2Frsm.clicksminuteper.net%2Foauth&response_type=code&scope=bot%20identify) | [Support](https://discord.gg/bPaNnxe)",
+            description=descriptions[page] + "[Trello](https://trello.com/b/pBvhvzbY/rsm) | [Invite](https://discord.com/api/oauth2/authorize?client_id=715989276382462053&permissions=499510486&response_type=code&scope=bot) | [Support](https://discord.gg/bPaNnxe)",
             color=colours["delete"]
         )
         emb.set_footer(text="[@] = Mention | [T] = Text | [N] = Number | [R] = Role | [C] = Channel | [* ] = Optional")

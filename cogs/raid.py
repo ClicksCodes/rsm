@@ -71,6 +71,11 @@ class Raid(commands.Cog):
     @commands.guild_only()
     async def raid(self, ctx, toggle: typing.Optional[str]):
         if not (ctx.author.guild_permissions.administrator or (ctx.author.guild_permissions.manage_channels and ctx.author.guild_permissions.manage_server)): return await ctx.send(embed=createEmbed(f"{emojis['raidlock']} Looks like you don't have permissions", "You need the `administrator` or both `manage_server` and `manage_channels` permissions to toggle raid.", colours["delete"]), delete_after=10)
+        with open(f"data/stats.json", 'r') as entry:
+            entry = json.load(entry)
+            entry["raids"] += 1
+        with open(f"data/stats.json", 'w') as f:
+            json.dump(entry, f, indent=2)
         raidInProgress = True if discord.utils.get(ctx.guild.text_channels, name="rsm-raid-logs") else False
         if not raidInProgress: return await self.toggleRaid(True, ctx)
         elif toggle: return await self.toggleRaid(False, ctx)
