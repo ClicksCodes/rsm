@@ -1,0 +1,74 @@
+{
+  "guild_info": {
+    "id": 684492926528651336,
+    "joined_at": "2020-07-04 02:12:01.692450"
+  },
+  "log_info": {
+    "log_channel": 764361232069165096,
+    "to_log": [
+      "message_delete",
+      "message_edit",
+      "bulk_message_delete",
+      "channel_pins_update",
+      "reaction_clear",
+      "everyone_here",
+      "mass_mention",
+      "roles",
+      "channel_create",
+      "channel_delete",
+      "nsfw_update",
+      "channel_title_update",
+      "channel_desc_update",
+      "member_join",
+      "member_leave",
+      "member_kick",
+      "member_ban",
+      "member_unban",
+      "nickname_change",
+      "guild_role_create",
+      "guild_role_delete",
+      "guild_emojis_update",
+      "invite_create",
+      "invite_delete",
+      "icon_update",
+      "mod_changed",
+      "name_changed",
+      "webhook_create"
+    ]
+  },
+  "ignore_info": {
+    "bots": true,
+    "members": [],
+    "roles": [],
+    "channels": []
+  },
+  "enabled": true,
+  "0": {
+    "logType": "messageEdit",
+    "occurredAt": 1605438012,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "there",
+      "messageContentAfter": "there right?",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 760916763172012084,
+      "sent": "2 seconds ago",
+      "edited": "Now",
+      "attachments": []
+    }
+  },
+  "1": {
+    "logType": "messageDelete",
+    "occurredAt": 1605446242,
+    "content": {
+      "username": 438733159748599813,
+      "messageContent": "m!suggest yes",
+      "mentions": 0,
+      "occurredIn": 760916763172012084,
+      "sent": "Now",
+      "edited": "Never",
+      "attachments": []
+    }
+  }
+}

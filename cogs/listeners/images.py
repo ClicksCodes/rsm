@@ -8,15 +8,70 @@ from colorthief import ColorThief as cf
 
 from cogs.consts import *
 
+
+class NotLogging:
+    def __init__(self, etype, reason, details="No Further Info", *, cog, guild):
+        self.etype = etype
+        self.reason = reason
+        self.details = details
+        if cog and guild: cog.bot.loop.create_task(cog.vbl(guild, self))
+        else:
+            self.cog = None
+            self.guild = None
+
+    def __str__(self): return f"Not logging event \"{self.etype}\" for reason: {self.reason}. See extra details in __repr__."""
+    def __repr__(self): return f"NotLogging(etype={self.etype} reason={self.reason} details={self.details})"
+    def __bool__(self): return False
+
 class ImageDetect(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        with open("./data/core.json") as rfile: self.data = json.load(rfile)
         self.session = aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10.0))
     
+    def tohex(self, i): return hex(i).split('x')[-1]
+    
     def cog_unload(self): 
-        with open("./data/core.json", "w") as wfile: json.dump(self.data, wfile, indent=2)
         self.bot.loop.create_task(self.session.close())
+
+    def is_logging(self, guild: discord.Guild, *, channel = None, member: discord.Member = None, eventname):
+        if not os.path.exists(f'data/guilds/{guild.id}.json'): return bool(NotLogging(eventname, "Guild not configured.", cog=self, guild=guild))
+        if eventname not in events.keys():                     return bool(NotLogging(eventname, "Event Name is not in registered events.", cog=self, guild=guild))
+        if not guild:                                          return bool(NotLogging(eventname, "Event occurred in DMs, thus has no targeted channel.", cog=self, guild=guild))
+        
+        try:    
+            with open(f"data/guilds/{guild.id}.json") as entry:
+                entry = json.load(entry)
+                if member:
+                    if member.bot and entry["ignore_info"]["ignore_bots"] is True: return bool(NotLogging(eventname, f"You are ignoring bots.", cog=self, guild=guild))
+                    if member.id in entry["ignore_info"]["members"]:               return bool(NotLogging(eventname, f"Member \"{member}\" is being ignored.", cog=self, guild=guild))
+                    if member == self.bot.user:                                    return bool(NotLogging(eventname, f"Not logging bot actions", cog=self, guild=guild))
+                    
+                if channel:
+                    if channel.id in entry["ignore_info"]["channels"]:   return bool(NotLogging(eventname, f"Channel \"{channel}\" is being ignored.", cog=self, guild=guild))
+                    if channel.id == entry["log_info"]["log_channel"]:   return bool(NotLogging(eventname, f"This is the log channel.", cog=self, guild=guild))
+                if eventname.lower() not in entry["log_info"]["to_log"]: return bool(NotLogging(eventname, f"Guild is ignoring event \"{eventname}\".", cog=self, guild=guild))
+                if not entry["enabled"]:                                 return bool(NotLogging(eventname, f"This guild has disabled logs.", cog=self, guild=guild))
+                return True
+        except Exception as e: print(e)
+        
+    def get_log(self, guild: discord.Guild): 
+        with open(f"data/guilds/{guild.id}.json") as f:
+            entry =  json.load(f)
+            return self.bot.get_channel(entry["log_info"]["log_channel"])
+
+    async def vbl(self, guild, e: NotLogging):
+        """VerboseLog: Log NotLogging events if verbose is enabled"""
+        return True 
+    
+    async def log(self, logType:str, guild:int, occurredAt:int, content:dict):
+        try:
+            with open(f"data/guilds/{guild}.json", 'r') as entry:
+                entry = json.load(entry)
+                logID = len(entry)-4
+                entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
+            with open(f"data/guilds/{guild}.json", 'w') as f:
+                json.dump(entry, f, indent=2)
+        except Exception as e: print(e)  
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.message):
@@ -33,7 +88,8 @@ class ImageDetect(commands.Cog):
                     img = cv2.imread(f_name)
                     low_thresh = 16
                     up_thresh  = 4097
-                    dimensions = [img.shape[0], img.shape[1]]
+                    try:    dimensions = [img.shape[0], img.shape[1]]
+                    except: return
                     if min(dimensions) < low_thresh: await message.channel.send('Too small')
                     if max(dimensions) > up_thresh:  await message.channel.send('Too large')
 
@@ -96,6 +152,9 @@ class ImageDetect(commands.Cog):
                         try: os.remove(f_name)
                         except: pass
         
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, AttributeError): pass
+        else: self.bot.get_channel(776418051003777034).send(embed=discord.Embed(title="Error", description=str(error), color=colours["delete"]))
 
 def setup(bot):
     bot.add_cog(ImageDetect(bot))
