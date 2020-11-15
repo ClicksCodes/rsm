@@ -23,7 +23,7 @@ class InfoCommands(commands.Cog):
     async def ping(self, ctx):
         m = await ctx.send(embed=self.loadingEmbed)
         time = m.created_at - ctx.message.created_at
-        await m.edit(content=None, embed=self.createEmbed(f":ping_pong: Ping", f"Latency is: `{int(time.microseconds / 1000)}ms`", colours['create']))
+        await m.edit(content=None, embed=self.createEmbed(f"<:SlowmodeOn:777138171301068831> Ping", f"Latency is: `{int(time.microseconds / 1000)}ms`", colours['create']))
     
     @commands.command(aliases=["help"])
     async def info(self, ctx: commands.Context, mob:typing.Optional[str]):

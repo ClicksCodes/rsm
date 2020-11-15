@@ -70,5 +70,45 @@
       "edited": "Never",
       "attachments": []
     }
+  },
+  "2": {
+    "logType": "channelCreate",
+    "occurredAt": 1605461400,
+    "content": {
+      "username": 438733159748599813,
+      "channel": 777586211962224730,
+      "Category": 760906472611119124,
+      "type": "voice"
+    }
+  },
+  "3": {
+    "logType": "messageEdit",
+    "occurredAt": 1605462237,
+    "content": {
+      "username": 487443883127472129,
+      "messageContent": "I tried to set a log to a channel it can't see",
+      "messageContentAfter": "I tried to set the log to a channel it can't see",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 760907642565558283,
+      "sent": "4 hours from now",
+      "edited": "5 hours from now",
+      "attachments": []
+    }
+  },
+  "4": {
+    "logType": "messageEdit",
+    "occurredAt": 1605464979,
+    "content": {
+      "username": 487443883127472129,
+      "messageContent": "joining guulds",
+      "messageContentAfter": "joining guilds",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 760916763172012084,
+      "sent": "4 hours from now",
+      "edited": "5 hours from now",
+      "attachments": []
+    }
   }
 }
