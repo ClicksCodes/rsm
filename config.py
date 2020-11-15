@@ -3,7 +3,7 @@ cogs = [
     "cogs.core", 
     "jishaku", 
     "cogs.listeners.guild", 
-    "cogs.listeners.images", 
+    #"cogs.listeners.images", 
     "cogs.listeners.messages", 
     "cogs.listeners.users", 
     "cogs.modcommands", 
