@@ -100,6 +100,12 @@ class Commands(commands.Cog):
         except Exception as e: 
             return print(e)
 
+        with open(f"data/stats.json", 'r') as entry:
+                entry = json.load(entry)
+                entry["warns"] += 1
+            with open(f"data/stats.json", 'w') as f:
+                json.dump(entry, f, indent=2)
+
         if reason == None:
             reason, m = await self.reasonHandler(
                 m, 
@@ -109,6 +115,7 @@ class Commands(commands.Cog):
                 },
                 ctx
             )
+        
         if reason != None:
             try: await member.send(embed=createEmbed(f"{emojis['PunWarn']} Warning", f"You were warned in {ctx.guild.name} {('for ' + reason) if reason is not False else 'with no reason provided'}.", colours["edit"]))
             except: return
@@ -122,6 +129,12 @@ class Commands(commands.Cog):
                 return await m.edit(embed=createEmbed(f"{emojis['PunKick']} Looks like you don't have permissions", "You need the `kick_members` permission to kick someone.", colours["delete"]))
         except Exception as e:
             return print(e)
+
+        with open(f"data/stats.json", 'r') as entry:
+                entry = json.load(entry)
+                entry["kicks"] += 1
+            with open(f"data/stats.json", 'w') as f:
+                json.dump(entry, f, indent=2)
 
         if reason == None:
             reason, m = await self.reasonHandler(
@@ -150,6 +163,13 @@ class Commands(commands.Cog):
                 return await m.edit(embed=createEmbed(f"{emojis['PunBan']} Looks like you don't have permissions", "You need the `ban_members` permission to ban someone.", colours["delete"]))
         except Exception as e:
             return print(e)
+
+        with open(f"data/stats.json", 'r') as entry:
+                entry = json.load(entry)
+                entry["bans"] += 1
+            with open(f"data/stats.json", 'w') as f:
+                json.dump(entry, f, indent=2)
+
         if reason == None:
             reason, m = await self.reasonHandler(
                 m, 
@@ -178,6 +198,13 @@ class Commands(commands.Cog):
                 return await m.edit(embed=self.createEmbed(f"{emojis['PunSoftBan']} Looks like you don't have permissions", "You need the `ban_members` permission to soft ban someone.", colours["delete"]))
         except Exception as e:
             return print(e)
+
+        with open(f"data/stats.json", 'r') as entry:
+                entry = json.load(entry)
+                entry["softbans"] += 1
+            with open(f"data/stats.json", 'w') as f:
+                json.dump(entry, f, indent=2)
+
         if reason == None:
             reason, m = await self.reasonHandler(
                 m, 
@@ -207,6 +234,13 @@ class Commands(commands.Cog):
                 return await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Looks like you don't have permissions", "You need the `manage_messages` permission to delete someone's history.", colours["delete"]))
         except Exception as e:
             return print(e)
+
+        with open(f"data/stats.json", 'r') as entry:
+                entry = json.load(entry)
+                entry["clears"] += 1
+            with open(f"data/stats.json", 'w') as f:
+                json.dump(entry, f, indent=2)
+
         if out == None:
             out, m = await self.intHandler(
                 m, 
@@ -253,6 +287,11 @@ class Commands(commands.Cog):
         createEmbed = self.createEmbed
         if not ctx.author.guild_permissions.manage_channels:   return await ctx.send(embed=createEmbed(f"{emojis['lock']} Lock", "You need the `manage_channels` permission to set lockdown.", colours["delete"]), delete_after=10)
         if not ctx.guild.me.guild_permissions.manage_channels: return await ctx.send(embed=createEmbed(f"{emojis['lock']} Lock", "I need the `manage_channels` permission to set lockdown.", colours["delete"]), delete_after=10)
+        with open(f"data/stats.json", 'r') as entry:
+            entry = json.load(entry)
+            entry["locks"] += 1
+        with open(f"data/stats.json", 'w') as f:
+            json.dump(entry, f, indent=2)
         m = await ctx.send(embed=createEmbed(f"{emojis['lock']} Lock", f"Please wait as the channel gets {'un' if lock is None else ''}locked.", colours["edit"]))
         for role in ctx.guild.roles: 
             if not role.permissions.manage_messages:
@@ -275,6 +314,13 @@ class Commands(commands.Cog):
                 return await m.delete()
         except Exception as e:
             return print(e)
+        
+        with open(f"data/stats.json", 'r') as entry:
+                entry = json.load(entry)
+                entry["purges"] += 1
+            with open(f"data/stats.json", 'w') as f:
+                json.dump(entry, f, indent=2)
+
         if out == None:
             out, m = await self.intHandler(
                 m, 
