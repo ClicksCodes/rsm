@@ -1,4 +1,4 @@
-import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio
+import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio, postbin, re
 
 from datetime import datetime
 from discord.ext import commands
@@ -11,16 +11,17 @@ from cogs.consts import *
 class Commands(commands.Cog):
     def __init__(self, bot):
         self.emojiids = {
-            "PunWarn": [729764054897524768, "Warn"],
-            "PunMute": [729764053865463840, "Mute"],
-            "PunVoiceMute": [729764054855450697, "Voice Mute"],
-            "PunHistory": [729764062270980096, "Delete message history"],
-            "PunKick": [729764053794422896, "Kick"],
-            "PunSoftBan": [729764053941223476, "Soft ban"],
-            "PunBan": [729764053861400637, "Ban"],
-            "Stop": [751161404442279966, "Cancel"]
+            "PunWarn":      [729764054897524768, "Warn"],
+            # "PunMute":      [729764053865463840, "Mute"],
+            # "PunVoiceMute": [729764054855450697, "Voice Mute"],
+            "PunHistory":   [729764062270980096, "Delete message history"],
+            "PunKick":      [729764053794422896, "Kick"],
+            "PunSoftBan":   [729764053941223476, "Soft ban"],
+            "PunBan":       [729764053861400637, "Ban"],
+            "Stop":         [751161404442279966, "Cancel"]
         }
         self.bot = bot
+        self.loadingEmbed = loadingEmbed
 
     def createEmbed(self, title, description, color=0x000000):
         return discord.Embed(
@@ -160,6 +161,7 @@ class Commands(commands.Cog):
             )
         if reason != None:
             try: 
+                if ctx.guild.me.top_role.position <= member.top_role.position or ctx.author.top_role <= member.top_role.position: int("at this point in life i dont even care")
                 try: 
                     if reason is not False: await member.send(embed=createEmbed(f"{emojis['PunBan']} Banned", f"You were banned from {ctx.guild.name} for {reason}.", colours["delete"]))
                 except: pass
@@ -167,7 +169,6 @@ class Commands(commands.Cog):
                 await m.edit(embed=createEmbed(f"{emojis['PunBan']} Ban", f"User {member.mention} was successfully banned{' for' + str(reason) if reason is not False else ''}.", colours["create"]))
             except Exception as e:
                 await m.edit(embed=createEmbed(f"{emojis['PunBan']} Ban", f"Something went wrong. I may not have permissions, or the user couldn't be banned.", colours["delete"]))
-                print(e)
             await m.clear_reactions()
     
     async def softBanPun(self, m, member, ctx, reason=None):
@@ -198,6 +199,7 @@ class Commands(commands.Cog):
                 await m.edit(embed=createEmbed(f"{emojis['PunSoftBan']} Soft Ban", f"Something went wrong. I may not have permissions, or the user couldn't be banned.", colours["delete"]))
                 print(e)
             await m.clear_reactions()
+
     async def delHistoryPun(self, m, member, ctx, out=None, mod=None):
         createEmbed = self.createEmbed
         try:
@@ -231,6 +233,40 @@ class Commands(commands.Cog):
                 await m.delete()
             except Exception as e: print(e) 
     
+    async def setSlowmode(self, ctx, channel, time):
+        createEmbed = self.createEmbed
+        try: await ctx.delete()
+        except: pass
+
+        try:
+            if not ctx.author.guild_permissions.manage_messages:   return await ctx.send(embed=createEmbed(f"{emojis['slowmodeOn']} Slowmode", "You need the `manage_messages` permission to set slowmode.", colours["delete"]), delete_after=10)
+            if not ctx.guild.me.guild_permissions.manage_messages: return await ctx.send(embed=createEmbed(f"{emojis['slowmodeOn']} Slowmode", "I need the `manage_messages` permission to set slowmode.", colours["delete"]), delete_after=10)
+            if time > 21600:                                       return await ctx.send(embed=createEmbed(f"{emojis['slowmodeOn']} Slowmode", "Slowmode delay must be smaller than 21600.", colours["delete"]), delete_after=10)
+            if time < 0:                                           return await ctx.send(embed=createEmbed(f"{emojis['slowmodeOn']} Slowmode", "Slowmode delay must be bigger than 0.", colours["delete"]), delete_after=10)
+            await ctx.channel.edit(slowmode_delay=time)
+            return await ctx.send(embed=createEmbed(f"{emojis['slowmodeOn'] if time > 0 else emojis['slowmodeOff']} Slowmode", f"Slowmode time has been successfully set to {time}s.", colours["create"]))
+        except Exception as e:
+            await ctx.send(embed=createEmbed(f"{emojis['slowmodeOn'] if time > 0 else emojis['slowmodeOff']} Slowmode", "An unknown error occurred and slowmode could not be set.", colours["delete"]), delete_after=10)
+            return print(e)
+        
+    async def lockdown(self, lock, channel, ctx):
+        createEmbed = self.createEmbed
+        if not ctx.author.guild_permissions.manage_channels:   return await ctx.send(embed=createEmbed(f"{emojis['lock']} Lock", "You need the `manage_channels` permission to set lockdown.", colours["delete"]), delete_after=10)
+        if not ctx.guild.me.guild_permissions.manage_channels: return await ctx.send(embed=createEmbed(f"{emojis['lock']} Lock", "I need the `manage_channels` permission to set lockdown.", colours["delete"]), delete_after=10)
+        m = await ctx.send(embed=createEmbed(f"{emojis['lock']} Lock", f"Please wait as the channel gets {'un' if lock is None else ''}locked.", colours["edit"]))
+        for role in ctx.guild.roles: 
+            if not role.permissions.manage_messages:
+                override = channel.overwrites_for(role)
+                override.send_messages = lock
+                try: await channel.set_permissions(role, overwrite=override)
+                except: pass
+            else:
+                override = channel.overwrites_for(role)
+                override.send_messages = True
+                try: await channel.set_permissions(role, overwrite=override)
+                except: pass
+        return await m.edit(embed=createEmbed(f"{emojis['lock']} Lock", f"The channel is now {'un' if lock is None else ''}locked for everyone without `manage_messages` permission.", colours["create"]))
+            
     async def purgeChannel(self, m, ctx, out=None):
         createEmbed = self.createEmbed
         try:
@@ -342,6 +378,7 @@ class Commands(commands.Cog):
                 color=colours["edit"]
             )
             await ctx.send(embed=notFound)
+        else: return print(f"{c.RedDark}[C] {c.Red}{str(error)}{c.c}")
     
     @commands.command()
     @commands.guild_only()
@@ -365,8 +402,8 @@ class Commands(commands.Cog):
             await m.delete()
             if len(msg.mentions) != 1: return await ctx.send(embed=tooMany)
             else: member = msg.mentions[0]
-        m = await ctx.send(embed=discord.Embed(title="Loading"))
-        await self.warnPun(m, member, ctx, reason if len(reason) > 0 else None)
+        m = await ctx.send(embed=self.loadingEmbed)
+        await self.warnPun(m, member, ctx, reason)
     
     @commands.command()
     @commands.guild_only()
@@ -390,7 +427,7 @@ class Commands(commands.Cog):
             await m.delete()
             if len(msg.mentions) != 1: return await ctx.send(embed=tooMany)
             else: member = msg.mentions[0]
-        m = await ctx.send(embed=discord.Embed(title="Loading"))
+        m = await ctx.send(embed=self.loadingEmbed)
         await self.kickPun(m, member, ctx, reason)
     
     @commands.command()
@@ -413,13 +450,13 @@ class Commands(commands.Cog):
             await m.delete()
             if len(msg.mentions) != 1: return await ctx.send(embed=tooMany)
             else: member = msg.mentions[0]
-        m = await ctx.send(embed=discord.Embed(title="Loading"))
+        m = await ctx.send(embed=self.loadingEmbed)
         await self.delHistoryPun(m, member, ctx, t, mod=mod)
     
     @commands.command()
     @commands.guild_only()
     async def purge(self, ctx, t:typing.Optional[int]):
-        m = await ctx.send(embed=discord.Embed(title="Loading"))
+        m = await ctx.send(embed=self.loadingEmbed)
         await self.purgeChannel(m, ctx, t)
     
     @commands.command()
@@ -444,7 +481,7 @@ class Commands(commands.Cog):
             await m.delete()
             if len(msg.mentions) != 1: return await ctx.send(embed=tooMany)
             else: member = msg.mentions[0]
-        m = await ctx.send(embed=discord.Embed(title="Loading"))
+        m = await ctx.send(embed=self.loadingEmbed)
         await self.softBanPun(m, member, ctx, reason)
     
     @commands.command()
@@ -469,8 +506,42 @@ class Commands(commands.Cog):
             await m.delete()
             if len(msg.mentions) != 1: return await ctx.send(embed=tooMany)
             else: member = msg.mentions[0]
-        m = await ctx.send(embed=discord.Embed(title="Loading"))
+        m = await ctx.send(embed=self.loadingEmbed)
         await self.banPun(m, member, ctx, reason)
+        
+    @commands.command(aliases=["slow"])
+    @commands.guild_only()
+    async def slowmode(self, ctx, channel: typing.Optional[discord.TextChannel], time: typing.Optional[str]):
+        if not channel: channel = ctx.channel
+        if time is not None: time = re.sub(r"[^0-9]*", "", str(time))
+        try: 
+            time = int(time)
+        except:
+            if time == "toggle" or time == None:
+                if channel.slowmode_delay > 0: time = 0 
+                else:                          time = 10
+            elif time == "on":  time = 10
+            elif time == "off": time = 0 
+            else:               time = channel.slowmode_delay
+
+        await self.setSlowmode(ctx, channel, time) 
+        
+    @commands.command()
+    @commands.guild_only()
+    async def lock(self, ctx, channel: typing.Optional[discord.TextChannel], s: typing.Optional[str]):
+        if not channel: channel = ctx.channel
+        lock = False
+        
+        if s == "off": lock = None  
+        
+        await self.lockdown(lock, channel, ctx)
+
+    @commands.command()
+    @commands.guild_only()
+    async def unlock(self, ctx, channel: typing.Optional[discord.TextChannel]):
+        if not channel: channel = ctx.channel
+
+        await self.lockdown(None, channel, ctx)   
     
     @commands.command(aliases=["user", "whois"])
     @commands.guild_only()
@@ -482,7 +553,7 @@ class Commands(commands.Cog):
         role = guild.get_role(760896837866749972)
 
         flags = []
-        if member.id in [317731855317336067, 438733159748599813, 715989276382462053, 261900651230003201, 421698654189912064]: flags.append("rsm_developer")
+        if member.id in [317731855317336067, 438733159748599813, 715989276382462053, 261900651230003201, 421698654189912064, 487443883127472129]: flags.append("rsm_developer")
         if member in role.members: flags.append("clicks_developer")
         if member.id in ms: flags.append("clicks_developer")
         if member in guild.premium_subscribers: flags.append("booster")

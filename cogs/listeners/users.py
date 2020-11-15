@@ -49,63 +49,52 @@ async def get_alog_entry(ctx, *, type: discord.AuditLogAction, check = None):
 class Users(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        with open("./data/core.json") as rfile: self.data = json.load(rfile)
         self.session = aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10.0))
     
+    def tohex(self, i): return hex(i).split('x')[-1]
+    
     def cog_unload(self): 
-        with open("./data/core.json", "w") as wfile: json.dump(self.data, wfile, indent=2)
         self.bot.loop.create_task(self.session.close())
 
     def is_logging(self, guild: discord.Guild, *, channel = None, member: discord.Member = None, eventname):
-        if eventname not in events.keys():  # invalid event name
-            return bool(NotLogging(eventname, "Event Name is not in registered events.", cog=self, guild=guild))
-        if not guild:  # in DMs
-            return bool(NotLogging(eventname, "Event occurred in DMs, thus has no targeted channel.", cog=self, guild=guild))
-        if not self.data.get(str(guild.id)):
-            return bool(NotLogging(eventname, "The guild where this event occured has not registered.", cog=self, guild=guild))
+        if not os.path.exists(f'data/guilds/{guild.id}.json'): return bool(NotLogging(eventname, "Guild not configured.", cog=self, guild=guild))
+        if eventname not in events.keys():                     return bool(NotLogging(eventname, "Event Name is not in registered events.", cog=self, guild=guild))
+        if not guild:                                          return bool(NotLogging(eventname, "Event occurred in DMs, thus has no targeted channel.", cog=self, guild=guild))
         
-        try: entry = self.data[str(guild.id)]
-        except: 
-            # json.dump(f"{guild.id}: {template}", open(f"data/core.json", "w+"), indent=2)
-            # entry = self.data[str(guild.id)]
-            pass
-        if member:
-            if member.bot and entry["ignoreBots"] is True:
-                return bool(NotLogging(eventname, f"You are ignoring bots.", cog=self, guild=guild))
-            if member.id in entry["ignoredMembers"]:
-                return bool(NotLogging(eventname, f"Member \"{member}\" is being ignored.", cog=self, guild=guild))
-            if member == self.bot.user:
-                return bool(NotLogging(eventname, f"Not logging bot actions", cog=self, guild=guild))
-            
-        if channel:
-            if channel.id in entry["ignoredChannels"]:
-                return bool(NotLogging(eventname, f"Channel \"{channel}\" is being ignored.", cog=self, guild=guild))
-            if channel.id == entry["logChannel"]:
-                return bool(NotLogging(eventname, f"This is the log channel.", cog=self, guild=guild))
-        if eventname.lower() not in entry["toLog"]:
-            return bool(NotLogging(eventname, f"Guild is ignoring event \"{eventname}\".", cog=self, guild=guild))
-        return True
+        try:    
+            with open(f"data/guilds/{guild.id}.json") as entry:
+                entry = json.load(entry)
+                if member:
+                    if member.bot and entry["ignore_info"]["ignore_bots"] is True: return bool(NotLogging(eventname, f"You are ignoring bots.", cog=self, guild=guild))
+                    if member.id in entry["ignore_info"]["members"]:               return bool(NotLogging(eventname, f"Member \"{member}\" is being ignored.", cog=self, guild=guild))
+                    if member == self.bot.user:                                    return bool(NotLogging(eventname, f"Not logging bot actions", cog=self, guild=guild))
+                    
+                if channel:
+                    if channel.id in entry["ignore_info"]["channels"]:   return bool(NotLogging(eventname, f"Channel \"{channel}\" is being ignored.", cog=self, guild=guild))
+                    if channel.id == entry["log_info"]["log_channel"]:   return bool(NotLogging(eventname, f"This is the log channel.", cog=self, guild=guild))
+                if eventname.lower() not in entry["log_info"]["to_log"]: return bool(NotLogging(eventname, f"Guild is ignoring event \"{eventname}\".", cog=self, guild=guild))
+                if not entry["enabled"]:                                 return bool(NotLogging(eventname, f"This guild has disabled logs.", cog=self, guild=guild))
+                return True
+        except Exception as e: print(e)
         
     def get_log(self, guild: discord.Guild): 
-        return self.bot.get_channel(self.data[str(guild.id)]["logChannel"])
+        with open(f"data/guilds/{guild.id}.json") as f:
+            entry =  json.load(f)
+            return self.bot.get_channel(entry["log_info"]["log_channel"])
 
     async def vbl(self, guild, e: NotLogging):
         """VerboseLog: Log NotLogging events if verbose is enabled"""
-        if not self.data.get(str(guild.id)):
-            with open("./data/template.json") as rfile:
-                self.data[str(guild.id)] = json.load(rfile)
-
-        if not self.data[str(guild.id)]["verbose"]: return False
-        # print(f"Not logging event {e.etype}:\n> {e.reason}\n\n> {e.details}")
         return True 
     
     async def log(self, logType:str, guild:int, occurredAt:int, content:dict):
-        try: data = json.load(open(f"data/guilds/{guild}.json", 'r'))
-        except Exception as e: data = {}
-        logID = len(data)
-        data[str(logID)] = {"logType": logType, "occurredAt": occurredAt, "content": content}
-        try: json.dump(data, open(f"data/guilds/{guild}.json", "w+"), indent=2)
-        except Exception as e: print(e)
+        try:
+            with open(f"data/guilds/{guild}.json", 'r') as entry:
+                entry = json.load(entry)
+                logID = len(entry)-4
+                entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
+            with open(f"data/guilds/{guild}.json", 'w') as f:
+                json.dump(entry, f, indent=2)
+        except Exception as e: print(e)  
     
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):  # Later: Make custom welcome/leave messages?
@@ -193,9 +182,9 @@ class Users(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_unban(self, guild, member: discord.Member):
-        if not self.is_logging(guild=guild, member=member, eventname="member_unban"): return
+        if not self.is_logging(member, member=member, eventname="member_unban"): return
         else:
-            audit = await get_alog_entry(guild, type=discord.AuditLogAction.unban)
+            audit = await get_alog_entry(member, type=discord.AuditLogAction.unban)
             e = discord.Embed(
                 title=emojis["unban"] + f" Member Unbanned",
                 description=f"**Name:** {member.name}\n"
@@ -244,6 +233,10 @@ class Users(commands.Cog):
                     "user": after.id
                 }
             )
+    
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, AttributeError): pass
+        else: self.bot.get_channel(776418051003777034).send(embed=discord.Embed(title="Error", description=str(error), color=colours["delete"]))
 
 def setup(bot):
     bot.add_cog(Users(bot))

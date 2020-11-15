@@ -38,10 +38,28 @@ class Errors(commands.Cog):
         if   isinstance(error, commands.errors.NoPrivateMessage):      return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
         elif isinstance(error, commands.errors.BotMissingPermissions): return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
         elif isinstance(error, commands.errors.CommandNotFound):       return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
-        elif isinstance(error, commands.errors.MissingPermissions):    return print(f"{c.DarkGreen}[N] {c.Green}{str(error)}{c.c}")
-        elif isinstance(error, asyncio.TimeoutError):                  return print(f"{c.DarkGreen}[ ] {c.Green}{str(error)}{c.c}")
-        elif isinstance(error, commands.errors.TimeoutError):          return print(f"{c.DarkGreen}[ ] {c.Green}{str(error)}{c.c}")
-        else:                                                          return print(f"{c.RedDark}[C] {c.Red}{str(error)}{c.c}")
+        elif isinstance(error, commands.errors.MissingPermissions):    return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
+        elif isinstance(error, asyncio.TimeoutError):                  return print(f"{c.GreenDark}[ ] {c.Green}{str(error)}{c.c}")
+        elif isinstance(error, commands.errors.NotOwner):              return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
+        elif isinstance(error, commands.errors.TooManyArguments):      return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
+        else:
+            tb = "".join(traceback.format_exception(type(error), error, error.__traceback__))
+            tb = f"Command ran: {ctx.message.content}\nUser id:{ctx.author.id}\nGuild id:{ctx.guild.id}\n\n{tb}"
+            return print(f"{c.RedDark}[C] {c.Red}Error Below\n\n{tb}{c.c}")
+        
+    @commands.Cog.listener()
+    async def on_error(event, *args, **kwargs):
+        tb = "".join(traceback.format_exception(type(error), error, error.__traceback__))
+        tb = f"Command ran: {ctx.message.content}\nUser id:{ctx.author.id}\nGuild id:{ctx.guild.id}\n\n{tb}"
+        return print(f"{c.RedDark}[C] {c.Red}Error Below\n\n{tb}{c.c}")
+
+    # @commands.command()
+    # @commands.check(lambda message: message.author.id == 487443883127472129)
+    # async def throwerr(self, ctx):
+    #     a = {
+    #         'lol': 'gg'
+    #     }
+    #     return a["asddsa(asdda)"]
 
 def setup(bot):
     bot.add_cog(Errors(bot))

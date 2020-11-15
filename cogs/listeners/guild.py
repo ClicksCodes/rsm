@@ -12,97 +12,77 @@ class NotLogging:
         self.etype = etype
         self.reason = reason
         self.details = details
-        if cog and guild:
-            cog.bot.loop.create_task(cog.vbl(guild, self))
+        if cog and guild: cog.bot.loop.create_task(cog.vbl(guild, self))
         else:
             self.cog = None
             self.guild = None
 
-    def __str__(self):
-        return f"Not logging event \"{self.etype}\" for reason: {self.reason}. See extra details in __repr__."""
-
-    def __repr__(self):
-        return f"NotLogging(etype={self.etype} reason={self.reason} details={self.details})"
-
-    def __bool__(self):
-        return False
+    def __str__(self): return f"Not logging event \"{self.etype}\" for reason: {self.reason}. See extra details in __repr__."""
+    def __repr__(self): return f"NotLogging(etype={self.etype} reason={self.reason} details={self.details})"
+    def __bool__(self): return False
 
 async def get_alog_entry(ctx, *, type: discord.AuditLogAction, check = None):
     """Retrieves the first matching audit log entry for the specified type.
     
     If you provide a check it MUST take an auditLogEntry as its only argument."""
-    if not ctx.guild.me.guild_permissions.view_audit_log:
-        raise commands.BotMissingPermissions("view_audit_log")
+    if not ctx.guild.me.guild_permissions.view_audit_log: raise commands.BotMissingPermissions("view_audit_log")
     async for log in ctx.guild.audit_logs(action=type):
         if check:
-            if check(log):
-                return log
-            else:
-                continue
-        else:
-            return log
-    else:
-        return None
+            if check(log): return log
+            else: continue
+        else: return log
+    else: return None
 
 
 class Guild(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        with open("./data/core.json") as rfile: self.data = json.load(rfile)
         self.session = aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10.0))
     
     def tohex(self, i): return hex(i).split('x')[-1]
     
     def cog_unload(self): 
-        with open("./data/core.json", "w") as wfile: json.dump(self.data, wfile, indent=2)
         self.bot.loop.create_task(self.session.close())
 
     def is_logging(self, guild: discord.Guild, *, channel = None, member: discord.Member = None, eventname):
-        if eventname not in events.keys():  # invalid event name
-            return bool(NotLogging(eventname, "Event Name is not in registered events.", cog=self, guild=guild))
-        if not guild:  # in DMs
-            return bool(NotLogging(eventname, "Event occurred in DMs, thus has no targeted channel.", cog=self, guild=guild))
-        if not self.data.get(str(guild.id)):
-            return bool(NotLogging(eventname, "The guild where this event occured has not registered.", cog=self, guild=guild))
+        if not os.path.exists(f'data/guilds/{guild.id}.json'): return bool(NotLogging(eventname, "Guild not configured.", cog=self, guild=guild))
+        if eventname not in events.keys():                     return bool(NotLogging(eventname, "Event Name is not in registered events.", cog=self, guild=guild))
+        if not guild:                                          return bool(NotLogging(eventname, "Event occurred in DMs, thus has no targeted channel.", cog=self, guild=guild))
         
-        try: entry = self.data[str(guild.id)]
-        except: 
-            # json.dump(f"{guild.id}: {template}", open(f"data/core.json", "w+"), indent=2)
-            # entry = self.data[str(guild.id)]
-            pass
-        if member:
-            if member.bot and entry["ignoreBots"] is True:
-                return bool(NotLogging(eventname, f"You are ignoring bots.", cog=self, guild=guild))
-            if member.id in entry["ignoredMembers"]:
-                return bool(NotLogging(eventname, f"Member \"{member}\" is being ignored.", cog=self, guild=guild))
-            if member == self.bot.user:
-                return bool(NotLogging(eventname, f"Not logging bot actions", cog=self, guild=guild))
-            
-        if channel:
-            if channel.id in entry["ignoredChannels"]:
-                return bool(NotLogging(eventname, f"Channel \"{channel}\" is being ignored.", cog=self, guild=guild))
-            if channel.id == entry["logChannel"]:
-                return bool(NotLogging(eventname, f"This is the log channel.", cog=self, guild=guild))
-        if eventname.lower() not in entry["toLog"]:
-            return bool(NotLogging(eventname, f"Guild is ignoring event \"{eventname}\".", cog=self, guild=guild))
-        return True
+        try:    
+            with open(f"data/guilds/{guild.id}.json") as entry:
+                entry = json.load(entry)
+                if member:
+                    if member.bot and entry["ignore_info"]["ignore_bots"] is True: return bool(NotLogging(eventname, f"You are ignoring bots.", cog=self, guild=guild))
+                    if member.id in entry["ignore_info"]["members"]:               return bool(NotLogging(eventname, f"Member \"{member}\" is being ignored.", cog=self, guild=guild))
+                    if member == self.bot.user:                                    return bool(NotLogging(eventname, f"Not logging bot actions", cog=self, guild=guild))
+                    
+                if channel:
+                    if channel.id in entry["ignore_info"]["channels"]:   return bool(NotLogging(eventname, f"Channel \"{channel}\" is being ignored.", cog=self, guild=guild))
+                    if channel.id == entry["log_info"]["log_channel"]:   return bool(NotLogging(eventname, f"This is the log channel.", cog=self, guild=guild))
+                if eventname.lower() not in entry["log_info"]["to_log"]: return bool(NotLogging(eventname, f"Guild is ignoring event \"{eventname}\".", cog=self, guild=guild))
+                if not entry["enabled"]:                                 return bool(NotLogging(eventname, f"This guild has disabled logs.", cog=self, guild=guild))
+                return True
+        except Exception as e: print(e)
         
     def get_log(self, guild: discord.Guild): 
-        return self.bot.get_channel(self.data[str(guild.id)]["logChannel"])
+        with open(f"data/guilds/{guild.id}.json") as f:
+            entry =  json.load(f)
+            return self.bot.get_channel(entry["log_info"]["log_channel"])
 
     async def vbl(self, guild, e: NotLogging):
         """VerboseLog: Log NotLogging events if verbose is enabled"""
-        # if not self.data[str(guild.id)]["verbose"]: return False
-        # print(f"Not logging event {e.etype}:\n> {e.reason}\n\n> {e.details}")
         return True 
     
     async def log(self, logType:str, guild:int, occurredAt:int, content:dict):
-        try: data = json.load(open(f"data/guilds/{guild}.json", 'r'))
-        except Exception as e: data = {}
-        logID = len(data)
-        data[str(logID)] = {"logType": logType, "occurredAt": occurredAt, "content": content}
-        try: json.dump(data, open(f"data/guilds/{guild}.json", "w+"), indent=2)
-        except Exception as e: print(e)
+        try:
+            with open(f"data/guilds/{guild}.json", 'r') as entry:
+                entry = json.load(entry)
+                logID = len(entry)-4
+                entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
+            with open(f"data/guilds/{guild}.json", 'w') as f:
+                json.dump(entry, f, indent=2)
+        except Exception as e: print(e)  
     
 
     @commands.Cog.listener()
@@ -185,7 +165,7 @@ class Guild(commands.Cog):
             e = discord.Embed(
                 title=emojis["voice_create" if c_type == "voice" else "store_create" if c_type == "store" else "channel_create"] + " Channel Created",
                 description=f"**Channel:** {channel.mention}\n"
-                            f"**Category:** {channel.category.name}\n"
+                            f"**Category:** {channel.category.name if channel.category else 'None'}\n"
                             f"**Created By:** {audit.user.mention}\n",
                 color=events["channel_create"][0],
                 timestamp=datetime.utcnow()
@@ -198,7 +178,7 @@ class Guild(commands.Cog):
                 content={
                     "username": audit.user.id,
                     "channel": channel.id,
-                    "category": channel.category.id, 
+                    "Category": channel.category.id if channel.category else False,
                     "type": c_type
                 }
             )
@@ -210,10 +190,11 @@ class Guild(commands.Cog):
             auditCreate = await get_alog_entry(channel, type=discord.AuditLogAction.webhook_create)
             auditUpdate = await get_alog_entry(channel, type=discord.AuditLogAction.webhook_update)
             auditDelete = await get_alog_entry(channel, type=discord.AuditLogAction.webhook_delete)
-            if   auditCreate.created_at > max(auditUpdate.created_at, auditDelete.created_at): audit = auditCreate; t = "create"
-            elif auditUpdate.created_at > max(auditCreate.created_at, auditDelete.created_at): audit = auditUpdate; t = "update"
-            elif auditDelete.created_at > max(auditUpdate.created_at, auditCreate.created_at): audit = auditDelete; t = "delete"
-            else: return
+            
+            if   auditCreate.created_at > max(auditUpdate.created_at, auditDelete.created_at): audit = auditCreate; t = "create"; print("create") 
+            elif auditUpdate.created_at > max(auditCreate.created_at, auditDelete.created_at): audit = auditUpdate; t = "update"; print("update") 
+            elif auditDelete.created_at > max(auditUpdate.created_at, auditCreate.created_at): audit = auditDelete; t = "delete"; print("delete") 
+            else: print("return time"); return
 
             log = self.get_log(channel.guild)
             c_type = str(channel.type).split('.')[-1]
@@ -224,7 +205,9 @@ class Guild(commands.Cog):
                     color=colours[t],
                     timestamp=datetime.utcnow()
                 ) 
+                print("Sending create embed (L#201)")
                 await log.send(embed=e)
+                print("Sent, calling self.log")
                 return await self.log(
                     logType="webhookCreate", 
                     occurredAt=round(time.time()),
@@ -235,48 +218,57 @@ class Guild(commands.Cog):
                 )
             elif t == 'update':
                 before, after = audit.before, audit.after
+                before_name = getattr(before, "name", "No Name Found")
+                after_name = getattr(after, "name", "No Name Found")
+                before_channel = getattr(before, "channel", channel)
+                after_channel = getattr(after, "channel", channel)
                 e = discord.Embed(
                     title=emojis["webhook_update"] + f" Webhook Updated",
                     description=f"**Edited By:** {audit.user.mention}\n" +
                                 f"**Changes:**\n" +
-                                (f"{before.channel.mention} -> {after.channel.mention}\n" if before.channel != after.channel else "") +
-                                (f"{before.name}` -> `{after.name}`\n" if before.name != after.name else "") +
-                                (f"[Image before](https://cdn.discordapp.com/avatars/{audit.target.id}/{before.avatar}) -> [Image after](https://cdn.discordapp.com/avatars/{audit.target.id}/{after.avatar})\n" if before.avatar != after.avatar else ""),
+                                (f"{before_channel.mention} -> {after_channel.mention}\n" if before_channel != after_channel else "") +
+                                (f"`{before_name}` -> `{after_name}`\n" if before_name != after_name else ""),
                     color=colours[t],
                     timestamp=datetime.utcnow()
                 ) 
+                print("Sending create embed (L#221)")
                 await log.send(embed=e)
+                print("Sent, calling self.log")
                 return await self.log(
                     logType="webhookUpdate", 
                     occurredAt=round(time.time()),
                     guild=channel.guild.id,
                     content={
                         "username":      audit.user.id,
-                        "beforeChannel": before.channel.id,
-                        "afterChannel":  after.channel.id,
+                        # "beforeChannel": before.channel.id,
+                        # "afterChannel":  after.channel.id,
                         "beforeName":    before.name,
                         "afterName":     after.name,
-                        "beforeAvatar":  f"https://cdn.discordapp.com/avatars/{audit.target.id}/{before.avatar}",
-                        "afterAvatar":   f"https://cdn.discordapp.com/avatars/{audit.target.id}/{after.avatar}"
+                        # "beforeAvatar":  f"https://cdn.discordapp.com/avatars/{audit.target.id}/{before.avatar}",
+                        # "afterAvatar":   f"https://cdn.discordapp.com/avatars/{audit.target.id}/{after.avatar}"
                     }
                 )
             elif t == 'delete':
+                after_name = getattr(auditDelete.after, "name", "No Name Found")
                 e = discord.Embed(
                     title=emojis["webhook_delete"] + f" Webhook Deleted",
-                    description=f"**Deleted By:** {audit.user.mention}\n"
-                                f"**Name:** `{audit.action.name}`\n",
+                    description=f"**Deleted By:** {audit.user.mention}\n",
                     color=colours[t],
                     timestamp=datetime.utcnow()
                 ) 
+                print("Sending create embed (L#249)")
                 await log.send(embed=e)
+                print("Sent, calling self.log")
                 return await self.log(
-                    logType="webhookCreate", 
+                    logType="webhookDelete", 
                     occurredAt=round(time.time()),
                     guild=channel.guild.id,
                     content={
-                        "username": audit.user.id
+                        "username": audit.user.id,
                     }
                 )
+            else:
+                print("the fuck we got an else")
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, channel): 
@@ -288,7 +280,7 @@ class Guild(commands.Cog):
             e = discord.Embed(
                 title=emojis["voice_delete" if c_type == "voice" else "store_delete" if c_type == "store" else "channel_delete"] + " Channel Deleted",
                 description=f"**Channel deleted:** #{channel.name}\n"
-                            f"**Category:** {channel.category.name}\n"
+                            f"**Category:** {channel.category.name if channel.category else 'None'}\n"
                             f"**Deleted By:** {audit.user.mention}\n",
                 color=events["channel_delete"][0],
                 timestamp=datetime.utcnow()
@@ -301,7 +293,7 @@ class Guild(commands.Cog):
                 content={
                     "username": audit.user.id,
                     "channel": channel.id,
-                    "category": channel.category.id, 
+                    "Category": channel.category.id if channel.category else False,
                     "type": c_type
                 }
             )
@@ -407,7 +399,7 @@ class Guild(commands.Cog):
             audit = await get_alog_entry(before, type=discord.AuditLogAction.role_update)
             e = discord.Embed(
                 title=emojis["role_edit"] + f" Role Edited",
-                description=(f"**ID:** `{after.id}`") + \
+                description=(f"**ID:** `{after.id}`\n") + \
                             (f"**Name:** {before.name} > {after.name}\n" if before.name != after.name else f"**Name:** {after.name}\n") + \
                             (f"**Position:** {before.position} > {after.position}\n" if before.position != after.position else "") + \
                             (f"**Colour:** {self.tohex(before.colour.value)} > {self.tohex(after.colour.value)}\n" if before.colour.value != after.colour.value else "") + \
@@ -542,6 +534,10 @@ class Guild(commands.Cog):
                     "now": after.topic
                 }
             )
+        
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, AttributeError): pass
+        else: self.bot.get_channel(776418051003777034).send(embed=discord.Embed(title="Error", description=str(error), color=colours["delete"]))
 
 def setup(bot):
     bot.add_cog(Guild(bot))

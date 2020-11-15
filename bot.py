@@ -27,7 +27,7 @@ class c:
 
 class Bot(commands.Bot):
     def __init__(self, **kwargs):
-        super().__init__(command_prefix=commands.when_mentioned_or('m!'), **kwargs)
+        super().__init__(command_prefix=commands.when_mentioned_or('m!', 'M!', 'm1', 'M1'), **kwargs)
 
         self.remove_command('help')
 
@@ -40,7 +40,9 @@ class Bot(commands.Bot):
     async def on_ready(self):
         print(f'{c.Cyan}[S] {c.CyanDark}Logged on as {self.user} (ID: {self.user.id}){c.c}')
 
-bot = Bot(owner_ids=[438733159748599813, 421698654189912064, 261900651230003201, 317731855317336067], case_insensitive=True, presence=None)
-#bot.loop.create_task(db.main(bot))
+bot = Bot(owner_ids=[438733159748599813, 421698654189912064, 261900651230003201, 317731855317336067, 421698654189912064], case_insensitive=True, presence=None)
+
+import logging
+logging.basicConfig(filename="log.log", filemode="w+", level=logging.DEBUG)
 
 bot.run(config.token)
