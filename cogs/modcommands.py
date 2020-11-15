@@ -103,8 +103,8 @@ class Commands(commands.Cog):
         with open(f"data/stats.json", 'r') as entry:
                 entry = json.load(entry)
                 entry["warns"] += 1
-            with open(f"data/stats.json", 'w') as f:
-                json.dump(entry, f, indent=2)
+        with open(f"data/stats.json", 'w') as f:
+            json.dump(entry, f, indent=2)
 
         if reason == None:
             reason, m = await self.reasonHandler(
@@ -133,8 +133,8 @@ class Commands(commands.Cog):
         with open(f"data/stats.json", 'r') as entry:
                 entry = json.load(entry)
                 entry["kicks"] += 1
-            with open(f"data/stats.json", 'w') as f:
-                json.dump(entry, f, indent=2)
+        with open(f"data/stats.json", 'w') as f:
+            json.dump(entry, f, indent=2)
 
         if reason == None:
             reason, m = await self.reasonHandler(
@@ -167,8 +167,8 @@ class Commands(commands.Cog):
         with open(f"data/stats.json", 'r') as entry:
                 entry = json.load(entry)
                 entry["bans"] += 1
-            with open(f"data/stats.json", 'w') as f:
-                json.dump(entry, f, indent=2)
+        with open(f"data/stats.json", 'w') as f:
+            json.dump(entry, f, indent=2)
 
         if reason == None:
             reason, m = await self.reasonHandler(
@@ -202,8 +202,8 @@ class Commands(commands.Cog):
         with open(f"data/stats.json", 'r') as entry:
                 entry = json.load(entry)
                 entry["softbans"] += 1
-            with open(f"data/stats.json", 'w') as f:
-                json.dump(entry, f, indent=2)
+        with open(f"data/stats.json", 'w') as f:
+            json.dump(entry, f, indent=2)
 
         if reason == None:
             reason, m = await self.reasonHandler(
@@ -238,8 +238,8 @@ class Commands(commands.Cog):
         with open(f"data/stats.json", 'r') as entry:
                 entry = json.load(entry)
                 entry["clears"] += 1
-            with open(f"data/stats.json", 'w') as f:
-                json.dump(entry, f, indent=2)
+        with open(f"data/stats.json", 'w') as f:
+            json.dump(entry, f, indent=2)
 
         if out == None:
             out, m = await self.intHandler(
@@ -318,8 +318,8 @@ class Commands(commands.Cog):
         with open(f"data/stats.json", 'r') as entry:
                 entry = json.load(entry)
                 entry["purges"] += 1
-            with open(f"data/stats.json", 'w') as f:
-                json.dump(entry, f, indent=2)
+        with open(f"data/stats.json", 'w') as f:
+            json.dump(entry, f, indent=2)
 
         if out == None:
             out, m = await self.intHandler(
