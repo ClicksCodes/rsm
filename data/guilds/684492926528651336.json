@@ -110,5 +110,43 @@
       "edited": "5 hours from now",
       "attachments": []
     }
+  },
+  "5": {
+    "logType": "messageDelete",
+    "occurredAt": 1605465227,
+    "content": {
+      "username": 261900651230003201,
+      "messageContent": "cool",
+      "mentions": 0,
+      "occurredIn": 760916763172012084,
+      "sent": "4 hours from now",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "6": {
+    "logType": "pinsUpdate",
+    "occurredAt": 1605465579,
+    "content": {
+      "username": 438733159748599813,
+      "messageBy": 261900651230003201,
+      "in": 760916763172012084,
+      "content": "for anyone who wants in on Cync https://prod.liveshare.vsengsaas.visualstudio.com/join?DDDCCD3B6AE0783BCA9839DE79D900B5771D"
+    }
+  },
+  "7": {
+    "logType": "messageEdit",
+    "occurredAt": 1605517076,
+    "content": {
+      "username": 421698654189912064,
+      "messageContent": "Oh yeah <@!261900651230003201> did you/<@!317731855317336067> seem PF request since I can\u2019t check the status of it?",
+      "messageContentAfter": "Oh yeah <@!261900651230003201> did you/<@!317731855317336067> see my PF request since I can\u2019t check the status of it?",
+      "mentions": 2,
+      "mentionsAfter": 2,
+      "occurredIn": 697446083919610007,
+      "sent": "4 hours from now",
+      "edited": "5 hours from now",
+      "attachments": []
+    }
   }
 }
