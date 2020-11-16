@@ -52,9 +52,6 @@ class Logs(commands.Cog):
         self.check_latency.start()
         self.loadingEmbed = loadingEmbed
     
-    def cog_unload(self): 
-        self.bot.loop.create_task(self.session.close())
-    
     @tasks.loop(minutes=5.0)
     async def check_latency(self):
         print(f"\033[93m[P] {round(self.bot.latency,3)}\033[0m")
@@ -106,13 +103,13 @@ class Logs(commands.Cog):
                 json.dump(entry, f, indent=2)
         except Exception as e: print(e)  
 
-    @commands.group(aliases=["config"], invoke_without_command=True)
-    @commands.has_permissions(manage_guild=True)
+    #@commands.group(aliases=["config"], invoke_without_command=True)
+    #@commands.has_permissions(manage_guild=True)
     @commands.guild_only()
-    async def settings(self, ctx: commands.Context):
+    async def settingsxxx(self, ctx: commands.Context):
         page = 0
         catList = [*categories]
-        entry = self.data.get(str(ctx.guild.id))['toLog']
+        entry = None
         m = await ctx.send(embed=self.loadingEmbed)
         for emoji in [729762938411548694, 729762938843430952, 729064530310594601]: await m.add_reaction(ctx.bot.get_emoji(emoji))
         bn = '\n'

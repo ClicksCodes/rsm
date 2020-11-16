@@ -29,7 +29,7 @@ class InfoCommands(commands.Cog):
     async def info(self, ctx: commands.Context, mob:typing.Optional[str]):
         page = 0
         n = '\n'
-        noLog = ":warning: Your server has not got a log channel. Use `m!setlog #channel` to set it.\n\n" if not os.path.exists(f"data/guilds/{ctx.guild.id}.json") else ""
+        noLog = ":warning: Your server has not got a log channel. Use `m!setup` to make a log file and `m!setlog #channel` to set it.\n\n" if not os.path.exists(f"data/guilds/{ctx.guild.id}.json") else ""
         descriptions = [
             f"**Commands** - {emojis['PunWarn']} - {emojis['lock']} - {emojis['about']} - {emojis['support']}\n\n"
             f"{noLog}"
