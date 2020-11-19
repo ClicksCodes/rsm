@@ -1,10 +1,10 @@
 {
-  "warns": 4,
-  "kicks": 0,
+  "warns": 6,
+  "kicks": 1,
   "bans": 0,
   "softbans": 0,
   "raids": 0,
-  "locks": 0,
+  "locks": 2,
   "clears": 1,
   "purges": 0
 }

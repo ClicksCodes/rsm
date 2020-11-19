@@ -1,0 +1,85 @@
+{
+  "guild_info": {
+    "id": 611278159555461180,
+    "joined_at": "2020-11-15 16:18:32.028412"
+  },
+  "log_info": {
+    "log_channel": 777693940119109672,
+    "to_log": [
+      "message_delete",
+      "message_edit",
+      "bulk_message_delete",
+      "channel_pins_update",
+      "reaction_clear",
+      "everyone_here",
+      "mass_mention",
+      "roles",
+      "channel_create",
+      "channel_delete",
+      "nsfw_update",
+      "channel_title_update",
+      "channel_desc_update",
+      "member_join",
+      "member_leave",
+      "member_kick",
+      "member_ban",
+      "member_unban",
+      "nickname_change",
+      "guild_role_create",
+      "guild_role_delete",
+      "guild_emojis_update",
+      "invite_create",
+      "invite_delete",
+      "icon_update",
+      "mod_changed",
+      "name_changed",
+      "webhook_create"
+    ]
+  },
+  "ignore_info": {
+    "bots": true,
+    "members": [],
+    "roles": [],
+    "channels": []
+  },
+  "enabled": true,
+  "0": {
+    "logType": "messageDelete",
+    "occurredAt": 1605637771,
+    "content": {
+      "username": 511655498676699136,
+      "messageContent": "<@!511655498676699136>",
+      "mentions": 1,
+      "occurredIn": 768897521103011870,
+      "sent": "4 hours from now",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "1": {
+    "logType": "messageDelete",
+    "occurredAt": 1605637780,
+    "content": {
+      "username": 511655498676699136,
+      "messageContent": "yes",
+      "mentions": 0,
+      "occurredIn": 768897521103011870,
+      "sent": "4 hours from now",
+      "edited": "Never",
+      "attachments": []
+    }
+  },
+  "2": {
+    "logType": "messageDelete",
+    "occurredAt": 1605638159,
+    "content": {
+      "username": 511655498676699136,
+      "messageContent": "m!suggest after m!lock and m!raid, it should delete the roles it added to a channel",
+      "mentions": 0,
+      "occurredIn": 611279307628740628,
+      "sent": "4 hours from now",
+      "edited": "Never",
+      "attachments": []
+    }
+  }
+}

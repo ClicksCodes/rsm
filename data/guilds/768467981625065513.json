@@ -1,0 +1,76 @@
+{
+  "guild_info": {
+    "id": 768467981625065513,
+    "joined_at": "2020-11-12 08:41:44.457189"
+  },
+  "log_info": {
+    "log_channel": 776743274428760065,
+    "to_log": [
+      "message_delete",
+      "message_edit",
+      "bulk_message_delete",
+      "channel_pins_update",
+      "reaction_clear",
+      "everyone_here",
+      "mass_mention",
+      "roles",
+      "channel_create",
+      "channel_delete",
+      "nsfw_update",
+      "channel_title_update",
+      "channel_desc_update",
+      "member_join",
+      "member_leave",
+      "member_kick",
+      "member_ban",
+      "member_unban",
+      "nickname_change",
+      "guild_role_create",
+      "guild_role_delete",
+      "guild_emojis_update",
+      "invite_create",
+      "invite_delete",
+      "icon_update",
+      "mod_changed",
+      "name_changed",
+      "webhook_create"
+    ]
+  },
+  "ignore_info": {
+    "bots": true,
+    "members": [],
+    "roles": [],
+    "channels": []
+  },
+  "enabled": true,
+  "0": {
+    "logType": "messageEdit",
+    "occurredAt": 1605559545,
+    "content": {
+      "username": 620993169538154506,
+      "messageContent": "TONISHIA",
+      "messageContentAfter": "Tonishia",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 768467981625065516,
+      "sent": "4 hours from now",
+      "edited": "5 hours from now",
+      "attachments": []
+    }
+  },
+  "1": {
+    "logType": "messageEdit",
+    "occurredAt": 1605613102,
+    "content": {
+      "username": 573318929255235604,
+      "messageContent": "I hope she\u2019s stays safe and I hope she\u2019s ok",
+      "messageContentAfter": "I hope she stays safe and I hope she\u2019s ok",
+      "mentions": 0,
+      "mentionsAfter": 0,
+      "occurredIn": 768467981625065516,
+      "sent": "4 hours from now",
+      "edited": "5 hours from now",
+      "attachments": []
+    }
+  }
+}
