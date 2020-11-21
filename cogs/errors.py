@@ -1,4 +1,4 @@
-import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio
+import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio, postbin
 
 from datetime import datetime
 from discord.ext import commands
@@ -39,27 +39,25 @@ class Errors(commands.Cog):
         elif isinstance(error, commands.errors.BotMissingPermissions): return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
         elif isinstance(error, commands.errors.CommandNotFound):       return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
         elif isinstance(error, commands.errors.MissingPermissions):    return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
-        elif isinstance(error, asyncio.TimeoutError):                  return print(f"{c.GreenDark}[ ] {c.Green}{str(error)}{c.c}")
+        elif isinstance(error, asyncio.TimeoutError):                  return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
         elif isinstance(error, commands.errors.NotOwner):              return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
         elif isinstance(error, commands.errors.TooManyArguments):      return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
         else:
             tb = "".join(traceback.format_exception(type(error), error, error.__traceback__))
-            tb = f"Command ran: {ctx.message.content}\nUser id:{ctx.author.id}\nGuild id:{ctx.guild.id}\n\n{tb}"
-            return print(f"{c.RedDark}[C] {c.Red}Error Below\n\n{tb}{c.c}")
+            tb = "\n".join([f"{c.RedDark}[C] {c.Red}" + line for line in (f"Command ran: {ctx.message.content}\nUser id:{ctx.author.id}\nGuild id:{ctx.guild.id}\n\n{tb}".split("\n"))])
+            url = await postbin.postAsync(tb)
+            print(f"{c.RedDark}[C] {c.Red}FATAL:\n{tb}{c.c}")
+            # return await self.bot.get_channel(776418051003777034).send(embed=discord.Embed(
+            #     title="Error",
+            #     description=url,
+            #     color=colours["delete"]
+            # ))
         
     @commands.Cog.listener()
     async def on_error(event, *args, **kwargs):
         tb = "".join(traceback.format_exception(type(error), error, error.__traceback__))
         tb = f"Command ran: {ctx.message.content}\nUser id:{ctx.author.id}\nGuild id:{ctx.guild.id}\n\n{tb}"
-        return print(f"{c.RedDark}[C] {c.Red}Error Below\n\n{tb}{c.c}")
-
-    # @commands.command()
-    # @commands.check(lambda message: message.author.id == 487443883127472129)
-    # async def throwerr(self, ctx):
-    #     a = {
-    #         'lol': 'gg'
-    #     }
-    #     return a["asddsa(asdda)"]
+        return print(f"{c.RedDark}[C] {c.Red}Error Below\n{tb}{c.c}")
 
 def setup(bot):
     bot.add_cog(Errors(bot))

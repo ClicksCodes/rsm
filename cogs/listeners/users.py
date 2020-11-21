@@ -97,8 +97,8 @@ class Users(commands.Cog):
         except Exception as e: print(e)  
     
     @commands.Cog.listener()
-    async def on_member_join(self, member: discord.Member):  # Later: Make custom welcome/leave messages?
-        if not self.is_logging(member.guild, member=member, eventname="member_join"): return
+    async def on_member_join(self, member: discord.Member):
+        if not self.is_logging(member.guild, member=member, eventname="member_join"): print("Not logging")
         else:
             e = discord.Embed(
                 title=(emojis["bot_join"] if member.bot else emojis["join"]) + f" Member Joined",

@@ -557,6 +557,7 @@ class Commands(commands.Cog):
         
     @commands.command(aliases=["slow"])
     @commands.guild_only()
+    @commands.has_permissions(manage_guild=True)
     async def slowmode(self, ctx, channel: typing.Optional[discord.TextChannel], time: typing.Optional[str]):
         if not channel: channel = ctx.channel
         if time is not None: time = re.sub(r"[^0-9]*", "", str(time))
@@ -573,6 +574,7 @@ class Commands(commands.Cog):
         await self.setSlowmode(ctx, channel, time) 
         
     @commands.command()
+    @commands.has_permissions(manage_guild=True)
     @commands.guild_only()
     async def lock(self, ctx, channel: typing.Optional[discord.TextChannel], s: typing.Optional[str]):
         if not channel: channel = ctx.channel
@@ -583,6 +585,7 @@ class Commands(commands.Cog):
         await self.lockdown(lock, channel, ctx)
 
     @commands.command()
+    @commands.has_permissions(manage_guild=True)
     @commands.guild_only()
     async def unlock(self, ctx, channel: typing.Optional[discord.TextChannel]):
         if not channel: channel = ctx.channel

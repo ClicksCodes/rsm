@@ -34,6 +34,7 @@ class InfoCommands(commands.Cog):
             f"**Commands** - {emojis['PunWarn']} - {emojis['lock']} - {emojis['about']} - {emojis['support']}\n\n"
             f"{noLog}"
             f"{emojis['rsm']           } `m!info    [*T]  {'' if mob else '|'} ` {n if mob else ''}Shows all commands and info. Give [T] for mobile.\n"
+            f"{emokis['graphs']        } `m!stats         {'' if mob else '|'} ` {n if mob else ''}Shows the bot statistics\n"
             f"{emojis['settings']      } `m!settings      {'' if mob else '|'} ` {n if mob else ''}Shows your servers log settings.\n"
             f"{emojis['join']          } `m!user    [*@]  {'' if mob else '|'} ` {n if mob else ''}Shows information about a user.\n"
             f"{emojis['support']       } `m!contact [ T]  {'' if mob else '|'} ` {n if mob else ''}Sends [T] to the staff for support.\n"

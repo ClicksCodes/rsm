@@ -7,6 +7,7 @@ from discord.ext import menus
 from colorthief import ColorThief as cf
 
 from cogs.consts import *
+from config import deepAIkey
 
 
 class NotLogging:
@@ -123,7 +124,7 @@ class ImageDetect(commands.Cog):
                     
                     # NSFW
                     start = time.time()
-                    async with self.session.post("https://api.deepai.org/api/nsfw-detector",data={'image': page.url},headers={'api-key': '5d6cca50-2441-44a8-9ab4-703fbd38ce5b'}) as r:
+                    async with self.session.post("https://api.deepai.org/api/nsfw-detector",data={'image': page.url},headers={'api-key': deepAPIkey}) as r:
                         try:
                             resp = await r.json()
                             if len(resp['output']['detections']): nsfw = True
@@ -144,7 +145,7 @@ class ImageDetect(commands.Cog):
                                     f"**Web Request Time Taken:** {round(end - start, 2)}s",
                         color=discord.Color(0x00ff00)
                     )
-                    #if message.author.bot == False: await message.channel.send(embed=e)
+                    if message.author.bot == False: await message.channel.send(embed=e)
                 except Exception as e: print(e)
                 finally:
                     try: os.rename(f"{f_name}", f"cogs/{'nsfw' if nsfw else 'sfw'}/{f_name}")

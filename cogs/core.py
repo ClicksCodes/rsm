@@ -1,4 +1,4 @@
-import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio
+import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio, datetime
 
 from datetime import datetime
 from discord.ext import commands, tasks
@@ -46,7 +46,7 @@ async def get_alog_entry(ctx, *, type: discord.AuditLogAction, check = None):
         return None
 
 
-class Logs(commands.Cog):
+class Core(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.check_latency.start()
@@ -103,16 +103,18 @@ class Logs(commands.Cog):
                 json.dump(entry, f, indent=2)
         except Exception as e: print(e)  
 
-    #@commands.group(aliases=["config"], invoke_without_command=True)
-    #@commands.has_permissions(manage_guild=True)
+    @commands.command(aliases=["config"])
+    @commands.has_permissions(manage_guild=True)
     @commands.guild_only()
-    async def settingsxxx(self, ctx: commands.Context):
+    async def settings(self, ctx: commands.Context):
         page = 0
         catList = [*categories]
         entry = None
         m = await ctx.send(embed=self.loadingEmbed)
         for emoji in [729762938411548694, 729762938843430952, 729064530310594601]: await m.add_reaction(ctx.bot.get_emoji(emoji))
         bn = '\n'
+        with open(f"data/guilds/{ctx.guild.id}.json", 'r') as e:
+            entry = json.load(e)["log_info"]["to_log"]
         for x in range(0,50):
             if x == 0: 
                 for emoji in [729065958584614925, 729066924943737033, 729762939023917086, 729066519337762878]: await m.add_reaction(ctx.bot.get_emoji(emoji))
@@ -217,6 +219,18 @@ class Logs(commands.Cog):
             )
             await ctx.send(embed=e)
         except Exception as e: print(e)
-                
+
+    @commands.command()
+    async def stats(self, ctx):
+        m = await ctx.send(embed=loadingEmbed)
+        await m.edit(embed=discord.Embed(
+            title="<:Graphs:752214059159650396> Stats",
+            description=f"**Servers:** {len(self.bot.guilds)}\n"
+                        f"**Members:** {len(self.bot.users)}\n"
+                        f"**Emojis:** {len(self.bot.emojis)}\n"
+                        f"**Ping:** {round(self.bot.latency*100)}ms\n",
+            color=colours["create"]
+        ))
+
 def setup(bot):
-    bot.add_cog(Logs(bot))
+    bot.add_cog(Core(bot))
