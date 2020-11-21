@@ -595,7 +595,7 @@ class Commands(commands.Cog):
         flags = []
         if member.id in [317731855317336067, 438733159748599813, 715989276382462053, 261900651230003201, 421698654189912064, 487443883127472129]: flags.append("rsm_developer")
         if member in role.members: flags.append("clicks_developer")
-        if member.id in ms: flags.append("clicks_developer")
+        if member.id in ms: flags.append("rsm_developer")
         if member in guild.premium_subscribers: flags.append("booster")
         if member.is_avatar_animated() or str(member.discriminator).startswith("000"): flags.append("nitro")
         if member.bot: flags.append("bot")
