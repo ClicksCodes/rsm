@@ -36,6 +36,7 @@ class Bot(commands.Bot):
                 print(f'{c.RedDark}[E] {c.Red}Could not load extension {cog} due to {exc.__class__.__name__}: {exc}{c.c}')
 
     async def on_ready(self):
+        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="over your servers."), status=discord.Status.idle)
         print(f'{c.Cyan}[S] {c.CyanDark}Logged on as {self.user} (ID: {self.user.id}){c.c}')
 
 bot = Bot(owner_ids=[438733159748599813, 421698654189912064, 261900651230003201, 317731855317336067, 421698654189912064], case_insensitive=True, presence=None)
