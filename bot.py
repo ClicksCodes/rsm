@@ -1,12 +1,9 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 import sys
 import traceback
 
 from discord.ext import commands
 import discord
 import config
-#from database import db
 
 class c:
     c = '\033[0m'
@@ -27,6 +24,7 @@ class c:
 
 class Bot(commands.Bot):
     def __init__(self, **kwargs):
+        # super().__init__(command_prefix=commands.when_mentioned_or('t!', 'T!', 't1', 'T1'), **kwargs)
         super().__init__(command_prefix=commands.when_mentioned_or('m!', 'M!', 'm1', 'M1'), **kwargs)
 
         self.remove_command('help')
@@ -41,8 +39,5 @@ class Bot(commands.Bot):
         print(f'{c.Cyan}[S] {c.CyanDark}Logged on as {self.user} (ID: {self.user.id}){c.c}')
 
 bot = Bot(owner_ids=[438733159748599813, 421698654189912064, 261900651230003201, 317731855317336067, 421698654189912064], case_insensitive=True, presence=None)
-
-import logging
-logging.basicConfig(filename="log.log", filemode="w+", level=logging.DEBUG)
 
 bot.run(config.token)

@@ -3,8 +3,8 @@
   "kicks": 1,
   "bans": 0,
   "softbans": 0,
-  "raids": 0,
-  "locks": 2,
-  "clears": 1,
+  "raids": 1,
+  "locks": 4,
+  "clears": 3,
   "purges": 0
 }
