@@ -44,6 +44,7 @@ class InfoCommands(commands.Cog):
             f"{emojis['ignore']        } `m!ignore [*CR@] {'' if mob else '|'} ` {n if mob else ''}Stops logging the users, roles and channels privided.\n"
             f"{emojis['PunWarn']       } `m!punish   [*@] {'' if mob else '|'} ` {n if mob else ''}Punishes a user.\n"
             f"{emojis['mod_update']    } `m!server        {'' if mob else '|'} ` {n if mob else ''}Shows all information about your server.\n"
+            f"{emojis['store_create']  } `m!tag      [*T] {'' if mob else '|'} ` {n if mob else ''}`m!tag create/delete` `title text`, or `m!tag title`\n"
             f"{emojis['role_create']   } `m!role     [ R] {'' if mob else '|'} ` {n if mob else ''}With `Role`: Shows information about a role.\n"
             f"{emojis['role_create']   } `m!role     [ @] {'' if mob else '|'} ` {n if mob else ''}With `Mention`: Lets you edit or view a users roles.\n"
             f"{emojis['channel_create']} `m!viewas   [ @] {'' if mob else '|'} ` {n if mob else ''}Shows the channels that [@] can see.\n",

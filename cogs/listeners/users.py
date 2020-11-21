@@ -12,7 +12,6 @@ class NotLogging:
         self.etype = etype
         self.reason = reason
         self.details = details
-        # print(self.__repr__())
         if cog and guild:
             cog.bot.loop.create_task(cog.vbl(guild, self))
         else:
@@ -75,7 +74,7 @@ class Users(commands.Cog):
                 if eventname.lower() not in entry["log_info"]["to_log"]: return bool(NotLogging(eventname, f"Guild is ignoring event \"{eventname}\".", cog=self, guild=guild))
                 if not entry["enabled"]:                                 return bool(NotLogging(eventname, f"This guild has disabled logs.", cog=self, guild=guild))
                 return True
-        except Exception as e: print(e)
+        except: pass
         
     def get_log(self, guild: discord.Guild): 
         with open(f"data/guilds/{guild.id}.json") as f:
@@ -94,11 +93,11 @@ class Users(commands.Cog):
                 entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
             with open(f"data/guilds/{guild}.json", 'w') as f:
                 json.dump(entry, f, indent=2)
-        except Exception as e: print(e)  
+        except: pass 
     
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
-        if not self.is_logging(member.guild, member=member, eventname="member_join"): print("Not logging")
+        if not self.is_logging(member.guild, member=member, eventname="member_join"): return
         else:
             e = discord.Embed(
                 title=(emojis["bot_join"] if member.bot else emojis["join"]) + f" Member Joined",

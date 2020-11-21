@@ -63,7 +63,7 @@ class Guild(commands.Cog):
                 if eventname.lower() not in entry["log_info"]["to_log"]: return bool(NotLogging(eventname, f"Guild is ignoring event \"{eventname}\".", cog=self, guild=guild))
                 if not entry["enabled"]:                                 return bool(NotLogging(eventname, f"This guild has disabled logs.", cog=self, guild=guild))
                 return True
-        except Exception as e: print(e)
+        except: pass
         
     def get_log(self, guild: discord.Guild): 
         with open(f"data/guilds/{guild.id}.json") as f:
@@ -82,7 +82,7 @@ class Guild(commands.Cog):
                 entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
             with open(f"data/guilds/{guild}.json", 'w') as f:
                 json.dump(entry, f, indent=2)
-        except Exception as e: print(e)  
+        except: pass
     
 
     @commands.Cog.listener()
@@ -191,10 +191,10 @@ class Guild(commands.Cog):
             auditUpdate = await get_alog_entry(channel, type=discord.AuditLogAction.webhook_update)
             auditDelete = await get_alog_entry(channel, type=discord.AuditLogAction.webhook_delete)
             
-            if   auditCreate.created_at > max(auditUpdate.created_at, auditDelete.created_at): audit = auditCreate; t = "create"; print("create") 
-            elif auditUpdate.created_at > max(auditCreate.created_at, auditDelete.created_at): audit = auditUpdate; t = "update"; print("update") 
-            elif auditDelete.created_at > max(auditUpdate.created_at, auditCreate.created_at): audit = auditDelete; t = "delete"; print("delete") 
-            else: print("return time"); return
+            if   auditCreate.created_at > max(auditUpdate.created_at, auditDelete.created_at): audit = auditCreate; t = "create"
+            elif auditUpdate.created_at > max(auditCreate.created_at, auditDelete.created_at): audit = auditUpdate; t = "update"
+            elif auditDelete.created_at > max(auditUpdate.created_at, auditCreate.created_at): audit = auditDelete; t = "delete"
+            else: return
 
             log = self.get_log(channel.guild)
             c_type = str(channel.type).split('.')[-1]
@@ -205,9 +205,7 @@ class Guild(commands.Cog):
                     color=colours[t],
                     timestamp=datetime.utcnow()
                 ) 
-                print("Sending create embed (L#201)")
                 await log.send(embed=e)
-                print("Sent, calling self.log")
                 return await self.log(
                     logType="webhookCreate", 
                     occurredAt=round(time.time()),
@@ -231,9 +229,7 @@ class Guild(commands.Cog):
                     color=colours[t],
                     timestamp=datetime.utcnow()
                 ) 
-                print("Sending create embed (L#221)")
                 await log.send(embed=e)
-                print("Sent, calling self.log")
                 return await self.log(
                     logType="webhookUpdate", 
                     occurredAt=round(time.time()),
@@ -256,9 +252,7 @@ class Guild(commands.Cog):
                     color=colours[t],
                     timestamp=datetime.utcnow()
                 ) 
-                print("Sending create embed (L#249)")
                 await log.send(embed=e)
-                print("Sent, calling self.log")
                 return await self.log(
                     logType="webhookDelete", 
                     occurredAt=round(time.time()),
@@ -267,8 +261,6 @@ class Guild(commands.Cog):
                         "username": audit.user.id,
                     }
                 )
-            else:
-                print("the fuck we got an else")
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, channel): 

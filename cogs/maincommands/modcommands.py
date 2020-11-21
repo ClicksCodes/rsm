@@ -39,7 +39,7 @@ class Commands(commands.Cog):
                 ctx.bot.wait_for('message', timeout=120, check=lambda message : message.author == ctx.author),
                 ctx.bot.wait_for('reaction_add', timeout=120, check=lambda _, user : user == ctx.author)
             ], return_when=asyncio.FIRST_COMPLETED)
-        except Exception as e: print(e)
+        except: pass
 
         try:
             reason = None
@@ -72,7 +72,7 @@ class Commands(commands.Cog):
                 ctx.bot.wait_for('message', timeout=120, check=lambda message : message.author == ctx.author),
                 ctx.bot.wait_for('reaction_add', timeout=120, check=lambda _, user : user == ctx.author)
             ], return_when=asyncio.FIRST_COMPLETED)
-        except Exception as e: print(e)
+        except: pass
 
         try:
             reason = None
@@ -97,8 +97,7 @@ class Commands(commands.Cog):
         try:
             if not ctx.author.guild_permissions.kick_members: 
                 return await m.edit(embed=createEmbed(f"{emojis['PunWarn']} Looks like you don't have permissions", "You need the `kick_members` permission to warn someone.", colours["delete"]))
-        except Exception as e: 
-            return print(e)
+        except: return
 
         with open(f"data/stats.json", 'r') as entry:
                 entry = json.load(entry)
@@ -127,8 +126,7 @@ class Commands(commands.Cog):
         try:
             if not ctx.author.guild_permissions.kick_members: 
                 return await m.edit(embed=createEmbed(f"{emojis['PunKick']} Looks like you don't have permissions", "You need the `kick_members` permission to kick someone.", colours["delete"]))
-        except Exception as e:
-            return print(e)
+        except: return
 
         with open(f"data/stats.json", 'r') as entry:
                 entry = json.load(entry)
@@ -161,8 +159,7 @@ class Commands(commands.Cog):
         try:
             if not ctx.author.guild_permissions.ban_members: 
                 return await m.edit(embed=createEmbed(f"{emojis['PunBan']} Looks like you don't have permissions", "You need the `ban_members` permission to ban someone.", colours["delete"]))
-        except Exception as e:
-            return print(e)
+        except: return
 
         with open(f"data/stats.json", 'r') as entry:
                 entry = json.load(entry)
@@ -196,8 +193,7 @@ class Commands(commands.Cog):
         try:
             if not ctx.author.guild_permissions.ban_members: 
                 return await m.edit(embed=self.createEmbed(f"{emojis['PunSoftBan']} Looks like you don't have permissions", "You need the `ban_members` permission to soft ban someone.", colours["delete"]))
-        except Exception as e:
-            return print(e)
+        except: return
 
         with open(f"data/stats.json", 'r') as entry:
                 entry = json.load(entry)
@@ -222,9 +218,8 @@ class Commands(commands.Cog):
                 await ctx.guild.ban(member, reason=reason, delete_message_days=7)
                 await ctx.guild.unban(member, reason="RSM Soft Ban")
                 await m.edit(embed=createEmbed(f"{emojis['PunSoftBan']} Soft Ban", f"User {member.mention} was successfully soft banned{' for' + str(reason) if reason is not False else ''}.", colours["create"]))
-            except Exception as e:
+            except:
                 await m.edit(embed=createEmbed(f"{emojis['PunSoftBan']} Soft Ban", f"Something went wrong. I may not have permissions, or the user couldn't be banned.", colours["delete"]))
-                print(e)
             await m.clear_reactions()
 
     async def delHistoryPun(self, m, member, ctx, out=None, mod=None):
@@ -232,8 +227,7 @@ class Commands(commands.Cog):
         try:
             if not ctx.author.guild_permissions.manage_messages: 
                 return await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Looks like you don't have permissions", "You need the `manage_messages` permission to delete someone's history.", colours["delete"]))
-        except Exception as e:
-            return print(e)
+        except: return
 
         with open(f"data/stats.json", 'r') as entry:
                 entry = json.load(entry)
@@ -259,13 +253,12 @@ class Commands(commands.Cog):
                 else:                               deleted = await ctx.channel.purge(limit=int(out), check=lambda m: m.author != member)
                 try: await ctx.channel.send(embed=createEmbed(f"{emojis['PunHistory']} Delete History", f"I deleted {len(deleted)} messages {'not ' if mod in ['only', 'not', '!'] else ''}by {member.mention}.", colours["create"]))
                 except discord.ext.commands.errors.CommandInvokeError: await ctx.send(embed=createEmbed(f"{emojis['PunHistory']} Delete History", f"I deleted {len(deleted)} of {member.mention}'s messages.", colours["create"]))
-            except Exception as e:
+            except:
                 await ctx.channel.send(embed=createEmbed(f"{emojis['PunHistory']} Delete History", f"Something went wrong. I may not have permissions, or the users history couldn't be deleted.", colours["delete"]))
-                print(e)
             await m.clear_reactions()
             try:
                 await m.delete()
-            except Exception as e: print(e) 
+            except: pass
     
     async def setSlowmode(self, ctx, channel, time):
         createEmbed = self.createEmbed
@@ -279,9 +272,9 @@ class Commands(commands.Cog):
             if time < 0:                                           return await ctx.send(embed=createEmbed(f"{emojis['slowmodeOn']} Slowmode", "Slowmode delay must be bigger than 0.", colours["delete"]), delete_after=10)
             await ctx.channel.edit(slowmode_delay=time)
             return await ctx.send(embed=createEmbed(f"{emojis['slowmodeOn'] if time > 0 else emojis['slowmodeOff']} Slowmode", f"Slowmode time has been successfully set to {time}s.", colours["create"]))
-        except Exception as e:
+        except:
             await ctx.send(embed=createEmbed(f"{emojis['slowmodeOn'] if time > 0 else emojis['slowmodeOff']} Slowmode", "An unknown error occurred and slowmode could not be set.", colours["delete"]), delete_after=10)
-            return print(e)
+            return
         
     async def lockdown(self, lock, channel, ctx):
         createEmbed = self.createEmbed
@@ -312,8 +305,7 @@ class Commands(commands.Cog):
             if not ctx.author.guild_permissions.manage_messages: 
                 await ctx.send(embed=createEmbed(f"{emojis['PunHistory']} Looks like you don't have permissions", "You need the `manage_messages` permission to purge a channel.", colours["delete"]))
                 return await m.delete()
-        except Exception as e:
-            return print(e)
+        except: return
         
         with open(f"data/stats.json", 'r') as entry:
                 entry = json.load(entry)
@@ -341,11 +333,10 @@ class Commands(commands.Cog):
                 try: await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Purge Channel", f"I deleted {len(deleted)-2} messages.", colours["create"]), delete_after=10)
                 except discord.ext.commands.errors.CommandInvokeError: await ctx.send(embed=createEmbed(f"{emojis['PunHistory']} Purge Channel", f"I deleted {len(deleted)-2} messages.", colours["create"]), delete_after=10)
                 except discord.errors.NotFound: await ctx.send(embed=createEmbed(f"{emojis['PunHistory']} Purge Channel", f"I deleted {len(deleted)-2} messages.", colours["create"]), delete_after=10)
-            except Exception as e:
+            except:
                 try: await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Purge Channel", f"Something went wrong. I may not have permission to do that.", colours["delete"]), delete_after=10)
                 except discord.ext.commands.errors.CommandInvokeError: await ctx.send(embed=createEmbed(f"{emojis['PunHistory']} Purge Channel", f"Something went wrong. I may not have permission to do that.", colours["delete"]), delete_after=10)
                 except discord.NotFound: await ctx.send(embed=createEmbed(f"{emojis['PunHistory']} Purge Channel", f"Something went wrong. I may not have permission to do that.", colours["delete"]), delete_after=10)
-                print(e)
             try: await m.clear_reactions() 
             except: pass
 

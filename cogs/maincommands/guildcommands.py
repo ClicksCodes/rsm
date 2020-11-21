@@ -200,7 +200,7 @@ class GuildCommands(commands.Cog):
                 "vip-amsterdam": ":flag_nl:", "vip-us-east": ":flag_us:", "vip-us-west": ":flag_us:"
             }
             try: flag = flags[str(g.region)]
-            except Exception as e: flag = ""; print(e)
+            except: flag = ""
 
             e=discord.Embed(
                 title="Server stats",
@@ -548,7 +548,7 @@ class GuildCommands(commands.Cog):
                             groles = ctx.guild.roles
                             groles.reverse()
                             groleIDs = [r.id for r in groles]
-                    except Exception as e: print(e); break
+                    except: break
             await m.edit(embed=discord.Embed(title="Roles", description=desc, color=colours["delete"]))
             await m.clear_reactions()
 
@@ -656,7 +656,7 @@ class GuildCommands(commands.Cog):
             page = min(len(descs)-1, max(0, page))
 
             try: await mess.remove_reaction(reaction, ctx.author)
-            except Exception as e: print(e)
+            except: pass
 
         await mess.edit(embed=findescs[page])
         await mess.clear_reactions()

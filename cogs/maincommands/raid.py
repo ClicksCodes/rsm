@@ -46,7 +46,7 @@ class Raid(commands.Cog):
                 ctx.bot.wait_for('message', timeout=120, check=lambda message : message.author == ctx.author),
                 ctx.bot.wait_for('reaction_add', timeout=120, check=lambda _, user : user == ctx.author)
             ], return_when=asyncio.FIRST_COMPLETED)
-        except Exception as e: print(e)
+        except: pass
 
         try:
             reason = None
@@ -186,11 +186,10 @@ class Raid(commands.Cog):
             try: await m.edit(embed=createEmbed(f"{emojis['raidlock']} Purge Channel", f"I deleted {len(deleted)-2} messages.", colours["create"]), delete_after=10)
             except discord.ext.commands.errors.CommandInvokeError: await ctx.send(embed=createEmbed(f"{emojis['raidlock']} Purge Channel", f"I deleted {len(deleted)} messages.", colours["create"]), delete_after=10)
             except discord.errors.NotFound: await ctx.send(embed=createEmbed(f"{emojis['raidlock']} Purge Channel", f"I deleted {len(deleted)} messages.", colours["create"]), delete_after=10)
-        except Exception as e:
+        except:
             try: await m.edit(embed=createEmbed(f"{emojis['raidlock']} Purge Channel", f"Something went wrong. I may not have permission to do that.", colours["delete"]), delete_after=10)
             except discord.ext.commands.errors.CommandInvokeError: await ctx.send(embed=createEmbed(f"{emojis['raidlock']} Purge Channel", f"Something went wrong. I may not have permission to do that.", colours["delete"]), delete_after=10)
             except discord.NotFound: await ctx.send(embed=createEmbed(f"{emojis['raidlock']} Purge Channel", f"Something went wrong. I may not have permission to do that.", colours["delete"]), delete_after=10)
-            print(e)
         try: await m.clear_reactions() 
         except: pass
         return m
@@ -225,7 +224,7 @@ class Raid(commands.Cog):
                     ctx.guild.me: discord.PermissionOverwrite(read_messages=True)
                 }
                 try: logChannel = await ctx.guild.create_text_channel('rsm-raid-logs', overwrites=overwrites)
-                except Exception as e: logChannel = ctx.channel; print(e)
+                except: logChannel = ctx.channel
             url = await postbin.postAsync(json.dumps(permsToStore))
             await logChannel.send(f"`ROLE PERMISSIONS: {url}`\n> Raid: Every role in the server without `manage_messages` has lost permission to send messages. To end a raid, type `m!raid off`. Role permissions have been stored, and can be restored when you run the raid off command. After 30 days, the logs will be deleted.\nPlease do not send any messages in this chat.")
             await self.raidUI(ctx)

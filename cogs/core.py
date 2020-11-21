@@ -12,7 +12,6 @@ class NotLogging:
         self.etype = etype
         self.reason = reason
         self.details = details
-        # print(self.__repr__())
         if cog and guild:
             cog.bot.loop.create_task(cog.vbl(guild, self))
         else:
@@ -82,7 +81,7 @@ class Core(commands.Cog):
                 if eventname.lower() not in entry["log_info"]["to_log"]: return bool(NotLogging(eventname, f"Guild is ignoring event \"{eventname}\".", cog=self, guild=guild))
                 if not entry["enabled"]:                                 return bool(NotLogging(eventname, f"This guild has disabled logs.", cog=self, guild=guild))
                 return True
-        except Exception as e: print(e)
+        except: pass
         
     def get_log(self, guild: discord.Guild): 
         with open(f"data/guilds/{guild.id}.json") as f:
@@ -101,7 +100,7 @@ class Core(commands.Cog):
                 entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
             with open(f"data/guilds/{guild}.json", 'w') as f:
                 json.dump(entry, f, indent=2)
-        except Exception as e: print(e)  
+        except: pass
 
     @commands.command(aliases=["config"])
     @commands.has_permissions(manage_guild=True)
@@ -187,7 +186,7 @@ class Core(commands.Cog):
                 color=colours["create"]
             )
             await ctx.send(embed=e)
-        except Exception as e: print(e)
+        except: pass
     
     @commands.command()
     @commands.has_permissions(manage_guild=True)
@@ -218,7 +217,7 @@ class Core(commands.Cog):
                 color=colours["create"]
             )
             await ctx.send(embed=e)
-        except Exception as e: print(e)
+        except: pass
 
     @commands.command()
     async def stats(self, ctx):

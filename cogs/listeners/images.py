@@ -53,7 +53,7 @@ class ImageDetect(commands.Cog):
                 if eventname.lower() not in entry["log_info"]["to_log"]: return bool(NotLogging(eventname, f"Guild is ignoring event \"{eventname}\".", cog=self, guild=guild))
                 if not entry["enabled"]:                                 return bool(NotLogging(eventname, f"This guild has disabled logs.", cog=self, guild=guild))
                 return True
-        except Exception as e: print(e)
+        except: pass
         
     def get_log(self, guild: discord.Guild): 
         with open(f"data/guilds/{guild.id}.json") as f:
@@ -72,7 +72,7 @@ class ImageDetect(commands.Cog):
                 entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
             with open(f"data/guilds/{guild}.json", 'w') as f:
                 json.dump(entry, f, indent=2)
-        except Exception as e: print(e)  
+        except: pass
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.message):
@@ -129,7 +129,7 @@ class ImageDetect(commands.Cog):
                             resp = await r.json()
                             if len(resp['output']['detections']): nsfw = True
                             else: nsfw = False
-                        except Exception as e: nsfw = False; print('1' + str(e))
+                        except: nsfw = False
                         conf = str(resp['output'])
                     end = time.time()
                     
@@ -146,7 +146,7 @@ class ImageDetect(commands.Cog):
                         color=discord.Color(0x00ff00)
                     )
                     if message.author.bot == False: await message.channel.send(embed=e)
-                except Exception as e: print(e)
+                except: pass
                 finally:
                     try: os.rename(f"{f_name}", f"cogs/{'nsfw' if nsfw else 'sfw'}/{f_name}")
                     except Exception as e: 
