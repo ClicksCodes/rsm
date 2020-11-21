@@ -457,30 +457,54 @@ class Guild(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_channel_update(self, before, after):
         audit = await get_alog_entry(after, type=discord.AuditLogAction.channel_update)
-        if (before.is_nsfw() != after.is_nsfw()) and self.is_logging(after.guild, eventname="nsfw_update"):
-            audit = await get_alog_entry(after, type=discord.AuditLogAction.channel_update)
-            now = after.is_nsfw() > before.is_nsfw() # If the channel is now nsfw
-            e = discord.Embed(
-                title=emojis["nsfw_on" if now else "nsfw_off"] + f" Channel is {'now' if now else 'no longer'} NSFW",
-                description=f"**Channel:** {after.mention}\n"
-                            f"**Changed by:** {audit.user.mention}",
-                color=events["nsfw_update"][0],
-                timestamp=datetime.utcnow()
-            )
-            log = self.get_log(after.guild)
-            await log.send(embed=e)
-            return await self.log(
-                logType="nsfwUpdate", 
-                occurredAt=round(time.time()),
-                guild=before.guild.id,
-                content={
-                    "username": audit.user.id,
-                    "channel": after.id,
-                    "was": before.is_nsfw(),
-                    "now": after.is_nsfw()
-                }
-            )
-        elif (before.name != after.name) and self.is_logging(after.guild, eventname="channel_title_update"):
+        if after.type.name == "text":
+            if (before.is_nsfw() != after.is_nsfw()) and self.is_logging(after.guild, eventname="nsfw_update"):
+                audit = await get_alog_entry(after, type=discord.AuditLogAction.channel_update)
+                now = after.is_nsfw() > before.is_nsfw() # If the channel is now nsfw
+                e = discord.Embed(
+                    title=emojis["nsfw_on" if now else "nsfw_off"] + f" Channel is {'now' if now else 'no longer'} NSFW",
+                    description=f"**Channel:** {after.mention}\n"
+                                f"**Changed by:** {audit.user.mention}",
+                    color=events["nsfw_update"][0],
+                    timestamp=datetime.utcnow()
+                )
+                log = self.get_log(after.guild)
+                await log.send(embed=e)
+                return await self.log(
+                    logType="nsfwUpdate", 
+                    occurredAt=round(time.time()),
+                    guild=before.guild.id,
+                    content={
+                        "username": audit.user.id,
+                        "channel": after.id,
+                        "was": before.is_nsfw(),
+                        "now": after.is_nsfw()
+                    }
+                )
+            elif (before.topic != after.topic) and not (before.topic == "" and after.topic == None) and self.is_logging(after.guild, eventname="channel_desc_update"):
+                audit = await get_alog_entry(after, type=discord.AuditLogAction.channel_update)
+                e = discord.Embed(
+                    title=emojis["TopicUpdate"] + f" Channel Topic Changed",
+                    description=f"**Before:** {before.topic}\n"
+                                f"**Now:** {after.topic}\n"
+                                f"**Changed by:** {audit.user.mention}",
+                    color=events["channel_desc_update"][0],
+                    timestamp=datetime.utcnow()
+                )
+                log = self.get_log(after.guild)
+                await log.send(embed=e)
+                return await self.log(
+                    logType="topicUpdate", 
+                    occurredAt=round(time.time()),
+                    guild=before.guild.id,
+                    content={
+                        "username": audit.user.id,
+                        "channel": after.id,
+                        "was": before.topic,
+                        "now": after.topic
+                    }
+                )
+        if (before.name != after.name) and self.is_logging(after.guild, eventname="channel_title_update"):
             audit = await get_alog_entry(after, type=discord.AuditLogAction.channel_update)
             e = discord.Embed(
                 title=emojis["TitleUpdate"] + f" Channel Renamed",
@@ -501,29 +525,6 @@ class Guild(commands.Cog):
                     "channel": after.id,
                     "was": before.name,
                     "now": after.name
-                }
-            )
-        elif (before.topic != after.topic) and not (before.topic == "" and after.topic == None) and self.is_logging(after.guild, eventname="channel_desc_update"):
-            audit = await get_alog_entry(after, type=discord.AuditLogAction.channel_update)
-            e = discord.Embed(
-                title=emojis["TopicUpdate"] + f" Channel Topic Changed",
-                description=f"**Before:** {before.topic}\n"
-                            f"**Now:** {after.topic}\n"
-                            f"**Changed by:** {audit.user.mention}",
-                color=events["channel_desc_update"][0],
-                timestamp=datetime.utcnow()
-            )
-            log = self.get_log(after.guild)
-            await log.send(embed=e)
-            return await self.log(
-                logType="topicUpdate", 
-                occurredAt=round(time.time()),
-                guild=before.guild.id,
-                content={
-                    "username": audit.user.id,
-                    "channel": after.id,
-                    "was": before.topic,
-                    "now": after.topic
                 }
             )
         
