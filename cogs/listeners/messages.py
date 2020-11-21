@@ -102,8 +102,8 @@ class Messages(commands.Cog):
         if message.mention_everyone and self.is_logging(guild, channel=message.channel, member=message.author, eventname="everyone_here"):
             log = self.get_log(message.guild)
             if not log: return
-            sent = humanize.naturaltime(message.created_at)
-            edited = humanize.naturaltime(message.edited_at) if message.edited_at else "Never"
+            sent = humanize.naturaltime(datetime.utcnow()-message.created_at)
+            edited = humanize.naturaltime(datetime.utcnow()-message.edited_at) if message.edited_at else "Never"
             e = discord.Embed(
                 title=emojis['everyone_ping'] + f" {'Here' if '@here' in message.content else 'Everyone'} pinged",
                 description=f"{('```' + discord.utils.escape_markdown(shorten(message.clean_content, 2042)) + '```')}"
@@ -137,8 +137,8 @@ class Messages(commands.Cog):
         if len(message.role_mentions):
             log = self.get_log(message.guild)
             if not log: return
-            sent = humanize.naturaltime(message.created_at)
-            edited = humanize.naturaltime(message.edited_at) if message.edited_at else "Never"
+            sent = humanize.naturaltime(datetime.utcnow()-message.created_at)
+            edited = humanize.naturaltime(datetime.utcnow()-message.edited_at) if message.edited_at else "Never"
             e = discord.Embed(
                 title=emojis['role_ping'] + f" Role pinged",
                 description=f"{('```' + discord.utils.escape_markdown(shorten(message.clean_content, 2042)) + '```')}"
@@ -171,8 +171,8 @@ class Messages(commands.Cog):
         if len(message.mentions) > 4:
             log = self.get_log(message.guild)
             if not log: return
-            sent = humanize.naturaltime(message.created_at)
-            edited = humanize.naturaltime(message.edited_at) if message.edited_at else "Never"
+            sent = humanize.naturaltime(datetime.utcnow()-message.created_at)
+            edited = humanize.naturaltime(datetime.utcnow()-message.edited_at) if message.edited_at else "Never"
             e = discord.Embed(
                 title=emojis['everyone_ping'] + f" Mass mention",
                 description=f"{('```' + discord.utils.escape_markdown(shorten(message.clean_content, 2042)) + '```')}"
@@ -209,8 +209,8 @@ class Messages(commands.Cog):
         else:
             log = self.get_log(message.guild)
             if not log: return
-            sent = humanize.naturaltime(message.created_at)
-            edited = humanize.naturaltime(message.edited_at) if message.edited_at else "Never"
+            sent = humanize.naturaltime(datetime.utcnow()-message.created_at)
+            edited = humanize.naturaltime(datetime.utcnow()-message.edited_at) if message.edited_at else "Never"
             e = discord.Embed(
                 title=emojis['delete'] + " Message Deleted",
                 description=f"{f'**Content:** ```{shorten(discord.utils.escape_markdown(message.clean_content), 1024)}```' if len(message.clean_content) > 0 else ''}\n"
@@ -250,8 +250,8 @@ class Messages(commands.Cog):
         else:
             log = self.get_log(message.guild)
             if not log: return
-            sent = humanize.naturaltime(message.created_at)
-            edited = humanize.naturaltime(message.edited_at) if message.edited_at else "Never"
+            sent = humanize.naturaltime(datetime.utcnow()-message.created_at)
+            edited = humanize.naturaltime(datetime.utcnow()-message.edited_at) if message.edited_at else "Never"
             e = discord.Embed(
                 title=emojis["edit"] + " Message Edited",
                 description=f"**Before:** {('```' + shorten(discord.utils.escape_markdown(before.clean_content), 500) + '```') if len(before.clean_content) > 0 else ''}\n"

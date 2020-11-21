@@ -430,7 +430,7 @@ class Guild(commands.Cog):
                             f"**ID:** `{role.id}`\n**Hoisted:** {'yes' if role.hoist else 'No'}\n"
                             f"**Mentionable by everyone:** {'yes' if role.mentionable else 'no'}\n"
                             f"**Members:** {len(role.members)}\n"
-                            f"**Created:** {humanize.naturaltime(role.created_at)}\n"
+                            f"**Created:** {humanize.naturaltime(datetime.utcnow()-role.created_at)}\n"
                             f"**Deleted By:** {audit.user.mention}",
                 color=events["guild_role_delete"][0], 
                 timestamp=datetime.utcnow()
@@ -450,7 +450,7 @@ class Guild(commands.Cog):
                     "position": role.position,
                     "mentionableByEveryone": 'true' if role.mentionable else 'false',
                     "members": len(role.members),
-                    "created": humanize.naturaltime(role.created_at)
+                    "created": humanize.naturaltime(datetime.utcnow()-role.created_at)
                 }
             )
     

@@ -104,7 +104,7 @@ class Users(commands.Cog):
                 description=f"**Name:** {member.mention}\n"
                             f"**Server member count:** {member.guild.member_count}\n"
                             f"**Mutual servers:** {len([x for x in self.bot.guilds if member in x.members])}\n"
-                            f"**Account Created:** {humanize.naturaltime(member.created_at)}\n"
+                            f"**Account Created:** {humanize.naturaltime(datetime.datetime.utcnow()-member.created_at)}\n"
                             f"**ID:** `{member.id}`",
                 color=events["member_join"][0],
                 timestamp=datetime.utcnow()
@@ -119,7 +119,7 @@ class Users(commands.Cog):
                     "username": member.id,
                     "memberCount": member.guild.member_count,
                     "mutuals": len([x for x in self.bot.guilds if member in x.members]),
-                    "created": humanize.naturaltime(member.created_at),
+                    "created": humanize.naturaltime(datetime.datetime.utcnow()-member.created_at),
                 }
             )
 
@@ -132,9 +132,9 @@ class Users(commands.Cog):
                 description=f"**Name:** {member.name}\n"
                             f"**Server member count:** {member.guild.member_count}\n"
                             f"**Mutual servers:** {len([x for x in self.bot.guilds if member in x.members])}\n"
-                            f"**Account Created:** {humanize.naturaltime(member.created_at)}\n"
+                            f"**Account Created:** {humanize.naturaltime(datetime.datetime.utcnow()-member.created_at)}\n"
                             f"**ID:** `{member.id}`\n"
-                            f"**Joined the server:** {humanize.naturaltime(member.joined_at)}",
+                            f"**Joined the server:** {humanize.naturaltime(datetime.datetime.utcnow()-member.joined_at)}",
                 color=events["member_leave"][0],
                 timestamp=datetime.utcnow()
             )
@@ -148,8 +148,8 @@ class Users(commands.Cog):
                     "username": member.id,
                     "memberCount": member.guild.member_count,
                     "mutuals": len([x for x in self.bot.guilds if member in x.members]),
-                    "created": humanize.naturaltime(member.created_at),
-                    "joined": humanize.naturaltime(member.joined_at)
+                    "created": humanize.naturaltime(datetime.datetime.utcnow()-member.created_at),
+                    "joined": humanize.naturaltime(datetime.datetime.utcnow()-member.joined_at)
                 }
             )
 
