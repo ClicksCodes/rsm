@@ -24,7 +24,7 @@ class c:
 
 class Bot(commands.Bot):
     def __init__(self, **kwargs):
-        # super().__init__(command_prefix=commands.when_mentioned_or('t!', 'T!', 't1', 'T1'), **kwargs)
+        #super().__init__(command_prefix=commands.when_mentioned_or('t!', 'T!', 't1', 'T1'), **kwargs)
         super().__init__(command_prefix=commands.when_mentioned_or('m!', 'M!', 'm1', 'M1'), **kwargs)
 
         self.remove_command('help')
