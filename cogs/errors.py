@@ -47,11 +47,13 @@ class Errors(commands.Cog):
             tb = "\n".join([f"{c.RedDark}[C] {c.Red}" + line for line in (f"Command ran: {ctx.message.content}\nUser id:{ctx.author.id}\nGuild id:{ctx.guild.id}\n\n{tb}".split("\n"))])
             url = await postbin.postAsync(tb)
             print(f"{c.RedDark}[C] {c.Red}FATAL:\n{tb}{c.c}")
-            # return await self.bot.get_channel(776418051003777034).send(embed=discord.Embed(
-            #     title="Error",
-            #     description=url,
-            #     color=colours["delete"]
-            # ))
+            if self.bot.id == 715989276382462053:
+                return await self.bot.get_channel(776418051003777034).send(embed=discord.Embed(
+                    title="Error",
+                    description=url,
+                    color=colours["delete"]
+                ))
+            else: return
         
     @commands.Cog.listener()
     async def on_error(event, *args, **kwargs):
