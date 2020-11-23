@@ -34,8 +34,8 @@ class Errors(commands.Cog):
         # Warning Yellow
         # Critical Red
         # Status Blue
-
-        code = str(sha256(str.encode(str(ctx.channel.id + ctx.message.id + ctx.guild.id))).hexdigest())[15:]
+        try: code = str(sha256(str.encode(str(ctx.message.id))).hexdigest())[15:]
+        except: code=ctx.message.id
 
         if   isinstance(error, commands.errors.NoPrivateMessage):      return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
         elif isinstance(error, commands.errors.BotMissingPermissions): return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
