@@ -339,7 +339,28 @@ class GuildCommands(commands.Cog):
             }
             json.dump(data,f, indent=2)
             f.close()
-
+        missing = []
+        if not ctx.guild.me.guild_permissions.manage_roles: missing.append("manage_roles")
+        if not ctx.guild.me.guild_permissions.manage_channels: missing.append("manage_channels")
+        if not ctx.guild.me.guild_permissions.manage_channels: missing.append("manage_channels")
+        if not ctx.guild.me.guild_permissions.ban_members: missing.append("ban_members")
+        if not ctx.guild.me.guild_permissions.manage_nicknames: missing.append("manage_nicknames")
+        if not ctx.guild.me.guild_permissions.change_nickname: missing.append("change_nickname")
+        if not ctx.guild.me.guild_permissions.view_audit_log: missing.append("view_audit_log")
+        if not ctx.guild.me.guild_permissions.read_messages: missing.append("read_messages")
+        if not ctx.guild.me.guild_permissions.manage_messages: missing.append("manage_messages")
+        if not ctx.guild.me.guild_permissions.embed_links: missing.append("embed_links")
+        if not ctx.guild.me.guild_permissions.attach_files: missing.append("attach_files")
+        if not ctx.guild.me.guild_permissions.read_message_history: missing.append("read_message_history")
+        if not ctx.guild.me.guild_permissions.add_reactions: missing.append("add_reactions")
+        if not ctx.guild.me.guild_permissions.use_external_emojis: missing.append("use_external_emojis")
+        if len(missing): 
+            try:    await ctx.send(       f"Your server now has no settings, but I am missing permissions. Please make sure I have: {', '.join(['`' + p + '`' for p in missing])} and you'll be on your way!")
+            except: await ctx.author.send(f"Your server now has no settings, but I am missing permissions. Please make sure I have: {', '.join(['`' + p + '`' for p in missing])} and you'll be on your way!")
+        else: await ctx.send(embed=discord.Embed(
+            title="Set up!",
+            description="Your now have no settings for your server. Get started with `m!setlog #channel` to begin logging"
+        ))
 
     @commands.command(aliases=["roles"])
     @commands.guild_only()
