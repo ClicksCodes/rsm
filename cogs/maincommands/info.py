@@ -110,7 +110,8 @@ class InfoCommands(commands.Cog):
     @commands.command()
     @commands.cooldown(2, 30, commands.BucketType.user)
     async def suggest(self, ctx, *, msg):
-        await ctx.message.delete()
+        try: await ctx.message.delete()
+        except: pass
         r = await self.bot.get_channel(777214577187487744).send(embed=discord.Embed(
             title="Suggestion",
             description=f"Ticket: `{ctx.author.id}`\nName: `{ctx.author.name}`\n\n" + str(msg),
@@ -127,7 +128,8 @@ class InfoCommands(commands.Cog):
     @commands.command(aliases=["support"])
     @commands.cooldown(2, 30, commands.BucketType.user)
     async def contact(self, ctx, *, msg):
-        await ctx.message.delete()
+        try: await ctx.message.delete()
+        except: pass
         await self.bot.get_channel(777220967315406929).send(embed=discord.Embed(
             title="Support",
             description=f"Ticket: `{ctx.author.id}`\nName: `{ctx.author.name}`\n\n" + str(msg),
