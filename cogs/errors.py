@@ -4,7 +4,7 @@ from datetime import datetime
 from discord.ext import commands
 from textwrap import shorten
 from discord.ext import menus
-
+from hashlib import sha256
 from cogs.consts import *
 
 class c:
@@ -35,6 +35,8 @@ class Errors(commands.Cog):
         # Critical Red
         # Status Blue
 
+        code = str(sha256(str.encode(str(ctx.channel.id + ctx.message.id + ctx.guild.id))).hexdigest())[15:]
+
         if   isinstance(error, commands.errors.NoPrivateMessage):      return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
         elif isinstance(error, commands.errors.BotMissingPermissions): return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
         elif isinstance(error, commands.errors.CommandNotFound):       return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
@@ -46,12 +48,16 @@ class Errors(commands.Cog):
             tb = "".join(traceback.format_exception(type(error), error, error.__traceback__))
             tb = "\n".join([f"{c.RedDark}[C] {c.Red}" + line for line in (f"Command ran: {ctx.message.content}\nUser id:{ctx.author.id}\nGuild id:{ctx.guild.id}\n\n{tb}".split("\n"))])
             url = await postbin.postAsync(tb)
-            print(f"{c.RedDark}[C] {c.Red}FATAL:\n{tb}{c.c}")
+            print(f"{c.RedDark}[C] {c.Red}FATAL:\n{tb}{c.c}\n{code}")
             if self.bot.user.id == 715989276382462053:
-                return await self.bot.get_channel(776418051003777034).send(embed=discord.Embed(
+                await self.bot.get_channel(776418051003777034).send(embed=discord.Embed(
                     title="Error",
-                    description=url,
+                    description=f"`{code}`: " + url,
                     color=colours["delete"]
+                ))
+                return await ctx.channel.send(embed=discord.Embed(
+                    title="It looks like I messed up",
+                    description=f"It looks like there was an error. Just send the [developers](https://discord.gg/bPaNnxe) code `code`"
                 ))
             else: return
         
