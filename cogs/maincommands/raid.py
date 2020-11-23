@@ -217,12 +217,13 @@ class Raid(commands.Cog):
     async def toggleRaid(self, toggle, ctx):
         createEmbed = self.createEmbed
         if not (ctx.author.guild_permissions.administrator or (ctx.author.guild_permissions.manage_channels and ctx.author.guild_permissions.manage_server)): return await ctx.send(embed=createEmbed(f"{emojis['raidlock']} Looks like you don't have permissions", "You need the `administrator` or both `manage_server` and `manage_channels` permissions to toggle raid.", colours["delete"]), delete_after=10)
-        m = await ctx.send(embed=createEmbed(f"{emojis['raidlock']} Raid", f"You are now {'entering' if toggle else 'leaving'} guild lockdown.", color=colours["delete"]))
+        m = await ctx.send(embed=createEmbed(f"{emojis['raidlock']} Raid", f"You are now {'entering' if toggle else 'leaving'} guild lockdown. {'We have to add a small delay between roles to ensure all roles are changed' if toggle else ''}", color=colours["delete"]))
         if toggle == True:
             logChannel = discord.utils.get(ctx.guild.text_channels, name="rsm-raid-logs")
             permsToStore = {}
             roles = ctx.guild.roles
             for role in roles:
+                asyncio.sleep(1)
                 permsToStore[role.id] = role.permissions.value
                 if not role.permissions.manage_messages:
                     roleperms = role.permissions

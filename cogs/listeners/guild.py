@@ -389,18 +389,19 @@ class Guild(commands.Cog):
         if not self.is_logging(after.guild, eventname="roles"): return
         else:
             audit = await get_alog_entry(before, type=discord.AuditLogAction.role_update)
-            e = discord.Embed(
-                title=emojis["role_edit"] + f" Role Edited",
-                description=(f"**ID:** `{after.id}`\n") + \
-                            (f"**Name:** {before.name} > {after.name}\n" if before.name != after.name else f"**Name:** {after.name}\n") + \
-                            (f"**Position:** {before.position} > {after.position}\n" if before.position != after.position else "") + \
-                            (f"**Colour:** {self.tohex(before.colour.value)} > {self.tohex(after.colour.value)}\n" if before.colour.value != after.colour.value else "") + \
-                            f"**Edited by:** {audit.user.mention}",
-                color=events["roles"][0],
-                timestamp=datetime.utcnow()
-            )
-            log = self.get_log(after.guild)
-            await log.send(embed=e)
+            if audit.user.id != self.bot.user.id:
+                e = discord.Embed(
+                    title=emojis["role_edit"] + f" Role Edited",
+                    description=(f"**ID:** `{after.id}`\n") + \
+                                (f"**Name:** {before.name} > {after.name}\n" if before.name != after.name else f"**Name:** {after.name}\n") + \
+                                (f"**Position:** {before.position} > {after.position}\n" if before.position != after.position else "") + \
+                                (f"**Colour:** {self.tohex(before.colour.value)} > {self.tohex(after.colour.value)}\n" if before.colour.value != after.colour.value else "") + \
+                                f"**Edited by:** {audit.user.mention}",
+                    color=events["roles"][0],
+                    timestamp=datetime.utcnow()
+                )
+                log = self.get_log(after.guild)
+                await log.send(embed=e)
             return await self.log(
                 logType="roleEdit", 
                 occurredAt=round(time.time()),

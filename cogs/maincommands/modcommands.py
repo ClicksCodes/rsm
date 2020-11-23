@@ -287,6 +287,7 @@ class Commands(commands.Cog):
             json.dump(entry, f, indent=2)
         m = await ctx.send(embed=createEmbed(f"{emojis['lock']} Lock", f"Please wait as the channel gets {'un' if lock is None else ''}locked.", colours["edit"]))
         for role in ctx.guild.roles: 
+            asyncio.sleep(1)
             if not role.permissions.manage_messages:
                 override = channel.overwrites_for(role)
                 override.send_messages = lock
