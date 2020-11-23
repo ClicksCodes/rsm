@@ -223,7 +223,7 @@ class Raid(commands.Cog):
             permsToStore = {}
             roles = ctx.guild.roles
             for role in roles:
-                asyncio.sleep(1)
+                await asyncio.sleep(1)
                 permsToStore[role.id] = role.permissions.value
                 if not role.permissions.manage_messages:
                     roleperms = role.permissions
@@ -235,7 +235,7 @@ class Raid(commands.Cog):
                     roleperms.send_messages = True
                     try: await role.edit(permissions=roleperms)
                     except: pass
-            
+
             embed = createEmbed(f"{emojis['raidlock']} Raid in progress", f"This server is in guild lockdown.", color=colours["edit"])
             await m.edit(embed=embed)
             if logChannel == None:
@@ -274,6 +274,7 @@ class Raid(commands.Cog):
                     try: await logChannel.delete()
                     except: pass
                     for key in data:
+                        await asyncio.sleep(1)
                         perms = discord.Permissions()
                         perms.value = data[key]
                         try: await ctx.guild.get_role(int(key)).edit(permissions=perms)
