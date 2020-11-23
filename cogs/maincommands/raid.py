@@ -80,12 +80,31 @@ class Raid(commands.Cog):
         if not raidInProgress: return await self.toggleRaid(True, ctx)
         elif toggle: return await self.toggleRaid(False, ctx)
         else: return await self.raidUI(ctx)
+    
+    @commands.command()
+    @commands.guild_only()
+    async def raidrestore(self, ctx, url: typing.Optional[str]):
+        if not (ctx.author.guild_permissions.administrator or (ctx.author.guild_permissions.manage_channels and ctx.author.guild_permissions.manage_server)): return await ctx.send(embed=self.createEmbed(f"{emojis['raidlock']} Looks like you don't have permissions", "You need the `administrator` or both `manage_server` and `manage_channels` permissions to toggle raid.", colours["delete"]), delete_after=10)
+        if not url:  return await ctx.send(embed=self.createEmbed(f"{emojis['raidlock']} No link", "Please provide a link to use for restoring your server.", colours["delete"]), delete_after=10)
+        if not url.startswith("https://"): url = "https://" + str(url)
+        url = str(url).replace("com/", "com/raw/")
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"{url}") as resp:
+                data = json.loads(await resp.text())
+                for key in data:
+                    perms = discord.Permissions()
+                    perms.value = data[key]
+                    try: await ctx.guild.get_role(int(key)).edit(permissions=perms)
+                    except: pass
+        return await ctx.send(embed=self.createEmbed(f"{emojis['raidlock']} Your server is restored", "Everything should be back to normal. If it isn't, just make sure you used the right link.", colours["create"]), delete_after=10)
         
     async def raidUI(self, ctx):
         createEmbed = self.createEmbed
         m = await ctx.send(embed=self.loadingEmbed)
         for r in [729764053861400637, 729764053941223476, 729064530797133875, 729764062270980096, 777143043711172608, 729064530310594601]: await m.add_reaction(self.bot.get_emoji(r))
         desc = \
+            f"Note: if you cannot end a raid normally, you can do `m!raidrestore` followed by the link I sent instead.\n" + \
             f"**Options:**\n\n" + \
             f"{emojis['PunBan']     } Mass ban mentioned users\n" + \
             f"{emojis['PunSoftBan'] } Ban members that joined recently\n" + \
