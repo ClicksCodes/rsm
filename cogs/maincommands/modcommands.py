@@ -95,8 +95,8 @@ class Commands(commands.Cog):
     async def warnPun(self, m, member, ctx, reason=None):
         createEmbed = self.createEmbed
         try:
-            if not ctx.author.guild_permissions.kick_members: 
-                return await m.edit(embed=createEmbed(f"{emojis['PunWarn']} Looks like you don't have permissions", "You need the `kick_members` permission to warn someone.", colours["delete"]))
+            if not ctx.author.guild_permissions.kick_members:   return await m.edit(embed=createEmbed(f"{emojis['PunWarn']} Looks like you don't have permissions", "You need the `kick_members` permission to warn someone.", colours["delete"]))
+            if not ctx.guild.me.guild_permissions.kick_members: return await m.edit(embed=createEmbed(f"{emojis['PunWarn']} Looks like I don't have permissions", "I need the `kick_members` permission to warn someone.", colours["delete"]))
         except: return
 
         with open(f"data/stats.json", 'r') as entry:
@@ -124,8 +124,8 @@ class Commands(commands.Cog):
     async def kickPun(self, m, member, ctx, reason=None):
         createEmbed = self.createEmbed
         try:
-            if not ctx.author.guild_permissions.kick_members: 
-                return await m.edit(embed=createEmbed(f"{emojis['PunKick']} Looks like you don't have permissions", "You need the `kick_members` permission to kick someone.", colours["delete"]))
+            if not ctx.author.guild_permissions.kick_members:   return await m.edit(embed=createEmbed(f"{emojis['PunKick']} Looks like you don't have permissions", "You need the `kick_members` permission to kick someone.", colours["delete"]))
+            if not ctx.guild.me.guild_permissions.kick_members: return await m.edit(embed=createEmbed(f"{emojis['PunKick']} Looks like I don't have permissions", "I need the `kick_members` permission to kick someone.", colours["delete"]))
         except: return
 
         with open(f"data/stats.json", 'r') as entry:
@@ -157,8 +157,8 @@ class Commands(commands.Cog):
     async def banPun(self, m, member, ctx, reason=None):
         createEmbed = self.createEmbed
         try:
-            if not ctx.author.guild_permissions.ban_members: 
-                return await m.edit(embed=createEmbed(f"{emojis['PunBan']} Looks like you don't have permissions", "You need the `ban_members` permission to ban someone.", colours["delete"]))
+            if not ctx.author.guild_permissions.ban_members:   return await m.edit(embed=createEmbed(f"{emojis['PunBan']} Looks like you don't have permissions", "You need the `ban_members` permission to ban someone.", colours["delete"]))
+            if not ctx.guild.me.guild_permissions.ban_members: return await m.edit(embed=createEmbed(f"{emojis['PunBan']} Looks like I don't have permissions", "I need the `ban_members` permission to ban someone.", colours["delete"]))
         except: return
 
         with open(f"data/stats.json", 'r') as entry:
@@ -180,19 +180,21 @@ class Commands(commands.Cog):
             try: 
                 if ctx.guild.me.top_role.position <= member.top_role.position or ctx.author.top_role <= member.top_role.position: int("at this point in life i dont even care")
                 try: 
-                    if reason is not False: await member.send(embed=createEmbed(f"{emojis['PunBan']} Banned", f"You were banned from {ctx.guild.name} for {reason}.", colours["delete"]))
+                    if reason is not False: bm = await member.send(embed=createEmbed(f"{emojis['PunBan']} Banned", f"You were banned from {ctx.guild.name} for {reason}.", colours["delete"]))
                 except: pass
                 await ctx.guild.ban(member, reason=reason, delete_message_days=7)
                 await m.edit(embed=createEmbed(f"{emojis['PunBan']} Ban", f"User {member.mention} was successfully banned{' for' + str(reason) if reason is not False else ''}.", colours["create"]))
             except Exception as e:
                 await m.edit(embed=createEmbed(f"{emojis['PunBan']} Ban", f"Something went wrong. I may not have permissions, or the user couldn't be banned.", colours["delete"]))
+                try: bm.edit(embed=createEmbed(f"{emojis['PunBan']} Ban", f"The ban in {ctx.guild.name} failed.", colours["create"]))
+                except: pass
             await m.clear_reactions()
     
     async def softBanPun(self, m, member, ctx, reason=None):
         createEmbed = self.createEmbed
         try:
-            if not ctx.author.guild_permissions.ban_members: 
-                return await m.edit(embed=self.createEmbed(f"{emojis['PunSoftBan']} Looks like you don't have permissions", "You need the `ban_members` permission to soft ban someone.", colours["delete"]))
+            if not ctx.author.guild_permissions.ban_members:   return await m.edit(embed=self.createEmbed(f"{emojis['PunSoftBan']} Looks like you don't have permissions", "You need the `ban_members` permission to soft ban someone.", colours["delete"]))
+            if not ctx.guild.me.guild_permissions.ban_members: return await m.edit(embed=self.createEmbed(f"{emojis['PunSoftBan']} Looks like I don't have permissions", "I need the `ban_members` permission to soft ban someone.", colours["delete"]))
         except: return
 
         with open(f"data/stats.json", 'r') as entry:
@@ -225,8 +227,8 @@ class Commands(commands.Cog):
     async def delHistoryPun(self, m, member, ctx, out=None, mod=None):
         createEmbed = self.createEmbed
         try:
-            if not ctx.author.guild_permissions.manage_messages: 
-                return await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Looks like you don't have permissions", "You need the `manage_messages` permission to delete someone's history.", colours["delete"]))
+            if not ctx.author.guild_permissions.manage_messages:   return await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Looks like you don't have permissions", "You need the `manage_messages` permission to delete someone's history.", colours["delete"]))
+            if not ctx.guild.me.guild_permissions.manage_messages: return await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Looks like I don't have permissions", "I need the `manage_messages` permission to delete someone's history.", colours["delete"]))
         except: return
 
         with open(f"data/stats.json", 'r') as entry:
@@ -420,7 +422,7 @@ class Commands(commands.Cog):
     
     @commands.command()
     @commands.guild_only()
-    async def warn(self, ctx, member: typing.Optional[discord.Member], reason:typing.Optional[str]):
+    async def warn(self, ctx, member: typing.Optional[discord.Member], *, reason:typing.Optional[str]):
         try: reason = str(''.join(reason))
         except: reason = None
         tooMany = discord.Embed(
@@ -445,7 +447,7 @@ class Commands(commands.Cog):
     
     @commands.command()
     @commands.guild_only()
-    async def kick(self, ctx, member: typing.Optional[discord.Member], reason:typing.Optional[str]):
+    async def kick(self, ctx, member: typing.Optional[discord.Member], *, reason:typing.Optional[str]):
         try: reason = str(''.join(reason))
         except: reason = ""
         tooMany = discord.Embed(
@@ -499,7 +501,7 @@ class Commands(commands.Cog):
     
     @commands.command()
     @commands.guild_only()
-    async def softBan(self, ctx, member: typing.Optional[discord.Member], reason:typing.Optional[str]):
+    async def softBan(self, ctx, member: typing.Optional[discord.Member], *, reason:typing.Optional[str]):
         try: reason = str(''.join(reason))
         except: reason = ""
         tooMany = discord.Embed(
@@ -524,7 +526,7 @@ class Commands(commands.Cog):
     
     @commands.command()
     @commands.guild_only()
-    async def ban(self, ctx, member: typing.Optional[discord.Member], reason:typing.Optional[str]):
+    async def ban(self, ctx, member: typing.Optional[discord.Member], *, reason:typing.Optional[str]):
         try: reason = str(''.join(reason))
         except: reason = ""
         tooMany = discord.Embed(

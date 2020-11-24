@@ -4,7 +4,6 @@ from datetime import datetime
 from discord.ext import commands
 
 with open("./data/emojis.json") as rfile: emojis = json.load(rfile)
-with open("./data/template.json") as rfile: template = json.load(rfile)
 
 colours = {
     "delete": 0xF27878,
