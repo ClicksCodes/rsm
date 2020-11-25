@@ -70,7 +70,7 @@ class Raid(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def raid(self, ctx, toggle: typing.Optional[str]):
-        if not (ctx.author.guild_permissions.administrator or (ctx.author.guild_permissions.manage_channels and ctx.author.guild_permissions.manage_server)): return await ctx.send(embed=createEmbed(f"{emojis['raidlock']} Looks like you don't have permissions", "You need the `administrator` or both `manage_server` and `manage_channels` permissions to toggle raid.", colours["delete"]), delete_after=10)
+        if not (ctx.author.guild_permissions.administrator or (ctx.author.guild_permissions.manage_channels and ctx.author.guild_permissions.manage_server)): return await ctx.send(embed=self.createEmbed(f"{emojis['raidlock']} Looks like you don't have permissions", "You need the `administrator` or both `manage_server` and `manage_channels` permissions to toggle raid.", colours["delete"]), delete_after=10)
         with open(f"data/stats.json", 'r') as entry:
             entry = json.load(entry)
             entry["raids"] += 1
