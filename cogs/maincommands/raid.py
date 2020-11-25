@@ -147,7 +147,7 @@ class Raid(commands.Cog):
         if m.content.lower() != "cancel":
             try: time = int(re.sub(r"[^0-9]*", "", str(mess.content))) * 60000
             except: time = 1800000
-            if (datetime.datetime.now() - ctx.guild.me.joined_at).total_seconds() > time:
+            if (datetime.now() - ctx.guild.me.joined_at).total_seconds() > time:
                 return await m.edit(embed=createEmbed(f"{emojis['raidlock']} Banned users",f"I joined before this point, and I may ban a lot of members!",color=colours["create"]))
             for member in ctx.guild.members:
                 d = datetime.strptime(str(member.joined_at), "%Y-%m-%d %H:%M:%S.%f").strftime('%s.%f')

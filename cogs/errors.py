@@ -57,7 +57,7 @@ class Errors(commands.Cog):
                 ))
                 return await ctx.channel.send(embed=discord.Embed(
                     title="It looks like I messed up",
-                    description=f"It looks like there was an error. Just send the [developers](https://discord.gg/bPaNnxe) code `code`"
+                    description=f"It looks like there was an error. Just send the [developers](https://discord.gg/bPaNnxe) code `{code}`"
                 ))
             else: return
         
