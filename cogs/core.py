@@ -3,7 +3,6 @@ import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio,
 from datetime import datetime
 from discord.ext import commands, tasks
 from textwrap import shorten
-from discord.ext import menus
 
 from cogs.consts import *
 

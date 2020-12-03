@@ -3,8 +3,6 @@ import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio,
 from datetime import datetime
 from discord.ext import commands
 from textwrap import shorten
-from discord.ext import menus
-from create_machine_utils.minidiscord import menus
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from re import findall
@@ -359,7 +357,8 @@ class GuildCommands(commands.Cog):
             except: await ctx.author.send(f"Your server now has no settings, but I am missing permissions. Please make sure I have: {', '.join(['`' + p + '`' for p in missing])} and you'll be on your way!")
         else: await ctx.send(embed=discord.Embed(
             title="Set up!",
-            description="Your now have no settings for your server. Get started with `m!setlog #channel` to begin logging"
+            description="Your now have no settings for your server. Get started with `m!setlog #channel` to begin logging",
+            color=colours["delete"]
         ))
 
     @commands.command(aliases=["roles"])

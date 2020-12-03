@@ -3,8 +3,6 @@ import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio,
 from datetime import datetime
 from discord.ext import commands
 from textwrap import shorten
-from discord.ext import menus
-from create_machine_utils.minidiscord import menus
 
 from cogs.consts import *
 
@@ -374,26 +372,31 @@ class Commands(commands.Cog):
             description=(f"Select punishment for {member.mention}:" + "\n" + ('\n'.join( [f"{ctx.bot.get_emoji(int(self.emojiids[t][0]))} | {self.emojiids[t][1]}" for t in self.emojiids] ))),
             color=colours["create"]
         )
-        eTimed = discord.Embed (
-            title=f'{events["nsfw_update"][2]} Punishing user *{member.name}*',
-            description=(f"Select punishment for {member.mention}:" + "\n" + ('\n'.join( [f"{ctx.bot.get_emoji(int(self.emojiids[t][0]))} | {self.emojiids[t][1]}" for t in self.emojiids] ))),
-            color=colours["edit"]
-        )
         eClosed = discord.Embed (
             title=f'{events["nsfw_update"][2]} Punishing user *{member.name}*',
             description=(f"Select punishment for {member.mention}:" + "\n" + ('\n'.join( [f"{ctx.bot.get_emoji(int(self.emojiids[t][0]))} | {self.emojiids[t][1]}" for t in self.emojiids] ))),
             color=colours["delete"]
         )
+
         if m == None: m = await ctx.send(embed=e)
         else: await m.edit(embed=e)
+
         try:
-            try: menu = menus.Menu(timeout=60)
-            except: pass
             for emoji in self.emojiids: 
-                try: menu + ctx.bot.get_emoji(self.emojiids[emoji][0])
+                try: await m.add_reaction(self.bot.get_emoji(self.emojiids[emoji][0]))
                 except: pass
-            try: o = await menu(ctx.bot, m, ctx.author)
-            except: o = None
+
+            reaction = None
+            try: reaction = await ctx.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user : emoji.message.id == m.id and user == ctx.author)
+            except asyncio.TimeoutError: 
+                m.edit(embed=eClosed)
+                return await m.clear_reactions()
+
+            try: await m.remove_reaction(reaction[0].emoji, ctx.author)
+            except: pass
+
+            o = reaction[0].emoji
+
             if o.name == "Stop": 
                 await m.edit(embed=eClosed)
                 return await m.clear_reactions()
@@ -403,10 +406,9 @@ class Commands(commands.Cog):
                 elif o.name == "PunishBan":     await self.banPun(m, member, ctx)
                 elif o.name == "PunishSoftBan": await self.softBanPun(m, member, ctx)
                 elif o.name == "PunishHistory": await self.delHistoryPun(m, member, ctx)
-                else: return
-
-        except asyncio.TimeoutError:
-            await m.edit(embed=eTimed)
+                else: print(o.name)
+        except:
+            await m.edit(embed=eClosed)
             return await m.clear_reactions()
 
     @punish.error
@@ -418,7 +420,6 @@ class Commands(commands.Cog):
                 color=colours["edit"]
             )
             await ctx.send(embed=notFound)
-        else: return print(f"{c.RedDark}[C] {c.Red}{str(error)}{c.c}")
     
     @commands.command()
     @commands.guild_only()

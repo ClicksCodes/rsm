@@ -1,3 +1,5 @@
+DEV = 1
+
 import sys
 import traceback
 
@@ -24,10 +26,12 @@ class c:
 
 intents = discord.Intents.all()
 
+print(f"{c.Cyan}[S] {c.CyanDark}Launching {'dev' if DEV else 'normal'} mode")
+
 class Bot(commands.Bot):
     def __init__(self, **kwargs):
-        super().__init__(command_prefix=commands.when_mentioned_or('t!', 'T!', 't1', 'T1'), **kwargs)
-        #super().__init__(command_prefix=commands.when_mentioned_or('m!', 'M!', 'm1', 'M1'), **kwargs)
+        if     DEV: super().__init__(command_prefix=commands.when_mentioned_or('t!', 'T!', 't1', 'T1'), **kwargs)
+        if not DEV: super().__init__(command_prefix=commands.when_mentioned_or('m!', 'M!', 'm1', 'M1'), **kwargs)
 
         self.remove_command('help')
 
@@ -52,4 +56,4 @@ bot = Bot(
     intents=intents
 )
 
-bot.run(config.token)
+bot.run(config.token if not DEV else config.dtoken)

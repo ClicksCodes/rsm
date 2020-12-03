@@ -3,7 +3,6 @@ import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio,
 from datetime import datetime
 from discord.ext import commands
 from textwrap import shorten
-from discord.ext import menus
 from hashlib import sha256
 from cogs.consts import *
 
@@ -58,7 +57,8 @@ class Errors(commands.Cog):
                 ))
                 return await ctx.channel.send(embed=discord.Embed(
                     title="It looks like I messed up",
-                    description=f"It looks like there was an error. Just send the [developers](https://discord.gg/bPaNnxe) code `{code}`"
+                    description=f"It looks like there was an error. Just send the [developers](https://discord.gg/bPaNnxe) code `{code}`",
+                    color=colours["delete"]
                 ))
             else: return
         

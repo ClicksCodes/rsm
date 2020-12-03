@@ -3,7 +3,6 @@ import copy, discord, json, humanize, aiohttp, traceback, typing, requests, cv2,
 from datetime import datetime
 from discord.ext import commands
 from textwrap import shorten
-from discord.ext import menus
 from colorthief import ColorThief as cf
 
 from cogs.consts import *
