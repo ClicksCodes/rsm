@@ -109,9 +109,15 @@ class InfoCommands(commands.Cog):
     
     @commands.command()
     @commands.cooldown(2, 30, commands.BucketType.user)
-    async def suggest(self, ctx, *, msg):
+    async def suggest(self, ctx, *, msg: typing.Optional[str]):
         try: await ctx.message.delete()
         except: pass
+        if not msg:
+            return await ctx.send(embed=discord.Embed(
+            title=f"{emojis['cross']} No suggestion",
+            description="Please enter a suggestion after `m!suggest`.",
+            color=colours["delete"]
+        ), delete_after=10)
         r = await self.bot.get_channel(777214577187487744).send(embed=discord.Embed(
             title="Suggestion",
             description=f"Ticket: `{ctx.author.id}`\nName: `{ctx.author.name}`\n\n" + str(msg),
@@ -127,9 +133,15 @@ class InfoCommands(commands.Cog):
 
     @commands.command(aliases=["support"])
     @commands.cooldown(2, 30, commands.BucketType.user)
-    async def contact(self, ctx, *, msg):
+    async def contact(self, ctx, *, msg: typing.Optional[str]):
         try: await ctx.message.delete()
         except: pass
+        if not msg:
+            return await ctx.send(embed=discord.Embed(
+            title=f"{emojis['cross']} No message",
+            description="Please enter a message after `m!contact`.",
+            color=colours["delete"]
+        ), delete_after=10)
         await self.bot.get_channel(777220967315406929).send(embed=discord.Embed(
             title="Support",
             description=f"Ticket: `{ctx.author.id}`\nName: `{ctx.author.name}`\n\n" + str(msg),
