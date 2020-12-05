@@ -56,9 +56,9 @@ class Core(commands.Cog):
     
     @check_latency.before_loop
     async def before_check_latency(self):
-        print(f"\033[93m[P] Starting latency test\033[0m")
+        print(f"\033[93m[P] Starting latency test\033[0m", end="\r")
         await self.bot.wait_until_ready()    
-        print(f"\033[93m[P] Latency initialised\033[0m")
+        print(f"\033[93m[P] Latency initialised  \033[0m")
 
 
     def is_logging(self, guild: discord.Guild, *, channel = None, member: discord.Member = None, eventname):

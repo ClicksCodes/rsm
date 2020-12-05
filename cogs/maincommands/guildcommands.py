@@ -25,9 +25,9 @@ class GuildCommands(commands.Cog):
             joins_x_values = sorted(m.created_at for m in g.roles)
             plt.grid(True)
             fig, ax = plt.subplots(figsize=(10, 6))
-            ax.plot(joins_x_values, tuple(range(1, len(joins_x_values) + 1)), 'k', lw=2, label="Roles in server")
+            ax.plot(joins_x_values, tuple(range(1, len(joins_x_values) + 1)), 'k', lw=2, label="Members in server")
             ax.xaxis.set_major_formatter(mdates.DateFormatter("%a %d-%m-%Y"))
-            ax.xaxis.set_major_locator(mdates.DayLocator(interval=round(len(ctx.guild.members)/(len(ctx.guild.members)/20))))
+            ax.xaxis.set_major_locator(plt.MaxNLocator(20))
             fig.autofmt_xdate()
             plt.title("Guild Members")
             plt.xlabel('Time (UTC)')
@@ -69,7 +69,7 @@ class GuildCommands(commands.Cog):
             fig, ax = plt.subplots(figsize=(10, 6))
             ax.plot(joins_x_values, tuple(range(1, len(joins_x_values) + 1)), 'k', lw=2, label="Roles in server")
             ax.xaxis.set_major_formatter(mdates.DateFormatter("%a %d-%m-%Y"))
-            ax.xaxis.set_major_locator(mdates.DayLocator(interval=round(len(ctx.guild.roles)/(len(ctx.guild.roles)/20))))
+            ax.xaxis.set_major_locator(plt.MaxNLocator(20))
             fig.autofmt_xdate()
             plt.title("Guild Roles")
             plt.xlabel('Time (UTC)')
@@ -111,7 +111,7 @@ class GuildCommands(commands.Cog):
             fig, ax = plt.subplots(figsize=(10, 6))
             ax.plot(joins_x_values, tuple(range(1, len(joins_x_values) + 1)), 'k', lw=2, label="Channels in server")
             ax.xaxis.set_major_formatter(mdates.DateFormatter("%a %d-%m-%Y"))
-            ax.xaxis.set_major_locator(mdates.DayLocator(interval=round(len(ctx.guild.channels)/(len(ctx.guild.channels)/20))))
+            ax.xaxis.set_major_locator(plt.MaxNLocator(20))
             fig.autofmt_xdate()
             plt.title("Guild Channels")
             plt.xlabel('Time (UTC)')
@@ -153,7 +153,7 @@ class GuildCommands(commands.Cog):
             fig, ax = plt.subplots(figsize=(10, 6))
             ax.plot(joins_x_values, tuple(range(1, len(joins_x_values) + 1)), 'k', lw=2, label="Emojis")
             ax.xaxis.set_major_formatter(mdates.DateFormatter("%a %d-%m-%Y"))
-            ax.xaxis.set_major_locator(mdates.DayLocator(interval=round(len(ctx.guild.emojis)/(len(ctx.guild.emojis)/20))))
+            ax.xaxis.set_major_locator(plt.MaxNLocator(20))
             fig.autofmt_xdate()
             plt.title("Guild Emojis")
             plt.xlabel('Time (UTC)')
@@ -220,17 +220,11 @@ class GuildCommands(commands.Cog):
 
                 color=colours["create"] if not final else colours["delete"]
             )
-            if final == False:
-                await m.delete()
-                m = await ctx.send(
-                    embed=e
-                )
-                return m
-            else:
-                await m.edit(
-                    embed=e
-                )
-                return await m.clear_reactions()
+            await m.delete()
+            m = await ctx.send(
+                embed=e
+            )
+            if final: return await m.clear_reactions()
             return m
 
         m = await ctx.send(embed=self.loadingEmbed)
@@ -275,11 +269,6 @@ class GuildCommands(commands.Cog):
             elif page == 5: m = await GraphEmojis(ctx, m, g)
             else: break
 
-        # if   page == 2: m = await GraphUsers(ctx, m, g, True)
-        # elif page == 3: m = await GraphRoles(ctx, m, g, True)
-        # elif page == 4: m = await GraphChannels(ctx, m, g, True)
-        # elif page == 5: m = await GraphEmojis(ctx, m, g, True)
-        # else:           m = await genInfo(ctx, m, g, True)
         m = await genInfo(ctx, m, g, True)
     
     @commands.command(aliases=["reset"])
@@ -357,8 +346,8 @@ class GuildCommands(commands.Cog):
             except: await ctx.author.send(f"Your server now has no settings, but I am missing permissions. Please make sure I have: {', '.join(['`' + p + '`' for p in missing])} and you'll be on your way!")
         else: await ctx.send(embed=discord.Embed(
             title="Set up!",
-            description="Your now have no settings for your server. Get started with `m!setlog #channel` to begin logging",
-            color=colours["delete"]
+            description="You now have no settings for your server. Get started with `m!setlog #channel` to begin logging",
+            color=colours["create"]
         ))
 
     @commands.command(aliases=["roles"])

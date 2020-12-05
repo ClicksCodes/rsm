@@ -40,10 +40,12 @@ class Bot(commands.Bot):
         for cog in config.cogs:
             x += 1
             try:
-                print(f"{c.Cyan}[S] {c.CyanDark}Loading cog {x}/{m} ({cog})")
+                print(f"{c.Cyan}[S] {c.CyanDark}Loading cog {x}/{m} ({cog})", end="\r")
                 self.load_extension(cog)
+                print(f"{c.Green}[S] {c.GreenDark}Loaded cog {x}/{m} ({cog}).")
             except Exception as exc:
                 print(f'{c.RedDark}[E] {c.Red}Could not load cog {x} - extension {cog} due to {exc.__class__.__name__}: {exc}{c.c}')
+        print()
 
     async def on_ready(self):
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="over your servers."), status=discord.Status.idle)

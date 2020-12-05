@@ -410,7 +410,6 @@ class Commands(commands.Cog):
         except:
             await m.edit(embed=eClosed)
             return await m.clear_reactions()
-
     @punish.error
     async def _on_punish_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):

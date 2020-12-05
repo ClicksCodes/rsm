@@ -290,20 +290,22 @@ class Messages(commands.Cog):
             if not log: return
             audit = await get_alog_entry(message.channel, type=discord.AuditLogAction.message_bulk_delete)
 
-            m = ""
-            for message in messages: m += f"{str(message.author)} {message.created_at}: {message.clean_content}\n\n"
-            response = await self.session.post("https://mystb.in/documents", data=m)
-            if response.status != 200:
-                dump = "\n*Unable to get delted messages dump*"
-            else:
-                dump = f"\n[View deleted messages](https://mystb.in/{(await response.json())['key']})"
+            # m = ""
+            # print(messages)
+            # for message in messages: m += f"{str(message.author)} at {message.created_at}: {message.clean_content}\n\n"
+            # print(m)
+            # response = await self.session.post("https://mystb.in/documents", data=m)
+            # if response.status != 200:
+            #     dump = "\n*Unable to get delted messages dump*"
+            # else:
+            #     dump = f"\n[View deleted messages](https://mystb.in/{(await response.json())['key']})"
 
             e = discord.Embed(
                 title=emojis["purge"] + " Messages Purged",
                 description=f"**Messages Deleted:** {len(messages)}\n"
                             f"**In:** {message.channel.mention}\n"
-                            f"**Deleted By:** {audit.user.mention}"
-                            f"{dump}",
+                            f"**Deleted By:** {audit.user.mention}",
+                            #f"{dump}",
                 color=events["message_delete"][0],
                 timestamp=datetime.utcnow()
             )
@@ -314,7 +316,7 @@ class Messages(commands.Cog):
                 guild=message.guild.id,
                 content={
                     "username": audit.user.id,
-                    "messageContent": f"https://mystb.in/{(await response.json())['key']}",
+                    #"messageContent": f"https://mystb.in/{(await response.json())['key']}",
                     "occurredIn": message.channel.id, 
                     "amount": len(messages)
                 }
