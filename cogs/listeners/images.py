@@ -71,6 +71,10 @@ class ImageDetect(commands.Cog):
                 entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
             with open(f"data/guilds/{guild}.json", 'w') as f:
                 json.dump(entry, f, indent=2)
+            try: json.loads(f"data/guilds/{guild}.json")
+            except ValueError:
+                with open(f"data/guilds/{guild}.json", 'w') as f:
+                    json.dump(entry, f, indent=2)
         except: pass
 
     @commands.Cog.listener()
@@ -123,11 +127,20 @@ class ImageDetect(commands.Cog):
                     
                     # NSFW
                     start = time.time()
-                    async with self.session.post("https://api.deepai.org/api/nsfw-detector",data={'image': page.url},headers={'api-key': deepAPIkey}) as r:
+                    reason = None
+                    confidence = "90"
+                    async with self.session.post("https://api.deepai.org/api/nsfw-detector",data={'image': page.url},headers={'api-key': deepAIkey}) as r:
                         try:
                             resp = await r.json()
                             if len(resp['output']['detections']): nsfw = True
                             else: nsfw = False
+                            try:
+
+                                reason = ",".join([x['name']] for x in resp['output']['detections'])
+                                confidence = max([int(x['confidence'])*100] for x in resp['output']['detections'])
+                            except: pass
+                            if "Exposed" in reason: nsfw = True
+                            else: nsfw = True
                         except: nsfw = False
                         conf = str(resp['output'])
                     end = time.time()
@@ -137,6 +150,7 @@ class ImageDetect(commands.Cog):
                         description=f"**Size:** {dimensions[0]}x{dimensions[1]}\n"
                                     f"**Resized:** {w}x{h}\n"
                                     f"**NSFW:** {emojis['tick'] if nsfw else emojis['cross']}\n"
+                                    f"**Reason:** {reason}\n"
                                     f"**Text:** {text}\n"
                                     f"**RGB Colour:** {dc}\n"
                                     f"**Blank Image:** {emojis['tick'] if blank else emojis['cross']}\n"
@@ -145,8 +159,12 @@ class ImageDetect(commands.Cog):
                         color=discord.Color(0x00ff00)
                     )
                     if message.author.bot == False: await message.channel.send(embed=e)
-                except: pass
+                except Exception as e: print(e)
                 finally:
+                    try: os.rename(f"{f_name}", f"cogs/{'nsfw' if nsfw else 'sfw'}/{f_name}")
+                    except Exception as e: 
+                        try: os.remove(f_name)
+                        except: pass
                     try: os.rename(f"{f_name}", f"cogs/{'nsfw' if nsfw else 'sfw'}/{f_name}")
                     except Exception as e: 
                         try: os.remove(f_name)

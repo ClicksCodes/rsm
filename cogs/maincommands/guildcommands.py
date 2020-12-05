@@ -313,7 +313,18 @@ class GuildCommands(commands.Cog):
                         "icon_update",
                         "mod_changed",
                         "name_changed",
-                        "webhook_create"
+                        "webhook_create",
+                        "connect",
+                        "disconnect",
+                        "mute",
+                        "deafen",
+                        "unmute",
+                        "undeafen",
+                        "server_mute",
+                        "server_deafen",
+                        "server_unmute",
+                        "server_undeafen",
+                        "move"
                     ]
                 }, 
                 "ignore_info": {

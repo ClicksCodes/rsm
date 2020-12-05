@@ -92,6 +92,10 @@ class Messages(commands.Cog):
                 entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
             with open(f"data/guilds/{guild}.json", 'w') as f:
                 json.dump(entry, f, indent=2)
+            try: json.loads(f"data/guilds/{guild}.json")
+            except ValueError:
+                with open(f"data/guilds/{guild}.json", 'w') as f:
+                    json.dump(entry, f, indent=2)
         except: pass
     
 

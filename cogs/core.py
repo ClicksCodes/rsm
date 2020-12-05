@@ -109,13 +109,11 @@ class Core(commands.Cog):
         catList = [*categories]
         entry = None
         m = await ctx.send(embed=self.loadingEmbed)
-        for emoji in [729762938411548694, 729762938843430952, 729064530310594601]: await m.add_reaction(ctx.bot.get_emoji(emoji))
+        for emoji in [729065958584614925, 729066924943737033, 729762939023917086, 729066519337762878, 784785219391193138]: await m.add_reaction(ctx.bot.get_emoji(emoji))
         bn = '\n'
         with open(f"data/guilds/{ctx.guild.id}.json", 'r') as e:
             entry = json.load(e)["log_info"]["to_log"]
-        for x in range(0,50):
-            if x == 0: 
-                for emoji in [729065958584614925, 729066924943737033, 729762939023917086, 729066519337762878]: await m.add_reaction(ctx.bot.get_emoji(emoji))
+        for _ in range(0,50):
             header = " | ".join([f"**{item}**" if catList[page] == item else categories[item] for item in catList]) + '\nYou can edit your log settings [here](https://rsm.clcks.dev/dashboard)\n'
             description = "".join([ (((emojis['tick'] if item in entry else emojis['cross']) + " | " + events[item][1] + bn) if events[item][3] == catList[page] else '') for item in list(events.keys())])
             emb = discord.Embed (
@@ -139,7 +137,7 @@ class Core(commands.Cog):
             elif reaction[0].emoji.name == "ChannelCreate": page =  1
             elif reaction[0].emoji.name == "Settings":      page =  2
             elif reaction[0].emoji.name == "MemberJoin":    page =  3
-            else: break
+            elif reaction[0].emoji.name == "Connect":       page =  4
 
             page = min(len(catList)-1, max(0, page))
         

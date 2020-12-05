@@ -92,7 +92,11 @@ class Users(commands.Cog):
                 entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
             with open(f"data/guilds/{guild}.json", 'w') as f:
                 json.dump(entry, f, indent=2)
-        except: pass 
+            try: json.loads(f"data/guilds/{guild}.json")
+            except ValueError:
+                with open(f"data/guilds/{guild}.json", 'w') as f:
+                    json.dump(entry, f, indent=2)
+        except: pass
     
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
@@ -229,6 +233,229 @@ class Users(commands.Cog):
                     "nameBefore": before.display_name,
                     "nameAfter": after.display_name,
                     "user": after.id
+                }
+            )
+    
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, m, before, after):
+        if before.channel == None and after.channel != None: 
+            if not self.is_logging(after.channel.guild, eventname="connect"): return
+            e = discord.Embed(
+                title=emojis["Connect"] + f" Joined voice channel",
+                description=f"**User:** {m.mention}\n"
+                            f"**Channel:** {after.channel.name}",
+                color=events["connect"][0],
+                timestamp=datetime.utcnow()
+            )
+            log = self.get_log(after.channel.guild)
+            await log.send(embed=e)
+            return await self.log(
+                logType="connect", 
+                occurredAt=round(time.time()),
+                guild=after.channel.guild.id,
+                content={
+                    "username": m.id,
+                    "channel": after.channel.name
+                }
+            )
+        elif before.channel != None and after.channel == None:
+            if not self.is_logging(before.channel.guild, eventname="disconnect"): return
+            e = discord.Embed(
+                title=emojis["Leave"] + f" Left voice channel",
+                description=f"**User:** {m.mention}\n"
+                            f"**Channel:** {before.channel.name}",
+                color=events["disconnect"][0],
+                timestamp=datetime.utcnow()
+            )
+            log = self.get_log(before.channel.guild)
+            await log.send(embed=e)
+            return await self.log(
+                logType="leave", 
+                occurredAt=round(time.time()),
+                guild=before.channel.guild.id,
+                content={
+                    "username": m.id,
+                    "channel": before.channel.name
+                }
+            )
+        elif before.channel != None and after.channel != None and before.channel != after.channel:
+            if not self.is_logging(after.channel.guild, eventname="move"): return
+            e = discord.Embed(
+                title=emojis["Change"] + f" Change voice channel",
+                description=f"**User:** {m.mention}\n"
+                            f"**Channel:** {before.channel.name} > {after.channel.name}",
+                color=events["move"][0],
+                timestamp=datetime.utcnow()
+            )
+            log = self.get_log(after.channel.guild)
+            await log.send(embed=e)
+            return await self.log(
+                logType="disconnect", 
+                occurredAt=round(time.time()),
+                guild=before.channel.guild.id,
+                content={
+                    "username": m.id,
+                    "channel": after.channel.name
+                }
+            )
+        elif after.deaf and not before.deaf: 
+            if not self.is_logging(after.channel.guild, eventname="server_deafen"): return
+            e = discord.Embed(
+                title=emojis["Deafen"] + f" Server deafen",
+                description=f"**User:** {m.mention}\n"
+                            f"**Channel:** {before.channel.name}",
+                color=events["server_deafen"][0],
+                timestamp=datetime.utcnow()
+            )
+            log = self.get_log(after.channel.guild)
+            await log.send(embed=e)
+            return await self.log(
+                logType="server_deafen", 
+                occurredAt=round(time.time()),
+                guild=before.channel.guild.id,
+                content={
+                    "username": m.id,
+                    "channel": after.channel.name
+                }
+            )
+        elif before.deaf and not after.deaf:
+            if not self.is_logging(after.channel.guild, eventname="server_undeafen"): return
+            e = discord.Embed(
+                title=emojis["Deafen"] + f" Server undeafen",
+                description=f"**User:** {m.mention}\n"
+                            f"**Channel:** {before.channel.name}",
+                color=events["server_undeafen"][0],
+                timestamp=datetime.utcnow()
+            )
+            log = self.get_log(after.channel.guild)
+            await log.send(embed=e)
+            return await self.log(
+                logType="server_undeafen", 
+                occurredAt=round(time.time()),
+                guild=before.channel.guild.id,
+                content={
+                    "username": m.id,
+                    "channel": after.channel.name
+                }
+            )
+        elif after.mute and not before.mute: 
+            if not self.is_logging(after.channel.guild, eventname="server_mute"): return
+            e = discord.Embed(
+                title=emojis["Mute"] + f" Server mute",
+                description=f"**User:** {m.mention}\n"
+                            f"**Channel:** {before.channel.name}",
+                color=events["server_mute"][0],
+                timestamp=datetime.utcnow()
+            )
+            log = self.get_log(after.channel.guild)
+            await log.send(embed=e)
+            return await self.log(
+                logType="server_mute", 
+                occurredAt=round(time.time()),
+                guild=before.channel.guild.id,
+                content={
+                    "username": m.id,
+                    "channel": after.channel.name
+                }
+            )
+        elif before.mute and not after.mute: 
+            if not self.is_logging(after.channel.guild, eventname="server_unmute"): return
+            e = discord.Embed(
+                title=emojis["Unmute"] + f" Server unmute",
+                description=f"**User:** {m.mention}\n"
+                            f"**Channel:** {before.channel.name}",
+                color=events["server_unmute"][0],
+                timestamp=datetime.utcnow()
+            )
+            log = self.get_log(after.channel.guild)
+            await log.send(embed=e)
+            return await self.log(
+                logType="server_unmute", 
+                occurredAt=round(time.time()),
+                guild=before.channel.guild.id,
+                content={
+                    "username": m.id,
+                    "channel": after.channel.name
+                }
+            )
+        elif after.self_deaf and not before.self_deaf: 
+            if not self.is_logging(after.channel.guild, eventname="deafen"): return
+            e = discord.Embed(
+                title=emojis["Deafen"] + f" Deafen",
+                description=f"**User:** {m.mention}\n"
+                            f"**Channel:** {before.channel.name}",
+                color=events["deafen"][0],
+                timestamp=datetime.utcnow()
+            )
+            log = self.get_log(after.channel.guild)
+            await log.send(embed=e)
+            return await self.log(
+                logType="deafen", 
+                occurredAt=round(time.time()),
+                guild=before.channel.guild.id,
+                content={
+                    "username": m.id,
+                    "channel": after.channel.name
+                }
+            )
+        elif before.self_deaf and not after.self_deaf: 
+            if not self.is_logging(after.channel.guild, eventname="undeafen"): return
+            e = discord.Embed(
+                title=emojis["Undeafen"] + f" Undeafen",
+                description=f"**User:** {m.mention}\n"
+                            f"**Channel:** {before.channel.name}",
+                color=events["undeafen"][0],
+                timestamp=datetime.utcnow()
+            )
+            log = self.get_log(after.channel.guild)
+            await log.send(embed=e)
+            return await self.log(
+                logType="undeafen", 
+                occurredAt=round(time.time()),
+                guild=before.channel.guild.id,
+                content={
+                    "username": m.id,
+                    "channel": after.channel.name
+                }
+            )
+        elif after.self_mute and not before.self_mute: 
+            if not self.is_logging(after.channel.guild, eventname="mute"): return
+            e = discord.Embed(
+                title=emojis["Mute"] + f" Mute",
+                description=f"**User:** {m.mention}\n"
+                            f"**Channel:** {before.channel.name}",
+                color=events["mute"][0],
+                timestamp=datetime.utcnow()
+            )
+            log = self.get_log(after.channel.guild)
+            await log.send(embed=e)
+            return await self.log(
+                logType="mute", 
+                occurredAt=round(time.time()),
+                guild=before.channel.guild.id,
+                content={
+                    "username": m.id,
+                    "channel": after.channel.name
+                }
+            )
+        elif before.self_mute and not after.self_mute: 
+            if not self.is_logging(after.channel.guild, eventname="unmute"): return
+            e = discord.Embed(
+                title=emojis["Unmute"] + f" Unmute",
+                description=f"**User:** {m.mention}\n"
+                            f"**Channel:** {before.channel.name}",
+                color=events["unmute"][0],
+                timestamp=datetime.utcnow()
+            )
+            log = self.get_log(after.channel.guild)
+            await log.send(embed=e)
+            return await self.log(
+                logType="unmute", 
+                occurredAt=round(time.time()),
+                guild=before.channel.guild.id,
+                content={
+                    "username": m.id,
+                    "channel": after.channel.name
                 }
             )
     

@@ -4,3 +4,4 @@ postbin
 pytesseract
 matplotlib
 colorthief
+ariadne

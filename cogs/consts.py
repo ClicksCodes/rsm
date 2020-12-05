@@ -16,7 +16,8 @@ categories = {
     "Messages": emojis['edit'],
     "Channels": emojis['channel_create'],
     "Server":   emojis['settings'],
-    "Members":  emojis['join']
+    "Members":  emojis['join'],
+    "Voice":    emojis['Connect']
 }
 
 events = {
@@ -47,7 +48,18 @@ events = {
     "invite_delete":        [colours["delete"], '`Deleted invite   `', emojis['invite_delete'],  'Server'],
     "icon_update":          [colours[ "edit" ], '`Icon changed     `', emojis['icon_update'],    'Server'],
     "mod_changed":          [colours[ "edit" ], '`Mod level changed`', emojis['mod_update'],     'Server'],
-    "name_changed":         [colours[ "edit" ], '`Name changed     `', emojis['name_change'],    'Server']
+    "name_changed":         [colours[ "edit" ], '`Name changed     `', emojis['name_change'],    'Server'],
+    "connect":              [colours["create"], '`Voice join       `', emojis['Connect'],        'Voice'],
+    "disconnect":           [colours["delete"], '`Voice leave      `', emojis['Leave'],          'Voice'],
+    "mute":                 [colours["delete"], '`User mute        `', emojis['Mute'],           'Voice'],
+    "deafen":               [colours["delete"], '`Name changed     `', emojis['Deafen'],         'Voice'],
+    "unmute":               [colours["create"], '`User unmute      `', emojis['Unmute'],         'Voice'],
+    "undeafen":             [colours["create"], '`User undeafen    `', emojis['Undeafen'],       'Voice'],
+    "server_mute":          [colours["delete"], '`Server mute      `', emojis['Mute'],           'Voice'],
+    "server_deafen":        [colours["delete"], '`Server deafen    `', emojis['Deafen'],         'Voice'],
+    "server_unmute":        [colours["create"], '`Server unmute    `', emojis['Unmute'],         'Voice'],
+    "server_undeafen":      [colours["create"], '`Server undeafen  `', emojis['Undeafen'],       'Voice'],
+    "move":                 [colours[ "edit" ], '`Moved voice chat `', emojis['Change'],         'Voice']
 }
 
 loadingEmbed = discord.Embed(
