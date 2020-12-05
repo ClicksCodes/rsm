@@ -28,7 +28,9 @@ class InfoCommands(commands.Cog):
     async def info(self, ctx: commands.Context, mob:typing.Optional[str]):
         page = 0
         n = '\n'
-        noLog = ":warning: Your server has not got a log channel. Use `m!setup` to make a log file and `m!setlog #channel` to set it.\n\n" if not os.path.exists(f"data/guilds/{ctx.guild.id}.json") else ""
+        noLog = ""
+        try: noLog = ":warning: Your server has not got a log channel. Use `m!setup` to make a log file and `m!setlog #channel` to set it.\n\n" if not os.path.exists(f"data/guilds/{ctx.guild.id}.json") else ""
+        except: pass
         descriptions = [
             f"**Commands** - {emojis['PunWarn']} - {emojis['lock']} - {emojis['about']} - {emojis['support']}\n\n"
             f"{noLog}"
@@ -84,15 +86,23 @@ class InfoCommands(commands.Cog):
             for emoji in [729762938411548694, 729762938843430952, 729064530310594601]: await m.add_reaction(ctx.bot.get_emoji(emoji))
 
             reaction = None
-            try: reaction = await ctx.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user : emoji.message.id == m.id and user == ctx.author)
-            except asyncio.TimeoutError: break
+            done, pending = await asyncio.wait([
+                    self.bot.wait_for('reaction_add',    timeout=120, check=lambda emoji, user : emoji.message.id == m.id and user == ctx.author),
+                    self.bot.wait_for('reaction_remove', timeout=120, check=lambda emoji, user : emoji.message.id == m.id and user == ctx.author)
+                ], return_when=asyncio.FIRST_COMPLETED)
 
-            try: await m.remove_reaction(reaction[0].emoji, ctx.author)
+            try: reaction, _ = done.pop().result()
+            except: break
+
+            for future in done: future.exception()
+            for future in pending: future.cancel()
+            
+            try: await m.remove_reaction(reaction.emoji, ctx.author)
             except: pass
 
             if reaction == None: break
-            elif reaction[0].emoji.name == "Left":  page -= 1
-            elif reaction[0].emoji.name == "Right": page += 1
+            elif reaction.emoji.name == "Left":  page -= 1
+            elif reaction.emoji.name == "Right": page += 1
             else: break
 
             page = min(len(descriptions)-1, max(0, page))
@@ -103,7 +113,8 @@ class InfoCommands(commands.Cog):
             color=colours["delete"]
         )
         emb.set_footer(text="[@] = Mention | [T] = Text | [N] = Number | [R] = Role | [C] = Channel | [* ] = Optional")
-        await m.clear_reactions()
+        try: await m.clear_reactions()
+        except: pass
         await m.edit(embed=emb)
     
     @commands.command()
