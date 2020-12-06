@@ -55,9 +55,9 @@ class Users(commands.Cog):
         self.bot.loop.create_task(self.session.close())
 
     def is_logging(self, guild: discord.Guild, *, channel = None, member: discord.Member = None, eventname):
-        if not os.path.exists(f'data/guilds/{guild.id}.json'): return print(1)#bool(NotLogging(eventname, "Guild not configured.", cog=self, guild=guild))
-        if eventname not in events.keys():                     return print(2)#bool(NotLogging(eventname, "Event Name is not in registered events.", cog=self, guild=guild))
-        if not guild:                                          return print(3)#bool(NotLogging(eventname, "Event occurred in DMs, thus has no targeted channel.", cog=self, guild=guild))
+        if not os.path.exists(f'data/guilds/{guild.id}.json'): return bool(NotLogging(eventname, "Guild not configured.", cog=self, guild=guild))
+        if eventname not in events.keys():                     return bool(NotLogging(eventname, "Event Name is not in registered events.", cog=self, guild=guild))
+        if not guild:                                          return bool(NotLogging(eventname, "Event occurred in DMs, thus has no targeted channel.", cog=self, guild=guild))
         
         try:    
             with open(f"data/guilds/{guild.id}.json") as entry:

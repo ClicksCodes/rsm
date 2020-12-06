@@ -135,12 +135,11 @@ class ImageDetect(commands.Cog):
                             if len(resp['output']['detections']): nsfw = True
                             else: nsfw = False
                             try:
-
                                 reason = ",".join([x['name']] for x in resp['output']['detections'])
                                 confidence = max([int(x['confidence'])*100] for x in resp['output']['detections'])
                             except: pass
                             if "Exposed" in reason: nsfw = True
-                            else: nsfw = True
+                            else: nsfw = False
                         except: nsfw = False
                         conf = str(resp['output'])
                     end = time.time()

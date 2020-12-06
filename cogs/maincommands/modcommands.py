@@ -641,7 +641,7 @@ class Commands(commands.Cog):
                 f"**Roles:** {len(member.roles)} | **Highest Role:** {member.top_role.mention}",
                 f"**Started boosting:** {humanize.naturaltime(member.premium_since) if member.premium_since != None else 'Not boosting'}" ,
                 f"**Joined Discord:** {humanize.naturaltime(member.created_at)}",
-                f"**Joined the server:** {humanize.naturaltime(member.joined_at)}"
+                f"**Joined the server:** {humanize.naturaltime(datetime.utcnow()-member.joined_at)}"
             ],
             1: [
                 "Roles"
