@@ -392,6 +392,7 @@ class Guild(commands.Cog):
         if not self.is_logging(after.guild, eventname="roles"): return
         else:
             audit = await get_alog_entry(before, type=discord.AuditLogAction.role_update)
+            if before.name == after.name and before.colour == after.colour: return
             if audit.user.id != self.bot.user.id:
                 e = discord.Embed(
                     title=emojis["role_edit"] + f" Role Edited",
