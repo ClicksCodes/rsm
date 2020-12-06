@@ -1,8 +1,8 @@
 {
   "warns": 10,
   "kicks": 1,
-  "bans": 0,
-  "softbans": 0,
+  "bans": 17,
+  "softbans": 4,
   "raids": 6,
   "locks": 4,
   "clears": 4,

@@ -165,24 +165,26 @@ class Commands(commands.Cog):
         with open(f"data/stats.json", 'w') as f:
             json.dump(entry, f, indent=2)
 
-        if reason == None:
-            reason, m = await self.reasonHandler(
-                m, 
-                {
-                    "cancel": {"title": f"{emojis['PunBan']} Ban", "desc": f"Ban cancelled.", "col": colours["delete"]},
-                    "prompt": {"title": f"{emojis['PunBan']} Ban", "desc": f"Please enter a reason for banning {member.mention}.", "col": colours["create"]}
-                },
-                ctx
-            )
+        if reason == None or len(reason) < 2:
+            try:
+                reason, m = await self.reasonHandler(
+                    m, 
+                    {
+                        "cancel": {"title": f"{emojis['PunBan']} Ban", "desc": f"Ban cancelled.", "col": colours["delete"]},
+                        "prompt": {"title": f"{emojis['PunBan']} Ban", "desc": f"Please enter a reason for banning {member.mention}.", "col": colours["create"]}
+                    },
+                    ctx
+                )
+            except: pass
         if reason != None:
             try: 
-                if ctx.guild.me.top_role.position <= member.top_role.position or ctx.author.top_role <= member.top_role.position: int("at this point in life i dont even care")
+                if ctx.guild.me.top_role.position <= member.top_role.position or ctx.author.top_role.position <= member.top_role.position: int("return an error, quite clearly")
                 try: 
                     if reason is not False: bm = await member.send(embed=createEmbed(f"{emojis['PunBan']} Banned", f"You were banned from {ctx.guild.name} for {reason}.", colours["delete"]))
                 except: pass
                 await ctx.guild.ban(member, reason=reason, delete_message_days=7)
-                await m.edit(embed=createEmbed(f"{emojis['PunBan']} Ban", f"User {member.mention} was successfully banned{' for' + str(reason) if reason is not False else ''}.", colours["create"]))
-            except Exception as e:
+                await m.edit(embed=createEmbed(f"{emojis['PunBan']} Ban", f"User {member.mention} was successfully banned{' for ' + str(reason) if reason is not False else ''}.", colours["create"]))
+            except:
                 await m.edit(embed=createEmbed(f"{emojis['PunBan']} Ban", f"Something went wrong. I may not have permissions, or the user couldn't be banned.", colours["delete"]))
                 try: bm.edit(embed=createEmbed(f"{emojis['PunBan']} Ban", f"The ban in {ctx.guild.name} failed.", colours["create"]))
                 except: pass
@@ -201,7 +203,7 @@ class Commands(commands.Cog):
         with open(f"data/stats.json", 'w') as f:
             json.dump(entry, f, indent=2)
 
-        if reason == None:
+        if reason == None or len(reason) < 2:
             reason, m = await self.reasonHandler(
                 m, 
                 {

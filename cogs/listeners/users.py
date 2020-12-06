@@ -55,9 +55,9 @@ class Users(commands.Cog):
         self.bot.loop.create_task(self.session.close())
 
     def is_logging(self, guild: discord.Guild, *, channel = None, member: discord.Member = None, eventname):
-        if not os.path.exists(f'data/guilds/{guild.id}.json'): return bool(NotLogging(eventname, "Guild not configured.", cog=self, guild=guild))
-        if eventname not in events.keys():                     return bool(NotLogging(eventname, "Event Name is not in registered events.", cog=self, guild=guild))
-        if not guild:                                          return bool(NotLogging(eventname, "Event occurred in DMs, thus has no targeted channel.", cog=self, guild=guild))
+        if not os.path.exists(f'data/guilds/{guild.id}.json'): return print(1)#bool(NotLogging(eventname, "Guild not configured.", cog=self, guild=guild))
+        if eventname not in events.keys():                     return print(2)#bool(NotLogging(eventname, "Event Name is not in registered events.", cog=self, guild=guild))
+        if not guild:                                          return print(3)#bool(NotLogging(eventname, "Event occurred in DMs, thus has no targeted channel.", cog=self, guild=guild))
         
         try:    
             with open(f"data/guilds/{guild.id}.json") as entry:
@@ -73,7 +73,7 @@ class Users(commands.Cog):
                 if eventname.lower() not in entry["log_info"]["to_log"]: return bool(NotLogging(eventname, f"Guild is ignoring event \"{eventname}\".", cog=self, guild=guild))
                 if not entry["enabled"]:                                 return bool(NotLogging(eventname, f"This guild has disabled logs.", cog=self, guild=guild))
                 return True
-        except: pass
+        except Exception as e: print(e)
         
     def get_log(self, guild: discord.Guild): 
         with open(f"data/guilds/{guild.id}.json") as f:
@@ -127,8 +127,10 @@ class Users(commands.Cog):
             )
 
     @commands.Cog.listener()
-    async def on_member_remove(self, member: discord.Member):  # Later: Make custom welcome/leave messages?
+    async def on_member_remove(self, member: discord.Member): 
         if not self.is_logging(member.guild, member=member, eventname="member_leave"): return
+        audit = await get_alog_entry(member, type=discord.AuditLogAction.ban)
+        if audit.target.id == member.id: return
         else:
             e = discord.Embed(
                 title=(emojis["bot_leave"] if member.bot else emojis["leave"]) + f" Member Left",
@@ -158,13 +160,13 @@ class Users(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_ban(self, guild, member: discord.Member):
-        if not self.is_logging(member, member=member, eventname="member_ban"): return
+        if not self.is_logging(member.guild, member=member, eventname="member_ban"): return
         else:
             audit = await get_alog_entry(member, type=discord.AuditLogAction.ban)
             e = discord.Embed(
                 title=emojis["ban"] + f" Member Banned",
                 description=f"**Name:** {member.name}\n"
-                            f"**Banned By:** {audit.user.mention}"
+                            f"**Banned By:** {audit.user.mention}\n"
                             f"**Reason:** {audit.reason if audit.reason != None else 'No reason provided'}",
                 color=events["member_ban"][0],
                 timestamp=datetime.utcnow()
@@ -184,9 +186,9 @@ class Users(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_unban(self, guild, member: discord.Member):
-        if not self.is_logging(member, member=member, eventname="member_unban"): return
+        if not self.is_logging(guild, member=member, eventname="member_unban"): return
         else:
-            audit = await get_alog_entry(member, type=discord.AuditLogAction.unban)
+            audit = await get_alog_entry(guild.channels[0], type=discord.AuditLogAction.unban)
             e = discord.Embed(
                 title=emojis["unban"] + f" Member Unbanned",
                 description=f"**Name:** {member.name}\n"
@@ -199,7 +201,7 @@ class Users(commands.Cog):
             return await self.log(
                 logType="memberUnban", 
                 occurredAt=round(time.time()),
-                guild=member.guild.id,
+                guild=guild.id,
                 content={
                     "username": member.id,
                     "unbannedBy": audit.user.id
