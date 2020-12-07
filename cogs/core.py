@@ -52,7 +52,7 @@ class Core(commands.Cog):
     
     @tasks.loop(minutes=5.0)
     async def check_latency(self):
-        print(f"\033[93m[P] {round(self.bot.latency,3)}\033[0m")
+        print(f"\033[93m[P] {round(self.bot.latency*1000,3)}\033[0m")
     
     @check_latency.before_loop
     async def before_check_latency(self):
@@ -224,7 +224,7 @@ class Core(commands.Cog):
             description=f"**Servers:** {len(self.bot.guilds)}\n"
                         f"**Members:** {len(self.bot.users)}\n"
                         f"**Emojis:** {len(self.bot.emojis)}\n"
-                        f"**Ping:** {round(self.bot.latency*100)}ms\n",
+                        f"**Ping:** {round(self.bot.latency*1000)}ms\n",
             color=colours["create"]
         ))
 
