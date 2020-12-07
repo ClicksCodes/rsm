@@ -587,6 +587,39 @@ class GuildCommands(commands.Cog):
                 color=colours["delete"]
             ))
     
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(manage_roles=True)
+    async def roleall(self, ctx, *, s:str):
+        m = await ctx.send(embed=self.loadingEmbed)
+        if not s: 
+            await m.edit(embed=discord.Embed(
+                title=f"{emojis['bot_join']} Bots or humans?",
+                description=f"Please enter humans/bots/all, followed by the role you would like to assign. Type `cancel` to cancel",
+                color=colours["create"]
+            ))
+            msg = await ctx.bot.wait_for('message', timeout=60, check=lambda message : message.author == ctx.author)
+            await msg.delete()
+            s = msg.content
+        roles = {r.name:r.id for r in ctx.guild.roles}
+        if s.split(" ")[-1][0].lower().startswith("s") or s.split(" ")[-1][0].lower().startswith("h") or s.split(" ")[-1][0].lower().startswith("a"):
+            search = s.split(" ")[:1][0].lower()
+            valid = {}
+            n = '\n'
+            for role, ID in roles.items():
+                if search in role.lower() or role.lower() in search: valid[role] = ID
+            if   len(valid) < 1: pass
+            elif len(valid) < 2: pass
+            else: 
+                await m.edit(embed=discord.Embed(
+                    title=f"{emojis['role_edit']} Role all",
+                    description=f"{len(valid)} matches. "
+                                f"{'Showing first 10 roles.' if len(valid) > 10 else ''}\n"
+                                f"{n.join([f'<@&{f}>' for f in valid.values()])}",
+                    color=colours["create"]
+                ))
+        
+    
     @commands.command(aliases=['viewas', 'serveras', 'serverfrom'])
     @commands.guild_only()
     @commands.has_permissions(manage_messages=True)

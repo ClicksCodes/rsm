@@ -1,4 +1,4 @@
-import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio, postbin
+import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio, postbin, os
 
 from datetime import datetime
 from discord.ext import commands
@@ -34,7 +34,7 @@ class Errors(commands.Cog):
             # Warning Yellow
             # Critical Red
             # Status Blue
-            try: code = str(sha256(str.encode(str(ctx.message.id))).hexdigest())[15:]
+            try: code = str(sha256(str.encode(str(ctx.message.id))).hexdigest())[10:]
             except: code=ctx.message.id
 
             if   isinstance(error, commands.errors.NoPrivateMessage):      return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
@@ -45,6 +45,14 @@ class Errors(commands.Cog):
             elif isinstance(error, commands.errors.NotOwner):              return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
             elif isinstance(error, commands.errors.TooManyArguments):      return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
             else:
+                try: 
+                    with open(f"data/guilds/{ctx.guild.id}.json") as f: pass
+                except FileNotFoundError:
+                    return await ctx.channel.send(embed=discord.Embed(
+                        title="You aren't set up",
+                        description=f"You need to run `m!setup` to get your server set up.",
+                        color=colours["delete"]
+                    ))
                 tb = "".join(traceback.format_exception(type(error), error, error.__traceback__))
                 if "clear_reactions()" in tb: return
                 tb = "\n".join([f"{c.RedDark}[C] {c.Red}" + line for line in (f"Command ran: {ctx.message.content}\nUser id:{ctx.author.id}\nGuild id:{ctx.guild.id}\n\n{tb}".split("\n"))])
@@ -62,7 +70,7 @@ class Errors(commands.Cog):
                         color=colours["delete"]
                     ))
                 else: return
-        except: print(error, ctx.message.content)
+        except: pass #print("".join(traceback.format_exception(type(error), error, error.__traceback__)))
         
     @commands.Cog.listener()
     async def on_error(event, *args, **kwargs):

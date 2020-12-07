@@ -89,11 +89,11 @@
     "slowmodeOn":      "<:SlowmodeOff:777138171447869480>", 
     "slowmodeOff":     "<:SlowmodeOn:777138171301068831>",
     "ignore":          "<:Ignore:777520659270074389>",
-    "Connect": "<:Connect:784785219391193138>",
-    "Leave": "<:Leave:784785219432480808>",
-    "Change": "<:Change:784785219353968670>",
-    "Deafen": "<:Undeafen:784785219424747550>",
-    "Mute": "<:Mute:784785219613360149>",
-    "Unmute": "<:Unmute:784785219441524766>",
-    "Undeafen": "<:Deafen:784785219324346378>"
+    "Connect":         "<:Connect:784785219391193138>",
+    "Leave":           "<:Leave:784785219432480808>",
+    "Change":          "<:Change:784785219353968670>",
+    "Deafen":          "<:Undeafen:784785219424747550>",
+    "Mute":            "<:Mute:784785219613360149>",
+    "Unmute":          "<:Unmute:784785219441524766>",
+    "Undeafen":        "<:Deafen:784785219324346378>"
 }
