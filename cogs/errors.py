@@ -40,10 +40,15 @@ class Errors(commands.Cog):
             if   isinstance(error, commands.errors.NoPrivateMessage):      return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
             elif isinstance(error, commands.errors.BotMissingPermissions): return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
             elif isinstance(error, commands.errors.CommandNotFound):       return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
-            elif isinstance(error, commands.errors.MissingPermissions):    return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
             elif isinstance(error, asyncio.TimeoutError):                  return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
             elif isinstance(error, commands.errors.NotOwner):              return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
             elif isinstance(error, commands.errors.TooManyArguments):      return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
+            elif isinstance(error, commands.errors.MissingPermissions):    
+                return await ctx.send(embed=discord.Embed(
+                    title=f"{emojis['cross']} Missing permissions",
+                    description=str(error),
+                    color=colours["delete"]
+                ))
             else:
                 try: 
                     with open(f"data/guilds/{ctx.guild.id}.json") as f: pass

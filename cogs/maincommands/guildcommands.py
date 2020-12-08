@@ -1,6 +1,6 @@
 import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio, io, math
 
-from datetime import datetime
+import datetime as dt
 from discord.ext import commands
 from textwrap import shorten
 import matplotlib.pyplot as plt
@@ -12,6 +12,7 @@ from cogs.consts import *
 class GuildCommands(commands.Cog):
     def __init__(self, bot):
         self.loadingEmbed = loadingEmbed
+        self.bot = bot
         
     @commands.command(aliases=["server"])
     @commands.guild_only()
@@ -590,36 +591,218 @@ class GuildCommands(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(manage_roles=True)
-    async def roleall(self, ctx, *, s:str):
+    async def roleall(self, ctx, *, s:typing.Optional[str]):
         m = await ctx.send(embed=self.loadingEmbed)
-        if not s: 
+        if not s:
             await m.edit(embed=discord.Embed(
-                title=f"{emojis['bot_join']} Bots or humans?",
-                description=f"Please enter humans/bots/all, followed by the role you would like to assign. Type `cancel` to cancel",
+                title=f"{emojis['role_create']} Which role?",
+                description=f"What role would you like to assign? React with {emojis['cross']} to cancel.",
                 color=colours["create"]
             ))
-            msg = await ctx.bot.wait_for('message', timeout=60, check=lambda message : message.author == ctx.author)
-            await msg.delete()
-            s = msg.content
-        roles = {r.name:r.id for r in ctx.guild.roles}
-        if s.split(" ")[-1][0].lower().startswith("s") or s.split(" ")[-1][0].lower().startswith("h") or s.split(" ")[-1][0].lower().startswith("a"):
-            search = s.split(" ")[:1][0].lower()
-            valid = {}
-            n = '\n'
-            for role, ID in roles.items():
-                if search in role.lower() or role.lower() in search: valid[role] = ID
-            if   len(valid) < 1: pass
-            elif len(valid) < 2: pass
+            await m.add_reaction(self.bot.get_emoji(729064530310594601))
+            reaction = None
+            try:
+                done, pending = await asyncio.wait([
+                        self.bot.wait_for('reaction_add',    timeout=120, check=lambda emoji, user : emoji.message.id == m.id and user == ctx.author),
+                        self.bot.wait_for('message',         timeout=120, check=lambda message : message.author == ctx.author)
+                    ], return_when=asyncio.FIRST_COMPLETED)
+            except:
+                await m.clear_reactions()
+                return await m.edit(embed=discord.Embed(
+                    title=f"{emojis['role_delete']} Which role?",
+                    description=f"What role would you like to assign? React with {emojis['cross']} to cancel.",
+                    color=colours["delete"]
+                ))
+
+            try: out = done.pop().result()
+            except Exception as e:
+                print(e) 
+                await m.clear_reactions()
+                return await m.edit(embed=discord.Embed(
+                    title=f"{emojis['role_delete']} Which role?",
+                    description=f"What role would you like to assign? React with {emojis['cross']} to cancel.",
+                    color=colours["delete"]
+                ))
+
+            for future in done: future.exception()
+            for future in pending: future.cancel()
+
+            if isinstance(out, tuple): 
+                await m.clear_reactions()
+                return await m.edit(embed=discord.Embed(
+                    title=f"{emojis['role_delete']} Which role?",
+                    description=f"What role would you like to assign? React with {emojis['cross']} to cancel.",
+                    color=colours["delete"]
+                ))
+            elif isinstance(out, discord.Message): 
+                s = out.content
+                await out.delete()
+            else: pass
+
+            try: await m.clear_reactions()
+            except: pass
+        roles = {r.name:r.id for r in list(reversed([r for r in ctx.guild.roles if not r.managed]))[1:]}
+        search = s.split(" ")[:1][0].lower()
+        n = '\n'
+        valid = {}
+        for role, ID in roles.items():
+            if search in role.lower() or role.lower() in search: valid[role] = ID
+        v = {}
+        x = 0
+        es = [753259025990418515, 753259024409034896, 753259024358703205, 753259024555835513, 753259024744579283, 
+              753259024354639994, 753259024530800661, 753259024895574037, 753259024681533553, 753259024404840529, 729064530310594601]
+        for key, value in valid.items():
+            x += 1
+            if x > 10: break
+            v[key] = [f"{self.bot.get_emoji(es[x-1])} | {ctx.guild.get_role(value).mention}", value]
+
+        if len(valid) < 2: 
+            return await m.edit(embed=discord.Embed(
+                title=f"{emojis['role_delete']} Role all",
+                description=f"No roles matched your search",
+                color=colours["delete"]
+            ))
+        else: 
+            await m.edit(embed=discord.Embed(
+                title=f"{emojis['role_create']} Role all",
+                description=f"{len(valid)} matches. "
+                            f"{'Showing first 10 roles.' if len(valid) > 10 else ''}\n"
+                            f"{n.join([f[0] for f in v.values()])}",
+                color=colours["create"]
+            ))
+            if len(valid) >= 10:
+                for e in es: await m.add_reaction(self.bot.get_emoji(e))
             else: 
-                await m.edit(embed=discord.Embed(
-                    title=f"{emojis['role_edit']} Role all",
+                for x in range(len(valid)):
+                    await m.add_reaction(self.bot.get_emoji(es[x]))
+                await m.add_reaction(self.bot.get_emoji(es[-1]))
+
+            reaction = None
+            try: reaction = await ctx.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user : emoji.message.id == m.id and user == ctx.author)
+            except asyncio.TimeoutError: 
+                return await m.edit(embed=discord.Embed(
+                    title=f"{emojis['role_delete']} Role all",
+                    description=f"{len(valid)} matches."
+                                f"{'Showing first 10 roles.' if len(valid) > 10 else ''}\n"
+                                f"{n.join([f[0] for f in v.values()])}",
+                    color=colours["delete"]
+                ))
+
+            try: await m.clear_reactions()
+            except: pass
+            reactionname = reaction[0].emoji.name.lower()
+
+            if len(reactionname) == 2:
+                try: 
+                    rn = int(reactionname[:1])-1
+                    if rn < 0: rn = 9
+                    i = v[list(v)[rn]][1]
+                    if i == -1: i = 9
+
+                except Exception as e:
+                    print(e)
+                    await m.clear_reactions()
+                    return await m.edit(embed=discord.Embed(
+                        title=f"{emojis['role_delete']} Role all",
+                        description=f"{len(valid)} matches. "
+                                    f"{'Showing first 10 roles.' if len(valid) > 10 else ''}\n"
+                                    f"{n.join([f[0] for f in v.values()])}",
+                        color=colours["delete"]
+                    ))
+            else: 
+                await m.clear_reactions()
+                return await m.edit(embed=discord.Embed(
+                    title=f"{emojis['role_delete']} Role all",
                     description=f"{len(valid)} matches. "
                                 f"{'Showing first 10 roles.' if len(valid) > 10 else ''}\n"
-                                f"{n.join([f'<@&{f}>' for f in valid.values()])}",
-                    color=colours["create"]
+                                f"{n.join([f[0] for f in v.values()])}",
+                    color=colours["delete"]
                 ))
-        
-    
+        await m.edit(embed=discord.Embed(
+            title=f"{emojis['role_create']} Role all",
+            description=f"Role all {emojis['bot_join']} Bots, {emojis['leave']} Humans, or {emojis['everyone_ping']} Both",
+            color=colours["create"]
+        ))
+        for e in [729064528666689587, 729064531170558575, 729064531073957909, 729064530310594601]: await m.add_reaction(self.bot.get_emoji(e))
+
+        reaction = None
+        try: reaction = await ctx.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user : emoji.message.id == m.id and user == ctx.author)
+        except asyncio.TimeoutError: 
+            await m.clear_reactions()
+            return await m.edit(embed=discord.Embed(
+            title=f"{emojis['role_delete']} Role all",
+            description=f"Role all {emojis['bot_join']} Bots, {emojis['leave']} Humans, or {emojis['everyone_ping']} Both",
+            color=colours["delete"]
+        ))
+
+        try: await m.remove_reaction(reaction[0].emoji, ctx.author)
+        except Exception as e: print(e)
+        rn = reaction[0].emoji.name.lower()
+
+        if   rn == "botjoin":      bot =  True; human = False
+        elif rn == "memberleave":  bot = False; human = True
+        elif rn == "everyoneping": bot =  True; human = True
+        else:
+            await m.clear_reactions()
+            return await m.edit(embed=discord.Embed(
+            title=f"{emojis['role_delete']} Role all",
+            description=f"Role all {emojis['bot_join']} Bots, {emojis['leave']} Humans, or {emojis['everyone_ping']} Both",
+            color=colours["delete"]
+        ))
+        await m.clear_reactions()
+        await m.edit(embed=discord.Embed(
+            title=f"{emojis['role_create']} Role all",
+            description=f"{emojis['tick']} Add or {emojis['cross']} Remove roles? <:Stop:751161404442279966> to cancel.",
+            color=colours["create"]
+        ))
+
+        for emoji in [729064531107774534, 729064530310594601, 751161404442279966]: await m.add_reaction(self.bot.get_emoji(emoji))
+        reaction = None
+        try: reaction = await ctx.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user : emoji.message.id == m.id and user == ctx.author)
+        except asyncio.TimeoutError: 
+            await m.clear_reactions()
+            return await m.edit(embed=discord.Embed(
+                title=f"{emojis['role_delete']} Role all",
+                description=f"{emojis['tick']} Add or {emojis['cross']} Remove roles? <:Stop:751161404442279966> to cancel.",
+                color=colours["delete"]
+            ))
+
+        try: await m.remove_reaction(reaction[0].emoji, ctx.author)
+        except: pass
+
+        o = reaction[0].emoji
+
+        if o.name == "Stop": 
+            await m.clear_reactions()
+            return await m.edit(embed=discord.Embed(
+                title=f"{emojis['role_delete']} Role all",
+                description=f"{emojis['tick']} Add or {emojis['cross']} Remove roles? <:Stop:751161404442279966> to cancel.",
+                color=colours["delete"]
+            ))
+        else: 
+            if   o.name == "Tick":  to = "+"
+            elif o.name == "Cross": to = "-"
+
+        await m.edit(embed=discord.Embed(
+            title=f"{emojis['loading']} Please wait",
+            description=f"This will take about {humanize.naturaldelta(dt.timedelta(seconds=len(ctx.guild.members)))}",
+            color=colours["create"]
+        ))
+        await m.clear_reactions()
+
+        r = ctx.guild.get_role(i)
+        for member in ctx.guild.members:
+            if (member.bot and bot) or (not member.bot and human): 
+                try: 
+                    if   to == "+": await member.add_roles(   r, reason="Role all with RSM")
+                    elif to == "-": await member.remove_roles(r, reason="Role all with RSM")
+                except Exception as e: print(e)
+                await asyncio.sleep(1)
+        await m.edit(embed=discord.Embed(
+            title=f"{emojis['role_create']} Complete",
+            color=colours["create"]
+        ))
+
     @commands.command(aliases=['viewas', 'serveras', 'serverfrom'])
     @commands.guild_only()
     @commands.has_permissions(manage_messages=True)

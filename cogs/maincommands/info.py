@@ -38,6 +38,7 @@ class InfoCommands(commands.Cog):
             f"{emojis['graphs']        } `m!stats         {'' if mob else '|'} ` {n if mob else ''}Shows the bot statistics\n"
             f"{emojis['settings']      } `m!settings      {'' if mob else '|'} ` {n if mob else ''}Shows your servers log settings.\n"
             f"{emojis['join']          } `m!user    [*@]  {'' if mob else '|'} ` {n if mob else ''}Shows information about a user.\n"
+            f"{emojis['role_edit']     } `m!roleall [*T]  {'' if mob else '|'} ` {n if mob else ''}Role all humans or bots in the server. [T] to search\n"
             f"{emojis['support']       } `m!contact [ T]  {'' if mob else '|'} ` {n if mob else ''}Sends [T] to the staff for support.\n"
             f"{emojis['commands']      } `m!suggest [ T]  {'' if mob else '|'} ` {n if mob else ''}Sends [T] to the staff to add to the bot for voting.\n"
             f"{emojis['role_edit']     } `m!setlog  [ C]  {'' if mob else '|'} ` {n if mob else ''}Sets the servers log channel to [C].\n"
