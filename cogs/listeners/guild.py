@@ -509,11 +509,11 @@ class Guild(commands.Cog):
                         "now": after.topic
                     }
                 )
-        if (before.name != after.name) and self.is_logging(after.guild, eventname="channel_title_update"):
+        elif (before.name != after.name) and self.is_logging(after.guild, eventname="channel_title_update"):
             audit = await get_alog_entry(after, type=discord.AuditLogAction.channel_update)
             e = discord.Embed(
-                title=emojis["TitleUpdate"] + f" Channel Renamed",
-                description=f"**Before:** #{before.name}\n"
+                title=emojis["TitleUpdate"] + f" Category Renamed",
+                description=f"**Before:** {before.name}\n"
                             f"**Now:** {after.mention}\n"
                             f"**Changed by:** {audit.user.mention}",
                 color=events["channel_title_update"][0],
@@ -522,7 +522,7 @@ class Guild(commands.Cog):
             log = self.get_log(after.guild)
             await log.send(embed=e)
             return await self.log(
-                logType="titleUpdate", 
+                logType="CatTitleUpdate", 
                 occurredAt=round(time.time()),
                 guild=before.guild.id,
                 content={

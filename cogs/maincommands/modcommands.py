@@ -629,6 +629,7 @@ class Commands(commands.Cog):
         for flag in flags:
             try: flagstring += flagemojis[flag][0] + f" | {flagemojis[flag][1]}\n"
             except: print(flag)
+        perms = dict(member.guild_permissions)
 
         embeds = {
             0: [
@@ -638,27 +639,95 @@ class Commands(commands.Cog):
                 f"**Name:** {member.name}",
                 f"**Nickname:** {member.display_name if member.display_name != member.name else 'No nickname'}",
                 f"**Status:** {emojis[member.status.name]} {member.status.name.capitalize() if member.status.name != 'dnd' else 'DND'}" + (' - Mobile' if member.mobile_status.name == 'online' else ''),
-                f"**Roles:** {len(member.roles)} | **Highest Role:** {member.top_role.mention}",
                 f"**Started boosting:** {humanize.naturaltime(member.premium_since) if member.premium_since != None else 'Not boosting'}" ,
                 f"**Joined Discord:** {humanize.naturaltime(member.created_at)}",
                 f"**Joined the server:** {humanize.naturaltime(datetime.utcnow()-member.joined_at)}"
             ],
             1: [
-                "Roles"
+                f"**ID:** `{member.id}`",
+                f"**Mention:** {member.mention}",
+                f"**Roles:** {len(member.roles)}",
+                f"{', '.join(reversed([r.mention for r in member.roles]))}"
             ],
             2: [
-                "Permissions"
+                "**Server**",
+                f"{emojis['tick'] if perms['view_audit_log'        ] else emojis['cross']} View audit logs",
+                f"{emojis['tick'] if perms['view_guild_insights'   ] else emojis['cross']} View server insights",
+                f"{emojis['tick'] if perms['manage_guild'          ] else emojis['cross']} Manage server",
+                f"{emojis['tick'] if perms['manage_roles'          ] else emojis['cross']} Manage roles",
+                f"{emojis['tick'] if perms['manage_channels'       ] else emojis['cross']} Manage channels",
+                f"{emojis['tick'] if perms['manage_webhooks'       ] else emojis['cross']} Manage webhooks",
+                f"{emojis['tick'] if perms['manage_emojis'         ] else emojis['cross']} Manage emojis",
+                f"{emojis['tick'] if perms['create_instant_invite' ] else emojis['cross']} Create instant invite"
+            ],
+            3: [
+                "**Messages**",
+                f"{emojis['tick'] if perms['read_messages'        ] else emojis['cross']} Read channels and see Voice channels",
+                f"{emojis['tick'] if perms['send_messages'        ] else emojis['cross']} Send messages",
+                f"{emojis['tick'] if perms['send_tts_messages'    ] else emojis['cross']} Send TTS messages",
+                f"{emojis['tick'] if perms['manage_messages'      ] else emojis['cross']} Manage messages",
+                f"{emojis['tick'] if perms['embed_links'          ] else emojis['cross']} Embed links",
+                f"{emojis['tick'] if perms['attach_files'         ] else emojis['cross']} Attach files",
+                f"{emojis['tick'] if perms['read_message_history' ] else emojis['cross']} Read message history",
+                f"{emojis['tick'] if perms['mention_everyone'     ] else emojis['cross']} Mention @everyone, @here and @roles",
+                f"{emojis['tick'] if perms['external_emojis'      ] else emojis['cross']} Use nitro emojis",
+                f"{emojis['tick'] if perms['add_reactions'        ] else emojis['cross']} Add reactions"
+            ],
+            4: [
+                "**Members**",
+                f"{emojis['tick'] if perms['kick_members'     ] else emojis['cross']} Kick members",
+                f"{emojis['tick'] if perms['ban_members'      ] else emojis['cross']} Ban members",
+                f"{emojis['tick'] if perms['change_nickname'  ] else emojis['cross']} Change nickname",
+                f"{emojis['tick'] if perms['manage_nicknames' ] else emojis['cross']} Change other people's nicknames"
+            ],
+            5: [
+                "**Voice**",
+                f"{emojis['tick'] if perms['connect'              ] else emojis['cross']} Join voice channels",
+                f"{emojis['tick'] if perms['speak'                ] else emojis['cross']} Talk in voice channels",
+                f"{emojis['tick'] if perms['stream'               ] else emojis['cross']} Stream in voice channels",
+                f"{emojis['tick'] if perms['mute_members'         ] else emojis['cross']} Server mute members",
+                f"{emojis['tick'] if perms['deafen_members'       ] else emojis['cross']} Server deafen members",
+                f"{emojis['tick'] if perms['move_members'         ] else emojis['cross']} Move members between voice channels",
+                f"{emojis['tick'] if perms['use_voice_activation' ] else emojis['cross']} Use voice activity",
+                f"{emojis['tick'] if perms['priority_speaker'     ] else emojis['cross']} Priority speaker"
             ]
         }
 
+        m = await ctx.send(embed=loadingEmbed)
+        for r in [ 729064530310594601, 729762938411548694, 729762938843430952 ]: await m.add_reaction(self.bot.get_emoji(r))
+        p = 0
+
+        for _ in range(50):
+            e = discord.Embed(
+                title=f"Userinfo for {member.name}",
+                description="\n".join(embeds[p]),
+                color=colours["create"]
+            )
+            if p == 0: e.set_thumbnail(url=member.avatar_url)
+            await m.edit(embed=e)
+
+            reaction = None
+            try: reaction = await ctx.bot.wait_for('reaction_add', timeout=60, check=lambda r, user : r.message.id == m.id and user == ctx.author)
+            except asyncio.TimeoutError: break
+            reaction = reaction[0].emoji
+
+            if   reaction.name == "Left":  p -= 1
+            elif reaction.name == "Right": p += 1
+            else: break
+
+            p = min(len(embeds)-1, max(0, p))
+
+            try: await m.remove_reaction(reaction, ctx.author)
+            except: pass
+
         e = discord.Embed(
             title=f"Userinfo for {member.name}",
-            description="\n".join(embeds[0]),
-            color=colours["create"]
+            description="\n".join(embeds[p]),
+            color=colours["delete"]
         )
-        e.set_thumbnail(url=member.avatar_url)
-
-        await ctx.send(embed=e)
+        if p: e.set_thumbnail(url=member.avatar_url)
+        await m.clear_reactions()
+        return await m.edit(embed=e)
 
 def setup(bot):
     bot.add_cog(Commands(bot))

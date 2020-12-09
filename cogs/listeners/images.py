@@ -97,14 +97,14 @@ class ImageDetect(commands.Cog):
                     if min(dimensions) < low_thresh: await message.channel.send('Too small')
                     if max(dimensions) > up_thresh:  await message.channel.send('Too large')
 
-                    if dimensions[1] > dimensions[0]:
-                        w = 5000
-                        h = (w//(dimensions[1] if dimensions[1] != 0 else 10)) * dimensions[0]
-                    else:
-                        h = 5000
-                        w = (h//(dimensions[0] if dimensions[0] != 0 else 10)) * dimensions[1]
-                    dim = (w, h)
-                    img = cv2.resize(img, dim)
+                    # if dimensions[1] > dimensions[0]:
+                    #     w = 5000
+                    #     h = (w//(dimensions[1] if dimensions[1] != 0 else 10)) * dimensions[0]
+                    # else:
+                    #     h = 5000
+                    #     w = (h//(dimensions[0] if dimensions[0] != 0 else 10)) * dimensions[1]
+                    # dim = (w, h)
+                    # img = cv2.resize(img, dim)
                     custom_config = r'--oem 3 --psm 6'
 
                     read_start = time.time()
@@ -140,14 +140,13 @@ class ImageDetect(commands.Cog):
                             except: pass
                             if "Exposed" in reason: nsfw = True
                             else: nsfw = False
-                        except: nsfw = False
+                        except: pass
                         conf = str(resp['output'])
                     end = time.time()
                     
                     e = discord.Embed(
                         title="Image sent",
                         description=f"**Size:** {dimensions[0]}x{dimensions[1]}\n"
-                                    f"**Resized:** {w}x{h}\n"
                                     f"**NSFW:** {emojis['tick'] if nsfw else emojis['cross']}\n"
                                     f"**Reason:** {reason}\n"
                                     f"**Text:** {text}\n"

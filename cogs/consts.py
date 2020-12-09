@@ -52,7 +52,7 @@ events = {
     "connect":              [colours["create"], '`Voice join       `', emojis['Connect'],        'Voice'],
     "disconnect":           [colours["delete"], '`Voice leave      `', emojis['Leave'],          'Voice'],
     "mute":                 [colours["delete"], '`User mute        `', emojis['Mute'],           'Voice'],
-    "deafen":               [colours["delete"], '`Name changed     `', emojis['Deafen'],         'Voice'],
+    "deafen":               [colours["delete"], '`User deafen     `', emojis['Deafen'],         'Voice'],
     "unmute":               [colours["create"], '`User unmute      `', emojis['Unmute'],         'Voice'],
     "undeafen":             [colours["create"], '`User undeafen    `', emojis['Undeafen'],       'Voice'],
     "server_mute":          [colours["delete"], '`Server mute      `', emojis['Mute'],           'Voice'],
