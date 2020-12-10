@@ -38,8 +38,8 @@ class Tags(commands.Cog):
         if s[0] in ["create", "add", "new"]:
             m = await ctx.send(embed=loadingEmbed)
             try:
-                if not ctx.author.guild_permissions.manage_messages: 
-                    return await m.edit(embed=createEmbed(f"{emojis['store_delete']} Looks like you don't have permissions", "You need the `manage_messages` permission to edit tags.", colours["delete"]))
+                if not ctx.author.guild_permissions.manage_messages: return await m.edit(embed=self.createEmbed(f"{emojis['store_delete']} Looks like you don't have permissions", "You need the `manage_messages` permission to edit tags.", colours["delete"]))
+                else: print("fine")
             except: return
             with open(f"data/guilds/{ctx.guild.id}.json", 'r') as e:
                 entry = json.load(e)
@@ -111,7 +111,7 @@ class Tags(commands.Cog):
             m = await ctx.send(embed=loadingEmbed)
             try:
                 if not ctx.author.guild_permissions.manage_messages: 
-                    return await m.edit(embed=createEmbed(f"{emojis['store_delete']} Looks like you don't have permissions", "You need the `manage_messages` permission to edit tags.", colours["delete"]))
+                    return await m.edit(embed=self.createEmbed(f"{emojis['store_delete']} Looks like you don't have permissions", "You need the `manage_messages` permission to edit tags.", colours["delete"]))
             except: return
             try: title = s[1]
             except: 
