@@ -581,12 +581,6 @@ class GuildCommands(commands.Cog):
                 description=f"Make sure it is capitalised correctly.\nYou can use the role ID to make sure that I can find it.", 
                 color=colours["delete"]
             ))
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send(embed=discord.Embed(
-                title="You don't have permissions for that", 
-                description=f"Make sure you have the `manage_roles` permission for `m!roles`.", 
-                color=colours["delete"]
-            ))
     
     @commands.command()
     @commands.guild_only()
@@ -896,17 +890,6 @@ class GuildCommands(commands.Cog):
 
         await mess.edit(embed=findescs[page])
         await mess.clear_reactions()
-
-    @viewfrom.error
-    async def viewfrom_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send(embed=discord.Embed(
-                title="Looks like you don't have permissions", 
-                description=f"Make sure you have the `manage_messages` permission to use this command.", 
-                color=colours["delete"]
-            ))
-        else:
-            print('\n'.join(['[x] ' + n for n in (str(error).split('\n'))]))
 
 def setup(bot):
     bot.add_cog(GuildCommands(bot))

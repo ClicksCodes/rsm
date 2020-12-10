@@ -26,24 +26,6 @@ class NotLogging:
     def __bool__(self):
         return False
 
-async def get_alog_entry(ctx, *, type: discord.AuditLogAction, check = None):
-    """Retrieves the first matching audit log entry for the specified type.
-    
-    If you provide a check it MUST take an auditLogEntry as its only argument."""
-    if not ctx.guild.me.guild_permissions.view_audit_log:
-        raise commands.BotMissingPermissions("view_audit_log")
-    async for log in ctx.guild.audit_logs(action=type):
-        if check:
-            if check(log):
-                return log
-            else:
-                continue
-        else:
-            return log
-    else:
-        return None
-
-
 class Core(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot

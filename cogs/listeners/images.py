@@ -167,10 +167,6 @@ class ImageDetect(commands.Cog):
                     except Exception as e: 
                         try: os.remove(f_name)
                         except: pass
-        
-    async def cog_command_error(self, ctx, error):
-        if isinstance(error, AttributeError): pass
-        else: self.bot.get_channel(776418051003777034).send(embed=discord.Embed(title="Error", description=str(error), color=colours["delete"]))
 
 def setup(bot):
     bot.add_cog(ImageDetect(bot))

@@ -18,6 +18,7 @@ cogs = [
     "cogs.maincommands.guildcommands", 
     "cogs.maincommands.raid",
     "cogs.maincommands.tags",
+    "cogs.maincommands.report",
 
     # Other
     "cogs.errors"

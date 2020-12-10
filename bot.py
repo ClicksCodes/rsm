@@ -44,12 +44,12 @@ class Bot(commands.Bot):
                 self.load_extension(cog)
                 print(f"{c.Green}[S] {c.GreenDark}Loaded cog {x}/{m} ({cog}).")
             except Exception as exc:
-                print(f'{c.RedDark}[E] {c.Red}Could not load cog {x} - extension {cog} due to {exc.__class__.__name__}: {exc}{c.c}')
+                print(f'{c.RedDark}[E] {c.Red}Failed cog {x}/{m} ({cog}) > {exc.__class__.__name__}: {exc}{c.c}')
         print()
 
     async def on_ready(self):
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="over your servers."), status=discord.Status.idle)
-        print(f'{c.Cyan}[S] {c.CyanDark}Logged on as {self.user} (ID: {self.user.id}){c.c}')
+        print(f'{c.Pink if DEV else c.Cyan}[S] {c.PinkDark if DEV else c.CyanDark}Logged on as {self.user} [ID: {self.user.id}]{c.c}')
 
 bot = Bot(
     owner_ids=[438733159748599813, 421698654189912064, 261900651230003201, 317731855317336067], 

@@ -101,6 +101,7 @@ class Messages(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.message):
+        if isinstance(message.channel, discord.channel.DMChannel): return
         guild = message.guild
         if message.mention_everyone and self.is_logging(guild, channel=message.channel, member=message.author, eventname="everyone_here"):
             log = self.get_log(message.guild)
@@ -109,7 +110,7 @@ class Messages(commands.Cog):
             edited = humanize.naturaltime(datetime.utcnow()-message.edited_at) if message.edited_at else "Never"
             e = discord.Embed(
                 title=emojis['everyone_ping'] + f" {'Here' if '@here' in message.content else 'Everyone'} pinged",
-                description=f"```{shorten(message.clean_content, 2042).replace('```', '***')}```"
+                description=f"```{shorten(message.clean_content, 2042).replace('```', '***')}```\n"
                             f"**Where:** {message.channel.mention}\n"
                             f"**Sent:** {sent}\n"
                             f"**Edited:** {edited}\n"
@@ -144,7 +145,7 @@ class Messages(commands.Cog):
             edited = humanize.naturaltime(datetime.utcnow()-message.edited_at) if message.edited_at else "Never"
             e = discord.Embed(
                 title=emojis['role_ping'] + f" Role pinged",
-                description=f"```{shorten(message.clean_content, 2042).replace('```', '***')}```"
+                description=f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***') if len(message.content) > 0 else ''}```\n"
                             f"**Where:** {message.channel.mention}\n"
                             f"**Sent:** {sent}\n"
                             f"**Edited:** {edited}\n"
@@ -178,7 +179,7 @@ class Messages(commands.Cog):
             edited = humanize.naturaltime(datetime.utcnow()-message.edited_at) if message.edited_at else "Never"
             e = discord.Embed(
                 title=emojis['everyone_ping'] + f" Mass mention",
-                description=f"```{shorten(message.clean_content, 2042).replace('```', '***')}```"
+                description=f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***') if len(message.content) > 0 else ''}```\n"
                             f"**Where:** {message.channel.mention}\n"
                             f"**Sent:** {sent}\n"
                             f"**Edited:** {edited}\n"
@@ -208,6 +209,7 @@ class Messages(commands.Cog):
         
     @commands.Cog.listener()
     async def on_message_delete(self, message: discord.Message):
+        if isinstance(message.channel, discord.channel.DMChannel): return
         if not self.is_logging(guild=message.guild, channel=message.channel, member=message.author, eventname="message_delete"): return
         else:
             log = self.get_log(message.guild)
@@ -217,7 +219,7 @@ class Messages(commands.Cog):
             a = shorten(message.clean_content, 2042).replace("```", "***")
             e = discord.Embed(
                 title=emojis['delete'] + " Message Deleted",
-                description=f"{f'**Content:** ```{a}```' if len(message.clean_content) > 0 else ''}\n"
+                description=f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***') if len(message.content) > 0 else ''}```\n"
                             f"**Sent By:** {message.author.mention}\n"
                             f"**Mentions:** {len(message.mentions)}\n"
                             f"**Sent In:** {message.channel.mention}\n"
@@ -248,6 +250,7 @@ class Messages(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before: discord.Message, after: discord.Message):
+        if isinstance(after.channel, discord.channel.DMChannel): return
         if before.content == after.content: return
         message = after
         if not self.is_logging(message.guild, channel=message.channel, member=message.author, eventname="message_edit"): return
@@ -260,8 +263,8 @@ class Messages(commands.Cog):
             b = shorten(after.clean_content, 500).replace('```', '***')
             e = discord.Embed(
                 title=emojis["edit"] + " Message Edited",
-                description=f"**Before:** {f'```{a}```' if len(before.clean_content) > 0 else ''}\n"
-                            f"**After:** {f'```{b}```' if len(after.clean_content) > 0 else ''}\n"
+                description=f"**Before:** ```{shorten(before.clean_content, 2042).replace('```', '***') if len(before.content) > 0 else ''}```\n"
+                            f"**After:** ```{shorten(after.clean_content, 2042).replace('```', '***') if len(after.content) > 0 else ''}```\n"
                             f"**Sent By:** {message.author.mention}\n"
                             f"**Sent In:** {message.channel.mention}\n"
                             f"**Sent:** {sent.capitalize()}\n"
@@ -290,6 +293,7 @@ class Messages(commands.Cog):
     
     @commands.Cog.listener()
     async def on_bulk_message_delete(self, messages):
+        if isinstance(messages[0].channel, discord.channel.DMChannel): return
         message = messages[0]
         if not self.is_logging(message.guild, channel=message.channel, member=message.author, eventname="bulk_message_delete"): return
         else:
@@ -331,6 +335,7 @@ class Messages(commands.Cog):
 
     @commands.Cog.listener()
     async def on_reaction_clear(self, message, reactions): 
+        if isinstance(message.channel, discord.channel.DMChannel): return
         if not self.is_logging(message.guild, channel=message.channel, member=message.author, eventname="reaction_clear"): return
         else:
             log = self.get_log(message.guild)
@@ -360,6 +365,7 @@ class Messages(commands.Cog):
     
     @commands.Cog.listener()
     async def on_guild_channel_pins_update(self, channel: discord.TextChannel, last_pin: datetime):
+        if isinstance(channel, discord.channel.DMChannel): return
         if not self.is_logging(channel.guild, eventname="channel_pins_update"): return
         else:
             audit = await get_alog_entry(channel, type=discord.AuditLogAction.message_pin, check=lambda l: l.extra.channel.id == channel.id)
@@ -389,10 +395,6 @@ class Messages(commands.Cog):
                     "content": str(discord.utils.escape_markdown(message.content))
                 }
             )
-
-    async def cog_command_error(self, ctx, error):
-        if isinstance(error, AttributeError): pass
-        else: self.bot.get_channel(776418051003777034).send(embed=discord.Embed(title="Error", description=str(error), color=colours["delete"]))
         
 def setup(bot):
     bot.add_cog(Messages(bot))

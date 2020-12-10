@@ -460,10 +460,6 @@ class Users(commands.Cog):
                     "channel": after.channel.name
                 }
             )
-    
-    async def cog_command_error(self, ctx, error):
-        if isinstance(error, AttributeError): pass
-        else: self.bot.get_channel(776418051003777034).send(embed=discord.Embed(title="Error", description=str(error), color=colours["delete"]))
 
 def setup(bot):
     bot.add_cog(Users(bot))
