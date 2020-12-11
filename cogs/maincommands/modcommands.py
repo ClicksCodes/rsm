@@ -728,6 +728,72 @@ class Commands(commands.Cog):
         if p: e.set_thumbnail(url=member.avatar_url)
         await m.clear_reactions()
         return await m.edit(embed=e)
+    
+    @commands.command(aliases=["nickname", "setnick", "name"])
+    @commands.guild_only()
+    @commands.has_permissions(manage_nicknames=True)
+    async def nick(self, ctx, target:typing.Optional[discord.Member], *, name:typing.Optional[str]):
+        m = await ctx.send(embed=loadingEmbed)
+        if not target: target = ctx.author
+        if not name:
+            for r in [729064531107774534, 729064530310594601]: await m.add_reaction(self.bot.get_emoji(r))
+            await m.edit(embed=discord.Embed(
+                title=f"{emojis['nickname_change']} What nickname should {target.display_name} have?",
+                description=f"Please enter the nickname for {target.display_name}. \nReact {emojis['tick']} to clear {'their' if ctx.author.id != target.id else 'your'} nickname or {emojis['cross']} to close.",
+                color=colours['create']
+            ))
+            try:
+                done, pending = await asyncio.wait([
+                        self.bot.wait_for('reaction_add',    timeout=120, check=lambda emoji, user : emoji.message.id == m.id and user == ctx.author),
+                        self.bot.wait_for('message',         timeout=120, check=lambda message : message.author == ctx.author)
+                    ], return_when=asyncio.FIRST_COMPLETED)
+            except:
+                return await m.edit(embed=discord.Embed(
+                    title=f"{emojis['nickname_change']} What nickname should {target.display_name} have?",
+                    description=f"Please enter the nickname for {target.display_name}. \nReact {emojis['tick']} to clear {'their' if ctx.author.id != target.id else 'your'} nickname or {emojis['cross']} to close.",
+                    color=colours['delete']
+                ))
+
+            try: out = done.pop().result()
+            except Exception as e:
+                return await m.edit(embed=discord.Embed(
+                    title=f"{emojis['nickname_change']} What nickname should {target.display_name} have?",
+                    description=f"Please enter the nickname for {target.display_name}. \nReact {emojis['tick']} to clear {'their' if ctx.author.id != target.id else 'your'} nickname or {emojis['cross']} to close.",
+                    color=colours['delete']
+                ))
+
+            for future in done: future.exception()
+            for future in pending: future.cancel()
+
+            await m.clear_reactions()
+            if isinstance(out, tuple): 
+                await m.clear_reactions()
+                if   out[0].emoji.name == "Tick":  name = None
+                elif out[0].emoji.name == "Cross": 
+                    return await m.edit(embed=discord.Embed(
+                        title=f"{emojis['nickname_change']} What nickname should {target.display_name} have?",
+                        description=f"Please enter the nickname for {target.display_name}. \nReact {emojis['tick']} to clear {'their' if ctx.author.id != target.id else 'your'} nickname or {emojis['cross']} to close.",
+                        color=colours['delete']
+                    ))
+                else: return
+
+            elif isinstance(out, discord.Message): 
+                name = out.content
+                await out.delete()
+            else: name = None
+        try: 
+            await target.edit(nick=name)
+            return await m.edit(embed=discord.Embed(
+                title=f"{emojis['nickname_change']} Nickname",
+                description="Successfully changed nickname",
+                color=colours["create"]
+            ))
+        except:
+            return await m.edit(embed=discord.Embed(
+                title=f"{emojis['nickname_change']} Nickname",
+                description="I can't change that person's nickname",
+                color=colours["delete"]
+            ))
 
 def setup(bot):
     bot.add_cog(Commands(bot))

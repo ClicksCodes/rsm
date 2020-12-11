@@ -80,7 +80,7 @@ class InfoCommands(commands.Cog):
         for _ in range(0,25):
             emb = discord.Embed (
                 title=emojis["rsm"] + " RSM",
-                description=descriptions[page] + "[Trello](https://trello.com/b/pBvhvzbY/rsm) | [Invite](https://discord.com/api/oauth2/authorize?client_id=715989276382462053&permissions=499510486&scope=bot) | [Support](https://discord.gg/bPaNnxe)",
+                description=descriptions[page] + "[Detailed](https://docs.google.com/spreadsheets/d/1AiuGLtrnwy-Xe6ZMAAj4BfEl9o6MC5H-1uH-8jWh6Us/edit?usp=sharing) | [Invite](https://discord.com/api/oauth2/authorize?client_id=715989276382462053&permissions=499510486&scope=bot) | [Support](https://discord.gg/bPaNnxe)",
                 color=colours["create"]
             )
             emb.set_footer(text="[@] = Mention | [T] = Text | [N] = Number | [R] = Role | [C] = Channel | [* ] = Optional")
@@ -112,7 +112,7 @@ class InfoCommands(commands.Cog):
 
         emb = discord.Embed (
             title=emojis["rsm"] + " RSM",
-            description=descriptions[page] + "[Trello](https://trello.com/b/pBvhvzbY/rsm) | [Invite](https://discord.com/api/oauth2/authorize?client_id=715989276382462053&permissions=499510486&scope=bot) | [Support](https://discord.gg/bPaNnxe)",
+            description=descriptions[page] + "[Detailed](https://docs.google.com/spreadsheets/d/1AiuGLtrnwy-Xe6ZMAAj4BfEl9o6MC5H-1uH-8jWh6Us/edit?usp=sharing) | [Invite](https://discord.com/api/oauth2/authorize?client_id=715989276382462053&permissions=499510486&scope=bot) | [Support](https://discord.gg/bPaNnxe)",
             color=colours["delete"]
         )
         emb.set_footer(text="[@] = Mention | [T] = Text | [N] = Number | [R] = Role | [C] = Channel | [* ] = Optional")
