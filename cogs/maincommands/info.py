@@ -58,8 +58,8 @@ class InfoCommands(commands.Cog):
             f"{emojis['purge']     } `m!purge        [*N] {'' if mob else '|'} ` {n if mob else ''}Deletes [N] messages in the channel.\n" 
             f"{emojis['PunWarn']   } `m!punish       [*@] {'' if mob else '|'} ` {n if mob else ''}Punishes a user.\n"
             f"{emojis['role_edit'] } `m!setlog       [ C] {'' if mob else '|'} ` {n if mob else ''}Sets the servers log channel to [C].\n"
-            f"{emojis['ignore']    } `m!ignore     [*CR@] {'' if mob else '|'} ` {n if mob else ''}Stops logging the users, roles and channels privided.\n"
-            f"{emojis['rgeneral']  } `m!stafflog     [*C] {'' if mob else '|'} ` {n if mob else ''}Sets your staff log channel for reports and messages.\n"
+            f"{emojis['ignore']    } `m!ignore     [*CR@] {'' if mob else '|'} ` {n if mob else ''}Stops logging users, roles and channels privided.\n"
+            f"{emojis['rgeneral']  } `m!stafflog     [*C] {'' if mob else '|'} ` {n if mob else ''}Sets the staff log channel for reports and messages.\n",
 
             f"{emojis['commands']} - {emojis['PunWarn']} - **Raid** - {emojis['about']} - {emojis['support']}\n\n"
             f"{emojis['slowmodeOn']} `m!slowmode [*N]`\nSets the channel slowmode to [N]. Toggles if [N] is not provided.\n\n"
@@ -80,9 +80,10 @@ class InfoCommands(commands.Cog):
         for _ in range(0,25):
             emb = discord.Embed (
                 title=emojis["rsm"] + " RSM",
-                description=descriptions[page] + "[Detailed](https://docs.google.com/spreadsheets/d/1AiuGLtrnwy-Xe6ZMAAj4BfEl9o6MC5H-1uH-8jWh6Us/edit?usp=sharing) | [Invite](https://discord.com/api/oauth2/authorize?client_id=715989276382462053&permissions=499510486&scope=bot) | [Support](https://discord.gg/bPaNnxe)",
+                description=descriptions[page] + "[Detailed](http://bit.do/fLQkz) | [Invite](http://bit.do/fLQkB) | [Support](https://discord.gg/bPaNnxe)",
                 color=colours["create"]
             )
+            print(len(descriptions[page] + "[Detailed](http://bit.do/fLQkz) | [Invite](http://bit.do/fLQkB) | [Support](https://discord.gg/bPaNnxe)"))
             emb.set_footer(text="[@] = Mention | [T] = Text | [N] = Number | [R] = Role | [C] = Channel | [* ] = Optional")
             await m.edit(embed=emb)
 
