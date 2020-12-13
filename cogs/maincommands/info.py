@@ -59,6 +59,7 @@ class InfoCommands(commands.Cog):
             f"{emojis['PunWarn']   } `m!punish       [*@] {'' if mob else '|'} ` {n if mob else ''}Punishes a user.\n"
             f"{emojis['role_edit'] } `m!setlog       [ C] {'' if mob else '|'} ` {n if mob else ''}Sets the servers log channel to [C].\n"
             f"{emojis['ignore']    } `m!ignore     [*CR@] {'' if mob else '|'} ` {n if mob else ''}Stops logging users, roles and channels privided.\n"
+            f"{emojis['ignore']    } `m!ignored           {'' if mob else '|'} ` {n if mob else ''}Shows the ignored users, roles and channels.\n"
             f"{emojis['rgeneral']  } `m!stafflog     [*C] {'' if mob else '|'} ` {n if mob else ''}Sets the staff log channel for reports and messages.\n",
 
             f"{emojis['commands']} - {emojis['PunWarn']} - **Raid** - {emojis['about']} - {emojis['support']}\n\n"

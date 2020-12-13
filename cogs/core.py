@@ -197,6 +197,23 @@ class Core(commands.Cog):
             )
             await ctx.send(embed=e)
         except: pass
+    
+    @commands.command()
+    @commands.has_permissions(manage_guild=True)
+    @commands.guild_only()
+    async def ignored(self, ctx):
+        with open(f"data/guilds/{ctx.guild.id}.json", 'r') as entry:
+            entry    = json.load(entry)
+            bots     = entry["ignore_info"]["bots"]
+            members  = entry["ignore_info"]["members"]
+            roles    = entry["ignore_info"]["roles"]
+            channels = entry["ignore_info"]["channels"]
+        e = discord.Embed(
+            title="<:ChannelCreate:729066924943737033> You are ignoring the following things:",
+            description=f"**Roles:** {', '.join([ctx.guild.get_role(r).mention for r in roles])}\n**Member:** {', '.join([ctx.guild.get_member(r).mention for r in members])}\n**Channels:** {', '.join([ctx.guild.get_channel(r).mention for r in channels])}\n**Bots:** {'yes' if bots else 'no'}",
+            color=colours["create"]
+        )
+        await ctx.send(embed=e)
 
     @commands.command()
     async def stats(self, ctx):
