@@ -11,37 +11,26 @@ class NotLogging:
         self.etype = etype
         self.reason = reason
         self.details = details
-        if cog and guild:
-            cog.bot.loop.create_task(cog.vbl(guild, self))
+        if cog and guild: cog.bot.loop.create_task(cog.vbl(guild, self))
         else:
             self.cog = None
             self.guild = None
 
-    def __str__(self):
-        return f"Not logging event \"{self.etype}\" for reason: {self.reason}. See extra details in __repr__."""
-
-    def __repr__(self):
-        return f"NotLogging(etype={self.etype} reason={self.reason} details={self.details})"
-
-    def __bool__(self):
-        return False
+    def __str__(self): return f"Not logging event \"{self.etype}\" for reason: {self.reason}. See extra details in __repr__."""
+    def __repr__(self): return f"NotLogging(etype={self.etype} reason={self.reason} details={self.details})"
+    def __bool__(self): return False
 
 async def get_alog_entry(ctx, *, type: discord.AuditLogAction, check = None):
     """Retrieves the first matching audit log entry for the specified type.
     
     If you provide a check it MUST take an auditLogEntry as its only argument."""
-    if not ctx.guild.me.guild_permissions.view_audit_log:
-        raise commands.BotMissingPermissions("view_audit_log")
+    if not ctx.guild.me.guild_permissions.view_audit_log: raise commands.BotMissingPermissions("view_audit_log")
     async for log in ctx.guild.audit_logs(action=type):
         if check:
-            if check(log):
-                return log
-            else:
-                continue
-        else:
-            return log
-    else:
-        return None
+            if check(log): return log
+            else: continue
+        else: return log
+    else: return None
 
 
 class Users(commands.Cog):
@@ -101,142 +90,136 @@ class Users(commands.Cog):
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
         if not self.is_logging(member.guild, member=member, eventname="member_join"): return
-        else:
-            e = discord.Embed(
-                title=(emojis["bot_join"] if member.bot else emojis["join"]) + f" Member Joined",
-                description=f"**Name:** {member.mention}\n"
-                            f"**Server member count:** {member.guild.member_count}\n"
-                            f"**Mutual servers:** {len([x for x in self.bot.guilds if member in x.members])}\n"
-                            f"**Account Created:** {humanize.naturaltime(datetime.utcnow()-member.created_at)}\n"
-                            f"**ID:** `{member.id}`",
-                color=events["member_join"][0],
-                timestamp=datetime.utcnow()
-            )
-            log = self.get_log(member.guild)
-            await log.send(embed=e)
-            return await self.log(
-                logType="memberJoin", 
-                occurredAt=round(time.time()),
-                guild=member.guild.id,
-                content={
-                    "username": member.id,
-                    "memberCount": member.guild.member_count,
-                    "mutuals": len([x for x in self.bot.guilds if member in x.members]),
-                    "created": humanize.naturaltime(datetime.utcnow()-member.created_at),
-                }
-            )
+        e = discord.Embed(
+            title=(emojis["bot_join"] if member.bot else emojis["join"]) + f" Member Joined",
+            description=f"**Name:** {member.mention}\n"
+                        f"**Server member count:** {member.guild.member_count}\n"
+                        f"**Mutual servers:** {len([x for x in self.bot.guilds if member in x.members])}\n"
+                        f"**Account Created:** {humanize.naturaltime(datetime.utcnow()-member.created_at)}\n"
+                        f"**ID:** `{member.id}`",
+            color=events["member_join"][0],
+            timestamp=datetime.utcnow()
+        )
+        log = self.get_log(member.guild)
+        await log.send(embed=e)
+        return await self.log(
+            logType="memberJoin", 
+            occurredAt=round(time.time()),
+            guild=member.guild.id,
+            content={
+                "username": member.id,
+                "memberCount": member.guild.member_count,
+                "mutuals": len([x for x in self.bot.guilds if member in x.members]),
+                "created": humanize.naturaltime(datetime.utcnow()-member.created_at),
+            }
+        )
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member): 
         if not self.is_logging(member.guild, member=member, eventname="member_leave"): return
         audit = await get_alog_entry(member, type=discord.AuditLogAction.ban)
         if audit.target.id == member.id: return
-        else:
-            e = discord.Embed(
-                title=(emojis["bot_leave"] if member.bot else emojis["leave"]) + f" Member Left",
-                description=f"**Name:** {member.name}\n"
-                            f"**Server member count:** {member.guild.member_count}\n"
-                            f"**Mutual servers:** {len([x for x in self.bot.guilds if member in x.members])}\n"
-                            f"**Account Created:** {humanize.naturaltime(datetime.utcnow()-member.created_at)}\n"
-                            f"**ID:** `{member.id}`\n"
-                            f"**Joined the server:** {humanize.naturaltime(datetime.utcnow()-member.joined_at)}",
-                color=events["member_leave"][0],
-                timestamp=datetime.utcnow()
-            )
-            log = self.get_log(member.guild)
-            await log.send(embed=e)
-            return await self.log(
-                logType="memberLeave", 
-                occurredAt=round(time.time()),
-                guild=member.guild.id,
-                content={
-                    "username": member.id,
-                    "memberCount": member.guild.member_count,
-                    "mutuals": len([x for x in self.bot.guilds if member in x.members]),
-                    "created": humanize.naturaltime(datetime.utcnow()-member.created_at),
-                    "joined": humanize.naturaltime(datetime.utcnow()-member.joined_at)
-                }
-            )
+        e = discord.Embed(
+            title=(emojis["bot_leave"] if member.bot else emojis["leave"]) + f" Member Left",
+            description=f"**Name:** {member.name}\n"
+                        f"**Server member count:** {member.guild.member_count}\n"
+                        f"**Mutual servers:** {len([x for x in self.bot.guilds if member in x.members])}\n"
+                        f"**Account Created:** {humanize.naturaltime(datetime.utcnow()-member.created_at)}\n"
+                        f"**ID:** `{member.id}`\n"
+                        f"**Joined the server:** {humanize.naturaltime(datetime.utcnow()-member.joined_at)}",
+            color=events["member_leave"][0],
+            timestamp=datetime.utcnow()
+        )
+        log = self.get_log(member.guild)
+        await log.send(embed=e)
+        return await self.log(
+            logType="memberLeave", 
+            occurredAt=round(time.time()),
+            guild=member.guild.id,
+            content={
+                "username": member.id,
+                "memberCount": member.guild.member_count,
+                "mutuals": len([x for x in self.bot.guilds if member in x.members]),
+                "created": humanize.naturaltime(datetime.utcnow()-member.created_at),
+                "joined": humanize.naturaltime(datetime.utcnow()-member.joined_at)
+            }
+        )
 
     @commands.Cog.listener()
     async def on_member_ban(self, guild, member: discord.Member):
         if not self.is_logging(member.guild, member=member, eventname="member_ban"): return
-        else:
-            audit = await get_alog_entry(member, type=discord.AuditLogAction.ban)
-            e = discord.Embed(
-                title=emojis["ban"] + f" Member Banned",
-                description=f"**Name:** {member.name}\n"
-                            f"**Banned By:** {audit.user.mention}\n"
-                            f"**Reason:** {audit.reason if audit.reason != None else 'No reason provided'}",
-                color=events["member_ban"][0],
-                timestamp=datetime.utcnow()
-            )
-            log = self.get_log(member.guild)
-            await log.send(embed=e)
-            return await self.log(
-                logType="memberBan", 
-                occurredAt=round(time.time()),
-                guild=member.guild.id,
-                content={
-                    "username": member.id,
-                    "bannedBy": audit.user.id,
-                    "reason": audit.reason if audit.reason != None else 'No reason provided'
-                }
-            )
+        audit = await get_alog_entry(member, type=discord.AuditLogAction.ban)
+        e = discord.Embed(
+            title=emojis["ban"] + f" Member Banned",
+            description=f"**Name:** {member.name}\n"
+                        f"**Banned By:** {audit.user.mention}\n"
+                        f"**Reason:** {audit.reason if audit.reason != None else 'No reason provided'}",
+            color=events["member_ban"][0],
+            timestamp=datetime.utcnow()
+        )
+        log = self.get_log(member.guild)
+        await log.send(embed=e)
+        return await self.log(
+            logType="memberBan", 
+            occurredAt=round(time.time()),
+            guild=member.guild.id,
+            content={
+                "username": member.id,
+                "bannedBy": audit.user.id,
+                "reason": audit.reason if audit.reason != None else 'No reason provided'
+            }
+        )
 
     @commands.Cog.listener()
     async def on_member_unban(self, guild, member: discord.Member):
         if not self.is_logging(guild, member=member, eventname="member_unban"): return
-        else:
-            audit = await get_alog_entry(guild.channels[0], type=discord.AuditLogAction.unban)
-            e = discord.Embed(
-                title=emojis["unban"] + f" Member Unbanned",
-                description=f"**Name:** {member.name}\n"
-                            f"**Unbanned By:** {audit.user.mention}",
-                color=events["member_unban"][0],
-                timestamp=datetime.utcnow()
-            )
-            log = self.get_log(guild)
-            await log.send(embed=e)
-            return await self.log(
-                logType="memberUnban", 
-                occurredAt=round(time.time()),
-                guild=guild.id,
-                content={
-                    "username": member.id,
-                    "unbannedBy": audit.user.id
-                }
-            )
-    
+        audit = await get_alog_entry(guild.channels[0], type=discord.AuditLogAction.unban)
+        e = discord.Embed(
+            title=emojis["unban"] + f" Member Unbanned",
+            description=f"**Name:** {member.name}\n"
+                        f"**Unbanned By:** {audit.user.mention}",
+            color=events["member_unban"][0],
+            timestamp=datetime.utcnow()
+        )
+        log = self.get_log(guild)
+        await log.send(embed=e)
+        return await self.log(
+            logType="memberUnban", 
+            occurredAt=round(time.time()),
+            guild=guild.id,
+            content={
+                "username": member.id,
+                "unbannedBy": audit.user.id
+            }
+        )
 
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
         if not self.is_logging(after.guild, eventname="nickname_change"): return
         elif before.nick == after.nick: return
-        else:
-            audit = await get_alog_entry(after, type=discord.AuditLogAction.member_update)
-            e = discord.Embed(
-                title=emojis["nickname_change"] + f" Nickname Changed",
-                description=f"**User:** {after.mention}\n"
-                            f"**Name before:** {before.display_name}\n"
-                            f"**Now:** {after.display_name}\n"
-                            f"**Changed by:** {audit.user.mention}",
-                color=events["nickname_change"][0],
-                timestamp=datetime.utcnow()
-            )
-            log = self.get_log(after.guild)
-            await log.send(embed=e)
-            return await self.log(
-                logType="nickChange", 
-                occurredAt=round(time.time()),
-                guild=before.guild.id,
-                content={
-                    "username": audit.user.id,
-                    "nameBefore": before.display_name,
-                    "nameAfter": after.display_name,
-                    "user": after.id
-                }
-            )
+        audit = await get_alog_entry(after, type=discord.AuditLogAction.member_update)
+        e = discord.Embed(
+            title=emojis["nickname_change"] + f" Nickname Changed",
+            description=f"**User:** {after.mention}\n"
+                        f"**Name before:** {before.display_name}\n"
+                        f"**Now:** {after.display_name}\n"
+                        f"**Changed by:** {audit.user.mention}",
+            color=events["nickname_change"][0],
+            timestamp=datetime.utcnow()
+        )
+        log = self.get_log(after.guild)
+        await log.send(embed=e)
+        return await self.log(
+            logType="nickChange", 
+            occurredAt=round(time.time()),
+            guild=before.guild.id,
+            content={
+                "username": audit.user.id,
+                "nameBefore": before.display_name,
+                "nameAfter": after.display_name,
+                "user": after.id
+            }
+        )
     
     @commands.Cog.listener()
     async def on_voice_state_update(self, m, before, after):

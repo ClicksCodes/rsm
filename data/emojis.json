@@ -96,5 +96,8 @@
     "Deafen":          "<:Undeafen:784785219424747550>",
     "Mute":            "<:Mute:784785219613360149>",
     "Unmute":          "<:Unmute:784785219441524766>",
-    "Undeafen":        "<:Deafen:784785219324346378>"
+    "Undeafen":        "<:Deafen:784785219324346378>",
+    "catCreate":       "<:CatCreate:787987508465238026>",
+    "catDelete":       "<:CatDelete:787987508507967488>",
+    "catEdit":         "<:CatEdit:787987508565770300>"
 }
