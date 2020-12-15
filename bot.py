@@ -1,4 +1,4 @@
-DEV = 1
+DEV = 0
 import discord 
 
 print(discord.version_info)
