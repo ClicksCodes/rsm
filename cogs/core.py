@@ -1,4 +1,4 @@
-import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio, datetime
+import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio, datetime, random
 
 from datetime import datetime
 from discord.ext import commands, tasks
@@ -226,6 +226,20 @@ class Core(commands.Cog):
                         f"**Ping:** {round(self.bot.latency*1000)}ms\n",
             color=colours["create"]
         ))
-
+    
+    @commands.command()
+    @commands.guild_only()
+    async def verify(self, ctx):
+        if ctx.channel.id == 763817489083531324:
+            await ctx.message.delete()
+            code = "".join([random.choice(list("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm")) for _ in range(10)])
+            print(code,ctx.guild.id,ctx.author.id)
+            valid = requests.post("http://localhost:3000/api/validate",data={"code":code,"ids":"".join([str(ctx.guild.id),str(ctx.author.id)])})
+            if valid:
+                await ctx.author.send(embed=discord.Embed(
+                    title=f"{emojis['tick']} Verify", 
+                    description=f"Click [Here](http://beta.clicksminuteper.net/rsmv?code={code})",
+                    color=colours["create"]
+                ))
 def setup(bot):
     bot.add_cog(Core(bot))

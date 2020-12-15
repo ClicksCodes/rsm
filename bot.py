@@ -1,4 +1,7 @@
-DEV = 0
+DEV = 1
+import discord 
+
+print(discord.version_info)
 
 import sys
 import traceback
