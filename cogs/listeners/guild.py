@@ -233,7 +233,7 @@ class Guild(commands.Cog):
             if not self.is_logging(channel.guild, channel=None, member=None, eventname="channel_delete"): return
         else:
             if not self.is_logging(channel.guild, channel=channel, member=None, eventname="channel_delete"): return
-        audit = await get_alog_entry(channel, type=discord.AuditLogAction.channel_create)
+        audit = await get_alog_entry(channel, type=discord.AuditLogAction.channel_delete)
         log = self.get_log(channel.guild)
         e = discord.Embed(
             title=emojis["voice_delete" if c_type == "voice" else "store_delete" if c_type == "store" else "catDelete" if c_type == "category" else "channel_delete"] + " " + ("Channel" if c_type != "category" else "Category") + " Deleted",
