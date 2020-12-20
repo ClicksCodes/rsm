@@ -99,7 +99,7 @@ class Messages(commands.Cog):
             edited = humanize.naturaltime(datetime.utcnow()-message.edited_at) if message.edited_at else "Never"
             e = discord.Embed(
                 title=emojis['everyone_ping'] + f" {'Here' if '@here' in message.content else 'Everyone'} pinged",
-                description=(f"```{shorten(message.clean_content, 2042).replace('```', '***')}```\n" if message.content else "")
+                description=(f"```{shorten(message.clean_content, 2042).replace('```', '***')}```\n" if message.content else "") + 
                             f"**Where:** {message.channel.mention}\n"
                             f"**Sent:** {sent}\n"
                             f"**Edited:** {edited}\n"
@@ -134,7 +134,7 @@ class Messages(commands.Cog):
             edited = humanize.naturaltime(datetime.utcnow()-message.edited_at) if message.edited_at else "Never"
             e = discord.Embed(
                 title=emojis['role_ping'] + f" Role pinged",
-                description=(f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***') if len(message.content) > 0 else ''}```\n" if message.content else "")
+                description=(f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***') if len(message.content) > 0 else ''}```\n" if message.content else "") + 
                             f"**Where:** {message.channel.mention}\n"
                             f"**Sent:** {sent}\n"
                             f"**Edited:** {edited}\n"
@@ -168,7 +168,7 @@ class Messages(commands.Cog):
             edited = humanize.naturaltime(datetime.utcnow()-message.edited_at) if message.edited_at else "Never"
             e = discord.Embed(
                 title=emojis['everyone_ping'] + f" Mass mention",
-                description=(f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***') if len(message.content) > 0 else ''}```\n" if message.content else "")
+                description=(f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***') if len(message.content) > 0 else ''}```\n" if message.content else "") + 
                             f"**Where:** {message.channel.mention}\n"
                             f"**Sent:** {sent}\n"
                             f"**Edited:** {edited}\n"
@@ -207,7 +207,7 @@ class Messages(commands.Cog):
         a = shorten(message.clean_content, 2042).replace("```", "***")
         e = discord.Embed(
             title=emojis['delete'] + " Message Deleted",
-            description=(f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***') if len(message.content) > 0 else ''}```\n" if message.content else "")
+            description=(f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***') if len(message.content) > 0 else ''}```\n" if message.content else "") + 
                         f"**Sent By:** {message.author.mention}\n"
                         f"**Mentions:** {len(message.mentions)}\n"
                         f"**Sent In:** {message.channel.mention}\n"
@@ -250,8 +250,8 @@ class Messages(commands.Cog):
         b = shorten(after.clean_content, 500).replace('```', '***')
         e = discord.Embed(
             title=emojis["edit"] + " Message Edited",
-            description=(f"**Before:** ```{shorten(before.clean_content, 2042).replace('```', '***') if len(before.content) > 0 else ''}```\n" if message.content else "")
-                        (f"**After:** ```{shorten(after.clean_content, 2042).replace('```', '***') if len(after.content) > 0 else ''}```\n" if message.content else "")
+            description=(f"**Before:** ```{shorten(before.clean_content, 2042).replace('```', '***') if len(before.content) > 0 else ''}```\n" if message.content else "") + 
+                        (f"**After:** ```{shorten(after.clean_content, 2042).replace('```', '***') if len(after.content) > 0 else ''}```\n" if message.content else "") + 
                         f"**Sent By:** {message.author.mention}\n"
                         f"**Sent In:** {message.channel.mention}\n"
                         f"**Sent:** {sent.capitalize()}\n"
@@ -327,7 +327,7 @@ class Messages(commands.Cog):
         if not log: return
         e = discord.Embed(
             title=emojis["reaction_clear"] + " Reactions Cleared",
-            description=(f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***')}```\n" if message.content else "")
+            description=(f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***')}```\n" if message.content else "") + 
                         f"**Sent By:** {message.author.mention}\n"
                         f"**Sent In:** {message.channel.mention}\n"
                         f"**Reactions:** {', '.join(str(m) for m in reactions)}\n"
@@ -359,7 +359,7 @@ class Messages(commands.Cog):
             message = await channel.fetch_message(audit.extra.message_id)
         e = discord.Embed(
             title=emojis["pinned"] + f" Message {'un' if not message.pinned else ''}pinned",
-            description=(f"**Message:**```{shorten(message.clean_content, 2042).replace('```', '***')}```\n" if message.content else "")
+            description=(f"**Message:**```{shorten(message.clean_content, 2042).replace('```', '***')}```\n" if message.content else "") + 
                         f"**Message by:** {message.author.mention}\n"
                         f"**In:** {message.channel.mention}\n",
             color=events["channel_pins_update"][0],
