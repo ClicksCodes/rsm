@@ -241,5 +241,56 @@ class Core(commands.Cog):
                     description=f"Click [Here](http://beta.clicksminuteper.net/rsmv?code={code})",
                     color=colours["create"]
                 ))
+
+    @commands.command()
+    @commands.guild_only()
+    async def prefix(self, ctx):
+        await ctx.send(embed=discord.Embed(
+            title=f"{emojis['PunMute']} Prefix", 
+            description=f"Your bot prefix is: `{ctx.prefix}`" +
+                        (f"\nYou can use `{ctx.prefix}setprefix` to change your prefix" if ctx.author.guild_permissions.manage_guild else ""),
+            color=colours["create"]
+        ))
+    
+    @commands.command()
+    @commands.guild_only()
+    async def setprefix(self, ctx, prefix: typing.Optional[str]):
+        try:
+            if not ctx.author.guild_permissions.manage_guild: 
+                await ctx.send(embed=discord.Embed(title=f"{emojis['PunMute']} Looks like you don't have permissions", description="You need the `manage_server` permission to change the servers prefix.", color=colours["delete"]))
+        except: return
+        if not prefix:
+            m = await ctx.send(embed=discord.Embed(
+                title=f"{emojis['PunMute']} What prefix would you like to use?",
+                description="Please enter the prefix you would like to use",
+                color=colours["create"]
+            ))
+            try: msg = await ctx.bot.wait_for('message', timeout=60, check=lambda message : message.author == ctx.author)
+            except asyncio.TimeoutError: 
+                await m.edit(embed=discord.Embed(
+                title=f"{emojis['PunMute']} What prefix would you like to use?",
+                description="Please enter the prefix you would like to use",
+                color=colours["create"]
+            ))
+            await m.delete()
+            prefix = msg.content
+            await msg.delete()
+        if "`" in prefix:
+            await ctx.send(embed=discord.Embed(
+                title=f"{emojis['PunMute']} Prefix", 
+                description=f"You cannot use ` in your prefix.",
+                color=colours["delete"]
+            ))
+        with open(f"data/guilds/{ctx.guild.id}.json", 'r') as entry:
+            entry = json.load(entry)
+            entry["prefix"] = prefix
+        with open(f"data/guilds/{ctx.guild.id}.json", 'w') as f:
+            json.dump(entry, f, indent=2)
+        await ctx.send(embed=discord.Embed(
+            title=f"{emojis['PunMute']} Prefix", 
+            description=f"Your bot prefix is now: `{prefix}`",
+            color=colours["create"]
+        ))
+
 def setup(bot):
     bot.add_cog(Core(bot))

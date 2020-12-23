@@ -19,6 +19,7 @@ cogs = [
     "cogs.maincommands.raid",
     "cogs.maincommands.tags",
     "cogs.maincommands.report",
+    "cogs.mute,"
 
     # Other
     "cogs.errors"

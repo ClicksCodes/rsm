@@ -47,13 +47,13 @@ class Tags(commands.Cog):
             except:
                 await m.edit(embed=self.createEmbed(
                     f"{emojis['store_create']} Please enter a tag mention:",
-                    f"This is what you type, for example `m!tag welcome`.",
+                    f"This is what you type, for example `{ctx.prefix}tag welcome`.",
                     color=colours["create"]
                 ))
                 try: mess = await ctx.bot.wait_for('message', timeout=120, check=lambda message : message.author == ctx.author and message.channel.id == ctx.channel.id)
                 except: return await m.edit(embed=self.createEmbed(
                         f"{emojis['store_create']} Please enter a tag mention:",
-                        f"This is what you type, for example: 'welcome' for `m!tag welcome`.",
+                        f"This is what you type, for example: 'welcome' for `{ctx.prefix}tag welcome`.",
                         color=colours["delete"]
                     ))
                 title = mess.content.split(" ")[0]
@@ -83,13 +83,13 @@ class Tags(commands.Cog):
             except:
                 await m.edit(embed=self.createEmbed(
                     f"{emojis['store_create']} Please enter a tag content:",
-                    f"This is the text that appears when you do `m!tag {title}`.",
+                    f"This is the text that appears when you do `{ctx.prefix}tag {title}`.",
                     color=colours["create"]
                 ))
                 try: mess = await ctx.bot.wait_for('message', timeout=120, check=lambda message : message.author == ctx.author and message.channel.id == ctx.channel.id)
                 except: return await m.edit(embed=self.createEmbed(
                         f"{emojis['store_create']} Please enter a tag content:",
-                        f"This is the text that appears when you do `m!tag {title}`.",
+                        f"This is the text that appears when you do `{ctx.prefix}tag {title}`.",
                         color=colours["create"]
                     ))
                 text = mess.content

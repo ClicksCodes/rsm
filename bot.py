@@ -1,4 +1,4 @@
-DEV = 0
+DEV = 1
 import discord 
 
 import sys
@@ -7,6 +7,7 @@ import traceback
 from discord.ext import commands
 import discord
 import config
+import json
 
 class c:
     c = '\033[0m'
@@ -31,10 +32,8 @@ print(f"{c.Cyan}[S] {c.CyanDark}Launching {'dev' if DEV else 'normal'} mode")
 
 class Bot(commands.Bot):
     def __init__(self, **kwargs):
-        if     DEV: super().__init__(command_prefix=commands.when_mentioned_or('t!', 'T!', 't1', 'T1'), **kwargs)
-        if not DEV: super().__init__(command_prefix=commands.when_mentioned_or('m!', 'M!', 'm1', 'M1'), **kwargs)
 
-        self.remove_command('help')
+        super().__init__(command_prefix=self.get_prefix, help_command=None, **kwargs)
 
         x = 0
         m = len(config.cogs)
@@ -47,6 +46,28 @@ class Bot(commands.Bot):
             except Exception as exc:
                 print(f'{c.RedDark}[E] {c.Red}Failed cog {x}/{m} ({cog}) > {exc.__class__.__name__}: {exc}{c.c}')
         print()
+
+    async def get_prefix(self, ctx):
+        try:
+            with open(f"data/guilds/{ctx.guild.id}.json", 'r') as entry:
+                entry = json.load(entry)
+                if "prefix" in entry and entry["prefix"]:
+                    prefixes = (entry["prefix"],)
+                else:
+                    prefixes = ('t!', 't1' if DEV else 'm!', 'm1')
+        except (FileNotFoundError, AttributeError):
+            prefixes = ('t!', 't1' if DEV else 'm!', 'm1')
+        if not ctx.guild:
+            prefixes += ("",)
+        return commands.when_mentioned_or(*prefixes)(self, ctx)
+
+    @property
+    def prefix(self):
+        try:
+            return self.get_prefix(ctx)[2]
+        except Exception as e:
+            print(f"{c.RedDark}[C] {c.Red}FATAL:\n{c.c}\n{e}, please message Minion3665")
+            return "@RSM "  # This should **never** trigger
 
     async def on_ready(self):
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="over your servers."), status=discord.Status.idle)

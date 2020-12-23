@@ -358,7 +358,7 @@ class GuildCommands(commands.Cog):
             except: await ctx.author.send(f"Your server now has no settings, but I am missing permissions. Please make sure I have: {', '.join(['`' + p + '`' for p in missing])} and you'll be on your way!")
         else: await ctx.send(embed=discord.Embed(
             title="Set up!",
-            description="You now have no settings for your server. Get started with `m!setlog #channel` to begin logging",
+            description=f"You now have no settings for your server. Get started with `{ctx.prefix}setlog #channel` to begin logging",
             color=colours["create"]
         ))
 

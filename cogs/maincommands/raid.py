@@ -102,7 +102,7 @@ class Raid(commands.Cog):
         m = await ctx.send(embed=self.loadingEmbed)
         for r in [729764053861400637, 729764053941223476, 729064530797133875, 729764062270980096, 777143043711172608, 729064530310594601]: await m.add_reaction(self.bot.get_emoji(r))
         desc = \
-            f"Note: if you cannot end a raid normally, you can do `m!raidrestore` followed by the link I sent instead.\n" + \
+            f"Note: if you cannot end a raid normally, you can do `{ctx.prefix}raidrestore` followed by the link I sent instead.\n" + \
             f"**Options:**\n\n" + \
             f"{emojis['PunBan']     } Mass ban mentioned users\n" + \
             f"{emojis['PunSoftBan'] } Ban members that joined recently\n" + \
@@ -246,7 +246,7 @@ class Raid(commands.Cog):
                 try: logChannel = await ctx.guild.create_text_channel('rsm-raid-logs', overwrites=overwrites)
                 except: logChannel = ctx.channel
             url = await postbin.postAsync(json.dumps(permsToStore))
-            await logChannel.send(f"`ROLE PERMISSIONS: {url}`\n> Raid: Every role in the server without `manage_messages` has lost permission to send messages. To end a raid, type `m!raid off`. Role permissions have been stored, and can be restored when you run the raid off command. After 30 days, the logs will be deleted.\nPlease do not send any messages in this chat.")
+            await logChannel.send(f"`ROLE PERMISSIONS: {url}`\n> Raid: Every role in the server without `manage_messages` has lost permission to send messages. To end a raid, type `{ctx.prefix}raid off`. Role permissions have been stored, and can be restored when you run the raid off command. After 30 days, the logs will be deleted.\nPlease do not send any messages in this chat.")
             await self.raidUI(ctx)
             
         if toggle == False:

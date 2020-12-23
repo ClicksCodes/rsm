@@ -34,7 +34,7 @@ class Errors(commands.Cog):
             # Warning Yellow
             # Critical Red
             # Status Blue
-            try: code = str(sha256(str.encode(str(ctx.message.id))).hexdigest())[10:]
+            try: code = str(sha256(str.encode(str(ctx.message.id))).hexdigest())[20:]
             except: code=ctx.message.id
 
             if   isinstance(error, commands.errors.NoPrivateMessage):      return print(f"{c.GreenDark}[N] {c.Green}{str(error)}{c.c}")
@@ -55,7 +55,7 @@ class Errors(commands.Cog):
                 except FileNotFoundError:
                     return await ctx.channel.send(embed=discord.Embed(
                         title="You aren't set up",
-                        description=f"You need to run `m!setup` to get your server set up.",
+                        description=f"You need to run `{ctx.prefix}setup` to get your server set up.",
                         color=colours["delete"]
                     ))
                 tb = "".join(traceback.format_exception(type(error), error, error.__traceback__))
@@ -75,13 +75,19 @@ class Errors(commands.Cog):
                         color=colours["delete"]
                     ))
                 else: return
-        except: pass #print("".join(traceback.format_exception(type(error), error, error.__traceback__)))
+        except Exception as e: 
+            print(e)
         
     @commands.Cog.listener()
     async def on_error(event, *args, **kwargs):
         tb = "".join(traceback.format_exception(type(error), error, error.__traceback__))
         tb = f"Command ran: {ctx.message.content}\nUser id:{ctx.author.id}\nGuild id:{ctx.guild.id}\n\n{tb}"
         return print(f"{c.RedDark}[C] {c.Red}Error Below\n{tb}{c.c}")
+    
+    @commands.command()
+    @commands.is_owner()
+    async def error(self, ctx):
+        return f"{notexistslol}"
 
 def setup(bot):
     bot.add_cog(Errors(bot))
