@@ -1,4 +1,4 @@
-DEV = 0
+DEV = 1
 import discord 
 
 import sys
