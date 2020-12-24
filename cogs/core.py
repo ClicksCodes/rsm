@@ -168,8 +168,8 @@ class Core(commands.Cog):
         except: pass
     
     @commands.command()
-    @commands.has_permissions(manage_guild=True)
     @commands.guild_only()
+    @commands.has_permissions(manage_guild=True)
     async def ignore(self, ctx, toIgnore: commands.Greedy[typing.Union[discord.TextChannel, discord.Member, discord.Role]], bots: bool = True):
         try:
             members  = []
@@ -230,17 +230,31 @@ class Core(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def verify(self, ctx):
-        if ctx.channel.id == 763817489083531324:
-            await ctx.message.delete()
-            code = "".join([random.choice(list("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm")) for _ in range(10)])
-            print(code,ctx.guild.id,ctx.author.id)
-            valid = requests.post("http://localhost:3000/api/validate",data={"code":code,"ids":"".join([str(ctx.guild.id),str(ctx.author.id)])})
-            if valid:
-                await ctx.author.send(embed=discord.Embed(
-                    title=f"{emojis['tick']} Verify", 
-                    description=f"Click [Here](http://beta.clicksminuteper.net/rsmv?code={code})",
-                    color=colours["create"]
+        roleid = None
+        with open(f"data/guilds/{ctx.guild.id}.json", 'r') as e:
+            try: roleid = json.load(e)["verify_role"]
+            except KeyError:
+                return await ctx.send(embed=discord.Embed(
+                    title=f"{emojis['cross']} Not set up", 
+                    description=f"You do not have a verify role set. You can use `{ctx.prefix}setverify` to choose the role assigned on verification.",
+                    color=colours["delete"]
                 ))
+        if roleid in [r.id for r in ctx.author.roles]:
+            return await ctx.send(embed=discord.Embed(
+                    title=f"{emojis['cross']} You are already verified", 
+                    description=f"You already have the verified role, and cannot get it again.",
+                    color=colours["delete"]
+                ))
+        await ctx.message.delete()
+        code = "".join([random.choice(list("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm")) for _ in range(10)])
+        print(code,ctx.guild.id,ctx.author.id)
+        valid = requests.post("http://localhost:3000/api/validate",data={"code":code,"ids":"".join([str(ctx.guild.id),str(ctx.author.id),str(roleid)])})
+        if valid:
+            await ctx.author.send(embed=discord.Embed(
+                title=f"{emojis['tick']} Verify", 
+                description=f"In order to verify yourself in {ctx.guild.name}, you need to go [here](http://beta.clicksminuteper.net/rsmv?code={code}) and complete the captcha.",
+                color=colours["create"]
+            ))
 
     @commands.command()
     @commands.guild_only()
@@ -291,6 +305,28 @@ class Core(commands.Cog):
             description=f"Your bot prefix is now: `{prefix}`",
             color=colours["create"]
         ))
-
+    
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(manage_guild=True)
+    async def setverify(self, ctx, c: typing.Optional[discord.Role]):
+        if not c:
+            return await ctx.send(embed=discord.Embed(
+                title=f"{emojis['join']} You need to enter a role",
+                description=f"Type `{ctx.prefix}setverify`, followed by the role a user should get when they successfully verify. This is normally something like `member`.",
+                color=colours["delete"]
+            ))
+        if c.guild.id == ctx.guild.id and not c.managed:
+            m = await ctx.send(embed=loadingEmbed)
+            with open(f"data/guilds/{ctx.guild.id}.json", 'r') as entry:
+                entry = json.load(entry)
+                entry["verify_role"] = c.id
+            with open(f"data/guilds/{ctx.guild.id}.json", 'w') as f:
+                json.dump(entry, f, indent=2)
+            return await m.edit(embed=discord.Embed(
+                    title=f"{emojis['join']} Your verify role was set",
+                    description=f"People can now type `{ctx.prefix}verify` to get the {c.mention} role.",
+                    color=colours["create"]
+                ))
 def setup(bot):
     bot.add_cog(Core(bot))

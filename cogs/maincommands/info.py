@@ -41,17 +41,21 @@ class InfoCommands(commands.Cog):
             f"{emojis['settings']      } `{prefix}settings      {'' if mob else '|'} ` {n if mob else ''}Shows your servers log settings.\n"
             f"{emojis['join']          } `{prefix}user     [*@] {'' if mob else '|'} ` {n if mob else ''}Shows information about a user.\n"
             f"{emojis['role_edit']     } `{prefix}roleall  [*T] {'' if mob else '|'} ` {n if mob else ''}Role all humans or bots in the server. [T] to search\n"
-            f"{emojis['support']       } `{prefix}contact  [ T] {'' if mob else '|'} ` {n if mob else ''}Sends [T] to the staff for support.\n"
-            f"{emojis['commands']      } `{prefix}suggest  [ T] {'' if mob else '|'} ` {n if mob else ''}Sends [T] to the staff to add to the bot for voting.\n"
+            f"{emojis['support']       } `{prefix}contact   [T] {'' if mob else '|'} ` {n if mob else ''}Sends [T] to the staff for support.\n"
+            f"{emojis['commands']      } `{prefix}suggest   [T] {'' if mob else '|'} ` {n if mob else ''}Sends [T] to the staff to add to the bot for voting.\n"
             f"{emojis['support']       } `{prefix}report    [T] {'' if mob else '|'} ` {n if mob else ''}Messages the staff team of the server it was ran in.\n"
             f"{emojis['slowmodeOn']    } `{prefix}ping          {'' if mob else '|'} ` {n if mob else ''}Checks the bots ping time.\n"
             f"{emojis['mod_update']    } `{prefix}server        {'' if mob else '|'} ` {n if mob else ''}Shows all information about your server.\n"
             f"{emojis['store_create']  } `{prefix}tag      [*T] {'' if mob else '|'} ` {n if mob else ''}`{prefix}tag create/delete` `title text`, or `{prefix}tag title`\n"
-            f"{emojis['role_create']   } `{prefix}role     [ R] {'' if mob else '|'} ` {n if mob else ''}With `Role`: Shows information about a role.\n"
-            f"{emojis['role_create']   } `{prefix}role     [ @] {'' if mob else '|'} ` {n if mob else ''}With `Mention`: Lets you edit or view a users roles.\n"
-            f"{emojis['channel_create']} `{prefix}viewas   [ @] {'' if mob else '|'} ` {n if mob else ''}Shows the channels that [@] can see.\n",
+            f"{emojis['role_create']   } `{prefix}role      [R] {'' if mob else '|'} ` {n if mob else ''}With `Role`: Shows information about a role.\n"
+            f"{emojis['role_create']   } `{prefix}role      [@] {'' if mob else '|'} ` {n if mob else ''}With `Mention`: Lets you edit or view a users roles.\n"
+            f"{emojis['channel_create']} `{prefix}viewas    [@] {'' if mob else '|'} ` {n if mob else ''}Shows the channels that [@] can see.\n"
+            f"{emojis['join']          } `{prefix}verify    [@] {'' if mob else '|'} ` {n if mob else ''}Lets users verify in your server.\n"
+            f"{emojis['join']          } `{prefix}setverify [R] {'' if mob else '|'} ` {n if mob else ''}Sets the role given when you `{prefix}verify`. Name or ID.\n",
 
             f"{emojis['commands']} - **Moderation** - {emojis['lock']} - {emojis['about']} - {emojis['support']}\n\n"
+            f"{emojis['PunMute']   } `{prefix}prefix        {'' if mob else '|'} ` {n if mob else ''}Shows the bots prefix. Use @ if unknown.\n"
+            f"{emojis['PunMute']   } `{prefix}setprefix [T] {'' if mob else '|'} ` {n if mob else ''}Sets the bots prefix. You can always @ the bot.\n"
             f"{emojis['PunWarn']   } `{prefix}warn    [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Warns [@] for reason [T].\n"
             f"{emojis['PunHistory']} `{prefix}clear   [*@] [*N] {'' if mob else '|'} ` {n if mob else ''}Clears [N] messages from [@].\n"
             f"{emojis['PunKick']   } `{prefix}kick    [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Kicks [@] for reason [T].\n"
@@ -86,7 +90,6 @@ class InfoCommands(commands.Cog):
                 description=descriptions[page] + "[Detailed](http://bit.do/fLQkz) | [Invite](http://bit.do/fLQkB) | [Support](https://discord.gg/bPaNnxe)",
                 color=colours["create"]
             )
-            print(len(descriptions[page] + "[Detailed](http://bit.do/fLQkz) | [Invite](http://bit.do/fLQkB) | [Support](https://discord.gg/bPaNnxe)"))
             emb.set_footer(text="[@] = Mention | [T] = Text | [N] = Number | [R] = Role | [C] = Channel | [* ] = Optional")
             await m.edit(embed=emb)
 
