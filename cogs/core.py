@@ -246,13 +246,17 @@ class Core(commands.Cog):
                     color=colours["delete"]
                 ))
         await ctx.message.delete()
-        code = "".join([random.choice(list("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm")) for _ in range(10)])
+        code = "".join([random.choice(list("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm")) for _ in range(10)]) + str(ctx.message.id) + str(ctx.channel.id)
         print(code,ctx.guild.id,ctx.author.id)
-        valid = requests.post("https://clicksminuteper.net/api/validate",data={"code":code,"ids":"".join([str(ctx.guild.id),str(ctx.author.id),str(roleid)])})
-        if valid:
+        async with aiohttp.ClientSession() as session:
+            async with session.get("https://api.clicksminuteper.net/validate",
+                                   params=[("code":code),("ids":"".join([str(ctx.guild.id),str(ctx.author.id),str(roleid)]))]) as r:
+                print(r.status)
+                print(await r.text())
+        if r:
             await ctx.author.send(embed=discord.Embed(
                 title=f"{emojis['tick']} Verify", 
-                description=f"In order to verify yourself in {ctx.guild.name}, you need to go [here](http://clicksminuteper.net/rsmv?code={code}) and complete the captcha.",
+                description=f"In order to verify yourself in {ctx.guild.name}, you need to go [here](https://clicksminuteper.net/rsmv?code={code}) and complete the captcha.",
                 color=colours["create"]
             ))
 
