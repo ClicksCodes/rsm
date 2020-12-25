@@ -250,7 +250,11 @@ class Core(commands.Cog):
         print(code,ctx.guild.id,ctx.author.id)
         async with aiohttp.ClientSession() as session:
             async with session.get("https://api.clicksminuteper.net/validate",
-                                   params=[("code":code),("ids":"".join([str(ctx.guild.id),str(ctx.author.id),str(roleid)]))]) as r:
+                                    params=[
+                                        ("code":code),
+                                        ("ids":"".join([str(ctx.guild.id),str(ctx.author.id),str(roleid)]))
+                                    ]
+                                ) as r:
                 print(r.status)
                 print(await r.text())
         if r:
