@@ -246,8 +246,7 @@ class Core(commands.Cog):
                     color=colours["delete"]
                 ))
         await ctx.message.delete()
-        code = "".join([random.choice(list("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm")) for _ in range(10)]) + str(ctx.message.id) + str(ctx.channel.id)
-        code = f"{code}.{ctx.channel.id}.{ctx.message.id}"
+        code = "".join([random.choice(list("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm")) for _ in range(10)]) + "." + str(ctx.message.id) + "." + str(ctx.channel.id)
         async with aiohttp.ClientSession() as session:
             async with session.get(
                     "https://api.clicksminuteper.net/validate",
