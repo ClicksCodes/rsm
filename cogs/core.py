@@ -255,7 +255,7 @@ class Core(commands.Cog):
                         ("ids",f"{ctx.guild.id}.{ctx.author.id}.{roleid}")
                     ]
                 ) as r:
-                print(await r.json())
+                print(await r.text())
                 if r:
                     await ctx.author.send(embed=discord.Embed(
                         title=f"{emojis['tick']} Verify", 
