@@ -250,12 +250,11 @@ class Core(commands.Cog):
         async with aiohttp.ClientSession() as session:
             async with session.post(
                     "https://api.clicksminuteper.net/validate",
-                    params=[
+                    body=[
                         ("code",code),
                         ("ids",f"{ctx.guild.id}.{ctx.author.id}.{roleid}")
                     ]
                 ) as r:
-                print(await r.text())
                 if r:
                     await ctx.author.send(embed=discord.Embed(
                         title=f"{emojis['tick']} Verify", 
