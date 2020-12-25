@@ -248,7 +248,7 @@ class Core(commands.Cog):
         await ctx.message.delete()
         code = "".join([random.choice(list("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm")) for _ in range(10)]) + "." + str(ctx.message.id) + "." + str(ctx.channel.id)
         async with aiohttp.ClientSession() as session:
-            async with session.get(
+            async with session.post(
                     "https://api.clicksminuteper.net/validate",
                     params=[
                         ("code",code),
