@@ -247,16 +247,15 @@ class Core(commands.Cog):
                 ))
         await ctx.message.delete()
         code = "".join([random.choice(list("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm")) for _ in range(10)]) + str(ctx.message.id) + str(ctx.channel.id)
-        print(code,ctx.guild.id,ctx.author.id)
+        code = f"{code}.{ctx.channel.id}.{ctx.message.id}"
         async with aiohttp.ClientSession() as session:
-            async with session.get("https://api.clicksminuteper.net/validate",
-                                    params=[
-                                        ("code",code),
-                                        ("ids","".join([str(ctx.guild.id),str(ctx.author.id),str(roleid)]))
-                                    ]
-                                ) as r:
-                print(r.status)
-                print(await r.text())
+            async with session.get(
+                    "https://api.clicksminuteper.net/validate",
+                    params=[
+                        ("code",code),
+                        ("ids",f"{ctx.guild.id}.{ctx.author.id}.{role.id}")
+                    ]
+                ) as r:
                 if r:
                     await ctx.author.send(embed=discord.Embed(
                         title=f"{emojis['tick']} Verify", 
