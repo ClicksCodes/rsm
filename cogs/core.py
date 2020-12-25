@@ -253,7 +253,7 @@ class Core(commands.Cog):
                     "https://api.clicksminuteper.net/validate",
                     params=[
                         ("code",code),
-                        ("ids",f"{ctx.guild.id}.{ctx.author.id}.{role.id}")
+                        ("ids",f"{ctx.guild.id}.{ctx.author.id}.{roleid}")
                     ]
                 ) as r:
                 if r:
