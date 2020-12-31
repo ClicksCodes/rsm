@@ -275,6 +275,7 @@ class Core(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def setprefix(self, ctx, prefix: typing.Optional[str]):
+        w = False
         try:
             if not ctx.author.guild_permissions.manage_guild: 
                 await ctx.send(embed=discord.Embed(title=f"{emojis['PunMute']} Looks like you don't have permissions", description="You need the `manage_server` permission to change the servers prefix.", color=colours["delete"]))
@@ -282,33 +283,49 @@ class Core(commands.Cog):
         if not prefix:
             m = await ctx.send(embed=discord.Embed(
                 title=f"{emojis['PunMute']} What prefix would you like to use?",
-                description="Please enter the prefix you would like to use",
+                description=f"Please enter the prefix you would like to use.\nReact {emojis['cross']} to clear your custom prefix",
                 color=colours["create"]
             ))
-            try: msg = await ctx.bot.wait_for('message', timeout=60, check=lambda message : message.author == ctx.author)
+            await m.add_reaction(self.bot.get_emoji(729064530310594601))
+            try:
+                done, _ = await asyncio.wait([
+                    ctx.bot.wait_for('message', timeout=120, check=lambda message : message.author == ctx.author),
+                    ctx.bot.wait_for('reaction_add', timeout=120, check=lambda _, user : user == ctx.author)
+                ], return_when=asyncio.FIRST_COMPLETED)
             except asyncio.TimeoutError: 
                 await m.edit(embed=discord.Embed(
                 title=f"{emojis['PunMute']} What prefix would you like to use?",
-                description="Please enter the prefix you would like to use",
+                description=f"Please enter the prefix you would like to use.\nReact {emojis['cross']} to clear your custom prefix",
                 color=colours["create"]
             ))
             await m.delete()
-            prefix = msg.content
-            await msg.delete()
-        if "`" in prefix:
-            await ctx.send(embed=discord.Embed(
-                title=f"{emojis['PunMute']} Prefix", 
-                description=f"You cannot use ` in your prefix.",
-                color=colours["delete"]
-            ))
-        with open(f"data/guilds/{ctx.guild.id}.json", 'r') as entry:
-            entry = json.load(entry)
-            entry["prefix"] = prefix
+            response = done.pop().result()
+            if isinstance(response, discord.message.Message): 
+                prefix = msg.content
+                if len(prefix) != len(msg.content): w = True
+                await msg.delete()
+            else: prefix = False
+        if prefix:
+            if len(prefix) > 5: w = True
+            prefix = prefix[:5]
+            if "`" in prefix:
+                await ctx.send(embed=discord.Embed(
+                    title=f"{emojis['PunMute']} Prefix", 
+                    description=f"You cannot use ` in your prefix.",
+                    color=colours["delete"]
+                ))
+            with open(f"data/guilds/{ctx.guild.id}.json", 'r') as entry:
+                entry = json.load(entry)
+                entry["prefix"] = prefix
+        else:
+            with open(f"data/guilds/{ctx.guild.id}.json", 'r') as entry:
+                entry = json.load(entry)
+                entry["prefix"] = False
         with open(f"data/guilds/{ctx.guild.id}.json", 'w') as f:
             json.dump(entry, f, indent=2)
         await ctx.send(embed=discord.Embed(
             title=f"{emojis['PunMute']} Prefix", 
-            description=f"Your bot prefix is now: `{prefix}`",
+            description=f"Your bot prefix is now: `{prefix if prefix else 'm!'}`" + ("\nWe had to shorten your prefix to 5 characters." if w else ""),
             color=colours["create"]
         ))
     

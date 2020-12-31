@@ -54,8 +54,8 @@ class InfoCommands(commands.Cog):
             f"{emojis['join']          } `{prefix}setverify [R] {'' if mob else '|'} ` {n if mob else ''}Sets the role given when you `{prefix}verify`. Name or ID.\n",
 
             f"{emojis['commands']} - **Moderation** - {emojis['lock']} - {emojis['about']} - {emojis['support']}\n\n"
-            f"{emojis['PunMute']   } `{prefix}prefix        {'' if mob else '|'} ` {n if mob else ''}Shows the bots prefix. Use @ if unknown.\n"
-            f"{emojis['PunMute']   } `{prefix}setprefix [T] {'' if mob else '|'} ` {n if mob else ''}Sets the bots prefix. You can always @ the bot.\n"
+            f"{emojis['PunMute']   } `{prefix}prefix            {'' if mob else '|'} ` {n if mob else ''}Shows the bots prefix. Use @ if unknown.\n"
+            f"{emojis['PunMute']   } `{prefix}setprefix     [T] {'' if mob else '|'} ` {n if mob else ''}Sets the bots prefix. You can always @ the bot.\n"
             f"{emojis['PunWarn']   } `{prefix}warn    [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Warns [@] for reason [T].\n"
             f"{emojis['PunHistory']} `{prefix}clear   [*@] [*N] {'' if mob else '|'} ` {n if mob else ''}Clears [N] messages from [@].\n"
             f"{emojis['PunKick']   } `{prefix}kick    [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Kicks [@] for reason [T].\n"
