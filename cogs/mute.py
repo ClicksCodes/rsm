@@ -49,17 +49,17 @@ class Mute(commands.Cog):
     When the bot restarts. Note: Not in on_ready as that can be run multiple times. At the start before the bot even loads
     1 -- You recreate the unmute list from stored data
     """
-        
+
     def __init__(self, bot):
         # TODO: reconstruct the mute list
-        self.muted = {}  # guild_id:member_id: (unmute_time, {channel_id: before}}) 
+        self.muted = {}  # guild_id:member_id: (unmute_time, {channel_id: before}})
         self.bot = bot
         self.check_mutes.start()
 
     def cog_unload(self):
         self.check_mutes.cancel()
 
-    @tasks.loop(minutes=1)
+    @tasks.loop(self, minutes=1)
     async def check_mutes(): # Loop over all mutes every minute
         now = datetime.datetime.utcnow()
         filter(lambda mute: (
@@ -73,32 +73,121 @@ class Mute(commands.Cog):
             return True
         ), self.muted)
 
-    async def unmute_after(seconds, member, perms):
+    async def unmute_after(self, seconds, member, perms):
+        """
+        DONE: 1 -- You asyncio.sleep until the person needs to be unmuted
+        """
         await asyncio.sleep(seconds)
         return await self.unmute(member, perms)
 
-    async def unmute(member, perms):
+    async def mute(self, member, duration=None):
+        """
+        As soon as you mute someone
+        TODO: 1 -- You store information about the mute: what was the state before? when will the mute expire for who?; You add the mute to the unmute list
+        TODO: 2 -- You mute the user by changing user-specific channel permissions. You do not change permission on channels that have a :white_check_mark: as a user-specific send-messages permission for that user, as those are normally only used on modmail threads and other channels that the user needs access to
+        TODO: 3 -- You send a DM telling the user they were muted
+        """
+        mute_info = {
+            "user": member.id,
+            "guild": guild.id,
+            "expiry": datetime.datetime.now() + datetime.timedelta(seconds=duration)
+        }
+        channel_previous_perms = {}
+        for channel in member.guild.channels:
+            perms = channel.overwrites_for(member).pair()
+            channel_previous_perms[str(channel.id)] = str(perms[0].value), str(perms[1].value)
+        mute_info["permissions"] = channel_previous_perms
+
+    async def unmute(self, member, perms):
         guildid, memberid = member.split(":")
         guild = self.bot.get_guild(int(guildid))
         member = guild.get_member(int(memberid))
-        for channel, (allow, deny) in perms.items():
-            await channel.edit(overwrites=splice_unmute_perms(discord.PermissionOverwrite.from_pair(allow, deny), channel.overwrites_for(member)))
+        for channel, (allow, deny) in perms.items(): await channel.edit(overwrites=splice_unmute_perms(discord.PermissionOverwrite.from_pair(allow, deny), channel.overwrites_for(member)))
 
+    @staticmethod
     async def mute_perms(before_splice):
-        if before_splice.send_messages = True:
-            return before_splice
+        if before_splice.send_messages = True: return before_splice
         before_splice.send_messages = False
         return before_splice
 
+    @staticmethod
     async def splice_unmute_perms(before_mute, current):
-        if current.send_messages != False or before_mute == True:
-            return current
+        if current.send_messages != False or before_mute == True: return current
         current.send_messages = before_mute
         return current
 
-    async def mute(ctx, user, duration=None):
-        
-        channel_info = ()
-        
-def setup(bot):
-    bot.add_cog(Mute(bot))
+    @commands.command(name="mute")
+    @commands.guild_only()
+    async def mute_command(self, ctx, user:typing.Optional[discord.Member], duration:typing.Optional[str]=""):
+        try:
+            if not ctx.author.guild_permissions.manage_messages and not ctx.author.guild_permissions.manage_roles:
+                await ctx.send(embed=discord.Embed(
+                    title=f"{emojis['PunMute']} Looks like you don't have permissions",
+                    description="You need the `manage_messages` or `manage_roles` permission to mute someone.",
+                    color=colours["delete"]))
+                return await m.delete()
+        except: return
+        m = await ctx.send(self.loadingEmbed)
+        if not user:
+            await m.edit(embed=discord.Embed(
+                title=f"{emojis['PunMute']} Which user would you like to mute?",
+                description="Please enter the name or ID of the user you would like to mute. Type `cancel` to cancel.",
+                color=colours['create']
+            ))
+            try: msg = await ctx.bot.wait_for('message', timeout=60, check=lambda r, user : r.message.id == m.id and user == ctx.author)
+            except asyncio.TimeoutError: break
+
+            r = None
+            errored = False
+            try: r = int(msg.content)
+            except:
+                try: user = msg.mentions[0]
+                except errored = True
+            if r:
+                try: user = self.bot.get_member(r)
+                except: errored = True
+            if errored:
+                return await m.edit(embed=discord.Embed(
+                    title=f"{emojis['PunMute']} Which user would you like to mute?",
+                    description="Please enter the name or ID of the user you would like to mute. Type `cancel` to cancel.",
+                    color=colours['delete']
+                ))
+
+    @commands.command(name="unmute")
+    @commands.guild_only)()
+    async def unmute_command(self, ctx, user:typing.Optional[discord.Member]):
+        try:
+            if not ctx.author.guild_permissions.manage_messages and not ctx.author.guild_permissions.manage_roles:
+                await ctx.send(embed=discord.Embed(
+                    title=f"{emojis['PunMute']} Looks like you don't have permissions",
+                    description="You need the `manage_messages` or `manage_roles` permission to unmute someone.",
+                    color=colours["delete"]))
+                return await m.delete()
+        except: return
+        m = await ctx.send(self.loadingEmbed)
+        if not user:
+            await m.edit(embed=discord.Embed(
+                title=f"{emojis['PunMute']} Which user would you like to unmute?",
+                description="Please enter the name or ID of the user you would like to unmute. Type `cancel` to cancel.",
+                color=colours['create']
+            ))
+            try: msg = await ctx.bot.wait_for('message', timeout=60, check=lambda r, user : r.message.id == m.id and user == ctx.author)
+            except asyncio.TimeoutError: break
+
+            r = None
+            errored = False
+            try: r = int(msg.content)
+            except:
+                try: user = msg.mentions[0]
+                except errored = True
+            if r:
+                try: user = self.bot.get_member(r)
+                except: errored = True
+            if errored:
+                return await m.edit(embed=discord.Embed(
+                    title=f"{emojis['PunMute']} Which user would you like to unmute?",
+                    description="Please enter the name or ID of the user you would like to unmute. Type `cancel` to cancel.",
+                    color=colours['delete']
+                ))
+
+def setup(bot): bot.add_cog(Mute(bot))
