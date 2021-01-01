@@ -250,9 +250,10 @@ class Core(commands.Cog):
         async with aiohttp.ClientSession() as session:
             async with session.post(
                     "https://api.clicksminuteper.net/validate",
-                    data={
+                    json={
                         "code": code,
-                        "ids": f"{ctx.guild.id}.{ctx.author.id}.{roleid}"
+                        "ids": f"{ctx.guild.id}.{ctx.author.id}.{roleid}",
+                        "secret": "coded is bad at security lol -3665"
                     }
                 ) as r:
                 if r:
