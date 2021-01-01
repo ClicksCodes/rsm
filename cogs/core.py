@@ -250,10 +250,10 @@ class Core(commands.Cog):
         async with aiohttp.ClientSession() as session:
             async with session.post(
                     "https://api.clicksminuteper.net/validate",
-                    params=[
-                        ("code", code),
-                        ("ids", f"{ctx.guild.id}.{ctx.author.id}.{roleid}")
-                    ]
+                    data={
+                        "code": code,
+                        "ids": f"{ctx.guild.id}.{ctx.author.id}.{roleid}"
+                    }
                 ) as r:
                 if r:
                     await ctx.author.send(embed=discord.Embed(
