@@ -1,4 +1,3 @@
-config.py
 /data/guilds/*
 /data/stats.json
 /__pycache__/*

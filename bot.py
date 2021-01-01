@@ -79,5 +79,6 @@ bot = Bot(
     presence=None,
     intents=intents
 )
+bot.errors = 0
 
 bot.run(config.token if not DEV else config.dtoken)

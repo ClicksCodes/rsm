@@ -32,7 +32,6 @@ async def get_alog_entry(ctx, *, type: discord.AuditLogAction, check = None):
         else: return log
     else: return None
 
-
 class Guild(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot

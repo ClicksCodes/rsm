@@ -32,7 +32,6 @@ async def get_alog_entry(ctx, *, type: discord.AuditLogAction, check = None):
         else: return log
     else: return None
 
-
 class Users(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -40,8 +39,7 @@ class Users(commands.Cog):
     
     def tohex(self, i): return hex(i).split('x')[-1]
     
-    def cog_unload(self): 
-        self.bot.loop.create_task(self.session.close())
+    def cog_unload(self): self.bot.loop.create_task(self.session.close())
 
     def is_logging(self, guild: discord.Guild, *, channel = None, member: discord.Member = None, eventname):
         if not os.path.exists(f'data/guilds/{guild.id}.json'): return bool(NotLogging(eventname, "Guild not configured.", cog=self, guild=guild))

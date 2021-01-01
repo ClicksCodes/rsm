@@ -11,20 +11,14 @@ class NotLogging:
         self.etype = etype
         self.reason = reason
         self.details = details
-        if cog and guild:
-            cog.bot.loop.create_task(cog.vbl(guild, self))
+        if cog and guild: cog.bot.loop.create_task(cog.vbl(guild, self))
         else:
             self.cog = None
             self.guild = None
 
-    def __str__(self):
-        return f"Not logging event \"{self.etype}\" for reason: {self.reason}. See extra details in __repr__."""
-
-    def __repr__(self):
-        return f"NotLogging(etype={self.etype} reason={self.reason} details={self.details})"
-
-    def __bool__(self):
-        return False
+    def __str__(self): return f"Not logging event \"{self.etype}\" for reason: {self.reason}. See extra details in __repr__."""
+    def __repr__(self): return f"NotLogging(etype={self.etype} reason={self.reason} details={self.details})"
+    def __bool__(self): return False
 
 class Core(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -34,7 +28,7 @@ class Core(commands.Cog):
     
     @tasks.loop(minutes=5.0)
     async def check_latency(self):
-        print(f"\033[93m[P] {round(self.bot.latency*1000,3)}\033[0m")
+        print(f"\033[93m[P] {round(self.bot.latency*1000,3)} | {self.bot.errors} Errors since restart\033[0m")
     
     @check_latency.before_loop
     async def before_check_latency(self):
@@ -226,42 +220,6 @@ class Core(commands.Cog):
                         f"**Ping:** {round(self.bot.latency*1000)}ms\n",
             color=colours["create"]
         ))
-    
-    @commands.command()
-    @commands.guild_only()
-    async def verify(self, ctx):
-        roleid = None
-        with open(f"data/guilds/{ctx.guild.id}.json", 'r') as e:
-            try: roleid = json.load(e)["verify_role"]
-            except KeyError:
-                return await ctx.send(embed=discord.Embed(
-                    title=f"{emojis['cross']} Not set up", 
-                    description=f"You do not have a verify role set. You can use `{ctx.prefix}setverify` to choose the role assigned on verification.",
-                    color=colours["delete"]
-                ))
-        if roleid in [r.id for r in ctx.author.roles]:
-            return await ctx.send(embed=discord.Embed(
-                    title=f"{emojis['cross']} You are already verified", 
-                    description=f"You already have the verified role, and cannot get it again.",
-                    color=colours["delete"]
-                ))
-        await ctx.message.delete()
-        code = "".join([random.choice(list("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm")) for _ in range(10)]) + "." + str(ctx.message.id) + "." + str(ctx.channel.id)
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
-                    "https://api.clicksminuteper.net/validate",
-                    json={
-                        "code": code,
-                        "ids": f"{ctx.guild.id}.{ctx.author.id}.{roleid}",
-                        "secret": "coded is bad at security lol -3665"
-                    }
-                ) as r:
-                if r:
-                    await ctx.author.send(embed=discord.Embed(
-                        title=f"{emojis['tick']} Verify", 
-                        description=f"In order to verify yourself in {ctx.guild.name}, you need to go [here](https://clicksminuteper.net/rsmv?code={code}) and complete the captcha.",
-                        color=colours["create"]
-                    ))
 
     @commands.command()
     @commands.guild_only()
@@ -329,6 +287,42 @@ class Core(commands.Cog):
             description=f"Your bot prefix is now: `{prefix if prefix else 'm!'}`" + ("\nWe had to shorten your prefix to 5 characters." if w else ""),
             color=colours["create"]
         ))
+
+    @commands.command()
+    @commands.guild_only()
+    async def verify(self, ctx):
+        roleid = None
+        with open(f"data/guilds/{ctx.guild.id}.json", 'r') as e:
+            try: roleid = json.load(e)["verify_role"]
+            except KeyError:
+                return await ctx.send(embed=discord.Embed(
+                    title=f"{emojis['cross']} Not set up", 
+                    description=f"You do not have a verify role set. You can use `{ctx.prefix}setverify` to choose the role assigned on verification.",
+                    color=colours["delete"]
+                ))
+        if roleid in [r.id for r in ctx.author.roles]:
+            return await ctx.send(embed=discord.Embed(
+                    title=f"{emojis['cross']} You are already verified", 
+                    description=f"You already have the verified role, and cannot get it again.",
+                    color=colours["delete"]
+                ))
+        await ctx.message.delete()
+        code = "".join([random.choice(list("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm")) for _ in range(10)]) + "." + str(ctx.message.id) + "." + str(ctx.channel.id)
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                    "https://api.clicksminuteper.net/validate",
+                    json={
+                        "code": code,
+                        "ids": f"{ctx.guild.id}.{ctx.author.id}.{roleid}",
+                        "secret": secret
+                    }
+                ) as r:
+                if r:
+                    await ctx.author.send(embed=discord.Embed(
+                        title=f"{emojis['tick']} Verify", 
+                        description=f"In order to verify yourself in {ctx.guild.name}, you need to go [here](https://clicksminuteper.net/rsmv?code={code}) and complete the captcha.",
+                        color=colours["create"]
+                    ))
     
     @commands.command()
     @commands.guild_only()

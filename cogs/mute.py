@@ -6,7 +6,6 @@ from textwrap import shorten
 
 from cogs.consts import *
 
-
 class c:
     c = '\033[0m'
 
@@ -56,22 +55,19 @@ class Mute(commands.Cog):
         self.bot = bot
         self.check_mutes.start()
 
-    def cog_unload(self):
-        self.check_mutes.cancel()
+    def cog_unload(self): self.check_mutes.cancel()
 
     @tasks.loop(self, minutes=1)
     async def check_mutes(): # Loop over all mutes every minute
         now = datetime.datetime.utcnow()
-        filter(lambda mute: (
+        def mute_check(mute):
             try:
-                if (unmute_time := datetime.datetime.utcfromtimestamp(self.muted[mute][0])) >= now + datetime.timedelta(minutes=5):
-                    self.unmute_after((unmute_time - now).total_seconds(), mute, self.muted[mute][1])
-            else:
-                return False
-            except Exception as e:
-                print(f"{c.RedDark}[C] {c.Red}FATAL:\n{e}{c.c}")
+                if (unmute_time := datetime.datetime.utcfromtimestamp(self.muted[mute][0])) >= now + datetime.timedelta(minutes=5): self.unmute_after((unmute_time - now).total_seconds(), mute, self.muted[mute][1])
+            except Exception as e: print(f"{c.RedDark}[C] {c.Red}FATAL:\n{e}{c.c}")
+            else: return False
             return True
-        ), self.muted)
+
+        filter(mute_check, self.muted)
 
     async def unmute_after(self, seconds, member, perms):
         """
@@ -83,20 +79,31 @@ class Mute(commands.Cog):
     async def mute(self, member, duration=None):
         """
         As soon as you mute someone
-        TODO: 1 -- You store information about the mute: what was the state before? when will the mute expire for who?; You add the mute to the unmute list
-        TODO: 2 -- You mute the user by changing user-specific channel permissions. You do not change permission on channels that have a :white_check_mark: as a user-specific send-messages permission for that user, as those are normally only used on modmail threads and other channels that the user needs access to
+        DONE: 1 -- You store information about the mute: what was the state before? when will the mute expire for who?; You add the mute to the unmute list
+        TODO:   -- Add saving
+        DONE: 2 -- You mute the user by changing user-specific channel permissions. You do not change permission on channels that have a :white_check_mark: as a user-specific send-messages permission for that user, as those are normally only used on modmail threads and other channels that the user needs access to
         TODO: 3 -- You send a DM telling the user they were muted
         """
         mute_info = {
             "user": member.id,
             "guild": guild.id,
-            "expiry": datetime.datetime.now() + datetime.timedelta(seconds=duration)
+            "expiry": datetime.datetime.now() + datetime.timedelta(seconds=duration) if duration and duration > 0 else None,
+            "completed": False,
         }
         channel_previous_perms = {}
         for channel in member.guild.channels:
-            perms = channel.overwrites_for(member).pair()
-            channel_previous_perms[str(channel.id)] = str(perms[0].value), str(perms[1].value)
+            perms = channel.overwrites_for(member)
+            channel_previous_perms[str(channel.id)] = perms.send_messages
         mute_info["permissions"] = channel_previous_perms
+        this.save(mute_info)
+        deny_send = discord.PermissionOverwrite()
+        deny_send.send_messages = False
+        for channel, permission in perms["permissions"].items():
+            if not permission: guild.get_channel(channel).edit(overwrites=deny_send)
+        mute_info["completed"] = True
+        this.save(mute_info)
+        await member.send(f"You were muted in {guild.name}")
+
 
     async def unmute(self, member, perms):
         guildid, memberid = member.split(":")
@@ -106,7 +113,7 @@ class Mute(commands.Cog):
 
     @staticmethod
     async def mute_perms(before_splice):
-        if before_splice.send_messages = True: return before_splice
+        if before_splice.send_messages == True: return before_splice
         before_splice.send_messages = False
         return before_splice
 
@@ -118,7 +125,7 @@ class Mute(commands.Cog):
 
     @commands.command(name="mute")
     @commands.guild_only()
-    async def mute_command(self, ctx, user:typing.Optional[discord.Member], duration:typing.Optional[str]=""):
+    async def mute_command(self, ctx, user:typing.Optional[discord.Member], duration:typing.Optional[int]=None):
         try:
             if not ctx.author.guild_permissions.manage_messages and not ctx.author.guild_permissions.manage_roles:
                 await ctx.send(embed=discord.Embed(
@@ -152,6 +159,7 @@ class Mute(commands.Cog):
                     description="Please enter the name or ID of the user you would like to mute. Type `cancel` to cancel.",
                     color=colours['delete']
                 ))
+        self.mute(user, duration)
 
     @commands.command(name="unmute")
     @commands.guild_only)()

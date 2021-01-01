@@ -7,8 +7,7 @@ from textwrap import shorten
 from cogs.consts import *
 
 class Report(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot): self.bot = bot
     
     @commands.command()
     @commands.guild_only()

@@ -50,6 +50,7 @@ class Errors(commands.Cog):
                     color=colours["delete"]
                 ))
             else:
+                self.bot.errors += 1
                 try: 
                     with open(f"data/guilds/{ctx.guild.id}.json") as f: pass
                 except FileNotFoundError:

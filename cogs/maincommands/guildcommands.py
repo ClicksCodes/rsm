@@ -140,9 +140,7 @@ class GuildCommands(commands.Cog):
                 )
                 return m
             else:
-                await m.edit(
-                    embed=e
-                )
+                await m.edit(embed=e)
                 return await n.clear_reactions()
         
         async def GraphEmojis(ctx, m, g, final=False):
@@ -182,9 +180,7 @@ class GuildCommands(commands.Cog):
                 )
                 return m
             else:
-                await m.edit(
-                    embed=e
-                )
+                await m.edit(embed=e)
                 return await m.clear_reactions()
 
         async def genInfo(ctx, m, g, final=False):
@@ -222,9 +218,7 @@ class GuildCommands(commands.Cog):
                 color=colours["create"] if not final else colours["delete"]
             )
             await m.delete()
-            m = await ctx.send(
-                embed=e
-            )
+            m = await ctx.send(embed=e)
             if final: return await m.clear_reactions()
             return m
 
@@ -586,6 +580,14 @@ class GuildCommands(commands.Cog):
     @commands.guild_only()
     @commands.has_permissions(manage_roles=True)
     async def roleall(self, ctx, *, s:typing.Optional[str]):
+        try:
+            if not ctx.author.guild_permissions.manage_roles:
+                await ctx.send(embed=discord.Embed(
+                    title=f"{emojis['role_delete']} Looks like you don't have permissions",
+                    description="You need the `manage_messages` or `manage_roles` permission to role all.",
+                    color=colours["delete"]))
+                return await m.delete()
+        except: return
         m = await ctx.send(embed=self.loadingEmbed)
         if not s:
             await m.edit(embed=discord.Embed(
@@ -643,8 +645,7 @@ class GuildCommands(commands.Cog):
             if search in role.lower() or role.lower() in search: valid[role] = ID
         v = {}
         x = 0
-        es = [753259025990418515, 753259024409034896, 753259024358703205, 753259024555835513, 753259024744579283, 
-              753259024354639994, 753259024530800661, 753259024895574037, 753259024681533553, 753259024404840529, 729064530310594601]
+        es = [753259025990418515, 753259024409034896, 753259024358703205, 753259024555835513, 753259024744579283, 753259024354639994, 753259024530800661, 753259024895574037, 753259024681533553, 753259024404840529, 729064530310594601]
         for key, value in valid.items():
             x += 1
             if x > 10: break
