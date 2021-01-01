@@ -57,8 +57,8 @@ class Mute(commands.Cog):
 
     def cog_unload(self): self.check_mutes.cancel()
 
-    @tasks.loop(self, minutes=1)
-    async def check_mutes(): # Loop over all mutes every minute
+    @tasks.loop(minutes=1)
+    async def check_mutes(self): # Loop over all mutes every minute
         now = datetime.datetime.utcnow()
         def mute_check(mute):
             try:
@@ -142,14 +142,19 @@ class Mute(commands.Cog):
                 color=colours['create']
             ))
             try: msg = await ctx.bot.wait_for('message', timeout=60, check=lambda r, user : r.message.id == m.id and user == ctx.author)
-            except asyncio.TimeoutError: break
+            except asyncio.TimeoutError: 
+                return await m.edit(embed=discord.Embed(
+                    title=f"{emojis['PunMute']} Which user would you like to mute?",
+                    description="Please enter the name or ID of the user you would like to mute. Type `cancel` to cancel.",
+                    color=colours['delete']
+                ))
 
             r = None
             errored = False
             try: r = int(msg.content)
             except:
                 try: user = msg.mentions[0]
-                except errored = True
+                except: errored = True
             if r:
                 try: user = self.bot.get_member(r)
                 except: errored = True
@@ -162,7 +167,7 @@ class Mute(commands.Cog):
         self.mute(user, duration)
 
     @commands.command(name="unmute")
-    @commands.guild_only)()
+    @commands.guild_only()
     async def unmute_command(self, ctx, user:typing.Optional[discord.Member]):
         try:
             if not ctx.author.guild_permissions.manage_messages and not ctx.author.guild_permissions.manage_roles:
@@ -180,14 +185,19 @@ class Mute(commands.Cog):
                 color=colours['create']
             ))
             try: msg = await ctx.bot.wait_for('message', timeout=60, check=lambda r, user : r.message.id == m.id and user == ctx.author)
-            except asyncio.TimeoutError: break
+            except asyncio.TimeoutError:
+                return await m.edit(embed=discord.Embed(
+                    title=f"{emojis['PunMute']} Which user would you like to mute?",
+                    description="Please enter the name or ID of the user you would like to mute. Type `cancel` to cancel.",
+                    color=colours['delete']
+                ))
 
             r = None
             errored = False
             try: r = int(msg.content)
             except:
                 try: user = msg.mentions[0]
-                except errored = True
+                except: errored = True
             if r:
                 try: user = self.bot.get_member(r)
                 except: errored = True
