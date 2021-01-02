@@ -5,6 +5,7 @@ from discord.ext import commands, tasks
 from textwrap import shorten
 
 from cogs.consts import *
+from config import apiSecret
 
 class NotLogging:
     def __init__(self, etype, reason, details="No Further Info", *, cog, guild):
