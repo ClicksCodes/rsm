@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="bc7e20a9-b614-43ce-afc6-dbfad2404d75" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/cogs/mute.py" beforeDir="false" afterPath="$PROJECT_DIR$/cogs/mute.py" afterDir="false" />
+    </list>
+    <list id="91b33445-eaa2-4c4c-bb89-4d93d221af35" name="Changes by minion" comment="">
+      <change beforePath="$PROJECT_DIR$/cogs/mute.py" beforeDir="false" afterPath="$PROJECT_DIR$/cogs/mute.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="LineStatusTrackerManager">
+    <file path="$PROJECT_DIR$/cogs/mute.py">
+      <ranges>
+        <range start1="0" end1="1" start2="0" end2="1" changelist="bc7e20a9-b614-43ce-afc6-dbfad2404d75" />
+        <range start1="4" end1="5" start2="4" end2="4" changelist="bc7e20a9-b614-43ce-afc6-dbfad2404d75" />
+        <range start1="8" end1="8" start2="7" end2="8" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="10" end1="11" start2="10" end2="11" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="17" end1="18" start2="17" end2="18" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="25" end1="25" start2="25" end2="26" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="50" end1="51" start2="51" end2="52" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="56" end1="57" start2="57" end2="58" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="58" end1="59" start2="59" end2="60" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="60" end1="61" start2="61" end2="62" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="62" end1="62" start2="63" end2="64" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="68" end1="69" start2="70" end2="71" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="70" end1="71" start2="72" end2="73" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="77" end1="79" start2="79" end2="81" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="89" end1="90" start2="91" end2="93" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="97" end1="98" start2="100" end2="101" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="103" end1="104" start2="106" end2="107" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="105" end1="107" start2="108" end2="109" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="111" end1="113" start2="113" end2="115" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="118" end1="119" start2="120" end2="121" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="124" end1="125" start2="126" end2="127" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="127" end1="128" start2="129" end2="130" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="130" end1="131" start2="132" end2="133" changelist="bc7e20a9-b614-43ce-afc6-dbfad2404d75" />
+        <range start1="134" end1="135" start2="136" end2="136" changelist="bc7e20a9-b614-43ce-afc6-dbfad2404d75" />
+        <range start1="143" end1="145" start2="144" end2="146" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="150" end1="151" start2="151" end2="152" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="167" end1="168" start2="168" end2="169" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="170" end1="171" start2="171" end2="172" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="173" end1="174" start2="174" end2="175" changelist="bc7e20a9-b614-43ce-afc6-dbfad2404d75" />
+        <range start1="177" end1="178" start2="178" end2="178" changelist="bc7e20a9-b614-43ce-afc6-dbfad2404d75" />
+        <range start1="186" end1="187" start2="186" end2="187" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="193" end1="194" start2="193" end2="194" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+        <range start1="210" end1="210" start2="210" end2="211" changelist="91b33445-eaa2-4c4c-bb89-4d93d221af35" />
+      </ranges>
+    </file>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedIndex" value="1" />
+  </component>
+  <component name="ProjectId" id="1mVbT3IJZnu8zvG44lVOVqLn8jB" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="autoscrollToSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="codeWithMe.voiceChat.enabledByDefault" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bc7e20a9-b614-43ce-afc6-dbfad2404d75" name="Default Changelist" comment="" />
+      <created>1609581710206</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1609581710206</updated>
+    </task>
+    <servers />
+  </component>
+</project>
