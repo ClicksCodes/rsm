@@ -1,6 +1,4 @@
 import copy, discord, json, humanize, aiohttp, traceback, typing, time, cv2, pytesseract, os, random, re, time, shutil, requests
-
-from datetime import datetime
 from discord.ext import commands
 
 with open("./data/emojis.json") as rfile: emojis = json.load(rfile)

@@ -1,4 +1,4 @@
-/data/guilds/*
+/data/guilds/*.json
 /data/stats.json
 /__pycache__/*
 /cogs/__pycache__/*
