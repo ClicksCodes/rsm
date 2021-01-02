@@ -314,7 +314,7 @@ class Core(commands.Cog):
                     json={
                         "code": code,
                         "ids": f"{ctx.guild.id}.{ctx.author.id}.{roleid}",
-                        "secret": secret
+                        "secret": apiSecret
                     }
                 ) as r:
                 if r:
