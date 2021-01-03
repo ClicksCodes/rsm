@@ -28,72 +28,88 @@ class InfoCommands(commands.Cog):
     async def info(self, ctx: commands.Context, mob:typing.Optional[str]):
         prefix = ctx.prefix
 
-        page = 0
         n = '\n'
         noLog = ""
         try: noLog = f":warning: Your server has not got a log channel. Use `{prefix}setup` to make a log file and `{prefix}setlog #channel` to set it.\n\n" if not os.path.exists(f"data/guilds/{ctx.guild.id}.json") else ""
         except: pass
-        descriptions = [
-            f"**Commands** - {emojis['PunWarn']} - {emojis['lock']} - {emojis['about']} - {emojis['support']}\n\n"
-            f"{noLog}"
-            f"{emojis['rsm']           } `{prefix}info     [*T] {'' if mob else '|'} ` {n if mob else ''}Shows all commands and info. Give [T] for mobile.\n"
-            f"{emojis['graphs']        } `{prefix}stats         {'' if mob else '|'} ` {n if mob else ''}Shows the bot statistics\n"
-            f"{emojis['settings']      } `{prefix}settings      {'' if mob else '|'} ` {n if mob else ''}Shows your servers log settings.\n"
-            f"{emojis['join']          } `{prefix}user     [*@] {'' if mob else '|'} ` {n if mob else ''}Shows information about a user.\n"
-            f"{emojis['role_edit']     } `{prefix}roleall  [*T] {'' if mob else '|'} ` {n if mob else ''}Role all humans or bots in the server. [T] to search\n"
-            f"{emojis['support']       } `{prefix}contact   [T] {'' if mob else '|'} ` {n if mob else ''}Sends [T] to the staff for support.\n"
-            f"{emojis['commands']      } `{prefix}suggest   [T] {'' if mob else '|'} ` {n if mob else ''}Sends [T] to the staff to add to the bot for voting.\n"
-            f"{emojis['support']       } `{prefix}report    [T] {'' if mob else '|'} ` {n if mob else ''}Messages the staff team of the server it was ran in.\n"
-            f"{emojis['slowmodeOn']    } `{prefix}ping          {'' if mob else '|'} ` {n if mob else ''}Checks the bots ping time.\n"
-            f"{emojis['mod_update']    } `{prefix}server        {'' if mob else '|'} ` {n if mob else ''}Shows all information about your server.\n"
-            f"{emojis['store_create']  } `{prefix}tag      [*T] {'' if mob else '|'} ` {n if mob else ''}`{prefix}tag create/delete` `title text`, or `{prefix}tag title`\n"
-            f"{emojis['role_create']   } `{prefix}role      [R] {'' if mob else '|'} ` {n if mob else ''}With `Role`: Shows information about a role.\n"
-            f"{emojis['role_create']   } `{prefix}role      [@] {'' if mob else '|'} ` {n if mob else ''}With `Mention`: Lets you edit or view a users roles.\n"
-            f"{emojis['channel_create']} `{prefix}viewas    [@] {'' if mob else '|'} ` {n if mob else ''}Shows the channels that [@] can see.\n"
-            f"{emojis['join']          } `{prefix}verify    [@] {'' if mob else '|'} ` {n if mob else ''}Lets users verify in your server.\n"
-            f"{emojis['join']          } `{prefix}setverify [R] {'' if mob else '|'} ` {n if mob else ''}Sets the role given when you `{prefix}verify`. Name or ID.\n",
+        headers = {
+            "Commands": [emojis['commands'], "Basic commands for your server"],
+            "Moderation": [emojis['PunWarn'], "Commands to moderate your server"],
+            "Raid": [emojis['lock'], "Emergency commands to use during a raid"]
+        }
+        descriptions = {
+            "Commands": [
+                f"{noLog}",
+                f"{emojis['rsm']           } `{prefix}info     [*T] {'' if mob else '|'} ` {n if mob else ''}Shows all commands and info. Give [T] for mobile.",
+                f"{emojis['graphs']        } `{prefix}stats         {'' if mob else '|'} ` {n if mob else ''}Shows the bot statistics",
+                f"{emojis['settings']      } `{prefix}settings      {'' if mob else '|'} ` {n if mob else ''}Shows your servers log settings.",
+                f"{emojis['join']          } `{prefix}user     [*@] {'' if mob else '|'} ` {n if mob else ''}Shows information about a user.",
+                f"{emojis['role_edit']     } `{prefix}roleall  [*T] {'' if mob else '|'} ` {n if mob else ''}Role all humans or bots in the server. [T] to search",
+                f"{emojis['support']       } `{prefix}contact   [T] {'' if mob else '|'} ` {n if mob else ''}Sends [T] to the staff for support.",
+                f"{emojis['commands']      } `{prefix}suggest   [T] {'' if mob else '|'} ` {n if mob else ''}Sends [T] to the staff to add to the bot for voting.",
+                f"{emojis['support']       } `{prefix}report    [T] {'' if mob else '|'} ` {n if mob else ''}Messages the staff team of the server it was ran in.",
+                f"{emojis['slowmodeOn']    } `{prefix}ping          {'' if mob else '|'} ` {n if mob else ''}Checks the bots ping time.",
+                f"{emojis['mod_update']    } `{prefix}server        {'' if mob else '|'} ` {n if mob else ''}Shows all information about your server.",
+                f"{emojis['store_create']  } `{prefix}tag      [*T] {'' if mob else '|'} ` {n if mob else ''}`{prefix}tag create/delete` `title text`, or `{prefix}tag title`",
+                f"{emojis['role_create']   } `{prefix}role      [R] {'' if mob else '|'} ` {n if mob else ''}With `Role`: Shows information about a role.",
+                f"{emojis['role_create']   } `{prefix}role      [@] {'' if mob else '|'} ` {n if mob else ''}With `Mention`: Lets you edit or view a users roles.",
+                f"{emojis['channel_create']} `{prefix}viewas    [@] {'' if mob else '|'} ` {n if mob else ''}Shows the channels that [@] can see.",
+                f"{emojis['join']          } `{prefix}verify    [@] {'' if mob else '|'} ` {n if mob else ''}Lets users verify in your server.",
+                f"{emojis['join']          } `{prefix}setverify [R] {'' if mob else '|'} ` {n if mob else ''}Sets the role given when you `{prefix}verify`. Name or ID."
+            ],
+            "Moderation": [
+                f"{emojis['PunMute']   } `{prefix}prefix            {'' if mob else '|'} ` {n if mob else ''}Shows the bots prefix. Use @ if unknown.",
+                f"{emojis['PunMute']   } `{prefix}setprefix     [T] {'' if mob else '|'} ` {n if mob else ''}Sets the bots prefix. You can always @ the bot.",
+                f"{emojis['PunWarn']   } `{prefix}warn    [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Warns [@] for reason [T].",
+                f"{emojis['PunHistory']} `{prefix}clear   [*@] [*N] {'' if mob else '|'} ` {n if mob else ''}Clears [N] messages from [@].",
+                f"{emojis['PunKick']   } `{prefix}kick    [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Kicks [@] for reason [T].",
+                f"{emojis['PunSoftBan']} `{prefix}softban [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Soft bans [@] for reason [T].",
+                f"{emojis['PunBan']    } `{prefix}ban     [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Bans [@] for reason [T].",
+                f"{emojis['purge']     } `{prefix}purge        [*N] {'' if mob else '|'} ` {n if mob else ''}Deletes [N] messages in the channel.",
+                f"{emojis['PunWarn']   } `{prefix}punish       [*@] {'' if mob else '|'} ` {n if mob else ''}Punishes a user.",
+                f"{emojis['role_edit'] } `{prefix}setlog       [ C] {'' if mob else '|'} ` {n if mob else ''}Sets the servers log channel to [C].",
+                f"{emojis['ignore']    } `{prefix}ignore     [*CR@] {'' if mob else '|'} ` {n if mob else ''}Stops logging users, roles and channels privided.",
+                f"{emojis['ignore']    } `{prefix}ignored           {'' if mob else '|'} ` {n if mob else ''}Shows the ignored users, roles and channels.",
+                f"{emojis['rgeneral']  } `{prefix}stafflog     [*C] {'' if mob else '|'} ` {n if mob else ''}Sets the staff log channel for reports and messages."
+            ],
+            "Raid": [
+                f"{emojis['slowmodeOn']} `{prefix}slowmode [*N]{'' if mob else '|'} ` {n if mob else ''}Sets the channel slowmode to [N]. Toggles if [N] is not provided.",
+                f"{emojis['lock']      } `{prefix}lock     [*T]{'' if mob else '|'} ` {n if mob else ''}Locks the channel. All roles are denied `send_messages` unless they have `manage_messages`. `{prefix}lock off` unlocks the channel.",
+                f"{emojis['lock']      } `{prefix}unlock       {'' if mob else '|'} ` {n if mob else ''}Unlocks the channel. All roles are given `send_messages` if they did before.",
+                f"{emojis['raidlock']  } `{prefix}raid     [*T]{'' if mob else '|'} ` {n if mob else ''}Locks down the entire server. All roles are denied `send_messages` if they do not have `manage_messages`. You can type `{prefix}raid off` to end a raid, and type `{prefix}raid` during a raid to view options like ban members."
+            ]
+        }
+        nn = "\n\n"
 
-            f"{emojis['commands']} - **Moderation** - {emojis['lock']} - {emojis['about']} - {emojis['support']}\n\n"
-            f"{emojis['PunMute']   } `{prefix}prefix            {'' if mob else '|'} ` {n if mob else ''}Shows the bots prefix. Use @ if unknown.\n"
-            f"{emojis['PunMute']   } `{prefix}setprefix     [T] {'' if mob else '|'} ` {n if mob else ''}Sets the bots prefix. You can always @ the bot.\n"
-            f"{emojis['PunWarn']   } `{prefix}warn    [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Warns [@] for reason [T].\n"
-            f"{emojis['PunHistory']} `{prefix}clear   [*@] [*N] {'' if mob else '|'} ` {n if mob else ''}Clears [N] messages from [@].\n"
-            f"{emojis['PunKick']   } `{prefix}kick    [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Kicks [@] for reason [T].\n"
-            f"{emojis['PunSoftBan']} `{prefix}softban [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Soft bans [@] for reason [T].\n"
-            f"{emojis['PunBan']    } `{prefix}ban     [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Bans [@] for reason [T].\n"
-            f"{emojis['purge']     } `{prefix}purge        [*N] {'' if mob else '|'} ` {n if mob else ''}Deletes [N] messages in the channel.\n" 
-            f"{emojis['PunWarn']   } `{prefix}punish       [*@] {'' if mob else '|'} ` {n if mob else ''}Punishes a user.\n"
-            f"{emojis['role_edit'] } `{prefix}setlog       [ C] {'' if mob else '|'} ` {n if mob else ''}Sets the servers log channel to [C].\n"
-            f"{emojis['ignore']    } `{prefix}ignore     [*CR@] {'' if mob else '|'} ` {n if mob else ''}Stops logging users, roles and channels privided.\n"
-            f"{emojis['ignore']    } `{prefix}ignored           {'' if mob else '|'} ` {n if mob else ''}Shows the ignored users, roles and channels.\n"
-            f"{emojis['rgeneral']  } `{prefix}stafflog     [*C] {'' if mob else '|'} ` {n if mob else ''}Sets the staff log channel for reports and messages.\n",
-
-            f"{emojis['commands']} - {emojis['PunWarn']} - **Raid** - {emojis['about']} - {emojis['support']}\n\n"
-            f"{emojis['slowmodeOn']} `{prefix}slowmode [*N]`\nSets the channel slowmode to [N]. Toggles if [N] is not provided.\n\n"
-            f"{emojis['lock']      } `{prefix}lock     [*T]`\nLocks the channel. All roles are denied `send_messages` unless they have `manage_messages`. `{prefix}lock off` unlocks the channel.\n\n"
-            f"{emojis['lock']      } `{prefix}unlock       `\nUnlocks the channel. All roles are given `send_messages` if they did before.\n\n"
-            f"{emojis['raidlock']  } `{prefix}raid     [*T]`\nLocks down the entire server. All roles are denied `send_messages` if they do not have `manage_messages`. You can type `{prefix}raid off` to end a raid, and type `{prefix}raid` during a raid to view options like ban members.\n\n",
-
-            f"{emojis['commands']} - {emojis['PunWarn']} - {emojis['lock']} - **About** - {emojis['support']}\n\n"
-            f"RSM by ClicksMinutePer\n"
-            f"Designed to make moderation easier.\n",
-
-            f"{emojis['commands']} - {emojis['PunWarn']} - {emojis['about']} - **Support**\n\n"
-            f"For support, use `{prefix}contact`.\n"
-        ]
+        paginated = []
+        indeces = {0: "Commands", 1: "Moderation", 2: "Raid"}
+        for key in descriptions.keys():
+            indeces[key] = len(paginated)
+            itt, thisitt = "", ""
+            thispaginated = []
+            for x in range(len(descriptions[key])):
+                thisitt += descriptions[key][x] + "\n"
+                if len(thisitt) > 1750: 
+                    thispaginated.append(thisitt)
+                    thisitt = "\n"
+                    continue
+            thispaginated.append(thisitt)
+            for page in thispaginated: paginated.append(f"{headers[key][0]} **{key}** - {headers[key][1]}\n{(noLog + nn + nn) if noLog else ''}{page}\n")
 
         m = await ctx.send(embed=self.loadingEmbed)
+
+        page = 0
 
         for _ in range(0,25):
             emb = discord.Embed (
                 title=emojis["rsm"] + " RSM",
-                description=descriptions[page] + "[Detailed](http://bit.do/fLQkz) | [Invite](http://bit.do/fLQkB) | [Support](https://discord.gg/bPaNnxe)",
+                description=paginated[page] + "[Detailed](http://bit.do/fLQkz) | [Invite](http://bit.do/fLQkB) | [Support](https://discord.gg/bPaNnxe)",
                 color=colours["create"]
             )
             emb.set_footer(text="[@] = Mention | [T] = Text | [N] = Number | [R] = Role | [C] = Channel | [* ] = Optional")
             await m.edit(embed=emb)
 
-            for emoji in [729762938411548694, 729762938843430952, 729064530310594601, 751762088229339136, 729764054897524768, 776848800995868682, 751762088346517504, 751762087780286495]: await m.add_reaction(ctx.bot.get_emoji(emoji))
+            for emoji in [729762938411548694, 729762938843430952, 729064530310594601, 751762088229339136, 729764054897524768, 776848800995868682]: await m.add_reaction(ctx.bot.get_emoji(emoji))
 
             reaction = None
             done, pending = await asyncio.wait([
@@ -113,14 +129,12 @@ class InfoCommands(commands.Cog):
             if reaction == None: break
             elif reaction.emoji.name == "Left":  page -= 1
             elif reaction.emoji.name == "Right": page += 1
-            elif reaction.emoji.name == "Commands": page = 0
-            elif reaction.emoji.name == "PunishWarn": page = 1
-            elif reaction.emoji.name == "Lock": page = 2
-            elif reaction.emoji.name == "About": page = 3
-            elif reaction.emoji.name == "Support": page = 4
+            elif reaction.emoji.name == "Commands": page = indeces["Commands"]
+            elif reaction.emoji.name == "PunishWarn": page = indeces["Moderation"]
+            elif reaction.emoji.name == "Lock": page = indeces["Raid"]
             else: break
 
-            page = min(len(descriptions)-1, max(0, page))
+            page = min(len(paginated)-1, max(0, page))
 
         emb = discord.Embed (
             title=emojis["rsm"] + " RSM",

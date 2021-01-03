@@ -1,4 +1,4 @@
-DEV = 0
+DEV = 1
 import discord 
 
 import sys
@@ -51,20 +51,15 @@ class Bot(commands.Bot):
         try:
             with open(f"data/guilds/{ctx.guild.id}.json", 'r') as entry:
                 entry = json.load(entry)
-                if "prefix" in entry and entry["prefix"]:
-                    prefixes = (entry["prefix"],)
-                else:
-                    prefixes = ('t!', 't1' if DEV else 'm!', 'm1')
-        except (FileNotFoundError, AttributeError):
-            prefixes = ('t!', 't1' if DEV else 'm!', 'm1')
-        if not ctx.guild:
-            prefixes += ("",)
+                if "prefix" in entry and entry["prefix"]: prefixes = (entry["prefix"],)
+                else: prefixes = ('t!', 't1' if DEV else 'm!', 'm1')
+        except (FileNotFoundError, AttributeError): prefixes = ('t!', 't1' if DEV else 'm!', 'm1')
+        if not ctx.guild: prefixes += ("",)
         return commands.when_mentioned_or(*prefixes)(self, ctx)
 
     @property
     def prefix(self):
-        try:
-            return self.get_prefix(ctx)[2]
+        try: return self.get_prefix(ctx)[2]
         except Exception as e:
             print(f"{c.RedDark}[C] {c.Red}FATAL:\n{c.c}\n{e}, please message Minion3665")
             return "@RSM "  # This should **never** trigger
