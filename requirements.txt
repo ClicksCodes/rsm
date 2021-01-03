@@ -5,3 +5,6 @@ pytesseract
 matplotlib
 colorthief
 ariadne
+humanize
+requests
+jishaku
