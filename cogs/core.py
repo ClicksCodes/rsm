@@ -8,6 +8,7 @@ from textwrap import shorten
 import config
 from cogs.consts import *
 
+
 class NotLogging:
     def __init__(self, etype, reason, details="No Further Info", *, cog, guild):
         self.etype = etype

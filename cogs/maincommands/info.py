@@ -1,8 +1,4 @@
-import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio, os
-
-from datetime import datetime
-from discord.ext import commands
-from textwrap import shorten
+import asyncio
 
 from cogs.consts import *
 
@@ -169,7 +165,7 @@ class InfoCommands(commands.Cog):
             except:
                 pass
 
-            if reaction == None:
+            if reaction is None:
                 break
             elif reaction.emoji.name == "Left":
                 page -= 1
@@ -189,7 +185,7 @@ class InfoCommands(commands.Cog):
         emb = discord.Embed(
             title=emojis["rsm"] + " RSM",
             description=paginated[page]
-            + "[Detailed](https://docs.google.com/spreadsheets/d/1AiuGLtrnwy-Xe6ZMAAj4BfEl9o6MC5H-1uH-8jWh6Us/edit?usp=sharing) | [Invite](https://discord.com/api/oauth2/authorize?client_id=715989276382462053&permissions=2147483647&scope=bot) | [Support](https://discord.gg/bPaNnxe)",
+            + "[Detailed](https://docs.google.com/spreadsheets/d/1AiuGLtrnwy-Xe6ZMAAj4BfEl9o6MC5H-1uH-8jWh6Us/edit?usp=sharing) | [Invite](https://discord.com/oauth2/authorize?client_id=715989276382462053&scope=bot&permissions=2147483647&redirect_uri=https%3A%2F%2Fclicksminuteper.net) | [Support](https://discord.gg/bPaNnxe)",
             color=colours["delete"],
         )
         emb.set_footer(
