@@ -8,6 +8,7 @@ from discord.ext import commands
 import discord
 import config
 import json
+from api import server
 
 class c:
     c = '\033[0m'
@@ -75,5 +76,6 @@ bot = Bot(
     intents=intents
 )
 bot.errors = 0
+server.start(bot.loop)
 
 bot.run(config.token if not DEV else config.dtoken)
