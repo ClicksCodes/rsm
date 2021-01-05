@@ -4,3 +4,4 @@
 /cogs/__pycache__/*
 /cogs/maincommands/__pycache__/*
 .idea
+venv

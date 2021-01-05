@@ -1,9 +1,10 @@
-import discord
 import json
-from cogs.consts import C
-import config
 
+import discord
 from discord.ext import commands
+
+import config
+from cogs.consts import C
 
 
 class Context(commands.Context):
@@ -64,6 +65,15 @@ class Bot(commands.Bot):
 
     async def on_ready(self):
         await self.change_presence(
+            activity=discord.Activity(
+                type=discord.ActivityType.watching, name="over your servers."
+            ),
+            status=discord.Status.idle,
+        )
+        print(
+            f"{C.Pink if config.development else C.Cyan}[S] {C.PinkDark if config.development else C.CyanDark}Logged on as {self.user} [ID: {self.user.id}]{C.c}"
+        )
+        await bot.change_presence(
             activity=discord.Activity(
                 type=discord.ActivityType.watching, name="over your servers."
             ),

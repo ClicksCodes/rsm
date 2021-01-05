@@ -8,3 +8,8 @@ ariadne
 humanize
 requests
 jishaku
+authlib
+cryptography
+fastapi
+uvicorn[standard]
+pydantic

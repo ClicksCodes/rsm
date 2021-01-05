@@ -1,14 +1,11 @@
-DEV = 1
-
 import discord
 import config
 from cogs.consts import C
 import bot
+from api import server
 
-intents = discord.Intents.all()
 
 print(f"{C.Cyan}[S] {C.CyanDark}Launching {'dev' if DEV else 'normal'} mode")
-
 
 bot = bot.Bot(
     owner_ids=[
@@ -19,8 +16,10 @@ bot = bot.Bot(
     ],
     case_insensitive=True,
     presence=None,
-    intents=intents,
+    intents=discord.Intents.all(),
 )
 bot.errors = 0
 
-bot.run(config.token if not DEV else config.dtoken)
+server.start(bot.loop)
+
+bot.run(config.token if not config.development else config.dtoken)

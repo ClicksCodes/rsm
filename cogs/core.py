@@ -1,4 +1,5 @@
 import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio, datetime, random
+from authlib.jose import jwt
 
 from datetime import datetime
 from discord.ext import commands, tasks
@@ -571,6 +572,54 @@ class Core(commands.Cog):
                             color=colours["create"],
                         )
                     )
+
+    @commands.command()
+    @commands.guild_only()
+    async def newverify(self, ctx):
+        roleid = None
+        with open(f"data/guilds/{ctx.guild.id}.json", "r") as e:
+            try:
+                roleid = json.load(e)["verify_role"]
+            except KeyError:
+                return await ctx.send(
+                    embed=discord.Embed(
+                        title=f"{emojis['cross']} Not set up",
+                        description=f"You do not have a verify role set. You can use `{ctx.prefix}setverify` to choose the role assigned on verification.",
+                        color=colours["delete"],
+                    )
+                )
+        if roleid in [r.id for r in ctx.author.roles]:
+            return await ctx.send(
+                embed=discord.Embed(
+                    title=f"{emojis['cross']} You are already verified",
+                    description=f"You already have the verified role, and cannot get it again.",
+                    color=colours["delete"],
+                )
+            )
+        try:
+            await ctx.message.delete()
+        except:
+            pass
+        header = {"alg": "RS256"}
+        payload = {
+            "userID": str(ctx.author.id),
+            "guildID": str(ctx.guild.id),
+            "roleID": str(roleid),
+            "guildAvatar": str(ctx.guild.icon_url),
+            "guildName": str(ctx.guild.name),
+            "guildSize": str(len(ctx.guild.members)),
+            "roleName": str(ctx.guild.get_role(roleid).name),
+            "userName": str(ctx.author.name),
+        }
+        key = open("jwt-key.pem").read()
+        s = jwt.encode(header, payload, key).decode()
+        await ctx.author.send(
+            embed=discord.Embed(
+                title=f"{emojis['tick']} Verify",
+                description=f"In order to verify yourself in {ctx.guild.name}, you need to go [here](https://beta.clicksminuteper.net/rsmv?code={s}) and complete the captcha.",
+                color=colours["create"],
+            )
+        )
 
     @commands.command()
     @commands.guild_only()
