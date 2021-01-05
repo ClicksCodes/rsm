@@ -1,44 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bc7e20a9-b614-43ce-afc6-dbfad2404d75" name="Default Changelist" comment="">
+    <list default="true" id="bbd6cdf8-0a8b-49a3-a828-14f794d9f09c" name="Default Changelist" comment="Mount server to bot">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/server.py" afterDir="false" />
     </list>
-    <list id="91b33445-eaa2-4c4c-bb89-4d93d221af35" name="Changes by minion" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProblemsViewState">
-    <option name="selectedIndex" value="1" />
-  </component>
-  <component name="ProjectId" id="1mVbT3IJZnu8zvG44lVOVqLn8jB" />
+  <component name="ProjectId" id="1mf5ORxE7D2NK9UcbP54qcKuvsf" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
-    <option name="autoscrollFromSource" value="true" />
-    <option name="autoscrollToSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="codeWithMe.voiceChat.enabledByDefault" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="bc7e20a9-b614-43ce-afc6-dbfad2404d75" name="Default Changelist" comment="" />
-      <created>1609581710206</created>
+      <changelist id="bbd6cdf8-0a8b-49a3-a828-14f794d9f09c" name="Default Changelist" comment="" />
+      <created>1609871772286</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1609581710206</updated>
+      <updated>1609871772286</updated>
     </task>
+    <task id="LOCAL-00001" summary="Skeleton for server&#10;&#10;This is a working start, you can do `python3 api/server`, or import it in to the bot (next commit)">
+      <created>1609873336548</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1609873336548</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Mount server to bot">
+      <created>1609873712788</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1609873712788</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Skeleton for server&#10;&#10;This is a working start, you can do `python3 api/server`, or import it in to the bot (next commit)" />
+    <MESSAGE value="Mount server to bot" />
+    <option name="LAST_COMMIT_MESSAGE" value="Mount server to bot" />
   </component>
 </project>

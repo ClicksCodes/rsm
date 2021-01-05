@@ -3,6 +3,7 @@ from uvicorn import Config, Server
 from routes import app as Router
 
 app = FastAPI()
+
 @app.get("/")
 def root():
     return "Hello, World!"
