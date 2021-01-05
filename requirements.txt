@@ -5,3 +5,5 @@ pytesseract
 matplotlib
 colorthief
 ariadne
+authlib
+cryptography
