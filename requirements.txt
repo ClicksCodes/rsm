@@ -7,3 +7,6 @@ colorthief
 ariadne
 authlib
 cryptography
+fastapi
+uvicorn[standard]
+pydantic
