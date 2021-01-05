@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from fastapi.responses import HTMLResponse
+from authlib.jose import jwt
 
 from pydantic import BaseModel
 
@@ -14,9 +15,10 @@ app = APIRouter()
 @app.post("/verify")
 async def verify(body: VerifyBody):
     # You can get the JWT token below
-    jwt = body.jwt
+    token = body.jwt
 
-    # do whatever processing you need here
+    key = open("./keys/website-public.pem").read()
 
-    # Return an empty(ish) HTML response
+    ids = jwt.decode(token, key)  # type: jwt.JWTClaims
+    print(ids)
     return HTMLResponse("<html><body>200 OK</body></html>")

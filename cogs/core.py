@@ -8,7 +8,6 @@ from textwrap import shorten
 import config
 from cogs.consts import *
 
-
 class NotLogging:
     def __init__(self, etype, reason, details="No Further Info", *, cog, guild):
         self.etype = etype
@@ -600,7 +599,7 @@ class Core(commands.Cog):
             await ctx.message.delete()
         except:
             pass
-        header = {"alg": "RS256"}
+        header = {"alg": "HS256"}
         payload = {
             "userID": str(ctx.author.id),
             "guildID": str(ctx.guild.id),
@@ -611,7 +610,7 @@ class Core(commands.Cog):
             "roleName": str(ctx.guild.get_role(roleid).name),
             "userName": str(ctx.author.name),
         }
-        key = open("jwt-key.pem").read()
+        key = open("./keys/private.pem").read()
         s = jwt.encode(header, payload, key).decode()
         await ctx.author.send(
             embed=discord.Embed(

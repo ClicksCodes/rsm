@@ -5,7 +5,7 @@ import bot
 from api import server
 
 
-print(f"{C.Cyan}[S] {C.CyanDark}Launching {'dev' if DEV else 'normal'} mode")
+print(f"{C.Cyan}[S] {C.CyanDark}Launching {'dev' if config.development else 'normal'} mode")
 
 bot = bot.Bot(
     owner_ids=[
