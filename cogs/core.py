@@ -524,37 +524,26 @@ class Core(commands.Cog):
         if ctx.guild.id == 271120984432443399:
             reason = None
             confidence = "90"
-            async with self.session.post(
-                "https://api.deepai.org/api/nsfw-detector",
-                data={"image": page.url},
-                headers={"api-key": deepAIkey},
-            ) as r:
-                try:
-                    resp = await r.json()
-                    if resp["nsfw_score"] >= 0.9:
-                        return await ctx.author.send(
-                            embed=discord.Embed(
-                                title=f"{emojis['cross']} Verify",
-                                description=f"Your profile picture was detected as Not Safe For Work. Please contact the moderators for manual review.",
-                                color=colours["delete"],
+            async with aiohttp.ClientSession() as session:
+                async with session.post(
+                    "https://api.deepai.org/api/nsfw-detector",
+                    data={"image": page.url},
+                    headers={"api-key": deepAIkey},
+                ) as r:
+                    try:
+                        resp = await r.json()
+                        if resp["nsfw_score"] >= 0.9:
+                            return await ctx.author.send(
+                                embed=discord.Embed(
+                                    title=f"{emojis['cross']} Verify",
+                                    description=f"Your profile picture was detected as Not Safe For Work. Please contact the moderators for manual review.",
+                                    color=colours["delete"],
+                                )
                             )
-                        )
-                except:
-                    pass
-        code = (
-            "".join(
-                [
-                    random.choice(
-                        list("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm")
-                    )
-                    for _ in range(10)
-                ]
-            )
-            + "."
-            + str(ctx.message.id)
-            + "."
-            + str(ctx.channel.id)
-        )
+                    except:
+                        pass
+                    
+        code = ("".join([random.choice(list("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm"))for _ in range(10)]) + "." + str(ctx.message.id) + "." + str(ctx.channel.id))
         async with aiohttp.ClientSession() as session:
             async with session.post(
                 "https://api.clicksminuteper.net/validate",
