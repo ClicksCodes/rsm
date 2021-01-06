@@ -520,7 +520,8 @@ class Core(commands.Cog):
                     color=colours["delete"],
                 )
             )
-        await ctx.message.delete()
+        try: await ctx.message.delete()
+        except: pass
         if ctx.guild.id == 271120984432443399:
             reason = None
             confidence = "90"
@@ -542,7 +543,7 @@ class Core(commands.Cog):
                             )
                     except:
                         pass
-                    
+
         code = ("".join([random.choice(list("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm"))for _ in range(10)]) + "." + str(ctx.message.id) + "." + str(ctx.channel.id))
         async with aiohttp.ClientSession() as session:
             async with session.post(
