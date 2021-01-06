@@ -525,6 +525,10 @@ class Core(commands.Cog):
         if ctx.guild.id == 271120984432443399:
             reason = None
             confidence = "90"
+            page = requests.get(ctx.author.avatar_url)
+            f_name = f"{random.randint(0,9999999999999999)}.png"
+            with open(f_name, "wb") as f:
+                f.write(page.content)
             async with aiohttp.ClientSession() as session:
                 async with session.post(
                     "https://api.deepai.org/api/nsfw-detector",
@@ -543,6 +547,24 @@ class Core(commands.Cog):
                             )
                     except:
                         pass
+            try:
+                os.rename(
+                    f"{f_name}", f"cogs/{'nsfw' if nsfw else 'sfw'}/{f_name}"
+                )
+            except Exception as e:
+                try:
+                    os.remove(f_name)
+                except:
+                    pass
+            try:
+                os.rename(
+                    f"{f_name}", f"cogs/{'nsfw' if nsfw else 'sfw'}/{f_name}"
+                )
+            except Exception as e:
+                try:
+                    os.remove(f_name)
+                except:
+                    pass
 
         code = ("".join([random.choice(list("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm"))for _ in range(10)]) + "." + str(ctx.message.id) + "." + str(ctx.channel.id))
         async with aiohttp.ClientSession() as session:
