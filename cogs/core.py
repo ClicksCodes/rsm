@@ -7,6 +7,7 @@ from textwrap import shorten
 
 import config
 from cogs.consts import *
+from config import deepAIkey
 
 
 class NotLogging:
