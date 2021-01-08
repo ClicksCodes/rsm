@@ -21,18 +21,17 @@ class Report(commands.Cog):
                 description=f"Please send a channel mention ({ctx.channel.mention}) or an id `{ctx.channel.id}` to set your staff log channel. Type `cancel` to cancel.",
                 color=colours['create']
             ))
-            if message.content.lower() == "cancel": return await m.edit(embed=discord.Embed(
-                    title=f"{emojis['channel_delete']} Which channel?",
-                    description=f"Please send a channel mention ({ctx.channel.mention}) or an id `{ctx.channel.id}` to set your staff log channel.",
-                    color=colours['delete']
-                ))
             try: msg = await self.bot.wait_for('message', check=lambda message: message.author.id == ctx.author.id and message.channel.id == ctx.channel.id, timeout=60.0)
             except asyncio.TimeoutError: return await m.edit(embed=discord.Embed(
                     title=f"{emojis['channel_delete']} Which channel?",
                     description=f"Please send a channel mention ({ctx.channel.mention}) or an id `{ctx.channel.id}` to set your staff log channel.",
                     color=colours['delete']
                 ))
-            msg = msg
+            if msg.content.lower() == "cancel": return await m.edit(embed=discord.Embed(
+                    title=f"{emojis['channel_delete']} Which channel?",
+                    description=f"Please send a channel mention ({ctx.channel.mention}) or an id `{ctx.channel.id}` to set your staff log channel.",
+                    color=colours['delete']
+                ))
             try: channel = self.bot.get_channel(int(msg.content))
             except: 
                 try: channel = msg.channel_mentions[0]
