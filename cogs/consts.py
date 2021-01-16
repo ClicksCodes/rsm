@@ -3,6 +3,23 @@ from discord.ext import commands
 
 with open("./data/emojis.json") as rfile: emojis = json.load(rfile)
 
+class C:
+    c = '\033[0m'
+
+    RedDark = '\033[31m'
+    GreenDark = '\033[32m'
+    YellowDark = '\033[33m'
+    BlueDark = '\033[34m'
+    PinkDark = '\033[35m'
+    CyanDark = '\033[36m'
+
+    Red = '\033[91m'
+    Green = '\033[92m'
+    Yellow = '\033[93m'
+    Blue = '\033[94m'
+    Pink = '\033[95m'
+    Cyan = '\033[96m'
+    
 colours = {
     "delete": 0xF27878,
     "create": 0x68D49E,
