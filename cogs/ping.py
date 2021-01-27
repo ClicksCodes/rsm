@@ -27,7 +27,7 @@ class Ping(commands.Cog):
         self.bot.server_teardown = self._signal_handler
         task = await app.run_task(
             "0.0.0.0",
-            9999,
+            10000,
             None,
             True,
             None,
