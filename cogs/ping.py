@@ -22,7 +22,7 @@ class Ping(commands.Cog):
 
         @app.route("/")
         async def ping():
-            return "200"
+            return self.bot.latency()
 
         self.bot.server_teardown = self._signal_handler
         task = await app.run_task(
