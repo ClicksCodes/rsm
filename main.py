@@ -19,6 +19,7 @@ bot = bot.Bot(
     intents=discord.Intents.all(),
 )
 bot.errors = 0
+bot.runningPing = False
 
 server.start(bot.loop)
 
