@@ -1,4 +1,4 @@
-development = True
+development = False
 
 token = "NzE1OTg5Mjc2MzgyNDYyMDUz.XtFO-Q.cSuhmCKFi5znZO-HCqN9yqxcbbw"  # Live
 dtoken = "Nzc5Mzg4ODU2NTM2NTMwOTg0.X7f0bw.N4cTy30T7ucEBBP4JkEtRl_fqmw"  # Testing
