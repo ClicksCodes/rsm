@@ -589,7 +589,7 @@ class Core(commands.Cog):
             await ctx.message.delete()
         except:
             pass
-        header = {"alg": "HS512"}
+        header = {"alg": "HS256"}
         payload = {
             "userID": str(ctx.author.id),
             "guildID": str(ctx.guild.id),
