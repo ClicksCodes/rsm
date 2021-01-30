@@ -600,7 +600,7 @@ class Core(commands.Cog):
             "roleName": str(ctx.guild.get_role(roleid).name),
             "userName": str(ctx.author.name),
         }
-        key = open("./keys/private.pem").read()
+        key = open("./keys/private").read()
         s = jwt.encode(header, payload, key).decode()
         await ctx.author.send(
             embed=discord.Embed(
