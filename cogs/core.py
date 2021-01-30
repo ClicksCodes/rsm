@@ -501,7 +501,6 @@ class Core(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def verify(self, ctx):
-        roleid = None
         with open(f"data/guilds/{ctx.guild.id}.json", "r") as e:
             try:
                 roleid = json.load(e)["verify_role"]
@@ -566,29 +565,6 @@ class Core(commands.Cog):
                     os.remove(f_name)
                 except:
                     pass
-
-        code = ("".join([random.choice(list("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm"))for _ in range(10)]) + "." + str(ctx.message.id) + "." + str(ctx.channel.id))
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
-                "https://api.clicksminuteper.net/validate",
-                json={
-                    "code": code,
-                    "ids": f"{ctx.guild.id}.{ctx.author.id}.{roleid}",
-                    "secret": config.apiSecret,
-                },
-            ) as r:
-                if r:
-                    await ctx.author.send(
-                        embed=discord.Embed(
-                            title=f"{emojis['tick']} Verify",
-                            description=f"In order to verify yourself in {ctx.guild.name}, you need to go [here](https://clicksminuteper.net/rsmv?code={code}) and complete the captcha.",
-                            color=colours["create"],
-                        )
-                    )
-
-    @commands.command()
-    @commands.guild_only()
-    async def newverify(self, ctx):
         roleid = None
         with open(f"data/guilds/{ctx.guild.id}.json", "r") as e:
             try:
@@ -629,7 +605,7 @@ class Core(commands.Cog):
         await ctx.author.send(
             embed=discord.Embed(
                 title=f"{emojis['tick']} Verify",
-                description=f"In order to verify yourself in {ctx.guild.name}, you need to go [here](https://beta.clicksminuteper.net/rsmv?code={s}) and complete the captcha.",
+                description=f"In order to verify yourself in {ctx.guild.name}, you need to go [here](https://clicksminuteper.net/rsmv?code={s}) and complete the captcha.",
                 color=colours["create"],
             )
         )
