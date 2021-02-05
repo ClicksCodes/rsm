@@ -1,0 +1,35 @@
+{
+    "token": "NzE1OTg5Mjc2MzgyNDYyMDUz.XtFO-Q.cSuhmCKFi5znZO-HCqN9yqxcbbw",
+    "token-dev": "Nzc5Mzg4ODU2NTM2NTMwOTg0.X7f0bw.N4cTy30T7ucEBBP4JkEtRl_fqmw",
+
+    "deepAIkey": "5d6cca50-2441-44a8-9ab4-703fbd38ce5b",
+
+    "mongoUrl-dev": "mongodb://localhost:27017/",
+    "mongoDb-dev": "test",
+    "mongoCollection-dev": "rsm",
+
+    "cogs": [
+        "cogs.core",
+        "jishaku",
+
+        "cogs.listeners.guild",
+        "cogs.listeners.messages",
+        "cogs.listeners.users",
+
+        "cogs.maincommands.modcommands",
+        "cogs.maincommands.info",
+        "cogs.maincommands.guildcommands",
+        "cogs.maincommands.raid",
+        "cogs.maincommands.tags",
+        "cogs.maincommands.report",
+
+        "cogs.errors",
+        "cogs.ping"
+    ],
+
+    "colour-dev": "Pink",
+    "colour": "Cyan",
+
+    "prefixes": ["m!", "m1"],
+    "prefixes-dev": ["t!", "t1"]
+}
