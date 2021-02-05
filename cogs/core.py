@@ -591,7 +591,9 @@ class Core(commands.Cog):
             await ctx.message.delete()
         except:
             pass
+        print("FETCHING COLELCTION")
         collection = pymongo.MongoClient(config.mongoUrl)[config.mongoDb][config.mongoCol]
+        print("FETCHED, GETTING CODE")
         code = secrets.token_urlsafe(16)
         out = collection.insert_one({
             "code": str(code),
@@ -603,6 +605,7 @@ class Core(commands.Cog):
             "guild_icon_url": str(ctx.guild.icon_url),
             "guild_size": str(len(ctx.guild.members))
         })
+        print("SENDING DM")
         await ctx.author.send(
             embed=discord.Embed(
                 title=f"{emojis['tick']} Verify",
