@@ -591,7 +591,7 @@ class Core(commands.Cog):
             await ctx.message.delete()
         except:
             pass
-        print("FETCHING COLELCTION")
+        print("FETCHING COLLECTION")
         collection = pymongo.MongoClient(config.mongoUrl)[config.mongoDb][config.mongoCol]
         print("FETCHED, GETTING CODE")
         code = secrets.token_urlsafe(16)
