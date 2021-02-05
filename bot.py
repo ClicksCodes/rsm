@@ -53,9 +53,9 @@ class Bot(commands.Bot):
                     print(entry["prefix"])
                     prefixes = (entry["prefix"],)
                 else:
-                    prefixes = config.prefixes
+                    prefixes = config.prefixes.copy()
         except (FileNotFoundError, AttributeError):
-            prefixes = config.prefixes
+            prefixes = config.prefixes.copy()
         if not ctx.guild:
             prefixes += ("",)
         return commands.when_mentioned_or(*prefixes)(self, ctx)
