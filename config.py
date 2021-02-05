@@ -14,7 +14,7 @@ class Config:
         with open(config_file) as config:
             self.config = json.load(config)
         try:
-            self.stage = Stage[(os.environ.get("PRODUCTION", 'DEV')).upper()]
+            self.stage = Stage[(os.environ.get("PRODUCTION", "DEV")).upper()]
         except KeyError:
             self.stage = Stage.DEV
 
