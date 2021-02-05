@@ -22,7 +22,7 @@ class NotLogging:
 
 async def get_alog_entry(ctx, *, type: discord.AuditLogAction, check = None):
     """Retrieves the first matching audit log entry for the specified type.
-    
+
     If you provide a check it MUST take an auditLogEntry as its only argument."""
     if not ctx.guild.me.guild_permissions.view_audit_log: raise commands.BotMissingPermissions("view_audit_log")
     async for log in ctx.guild.audit_logs(action=type):
@@ -37,25 +37,25 @@ class Messages(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.session = aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10.0))
-    
+
     def tohex(self, i): return hex(i).split('x')[-1]
-    
-    def cog_unload(self): 
+
+    def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
 
     def is_logging(self, guild: discord.Guild, *, channel = None, member: discord.Member = None, eventname):
         if not os.path.exists(f'data/guilds/{guild.id}.json'): return bool(NotLogging(eventname, "Guild not configured.", cog=self, guild=guild))
         if eventname not in events.keys():                     return bool(NotLogging(eventname, "Event Name is not in registered events.", cog=self, guild=guild))
         if not guild:                                          return bool(NotLogging(eventname, "Event occurred in DMs, thus has no targeted channel.", cog=self, guild=guild))
-        
-        try:    
+
+        try:
             with open(f"data/guilds/{guild.id}.json") as entry:
                 entry = json.load(entry)
                 if member:
                     if member.bot and entry["ignore_info"]["ignore_bots"] is True: return bool(NotLogging(eventname, f"You are ignoring bots.", cog=self, guild=guild))
                     if member.id in entry["ignore_info"]["members"]:               return bool(NotLogging(eventname, f"Member \"{member}\" is being ignored.", cog=self, guild=guild))
                     if member == self.bot.user:                                    return bool(NotLogging(eventname, f"Not logging bot actions", cog=self, guild=guild))
-                    
+
                 if channel:
                     if channel.id in entry["ignore_info"]["channels"]:   return bool(NotLogging(eventname, f"Channel \"{channel}\" is being ignored.", cog=self, guild=guild))
                     if channel.id == entry["log_info"]["log_channel"]:   return bool(NotLogging(eventname, f"This is the log channel.", cog=self, guild=guild))
@@ -63,16 +63,16 @@ class Messages(commands.Cog):
                 if not entry["enabled"]:                                 return bool(NotLogging(eventname, f"This guild has disabled logs.", cog=self, guild=guild))
                 return True
         except: pass
-        
-    def get_log(self, guild: discord.Guild): 
+
+    def get_log(self, guild: discord.Guild):
         with open(f"data/guilds/{guild.id}.json") as f:
             entry =  json.load(f)
             return self.bot.get_channel(entry["log_info"]["log_channel"])
 
     async def vbl(self, guild, e: NotLogging):
         """VerboseLog: Log NotLogging events if verbose is enabled"""
-        return True 
-    
+        return True
+
     async def log(self, logType:str, guild:int, occurredAt:int, content:dict):
         try:
             with open(f"data/guilds/{guild}.json", 'r') as entry:
@@ -86,7 +86,7 @@ class Messages(commands.Cog):
                 with open(f"data/guilds/{guild}.json", 'w') as f:
                     json.dump(entry, f, indent=2)
         except: pass
-    
+
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.message):
@@ -99,7 +99,7 @@ class Messages(commands.Cog):
             edited = humanize.naturaltime(datetime.utcnow()-message.edited_at) if message.edited_at else "Never"
             e = discord.Embed(
                 title=emojis['everyone_ping'] + f" {'Here' if '@here' in message.content else 'Everyone'} pinged",
-                description=(f"```{shorten(message.clean_content, 2042).replace('```', '***')}```\n" if message.content else "") + 
+                description=(f"```{shorten(message.clean_content, 2042).replace('```', '***')}```\n" if message.content else "") +
                             f"**Where:** {message.channel.mention}\n"
                             f"**Sent:** {sent}\n"
                             f"**Edited:** {edited}\n"
@@ -113,16 +113,16 @@ class Messages(commands.Cog):
                 e.add_field(name="Attachments:", value=v, inline=False)
             await log.send(embed=e)
             return await self.log(
-                logType="everyonePing", 
+                logType="everyonePing",
                 occurredAt=round(time.time()),
                 guild=message.guild.id,
                 content={
-                    "username": message.author.id, 
+                    "username": message.author.id,
                     "messageContent": str(discord.utils.escape_markdown(message.content)),
-                    "mentions": len(message.mentions), 
-                    "occurredIn": message.channel.id, 
-                    "sent": sent.capitalize(), 
-                    "edited": edited.capitalize(), 
+                    "mentions": len(message.mentions),
+                    "occurredIn": message.channel.id,
+                    "sent": sent.capitalize(),
+                    "edited": edited.capitalize(),
                     "attachments": [a.proxy_url for a in message.attachments]
                 }
             )
@@ -134,7 +134,7 @@ class Messages(commands.Cog):
             edited = humanize.naturaltime(datetime.utcnow()-message.edited_at) if message.edited_at else "Never"
             e = discord.Embed(
                 title=emojis['role_ping'] + f" Role pinged",
-                description=(f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***') if len(message.content) > 0 else ''}```\n" if message.content else "") + 
+                description=(f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***') if len(message.content) > 0 else ''}```\n" if message.content else "") +
                             f"**Where:** {message.channel.mention}\n"
                             f"**Sent:** {sent}\n"
                             f"**Edited:** {edited}\n"
@@ -146,18 +146,18 @@ class Messages(commands.Cog):
                 v = ""
                 for a in message.attachments: v += f"[{a.filename}]({a.proxy_url})\n"
                 e.add_field(name="Attachments:", value=v, inline=False)
-            await log.send(embed=e)      
+            await log.send(embed=e)
             return await self.log(
-                logType="rolePing", 
+                logType="rolePing",
                 occurredAt=round(time.time()),
                 guild=message.guild.id,
                 content={
-                    "username": message.author.id, 
+                    "username": message.author.id,
                     "messageContent": str(discord.utils.escape_markdown(message.content)),
-                    "mentions": len(message.mentions), 
-                    "occurredIn": message.channel.id, 
-                    "sent": sent.capitalize(), 
-                    "edited": edited.capitalize(), 
+                    "mentions": len(message.mentions),
+                    "occurredIn": message.channel.id,
+                    "sent": sent.capitalize(),
+                    "edited": edited.capitalize(),
                     "attachments": [a.proxy_url for a in message.attachments]
                 }
             )
@@ -168,7 +168,7 @@ class Messages(commands.Cog):
             edited = humanize.naturaltime(datetime.utcnow()-message.edited_at) if message.edited_at else "Never"
             e = discord.Embed(
                 title=emojis['everyone_ping'] + f" Mass mention",
-                description=(f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***') if len(message.content) > 0 else ''}```\n" if message.content else "") + 
+                description=(f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***') if len(message.content) > 0 else ''}```\n" if message.content else "") +
                             f"**Where:** {message.channel.mention}\n"
                             f"**Sent:** {sent}\n"
                             f"**Edited:** {edited}\n"
@@ -182,20 +182,20 @@ class Messages(commands.Cog):
                 e.add_field(name="Attachments:", value=v, inline=False)
             await log.send(embed=e)
             return await self.log(
-                logType="massPing", 
+                logType="massPing",
                 occurredAt=round(time.time()),
                 guild=message.guild.id,
                 content={
-                    "username": message.author.id, 
+                    "username": message.author.id,
                     "messageContent": str(discord.utils.escape_markdown(message.content)),
-                    "mentions": len(message.mentions), 
-                    "occurredIn": message.channel.id, 
-                    "sent": sent.capitalize(), 
-                    "edited": edited.capitalize(), 
+                    "mentions": len(message.mentions),
+                    "occurredIn": message.channel.id,
+                    "sent": sent.capitalize(),
+                    "edited": edited.capitalize(),
                     "attachments": [a.proxy_url for a in message.attachments]
                 }
             )
-        
+
     @commands.Cog.listener()
     async def on_message_delete(self, message: discord.Message):
         if isinstance(message.channel, discord.channel.DMChannel): return
@@ -207,7 +207,7 @@ class Messages(commands.Cog):
         a = shorten(message.clean_content, 2042).replace("```", "***")
         e = discord.Embed(
             title=emojis['delete'] + " Message Deleted",
-            description=(f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***') if len(message.content) > 0 else ''}```\n" if message.content else "") + 
+            description=(f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***') if len(message.content) > 0 else ''}```\n" if message.content else "") +
                         f"**Sent By:** {message.author.mention}\n"
                         f"**Mentions:** {len(message.mentions)}\n"
                         f"**Sent In:** {message.channel.mention}\n"
@@ -222,16 +222,16 @@ class Messages(commands.Cog):
             e.add_field(name="Attachments:", value=v, inline=False)
         await log.send(embed=e)
         return await self.log(
-            logType="messageDelete", 
+            logType="messageDelete",
             occurredAt=round(time.time()),
             guild=message.guild.id,
             content={
-                "username": message.author.id, 
+                "username": message.author.id,
                 "messageContent": str(discord.utils.escape_markdown(message.content)),
-                "mentions": len(message.mentions), 
-                "occurredIn": message.channel.id, 
-                "sent": sent.capitalize(), 
-                "edited": edited.capitalize(), 
+                "mentions": len(message.mentions),
+                "occurredIn": message.channel.id,
+                "sent": sent.capitalize(),
+                "edited": edited.capitalize(),
                 "attachments": [a.proxy_url for a in message.attachments]
             }
         )
@@ -250,8 +250,8 @@ class Messages(commands.Cog):
         b = shorten(after.clean_content, 500).replace('```', '***')
         e = discord.Embed(
             title=emojis["edit"] + " Message Edited",
-            description=(f"**Before:** ```{shorten(before.clean_content, 2042).replace('```', '***') if len(before.content) > 0 else ''}```\n" if message.content else "") + 
-                        (f"**After:** ```{shorten(after.clean_content, 2042).replace('```', '***') if len(after.content) > 0 else ''}```\n" if message.content else "") + 
+            description=(f"**Before:** ```{shorten(before.clean_content, 2042).replace('```', '***') if len(before.content) > 0 else ''}```\n" if message.content else "") +
+                        (f"**After:** ```{shorten(after.clean_content, 2042).replace('```', '***') if len(after.content) > 0 else ''}```\n" if message.content else "") +
                         f"**Sent By:** {message.author.mention}\n"
                         f"**Sent In:** {message.channel.mention}\n"
                         f"**Sent:** {sent.capitalize()}\n"
@@ -262,22 +262,22 @@ class Messages(commands.Cog):
         )
         await log.send(embed=e)
         return await self.log(
-            logType="messageEdit", 
+            logType="messageEdit",
             occurredAt=round(time.time()),
             guild=before.guild.id,
             content={
-                "username": message.author.id, 
+                "username": message.author.id,
                 "messageContent": str(discord.utils.escape_markdown(before.content)),
                 "messageContentAfter": str(discord.utils.escape_markdown(after.content)),
-                "mentions": len(before.mentions), 
-                "mentionsAfter": len(after.mentions), 
-                "occurredIn": message.channel.id, 
-                "sent": sent.capitalize(), 
-                "edited": edited.capitalize(), 
+                "mentions": len(before.mentions),
+                "mentionsAfter": len(after.mentions),
+                "occurredIn": message.channel.id,
+                "sent": sent.capitalize(),
+                "edited": edited.capitalize(),
                 "attachments": [a.proxy_url for a in message.attachments]
             }
         )
-    
+
     @commands.Cog.listener()
     async def on_bulk_message_delete(self, messages):
         if isinstance(messages[0].channel, discord.channel.DMChannel): return
@@ -308,26 +308,26 @@ class Messages(commands.Cog):
         )
         await log.send(embed=e)
         return await self.log(
-            logType="messagePurge", 
+            logType="messagePurge",
             occurredAt=round(time.time()),
             guild=message.guild.id,
             content={
                 "username": audit.user.id,
                 #"messageContent": f"https://mystb.in/{(await response.json())['key']}",
-                "occurredIn": message.channel.id, 
+                "occurredIn": message.channel.id,
                 "amount": len(messages)
             }
         )
 
     @commands.Cog.listener()
-    async def on_reaction_clear(self, message, reactions): 
+    async def on_reaction_clear(self, message, reactions):
         if isinstance(message.channel, discord.channel.DMChannel): return
         if not self.is_logging(message.guild, channel=message.channel, member=message.author, eventname="reaction_clear"): return
         log = self.get_log(message.guild)
         if not log: return
         e = discord.Embed(
             title=emojis["reaction_clear"] + " Reactions Cleared",
-            description=(f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***')}```\n" if message.content else "") + 
+            description=(f"**Content:** ```{shorten(message.clean_content, 2042).replace('```', '***')}```\n" if message.content else "") +
                         f"**Sent By:** {message.author.mention}\n"
                         f"**Sent In:** {message.channel.mention}\n"
                         f"**Reactions:** {', '.join(str(m) for m in reactions)}\n"
@@ -337,17 +337,17 @@ class Messages(commands.Cog):
         )
         await log.send(embed=e)
         return await self.log(
-            logType="messageReactionClear", 
+            logType="messageReactionClear",
             occurredAt=round(time.time()),
             guild=message.guild.id,
             content={
                 "username": message.author.id,
                 "messageContent": str(discord.utils.escape_markdown(message.content)),
-                "occurredIn": message.channel.id, 
+                "occurredIn": message.channel.id,
                 "reactions": [str(m) for m in reactions]
             }
         )
-    
+
     @commands.Cog.listener()
     async def on_guild_channel_pins_update(self, channel: discord.TextChannel, last_pin: datetime):
         if isinstance(channel, discord.channel.DMChannel): return
@@ -359,7 +359,7 @@ class Messages(commands.Cog):
             message = await channel.fetch_message(audit.extra.message_id)
         e = discord.Embed(
             title=emojis["pinned"] + f" Message {'un' if not message.pinned else ''}pinned",
-            description=(f"**Message:**```{shorten(message.clean_content, 2042).replace('```', '***')}```\n" if message.content else "") + 
+            description=(f"**Message:**```{shorten(message.clean_content, 2042).replace('```', '***')}```\n" if message.content else "") +
                         f"**Message by:** {message.author.mention}\n"
                         f"**In:** {message.channel.mention}\n",
             color=events["channel_pins_update"][0],
@@ -369,7 +369,7 @@ class Messages(commands.Cog):
         if not log: return
         await log.send(embed=e)
         return await self.log(
-            logType="pinsUpdate", 
+            logType="pinsUpdate",
             occurredAt=round(time.time()),
             guild=channel.guild.id,
             content={
@@ -379,5 +379,6 @@ class Messages(commands.Cog):
                 "content": str(discord.utils.escape_markdown(message.content))
             }
         )
-        
-def setup(bot): bot.add_cog(Messages(bot))
+
+def setup(bot):
+    bot.add_cog(Messages(bot))

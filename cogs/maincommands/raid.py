@@ -34,8 +34,8 @@ class Raid(commands.Cog):
     async def intHandler(self, m, dict, ctx):
         await m.delete()
         m = await ctx.send(embed=self.createEmbed(
-            dict["prompt"]["title"], 
-            dict["prompt"]["desc"] + "\n" + f"Select {emojis['tick']} to select {dict['default']} or {emojis['cross']} to cancel", 
+            dict["prompt"]["title"],
+            dict["prompt"]["desc"] + "\n" + f"Select {emojis['tick']} to select {dict['default']} or {emojis['cross']} to cancel",
             dict["prompt"]["col"]
         ))
         for emoji in [729064531107774534, 729064530310594601]: await m.add_reaction(ctx.bot.get_emoji(emoji))
@@ -64,7 +64,7 @@ class Raid(commands.Cog):
             await m.clear_reactions()
             return None
         for future in done: future.exception()
-    
+
     @commands.command()
     @commands.guild_only()
     async def raid(self, ctx, toggle: typing.Optional[str]):
@@ -78,7 +78,7 @@ class Raid(commands.Cog):
         if not raidInProgress: return await self.toggleRaid(True, ctx)
         elif toggle: return await self.toggleRaid(False, ctx)
         else: return await self.raidUI(ctx)
-    
+
     @commands.command()
     @commands.guild_only()
     async def raidrestore(self, ctx, url: typing.Optional[str]):
@@ -96,7 +96,7 @@ class Raid(commands.Cog):
                     try: await ctx.guild.get_role(int(key)).edit(permissions=perms)
                     except: pass
         return await ctx.send(embed=self.createEmbed(f"{emojis['raidlock']} Your server is restored", "Everything should be back to normal. If it isn't, just make sure you used the right link.", colours["create"]), delete_after=10)
-        
+
     async def raidUI(self, ctx):
         createEmbed = self.createEmbed
         m = await ctx.send(embed=self.loadingEmbed)
@@ -183,12 +183,12 @@ class Raid(commands.Cog):
             await m.edit(embed=createEmbed(f"{emojis['raidlock']} Cleared messages by users",f"Cleared {len(a)} messages by {' '.join([mem.name for mem in mess.mentions])}", color=colours["create"]))
             await asyncio.sleep(3)
         return m
-    
+
     async def purge(self, m, ctx):
         await m.clear_reactions()
         createEmbed = self.createEmbed
         out, m = await self.intHandler(
-            m, 
+            m,
             {
                 "cancel": {"title": f"{emojis['raidlock']} Purge Channel", "desc": f"Purge Channel cancelled.", "col": colours["delete"]},
                 "prompt": {"title": f"{emojis['raidlock']} Purge Channel", "desc": f"How many messages in this channel should I clear? Max 100. Type `cancel` to cancel.", "col": colours["create"]},
@@ -196,7 +196,7 @@ class Raid(commands.Cog):
             },
             ctx
         )
-        try: 
+        try:
             try: out = int(out)
             except: return await m.edit(embed=createEmbed(f"{emojis['raidlock']} Purge Channel", f"Something went wrong, I couldn't delete that many messages.", colours["create"]))
             out += 2
@@ -209,11 +209,11 @@ class Raid(commands.Cog):
             try: await m.edit(embed=createEmbed(f"{emojis['raidlock']} Purge Channel", f"Something went wrong. I may not have permission to do that.", colours["delete"]), delete_after=10)
             except discord.ext.commands.errors.CommandInvokeError: await ctx.send(embed=createEmbed(f"{emojis['raidlock']} Purge Channel", f"Something went wrong. I may not have permission to do that.", colours["delete"]), delete_after=10)
             except discord.NotFound: await ctx.send(embed=createEmbed(f"{emojis['raidlock']} Purge Channel", f"Something went wrong. I may not have permission to do that.", colours["delete"]), delete_after=10)
-        try: await m.clear_reactions() 
+        try: await m.clear_reactions()
         except: pass
         return m
 
-    
+
     async def toggleRaid(self, toggle, ctx):
         createEmbed = self.createEmbed
         if not (ctx.author.guild_permissions.administrator or (ctx.author.guild_permissions.manage_channels and ctx.author.guild_permissions.manage_server)): return await ctx.send(embed=self.createEmbed(f"{emojis['raidlock']} Looks like you don't have permissions", "You need the `administrator` or both `manage_server` and `manage_channels` permissions to toggle raid.", colours["delete"]), delete_after=10)
@@ -248,10 +248,10 @@ class Raid(commands.Cog):
             url = await postbin.postAsync(json.dumps(permsToStore))
             await logChannel.send(f"`ROLE PERMISSIONS: {url}`\n> Raid: Every role in the server without `manage_messages` has lost permission to send messages. To end a raid, type `{ctx.prefix}raid off`. Role permissions have been stored, and can be restored when you run the raid off command. After 30 days, the logs will be deleted.\nPlease do not send any messages in this chat.")
             await self.raidUI(ctx)
-            
+
         if toggle == False:
             logChannel = discord.utils.get(ctx.guild.channels, name="rsm-raid-logs")
-            if logChannel == None: 
+            if logChannel == None:
                 try:
                     await m.edit(embed=createEmbed(f"{emojis['raidlock']} Raid", f"You are either not in a raid mode, or the log channel never got deleted. If you have a link that got sent in a different channel, please send just the link below. Otherwise, say `cancel`.", color=colours["create"]))
                     msg = await self.bot.wait_for('message', check=lambda message: message.author.id == ctx.author.id and message.channel.id == ctx.channel.id, timeout=60.0)
@@ -265,7 +265,7 @@ class Raid(commands.Cog):
                 matchExists = True
             except UnboundLocalError:
                 matchExists = False
-            if not matchExists: 
+            if not matchExists:
                 m2 = await logChannel.fetch_message(logChannel.last_message_id)
                 match = re.match(r"`ROLE PERMISSIONS: https:\/\/(.*)\/(.*)`(?:.|\n)*", m2.content)
             async with aiohttp.ClientSession() as session:
@@ -280,5 +280,6 @@ class Raid(commands.Cog):
                         try: await ctx.guild.get_role(int(key)).edit(permissions=perms)
                         except: pass
             await m.edit(embed=createEmbed(f"{emojis['raidlock']} Raid", f"The server has ended its lockdown.", color=colours["create"]))
-            
-def setup(bot): bot.add_cog(Raid(bot))
+
+def setup(bot):
+    bot.add_cog(Raid(bot))

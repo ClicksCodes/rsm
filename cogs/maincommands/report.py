@@ -8,7 +8,7 @@ from cogs.consts import *
 
 class Report(commands.Cog):
     def __init__(self, bot): self.bot = bot
-    
+
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(manage_guild=True)
@@ -33,7 +33,7 @@ class Report(commands.Cog):
                     color=colours['delete']
                 ))
             try: channel = self.bot.get_channel(int(msg.content))
-            except: 
+            except:
                 try: channel = msg.channel_mentions[0]
                 except: return await m.edit(embed=discord.Embed(
                     title=f"{emojis['channel_delete']} Thats not a channel",
@@ -73,16 +73,16 @@ class Report(commands.Cog):
                     description=f"I'm not in any servers that you are in.",
                     color=colours['delete']
                 ))
-            elif len(mutuals) < 2: 
+            elif len(mutuals) < 2:
                 await m.delete()
                 guild = mutuals[0]
             else:
-                def chunk(l): 
+                def chunk(l):
                     for i in range(0, len(l), 5): yield l[i:i+5]
                 chunked = list(chunk(mutuals))
 
                 page = 0
-                
+
                 for e in [729064530310594601, 729762938411548694, 729762938843430952, 753259025990418515, 753259024409034896, 753259024358703205, 753259024555835513, 753259024744579283]: await m.add_reaction(self.bot.get_emoji(e))
                 for _ in range(50):
                     chunk = [g.name for g in chunked[page]]
@@ -168,4 +168,5 @@ class Report(commands.Cog):
                 color=colours['create']
             ))
 
-def setup(bot): bot.add_cog(Report(bot))
+def setup(bot):
+    bot.add_cog(Report(bot))

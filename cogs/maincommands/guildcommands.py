@@ -13,12 +13,12 @@ class GuildCommands(commands.Cog):
     def __init__(self, bot):
         self.loadingEmbed = loadingEmbed
         self.bot = bot
-        
+
     @commands.command(aliases=["server"])
     @commands.guild_only()
     async def guild(self, ctx):
         g = ctx.guild
-        n = '\n' 
+        n = '\n'
         async def GraphUsers(ctx, m, g, final=False):
             g = ctx.guild
             n = '\n'
@@ -59,7 +59,7 @@ class GuildCommands(commands.Cog):
                 await m.edit(
                     embed=e
                 )
-                return await n.clear_reactions()  
+                return await n.clear_reactions()
 
         async def GraphRoles(ctx, m, g, final=False):
             g = ctx.guild
@@ -102,7 +102,7 @@ class GuildCommands(commands.Cog):
                     embed=e
                 )
                 return await n.clear_reactions()
-        
+
         async def GraphChannels(ctx, m, g, final=False):
             g = ctx.guild
             n = '\n'
@@ -142,7 +142,7 @@ class GuildCommands(commands.Cog):
             else:
                 await m.edit(embed=e)
                 return await n.clear_reactions()
-        
+
         async def GraphEmojis(ctx, m, g, final=False):
             g = ctx.guild
             n = '\n'
@@ -256,7 +256,7 @@ class GuildCommands(commands.Cog):
             elif reaction[0].emoji.name == "ChannelCreate":          page = 4
             elif reaction[0].emoji.name == "EmojisUpdate":           page = 5
             else: break
-            
+
             if   page == 1: m = await genInfo(ctx, m, g)
             elif page == 2: m = await GraphUsers(ctx, m, g)
             elif page == 3: m = await GraphRoles(ctx, m, g)
@@ -265,21 +265,21 @@ class GuildCommands(commands.Cog):
             else: break
 
         m = await genInfo(ctx, m, g, True)
-    
+
     @commands.command(aliases=["reset"])
     @commands.guild_only()
     @commands.has_permissions(manage_guild=True)
     async def setup(self, ctx):
         if os.path.exists(f'data/guilds/{ctx.guild.id}.json'):
-            os.remove(f'data/guilds/{ctx.guild.id}.json') 
+            os.remove(f'data/guilds/{ctx.guild.id}.json')
         with open(f'data/guilds/{ctx.guild.id}.json', "x") as f:
             data = {
                 "guild_info": {
-                    "id": ctx.guild.id, 
+                    "id": ctx.guild.id,
                     "joined_at": str(ctx.guild.me.joined_at)
                 },
                 "log_info": {
-                    "log_channel": None, 
+                    "log_channel": None,
                     "to_log": [
                         "message_delete",
                         "message_edit",
@@ -321,13 +321,13 @@ class GuildCommands(commands.Cog):
                         "server_undeafen",
                         "move"
                     ]
-                }, 
+                },
                 "ignore_info": {
-                    "bots": True, 
-                    "members": [], 
-                    "roles": [], 
+                    "bots": True,
+                    "members": [],
+                    "roles": [],
                     "channels": []
-                }, 
+                },
                 "enabled": True
             }
             json.dump(data,f, indent=2)
@@ -347,7 +347,7 @@ class GuildCommands(commands.Cog):
         if not ctx.guild.me.guild_permissions.read_message_history: missing.append("read_message_history")
         if not ctx.guild.me.guild_permissions.add_reactions: missing.append("add_reactions")
         if not ctx.guild.me.guild_permissions.use_external_emojis: missing.append("use_external_emojis")
-        if len(missing): 
+        if len(missing):
             try:    await ctx.send(       f"Your server now has no settings, but I am missing permissions. Please make sure I have: {', '.join(['`' + p + '`' for p in missing])} and you'll be on your way!")
             except: await ctx.author.send(f"Your server now has no settings, but I am missing permissions. Please make sure I have: {', '.join(['`' + p + '`' for p in missing])} and you'll be on your way!")
         else: await ctx.send(embed=discord.Embed(
@@ -420,7 +420,7 @@ class GuildCommands(commands.Cog):
                     color=colours["create"] if not final else colours["delete"]
                 ))
                 return m
-            
+
             async def genPage(ctx, m, page, final=False):
                 await m.edit(embed=discord.Embed(
                     title="Role Info",
@@ -428,13 +428,13 @@ class GuildCommands(commands.Cog):
                     color=colours["create"] if not final else colours["delete"]
                 ))
                 return m
-            
+
             m = await ctx.send(embed=self.loadingEmbed)
             page = 0
             for re in [729762938411548694, 729762938843430952, 729064530310594601, 752570111256297496, 752570111063228507, 752570111373606942, 752570111281594509, 752570111088525354]: await m.add_reaction(ctx.bot.get_emoji(re))
             for _ in range(0, 50):
                 page = min(4, max(0, page))
-                
+
                 pages = {1: "Server", 2: "Messages", 3: "Members", 4: "Voice"}
                 if page == 0: m = await genInfo(ctx, m)
                 else:         m = await genPage(ctx, m, pages[page])
@@ -456,7 +456,7 @@ class GuildCommands(commands.Cog):
                 elif reaction.name == "MembersRole":  page = 3
                 elif reaction.name == "VoiceRole":    page = 4
                 else: break
-            
+
             pages = {1: "Server", 2: "Messages", 3: "Members", 4: "Voice"}
             if page == 0: m = await genInfo(ctx, m, True)
             else:         m = await genPage(ctx, m, pages[page], True)
@@ -527,7 +527,7 @@ class GuildCommands(commands.Cog):
                     if (rolesOnPage >= x + (0 if page != pages-1 else 1)) and (f"{x}_" not in reactions): await m.add_reaction(bot.get_emoji(numbers[x]))
 
                 desc = f'Page {page+1} of {pages}\n'
-                for x in range((page*10), (page*10)+(rolesOnPage+(0 if page == pages-1 else 1))): 
+                for x in range((page*10), (page*10)+(rolesOnPage+(0 if page == pages-1 else 1))):
                     desc += f"{bot.get_emoji(tick if groles[x] in roles else cross)}{bot.get_emoji(PILNumbers[str(groles[x] in roles)][x%10])} {groles[x]}\n"
                 await m.edit(embed=discord.Embed(title="Roles", description=desc, color=colours["create"]))
 
@@ -547,7 +547,7 @@ class GuildCommands(commands.Cog):
                 elif reaction.name == "Right": page += 1
                 elif reaction.name == "Cross": break
                 else:
-                    try: 
+                    try:
                         roleToChange = ctx.guild.get_role(groleIDs[(page*10)+int(reaction.name[:1])])
                         if       ctx.guild.me.top_role.position <= roleToChange.position: await ctx.send(embed=discord.Embed(title=f"{emojis['PunWarn']} I can't do that", description="I can't change that role", colour=colours["delete"]), delete_after=5)
                         elif     ctx.author.top_role.position   <= roleToChange.position: await ctx.send(embed=discord.Embed(title=f"{emojis['PunWarn']} You can't do that", description="You can't change that role", colour=colours["delete"]), delete_after=5)
@@ -555,7 +555,7 @@ class GuildCommands(commands.Cog):
                         elif     roleToChange.managed:                                    await ctx.send(embed=discord.Embed(title=f"{emojis['PunWarn']} You can't do that", description="This role is for a bot", colour=colours["delete"]), delete_after=5)
                         elif not ctx.author.guild_permissions.manage_roles:               await ctx.send(embed=discord.Embed(title=f"{emojis['PunWarn']} Looks like you don't have permissions", description="You need the `manage_roles` permission to change roles.", colour=colours["delete"]), delete_after=5)
                         elif not ctx.guild.me.guild_permissions.manage_roles:             await ctx.send(embed=discord.Embed(title=f"{emojis['PunWarn']} Looks like I don't have permissions", description="I need the `manage_roles` permission to change roles.", colour=colours["delete"]), delete_after=5)
-                        else: 
+                        else:
                             if roleToChange in r.roles: await r.remove_roles(roleToChange)
                             else: await r.add_roles(roleToChange)
                             r = await ctx.guild.fetch_member(r.id)
@@ -571,11 +571,11 @@ class GuildCommands(commands.Cog):
     async def role_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             await ctx.send(embed=discord.Embed(
-                title="I couldn't find that role", 
-                description=f"Make sure it is capitalised correctly.\nYou can use the role ID to make sure that I can find it.", 
+                title="I couldn't find that role",
+                description=f"Make sure it is capitalised correctly.\nYou can use the role ID to make sure that I can find it.",
                 color=colours["delete"]
             ))
-    
+
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(manage_roles=True)
@@ -612,7 +612,7 @@ class GuildCommands(commands.Cog):
 
             try: out = done.pop().result()
             except Exception as e:
-                print(e) 
+                print(e)
                 await m.clear_reactions()
                 return await m.edit(embed=discord.Embed(
                     title=f"{emojis['role_delete']} Which role?",
@@ -623,14 +623,14 @@ class GuildCommands(commands.Cog):
             for future in done: future.exception()
             for future in pending: future.cancel()
 
-            if isinstance(out, tuple): 
+            if isinstance(out, tuple):
                 await m.clear_reactions()
                 return await m.edit(embed=discord.Embed(
                     title=f"{emojis['role_delete']} Which role?",
                     description=f"What role would you like to assign? React with {emojis['cross']} to cancel.",
                     color=colours["delete"]
                 ))
-            elif isinstance(out, discord.Message): 
+            elif isinstance(out, discord.Message):
                 s = out.content
                 await out.delete()
             else: pass
@@ -651,13 +651,13 @@ class GuildCommands(commands.Cog):
             if x > 10: break
             v[key] = [f"{self.bot.get_emoji(es[x-1])} | {ctx.guild.get_role(value).mention}", value]
 
-        if len(valid) < 2: 
+        if len(valid) < 2:
             return await m.edit(embed=discord.Embed(
                 title=f"{emojis['role_delete']} Role all",
                 description=f"No roles matched your search",
                 color=colours["delete"]
             ))
-        else: 
+        else:
             await m.edit(embed=discord.Embed(
                 title=f"{emojis['role_create']} Role all",
                 description=f"{len(valid)} matches. "
@@ -667,14 +667,14 @@ class GuildCommands(commands.Cog):
             ))
             if len(valid) >= 10:
                 for e in es: await m.add_reaction(self.bot.get_emoji(e))
-            else: 
+            else:
                 for x in range(len(valid)):
                     await m.add_reaction(self.bot.get_emoji(es[x]))
                 await m.add_reaction(self.bot.get_emoji(es[-1]))
 
             reaction = None
             try: reaction = await ctx.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user : emoji.message.id == m.id and user == ctx.author)
-            except asyncio.TimeoutError: 
+            except asyncio.TimeoutError:
                 return await m.edit(embed=discord.Embed(
                     title=f"{emojis['role_delete']} Role all",
                     description=f"{len(valid)} matches."
@@ -688,7 +688,7 @@ class GuildCommands(commands.Cog):
             reactionname = reaction[0].emoji.name.lower()
 
             if len(reactionname) == 2:
-                try: 
+                try:
                     rn = int(reactionname[:1])-1
                     if rn < 0: rn = 9
                     i = v[list(v)[rn]][1]
@@ -704,7 +704,7 @@ class GuildCommands(commands.Cog):
                                     f"{n.join([f[0] for f in v.values()])}",
                         color=colours["delete"]
                     ))
-            else: 
+            else:
                 await m.clear_reactions()
                 return await m.edit(embed=discord.Embed(
                     title=f"{emojis['role_delete']} Role all",
@@ -722,7 +722,7 @@ class GuildCommands(commands.Cog):
 
         reaction = None
         try: reaction = await ctx.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user : emoji.message.id == m.id and user == ctx.author)
-        except asyncio.TimeoutError: 
+        except asyncio.TimeoutError:
             await m.clear_reactions()
             return await m.edit(embed=discord.Embed(
             title=f"{emojis['role_delete']} Role all",
@@ -754,7 +754,7 @@ class GuildCommands(commands.Cog):
         for emoji in [729064531107774534, 729064530310594601, 751161404442279966]: await m.add_reaction(self.bot.get_emoji(emoji))
         reaction = None
         try: reaction = await ctx.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user : emoji.message.id == m.id and user == ctx.author)
-        except asyncio.TimeoutError: 
+        except asyncio.TimeoutError:
             await m.clear_reactions()
             return await m.edit(embed=discord.Embed(
                 title=f"{emojis['role_delete']} Role all",
@@ -767,14 +767,14 @@ class GuildCommands(commands.Cog):
 
         o = reaction[0].emoji
 
-        if o.name == "Stop": 
+        if o.name == "Stop":
             await m.clear_reactions()
             return await m.edit(embed=discord.Embed(
                 title=f"{emojis['role_delete']} Role all",
                 description=f"{emojis['tick']} Add or {emojis['cross']} Remove roles? <:Stop:751161404442279966> to cancel.",
                 color=colours["delete"]
             ))
-        else: 
+        else:
             if   o.name == "Tick":  to = "+"
             elif o.name == "Cross": to = "-"
 
@@ -787,8 +787,8 @@ class GuildCommands(commands.Cog):
 
         r = ctx.guild.get_role(i)
         for member in ctx.guild.members:
-            if (member.bot and bot) or (not member.bot and human): 
-                try: 
+            if (member.bot and bot) or (not member.bot and human):
+                try:
                     if   to == "+": await member.add_roles(   r, reason="Role all with RSM")
                     elif to == "-": await member.remove_roles(r, reason="Role all with RSM")
                 except Exception as e: print(e)
@@ -812,14 +812,14 @@ class GuildCommands(commands.Cog):
             description="Please mention the user you'd like to see the server as.",
             color=colours["create"]
         )
-        if not m: 
+        if not m:
             m = await ctx.send(embed=noPing)
             msg = await ctx.bot.wait_for('message', timeout=60, check=lambda message : message.author == ctx.author)
             await msg.delete()
             await m.delete()
             if len(msg.mentions) != 1: return await ctx.send(embed=tooMany)
             else: m = msg.mentions[0]
-        
+
         mess = await ctx.send(embed=self.loadingEmbed)
 
         server = {0: []}
@@ -833,7 +833,7 @@ class GuildCommands(commands.Cog):
                 if channel.type in [discord.ChannelType.news, discord.ChannelType.text, discord.ChannelType.voice]:
                     if (m.permissions_in(channel).read_messages) or (channel.type is discord.ChannelType.voice and m.permissions_in(channel).connect):
                         visible[cat].append(channel)
-        
+
         desc = ""
         n = '\n'
         findescs, descs = [], []
@@ -892,4 +892,5 @@ class GuildCommands(commands.Cog):
         await mess.edit(embed=findescs[page])
         await mess.clear_reactions()
 
-def setup(bot): bot.add_cog(GuildCommands(bot))
+def setup(bot):
+    bot.add_cog(GuildCommands(bot))

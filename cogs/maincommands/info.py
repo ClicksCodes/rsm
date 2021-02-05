@@ -10,20 +10,20 @@ class InfoCommands(commands.Cog):
     def __init__(self, bot):
         self.loadingEmbed = loadingEmbed
         self.bot = bot
-    
+
     def createEmbed(self, title, description, color=0x000000):
         return discord.Embed(
             title=title,
             description=description,
             color=color
         )
-    
+
     @commands.command()
     async def ping(self, ctx):
         m = await ctx.send(embed=self.loadingEmbed)
         time = m.created_at - ctx.message.created_at
         await m.edit(content=None, embed=self.createEmbed(f"<:SlowmodeOn:777138171301068831> Ping", f"Latency is: `{int(time.microseconds / 1000)}ms`", colours['create']))
-    
+
     @commands.command(aliases=["help"])
     async def info(self, ctx: commands.Context, mob:typing.Optional[str]):
         prefix = ctx.prefix
@@ -89,7 +89,7 @@ class InfoCommands(commands.Cog):
             thispaginated = []
             for x in range(len(descriptions[key])):
                 thisitt += descriptions[key][x] + "\n"
-                if len(thisitt) > 1750: 
+                if len(thisitt) > 1750:
                     thispaginated.append(thisitt)
                     thisitt = "\n"
                     continue
@@ -122,7 +122,7 @@ class InfoCommands(commands.Cog):
 
             for future in done: future.exception()
             for future in pending: future.cancel()
-            
+
             try: await m.remove_reaction(reaction.emoji, ctx.author)
             except: pass
 
@@ -145,7 +145,7 @@ class InfoCommands(commands.Cog):
         try: await m.clear_reactions()
         except: pass
         await m.edit(embed=emb)
-    
+
     @commands.command()
     @commands.cooldown(2, 30, commands.BucketType.user)
     async def suggest(self, ctx, *, msg: typing.Optional[str]):
@@ -191,10 +191,10 @@ class InfoCommands(commands.Cog):
             description="Your ticket was sent to the mod team.",
             color=colours["create"]
         ), delete_after=10)
-    
+
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
-        if user.id != 715989276382462053 and reaction.message.channel.id == 777214577187487744 and reaction.emoji.name == 'Tick':    
+        if user.id != 715989276382462053 and reaction.message.channel.id == 777214577187487744 and reaction.emoji.name == 'Tick':
             await reaction.message.delete()
             r = await self.bot.get_channel(777224376051040310).send(embed=discord.Embed(
                 title="Suggestion",
@@ -205,4 +205,5 @@ class InfoCommands(commands.Cog):
             await r.add_reaction(self.bot.get_emoji(729064530310594601))
         elif user.id != 715989276382462053 and reaction.message.channel.id == 777214577187487744 and reaction.emoji.name == 'Cross': await reaction.message.delete()
 
-def setup(bot): bot.add_cog(InfoCommands(bot))
+def setup(bot):
+    bot.add_cog(InfoCommands(bot))

@@ -9,17 +9,17 @@ from cogs.consts import *
 class Tags(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-    
+
     def createEmbed(self, title, description, color=0x000000):
         return discord.Embed(
             title=title,
             description=description,
             color=color
         )
-    
+
     @commands.command(aliases=["tags"])
     @commands.guild_only()
-    async def tag(self, ctx, *, s: str = None): 
+    async def tag(self, ctx, *, s: str = None):
         with open(f"data/guilds/{ctx.guild.id}.json", 'r') as entry:
             entry = json.load(entry)
             try: entry["tags"]
@@ -77,7 +77,7 @@ class Tags(commands.Cog):
                 except: pass
 
                 if reaction[0].emoji.name != "Tick": return await m.edit(embed=self.createEmbed("<:NicknameChange:729064531019694090> Tags", "No changes were made.", color=colours["delete"]))
-            try: 
+            try:
                 text = " ".join(s[2:])
                 if not len(text): raise Exception
             except:
@@ -110,11 +110,11 @@ class Tags(commands.Cog):
         elif s[0] in ["delete", "remove", "del"]:
             m = await ctx.send(embed=loadingEmbed)
             try:
-                if not ctx.author.guild_permissions.manage_messages: 
+                if not ctx.author.guild_permissions.manage_messages:
                     return await m.edit(embed=self.createEmbed(f"{emojis['store_delete']} Looks like you don't have permissions", "You need the `manage_messages` permission to edit tags.", colours["delete"]))
             except: return
             try: title = s[1]
-            except: 
+            except:
                 await m.edit(embed=self.createEmbed(
                     f"{emojis['store_create']} Please enter a tag to delete",
                     f"Enter the name of the tag you want to delete.",
@@ -153,4 +153,5 @@ class Tags(commands.Cog):
                 color=colours["delete"]
             ))
 
-def setup(bot): bot.add_cog(Tags(bot))
+def setup(bot):
+    bot.add_cog(Tags(bot))

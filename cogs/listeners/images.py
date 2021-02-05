@@ -6,7 +6,8 @@ from textwrap import shorten
 from colorthief import ColorThief as cf
 
 from cogs.consts import *
-from config import deepAIkey
+from config import config
+deepAiKey = config.deepAiKey
 
 
 class NotLogging:
@@ -27,25 +28,25 @@ class ImageDetect(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.session = aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10.0))
-    
+
     def tohex(self, i): return hex(i).split('x')[-1]
-    
-    def cog_unload(self): 
+
+    def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
 
     def is_logging(self, guild: discord.Guild, *, channel = None, member: discord.Member = None, eventname):
         if not os.path.exists(f'data/guilds/{guild.id}.json'): return bool(NotLogging(eventname, "Guild not configured.", cog=self, guild=guild))
         if eventname not in events.keys():                     return bool(NotLogging(eventname, "Event Name is not in registered events.", cog=self, guild=guild))
         if not guild:                                          return bool(NotLogging(eventname, "Event occurred in DMs, thus has no targeted channel.", cog=self, guild=guild))
-        
-        try:    
+
+        try:
             with open(f"data/guilds/{guild.id}.json") as entry:
                 entry = json.load(entry)
                 if member:
                     if member.bot and entry["ignore_info"]["ignore_bots"] is True: return bool(NotLogging(eventname, f"You are ignoring bots.", cog=self, guild=guild))
                     if member.id in entry["ignore_info"]["members"]:               return bool(NotLogging(eventname, f"Member \"{member}\" is being ignored.", cog=self, guild=guild))
                     if member == self.bot.user:                                    return bool(NotLogging(eventname, f"Not logging bot actions", cog=self, guild=guild))
-                    
+
                 if channel:
                     if channel.id in entry["ignore_info"]["channels"]:   return bool(NotLogging(eventname, f"Channel \"{channel}\" is being ignored.", cog=self, guild=guild))
                     if channel.id == entry["log_info"]["log_channel"]:   return bool(NotLogging(eventname, f"This is the log channel.", cog=self, guild=guild))
@@ -53,16 +54,16 @@ class ImageDetect(commands.Cog):
                 if not entry["enabled"]:                                 return bool(NotLogging(eventname, f"This guild has disabled logs.", cog=self, guild=guild))
                 return True
         except: pass
-        
-    def get_log(self, guild: discord.Guild): 
+
+    def get_log(self, guild: discord.Guild):
         with open(f"data/guilds/{guild.id}.json") as f:
             entry =  json.load(f)
             return self.bot.get_channel(entry["log_info"]["log_channel"])
 
     async def vbl(self, guild, e: NotLogging):
         """VerboseLog: Log NotLogging events if verbose is enabled"""
-        return True 
-    
+        return True
+
     async def log(self, logType:str, guild:int, occurredAt:int, content:dict):
         try:
             with open(f"data/guilds/{guild}.json", 'r') as entry:
@@ -81,7 +82,7 @@ class ImageDetect(commands.Cog):
     async def on_message(self, message: discord.message):
         att = [a.url for a in message.attachments]
         att += re.findall(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", message.content)
-        
+
         if len(att):
             for attachment in att:
                 page = requests.get(attachment)
@@ -108,7 +109,7 @@ class ImageDetect(commands.Cog):
                     custom_config = r'--oem 3 --psm 6'
 
                     read_start = time.time()
-                    try: 
+                    try:
                         text = pytesseract.image_to_string(img, config=custom_config).lower()
                     except:
                         text = 'No text found'
@@ -124,7 +125,7 @@ class ImageDetect(commands.Cog):
                         else: blank = False
                     except :
                         blank = True
-                    
+
                     # NSFW
                     start = time.time()
                     reason = None
@@ -143,7 +144,7 @@ class ImageDetect(commands.Cog):
                         except: pass
                         conf = str(resp['output'])
                     end = time.time()
-                    
+
                     e = discord.Embed(
                         title="Image sent",
                         description=f"**Size:** {dimensions[0]}x{dimensions[1]}\n"
@@ -160,12 +161,13 @@ class ImageDetect(commands.Cog):
                 except Exception as e: print(e)
                 finally:
                     try: os.rename(f"{f_name}", f"cogs/{'nsfw' if nsfw else 'sfw'}/{f_name}")
-                    except Exception as e: 
+                    except Exception as e:
                         try: os.remove(f_name)
                         except: pass
                     try: os.rename(f"{f_name}", f"cogs/{'nsfw' if nsfw else 'sfw'}/{f_name}")
-                    except Exception as e: 
+                    except Exception as e:
                         try: os.remove(f_name)
                         except: pass
 
-def setup(bot): bot.add_cog(ImageDetect(bot))
+def setup(bot):
+    bot.add_cog(ImageDetect(bot))

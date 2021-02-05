@@ -3,7 +3,7 @@ import json
 import discord
 from discord.ext import commands
 
-import config
+from config import config
 from cogs.consts import C
 
 
@@ -32,11 +32,11 @@ class Bot(commands.Bot):
         for cog in config.cogs:
             x += 1
             try:
-                print(f"{C.Cyan}[S] {C.CyanDark}Loading cog {x}/{m} ({cog})", end="\r")
+                print(f"{C.Cyan.value}[S] {C.CyanDark.value}Loading cog {x}/{m} ({cog}){C.c.value}", end="\r")
                 self.load_extension(cog)
-                print(f"{C.Green}[S] {C.GreenDark}Loaded cog {x}/{m} ({cog}).")
+                print(f"{C.Green.value}[S] {C.GreenDark.value}Loaded cog {x}/{m} ({cog}).{C.c.value}")
             except Exception as exc:
-                print(f"{C.RedDark}[E] {C.Red}Failed cog {x}/{m} ({cog}) > {exc.__class__.__name__}: {exc}{C.c}")
+                print(f"{C.RedDark.value}[E] {C.Red.value}Failed cog {x}/{m} ({cog}) > {exc.__class__.__name__}: {exc}{C.c.value}")
         print()
 
     async def get_context(self, message, *, cls=Context):
@@ -52,9 +52,9 @@ class Bot(commands.Bot):
                 if "prefix" in entry and entry["prefix"]:
                     prefixes = (entry["prefix"],)
                 else:
-                    prefixes = ("t!", "t1" if config.development else "m!", "m1")
+                    prefixes = config.prefixes
         except (FileNotFoundError, AttributeError):
-            prefixes = ("t!", "t1" if config.development else "m!", "m1")
+            prefixes = config.prefixes
         if not ctx.guild:
             prefixes += ("",)
         return commands.when_mentioned_or(*prefixes)(self, ctx)
@@ -62,9 +62,9 @@ class Bot(commands.Bot):
     async def on_ready(self):
         await self.change_presence(
             activity=discord.Activity(
-                type=discord.ActivityType.watching, 
+                type=discord.ActivityType.watching,
                 name="over your servers."
             ),
             status=discord.Status.idle,
         )
-        print(f"{C.Pink if config.development else C.Cyan}[S] {C.PinkDark if config.development else C.CyanDark}Logged on as {self.user} [ID: {self.user.id}]{C.c}")
+        print(f"{C[config.colour].value}[S] {C[str(config.colour) + 'Dark'].value}Logged on as {self.user} [ID: {self.user.id}]{C.c.value}")

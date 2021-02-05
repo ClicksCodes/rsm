@@ -3,18 +3,19 @@ from discord.ext import commands
 import discord
 import asyncio
 import bot as customBot
+from config import config
 
 class Ping(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.shutdown_event = asyncio.Event()
-    
+
     def _signal_handler(self, *_) -> None:
         shutdown_event.set()
 
     @commands.Cog.listener()
     async def on_ready(self):
-        if self.bot.runningPing: 
+        if self.bot.runningPing:
             return
         self.bot.runningPing = True
 
@@ -23,6 +24,10 @@ class Ping(commands.Cog):
         @app.route("/")
         async def ping():
             return str(self.bot.latency)
+
+        @app.route("/stage")
+        async def stage():
+            return str(config.stage.name)
 
         self.bot.server_teardown = self._signal_handler
         task = await app.run_task(

@@ -1,5 +1,6 @@
 import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio, datetime, random
-from authlib.jose import jwt
+import pymongo
+import secrets
 
 from datetime import datetime
 from discord.ext import commands, tasks
@@ -7,7 +8,8 @@ from textwrap import shorten
 
 import config
 from cogs.consts import *
-from config import deepAIkey
+from config import config
+deepAiKey = config.deepAIkey
 
 
 class NotLogging:
@@ -589,23 +591,22 @@ class Core(commands.Cog):
             await ctx.message.delete()
         except:
             pass
-        header = {"alg": "HS256"}
-        payload = {
-            "userID": str(ctx.author.id),
-            "guildID": str(ctx.guild.id),
-            "roleID": str(roleid),
-            "guildAvatar": str(ctx.guild.icon_url),
-            "guildName": str(ctx.guild.name),
-            "guildSize": str(len(ctx.guild.members)),
-            "roleName": str(ctx.guild.get_role(roleid).name),
-            "userName": str(ctx.author.name),
-        }
-        key = open("./keys/private").read()
-        s = jwt.encode(header, payload, key).decode()
+        collection = pymongo.MongoClient(config.mongoUrl)[config.mongoDb][config.mongoCol]
+        code = secrets.token_urlsafe(16)
+        out = collection.insert_one({
+            "code": str(code),
+            "user": str(ctx.author.id),
+            "role": str(roleid),
+            "role_name": str(ctx.guild.get_role(roleid).name),
+            "guild": str(ctx.guild.id),
+            "guild_name": str(ctx.guild.name),
+            "guild_icon_url": str(ctx.guild.icon_url),
+            "guild_size": str(len(ctx.guild.members))
+        })
         await ctx.author.send(
             embed=discord.Embed(
                 title=f"{emojis['tick']} Verify",
-                description=f"In order to verify yourself in {ctx.guild.name}, you need to go [here](https://clicksminuteper.net/rsmv?code={s}) and complete the captcha.",
+                description=f"In order to verify yourself in {ctx.guild.name}, you need to go [here](https://clicksminuteper.net/rsmv?code={code}) and complete the CAPTCHA.",
                 color=colours["create"],
             )
         )

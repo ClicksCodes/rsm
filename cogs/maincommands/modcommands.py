@@ -60,8 +60,8 @@ class Commands(commands.Cog):
     async def intHandler(self, m, dict, ctx):
         await m.delete()
         m = await ctx.send(embed=self.createEmbed(
-            dict["prompt"]["title"], 
-            dict["prompt"]["desc"] + "\n" + f"Select {emojis['tick']} to select {dict['default']} or {emojis['cross']} to cancel", 
+            dict["prompt"]["title"],
+            dict["prompt"]["desc"] + "\n" + f"Select {emojis['tick']} to select {dict['default']} or {emojis['cross']} to cancel",
             dict["prompt"]["col"]
         ))
         for emoji in [729064531107774534, 729064530310594601]: await m.add_reaction(ctx.bot.get_emoji(emoji))
@@ -105,20 +105,20 @@ class Commands(commands.Cog):
 
         if reason == None:
             reason, m = await self.reasonHandler(
-                m, 
+                m,
                 {
                     "cancel": {"title": f"{emojis['PunWarn']} Warning", "desc": f"Warning cancelled.", "col": colours["delete"]},
                     "prompt": {"title": f"{emojis['PunWarn']} Warning", "desc": f"Please enter a reason for warning {member.mention}.", "col": colours["create"]}
                 },
                 ctx
             )
-        
+
         if reason != None:
             try: await member.send(embed=createEmbed(f"{emojis['PunWarn']} Warning", f"You were warned in {ctx.guild.name} {('for ' + reason) if reason is not False else 'with no reason provided'}.", colours["edit"]))
             except: return
             await m.edit(embed=createEmbed(f"{emojis['PunWarn']} Warning", f"User {member.mention} was successfully warned for {reason if reason is not False else 'No reason provided'}.", colours["create"]))
             await m.clear_reactions()
-    
+
     async def kickPun(self, m, member, ctx, reason=None):
         createEmbed = self.createEmbed
         try:
@@ -134,7 +134,7 @@ class Commands(commands.Cog):
 
         if reason == None:
             reason, m = await self.reasonHandler(
-                m, 
+                m,
                 {
                     "cancel": {"title": f"{emojis['PunKick']} Kick", "desc": f"Kick cancelled.", "col": colours["delete"]},
                     "prompt": {"title": f"{emojis['PunKick']} Kick", "desc": f"Please enter a reason for kicking {member.mention}.", "col": colours["create"]}
@@ -143,7 +143,7 @@ class Commands(commands.Cog):
             )
         if reason != None:
             try:
-                try: 
+                try:
                     if reason is not False: await member.send(embed=createEmbed(f"{emojis['PunKick']} Kicked", f"You were kicked from {ctx.guild.name} for {reason}.", colours["delete"]))
                 except: pass
                 await member.kick(member, reason=reason)
@@ -151,7 +151,7 @@ class Commands(commands.Cog):
             except:
                 await m.edit(embed=createEmbed(f"{emojis['PunKick']} Kick", f"Something went wrong. I may not have permissions, or the user couldn't be kicked.", colours["delete"]))
             await m.clear_reactions()
-    
+
     async def banPun(self, m, member, ctx, reason=None):
         createEmbed = self.createEmbed
         try:
@@ -168,7 +168,7 @@ class Commands(commands.Cog):
         if reason == None or len(reason) < 2:
             try:
                 reason, m = await self.reasonHandler(
-                    m, 
+                    m,
                     {
                         "cancel": {"title": f"{emojis['PunBan']} Ban", "desc": f"Ban cancelled.", "col": colours["delete"]},
                         "prompt": {"title": f"{emojis['PunBan']} Ban", "desc": f"Please enter a reason for banning {member.mention}.", "col": colours["create"]}
@@ -177,9 +177,9 @@ class Commands(commands.Cog):
                 )
             except: pass
         if reason != None:
-            try: 
+            try:
                 if ctx.guild.me.top_role.position <= member.top_role.position or ctx.author.top_role.position <= member.top_role.position: int("return an error, quite clearly")
-                try: 
+                try:
                     if reason is not False: bm = await member.send(embed=createEmbed(f"{emojis['PunBan']} Banned", f"You were banned from {ctx.guild.name} for {reason}.", colours["delete"]))
                 except: pass
                 await ctx.guild.ban(member, reason=reason, delete_message_days=7)
@@ -189,7 +189,7 @@ class Commands(commands.Cog):
                 try: bm.edit(embed=createEmbed(f"{emojis['PunBan']} Ban", f"The ban in {ctx.guild.name} failed.", colours["create"]))
                 except: pass
             await m.clear_reactions()
-    
+
     async def softBanPun(self, m, member, ctx, reason=None):
         createEmbed = self.createEmbed
         try:
@@ -205,7 +205,7 @@ class Commands(commands.Cog):
 
         if reason == None or len(reason) < 2:
             reason, m = await self.reasonHandler(
-                m, 
+                m,
                 {
                     "cancel": {"title": f"{emojis['PunSoftBan']} Soft Ban", "desc": f"Soft ban cancelled.", "col": colours["delete"]},
                     "prompt": {"title": f"{emojis['PunSoftBan']} Soft Ban", "desc": f"Please enter a reason for soft banning {member.mention}.", "col": colours["create"]}
@@ -213,8 +213,8 @@ class Commands(commands.Cog):
                 ctx
             )
         if reason != None:
-            try: 
-                try: 
+            try:
+                try:
                     if reason is not False: await member.send(embed=createEmbed(f"{emojis['PunBan']} Banned", f"You were banned from {ctx.guild.name} for {reason}.", colours["delete"]))
                 except: pass
                 await ctx.guild.ban(member, reason=reason, delete_message_days=7)
@@ -239,7 +239,7 @@ class Commands(commands.Cog):
 
         if out == None:
             out, m = await self.intHandler(
-                m, 
+                m,
                 {
                     "cancel": {"title": f"{emojis['PunHistory']} Delete History", "desc": f"Delete history cancelled.", "col": colours["delete"]},
                     "prompt": {"title": f"{emojis['PunHistory']} Delete History", "desc": f"How many messages in this channel should I check? Max 100", "col": colours["create"]},
@@ -248,7 +248,7 @@ class Commands(commands.Cog):
                 ctx
             )
         if out != None:
-            try: 
+            try:
                 try: out = int(out)
                 except: return await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Delete History", f"Something went wrong, I couldn't delete that many messages.", colours["create"]))
                 if mod not in ["!", "not", "only"]: deleted = await ctx.channel.purge(limit=int(out), check=lambda m: m.author == member)
@@ -261,7 +261,7 @@ class Commands(commands.Cog):
             try:
                 await m.delete()
             except: pass
-    
+
     async def setSlowmode(self, ctx, channel, time):
         createEmbed = self.createEmbed
         try: await ctx.delete()
@@ -277,7 +277,7 @@ class Commands(commands.Cog):
         except:
             await ctx.send(embed=createEmbed(f"{emojis['slowmodeOn'] if time > 0 else emojis['slowmodeOff']} Slowmode", "An unknown error occurred and slowmode could not be set.", colours["delete"]), delete_after=10)
             return
-        
+
     async def lockdown(self, lock, channel, ctx):
         createEmbed = self.createEmbed
         if not ctx.author.guild_permissions.manage_channels:   return await ctx.send(embed=createEmbed(f"{emojis['lock']} Lock", "You need the `manage_channels` permission to set lockdown.", colours["delete"]), delete_after=10)
@@ -288,7 +288,7 @@ class Commands(commands.Cog):
         with open(f"data/stats.json", 'w') as f:
             json.dump(entry, f, indent=2)
         m = await ctx.send(embed=createEmbed(f"{emojis['lock']} Lock", f"Please wait as the channel gets {'un' if lock is None else ''}locked.", colours["edit"]))
-        for role in ctx.guild.roles: 
+        for role in ctx.guild.roles:
             await asyncio.sleep(1)
             if not role.permissions.manage_messages:
                 override = channel.overwrites_for(role)
@@ -301,15 +301,15 @@ class Commands(commands.Cog):
                 try: await channel.set_permissions(role, overwrite=override)
                 except: pass
         return await m.edit(embed=createEmbed(f"{emojis['lock']} Lock", f"The channel is now {'un' if lock is None else ''}locked for everyone without `manage_messages` permission.", colours["create"]))
-            
+
     async def purgeChannel(self, m, ctx, out=None):
         createEmbed = self.createEmbed
         try:
-            if not ctx.author.guild_permissions.manage_messages: 
+            if not ctx.author.guild_permissions.manage_messages:
                 await ctx.send(embed=createEmbed(f"{emojis['PunHistory']} Looks like you don't have permissions", "You need the `manage_messages` permission to purge a channel.", colours["delete"]))
                 return await m.delete()
         except: return
-        
+
         with open(f"data/stats.json", 'r') as entry:
                 entry = json.load(entry)
                 entry["purges"] += 1
@@ -318,7 +318,7 @@ class Commands(commands.Cog):
 
         if out == None:
             out, m = await self.intHandler(
-                m, 
+                m,
                 {
                     "cancel": {"title": f"{emojis['PunHistory']} Purge Channel", "desc": f"Purge Channel cancelled.", "col": colours["delete"]},
                     "prompt": {"title": f"{emojis['PunHistory']} Purge Channel", "desc": f"How many messages in this channel should I clear? Max 100", "col": colours["create"]},
@@ -327,7 +327,7 @@ class Commands(commands.Cog):
                 ctx
             )
         if out != None:
-            try: 
+            try:
                 try: out = int(out)
                 except: return await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Purge Channel", f"Something went wrong, I couldn't delete that many messages.", colours["create"]))
                 out += 2
@@ -340,7 +340,7 @@ class Commands(commands.Cog):
                 try: await m.edit(embed=createEmbed(f"{emojis['PunHistory']} Purge Channel", f"Something went wrong. I may not have permission to do that.", colours["delete"]), delete_after=10)
                 except discord.ext.commands.errors.CommandInvokeError: await ctx.send(embed=createEmbed(f"{emojis['PunHistory']} Purge Channel", f"Something went wrong. I may not have permission to do that.", colours["delete"]), delete_after=10)
                 except discord.NotFound: await ctx.send(embed=createEmbed(f"{emojis['PunHistory']} Purge Channel", f"Something went wrong. I may not have permission to do that.", colours["delete"]), delete_after=10)
-            try: await m.clear_reactions() 
+            try: await m.clear_reactions()
             except: pass
 
     @commands.command()
@@ -358,16 +358,16 @@ class Commands(commands.Cog):
             description="Please mention the user you'd like to punish.",
             color=colours["create"]
         )
-        if len(member) > 1: 
+        if len(member) > 1:
             return await ctx.send(embed=tooMany)
-        if not member: 
+        if not member:
             m = await ctx.send(embed=noPing)
             msg = await ctx.bot.wait_for('message', timeout=60, check=lambda message : message.author == ctx.author)
             await msg.delete()
             if len(msg.mentions) != 1: return await ctx.send(embed=tooMany)
             else: member = msg.mentions[0]
         else: member = member[0]
-        
+
 
         e = discord.Embed (
             title=f'{events["nsfw_update"][2]} Punishing user *{member.name}*',
@@ -384,13 +384,13 @@ class Commands(commands.Cog):
         else: await m.edit(embed=e)
 
         try:
-            for emoji in self.emojiids: 
+            for emoji in self.emojiids:
                 try: await m.add_reaction(self.bot.get_emoji(self.emojiids[emoji][0]))
                 except: pass
 
             reaction = None
             try: reaction = await ctx.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user : emoji.message.id == m.id and user == ctx.author)
-            except asyncio.TimeoutError: 
+            except asyncio.TimeoutError:
                 m.edit(embed=eClosed)
                 return await m.clear_reactions()
 
@@ -399,10 +399,10 @@ class Commands(commands.Cog):
 
             o = reaction[0].emoji
 
-            if o.name == "Stop": 
+            if o.name == "Stop":
                 await m.edit(embed=eClosed)
                 return await m.clear_reactions()
-            else: 
+            else:
                 if   o.name == "PunishWarn":    await self.warnPun(m, member, ctx)
                 elif o.name == "PunishKick":    await self.kickPun(m, member, ctx)
                 elif o.name == "PunishBan":     await self.banPun(m, member, ctx)
@@ -421,7 +421,7 @@ class Commands(commands.Cog):
                 color=colours["edit"]
             )
             await ctx.send(embed=notFound)
-    
+
     @commands.command()
     @commands.guild_only()
     async def warn(self, ctx, member: typing.Optional[discord.Member], *, reason:typing.Optional[str]):
@@ -437,7 +437,7 @@ class Commands(commands.Cog):
             description="Please mention the user you'd like to warn.",
             color=colours["create"]
         )
-        if not member: 
+        if not member:
             m = await ctx.send(embed=noPing)
             msg = await ctx.bot.wait_for('message', timeout=60, check=lambda message : message.author == ctx.author)
             await msg.delete()
@@ -446,7 +446,7 @@ class Commands(commands.Cog):
             else: member = msg.mentions[0]
         m = await ctx.send(embed=self.loadingEmbed)
         await self.warnPun(m, member, ctx, reason)
-    
+
     @commands.command()
     @commands.guild_only()
     async def kick(self, ctx, member: typing.Optional[discord.Member], *, reason:typing.Optional[str]):
@@ -462,7 +462,7 @@ class Commands(commands.Cog):
             description="Please mention the user you'd like to kick.",
             color=colours["create"]
         )
-        if not member: 
+        if not member:
             m = await ctx.send(embed=noPing)
             msg = await ctx.bot.wait_for('message', timeout=60, check=lambda message : message.author == ctx.author)
             await msg.delete()
@@ -471,7 +471,7 @@ class Commands(commands.Cog):
             else: member = msg.mentions[0]
         m = await ctx.send(embed=self.loadingEmbed)
         await self.kickPun(m, member, ctx, reason)
-    
+
     @commands.command()
     @commands.guild_only()
     async def clear(self, ctx, member: typing.Optional[discord.Member], t:typing.Optional[int], mod: typing.Optional[str]):
@@ -485,7 +485,7 @@ class Commands(commands.Cog):
             description="Please mention the user you'd like to clear the history of.",
             color=colours["create"]
         )
-        if not member: 
+        if not member:
             m = await ctx.send(embed=noPing)
             msg = await ctx.bot.wait_for('message', timeout=60, check=lambda message : message.author == ctx.author)
             await msg.delete()
@@ -494,13 +494,13 @@ class Commands(commands.Cog):
             else: member = msg.mentions[0]
         m = await ctx.send(embed=self.loadingEmbed)
         await self.delHistoryPun(m, member, ctx, t, mod=mod)
-    
+
     @commands.command()
     @commands.guild_only()
     async def purge(self, ctx, t:typing.Optional[int]):
         m = await ctx.send(embed=self.loadingEmbed)
         await self.purgeChannel(m, ctx, t)
-    
+
     @commands.command()
     @commands.guild_only()
     async def softBan(self, ctx, member: typing.Optional[discord.Member], *, reason:typing.Optional[str]):
@@ -516,7 +516,7 @@ class Commands(commands.Cog):
             description="Please mention the user you'd like to soft ban.",
             color=colours["create"]
         )
-        if not member: 
+        if not member:
             m = await ctx.send(embed=noPing)
             msg = await ctx.bot.wait_for('message', timeout=60, check=lambda message : message.author == ctx.author)
             await msg.delete()
@@ -525,7 +525,7 @@ class Commands(commands.Cog):
             else: member = msg.mentions[0]
         m = await ctx.send(embed=self.loadingEmbed)
         await self.softBanPun(m, member, ctx, reason)
-    
+
     @commands.command()
     @commands.guild_only()
     async def ban(self, ctx, member: typing.Optional[discord.Member], *, reason:typing.Optional[str]):
@@ -541,7 +541,7 @@ class Commands(commands.Cog):
             description="Please mention the user you'd like to ban.",
             color=colours["create"]
         )
-        if not member: 
+        if not member:
             m = await ctx.send(embed=noPing)
             msg = await ctx.bot.wait_for('message', timeout=60, check=lambda message : message.author == ctx.author)
             await msg.delete()
@@ -550,34 +550,34 @@ class Commands(commands.Cog):
             else: member = msg.mentions[0]
         m = await ctx.send(embed=self.loadingEmbed)
         await self.banPun(m, member, ctx, reason)
-        
+
     @commands.command(aliases=["slow"])
     @commands.guild_only()
     @commands.has_permissions(manage_guild=True)
     async def slowmode(self, ctx, channel: typing.Optional[discord.TextChannel], time: typing.Optional[str]):
         if not channel: channel = ctx.channel
         if time is not None: time = re.sub(r"[^0-9]*", "", str(time))
-        try: 
+        try:
             time = int(time)
         except:
             if time == "toggle" or time == None:
-                if channel.slowmode_delay > 0: time = 0 
+                if channel.slowmode_delay > 0: time = 0
                 else:                          time = 10
             elif time == "on":  time = 10
-            elif time == "off": time = 0 
+            elif time == "off": time = 0
             else:               time = channel.slowmode_delay
 
-        await self.setSlowmode(ctx, channel, time) 
-        
+        await self.setSlowmode(ctx, channel, time)
+
     @commands.command()
     @commands.has_permissions(manage_guild=True)
     @commands.guild_only()
     async def lock(self, ctx, channel: typing.Optional[discord.TextChannel], s: typing.Optional[str]):
         if not channel: channel = ctx.channel
         lock = False
-        
-        if s == "off": lock = None  
-        
+
+        if s == "off": lock = None
+
         await self.lockdown(lock, channel, ctx)
 
     @commands.command()
@@ -586,8 +586,8 @@ class Commands(commands.Cog):
     async def unlock(self, ctx, channel: typing.Optional[discord.TextChannel]):
         if not channel: channel = ctx.channel
 
-        await self.lockdown(None, channel, ctx)   
-    
+        await self.lockdown(None, channel, ctx)
+
     @commands.command(aliases=["user", "whois"])
     @commands.guild_only()
     async def userinfo(self, ctx, member: typing.Optional[discord.Member]):
@@ -728,7 +728,7 @@ class Commands(commands.Cog):
         if p: e.set_thumbnail(url=member.avatar_url)
         await m.clear_reactions()
         return await m.edit(embed=e)
-    
+
     @commands.command(aliases=["nickname", "setnick", "name"])
     @commands.guild_only()
     @commands.has_permissions(manage_nicknames=True)
@@ -766,10 +766,10 @@ class Commands(commands.Cog):
             for future in pending: future.cancel()
 
             await m.clear_reactions()
-            if isinstance(out, tuple): 
+            if isinstance(out, tuple):
                 await m.clear_reactions()
                 if   out[0].emoji.name == "Tick":  name = None
-                elif out[0].emoji.name == "Cross": 
+                elif out[0].emoji.name == "Cross":
                     return await m.edit(embed=discord.Embed(
                         title=f"{emojis['nickname_change']} What nickname should {target.display_name} have?",
                         description=f"Please enter the nickname for {target.display_name}. \nReact {emojis['tick']} to clear {'their' if ctx.author.id != target.id else 'your'} nickname or {emojis['cross']} to close.",
@@ -777,11 +777,11 @@ class Commands(commands.Cog):
                     ))
                 else: return
 
-            elif isinstance(out, discord.Message): 
+            elif isinstance(out, discord.Message):
                 name = out.content
                 await out.delete()
             else: name = None
-        try: 
+        try:
             await target.edit(nick=name)
             return await m.edit(embed=discord.Embed(
                 title=f"{emojis['nickname_change']} Nickname",

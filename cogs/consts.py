@@ -1,9 +1,9 @@
-import copy, discord, json, humanize, aiohttp, traceback, typing, time, cv2, pytesseract, os, random, re, time, shutil, requests
+import copy, discord, json, humanize, aiohttp, traceback, typing, time, cv2, pytesseract, os, random, re, time, shutil, requests, enum
 from discord.ext import commands
 
 with open("./data/emojis.json") as rfile: emojis = json.load(rfile)
 
-class C:
+class C(enum.Enum):
     c = '\033[0m'
 
     RedDark = '\033[31m'
@@ -19,7 +19,7 @@ class C:
     Blue = '\033[94m'
     Pink = '\033[95m'
     Cyan = '\033[96m'
-    
+
 colours = {
     "delete": 0xF27878,
     "create": 0x68D49E,
@@ -40,7 +40,7 @@ events = {
     "message_edit":         [colours[ "edit" ], '`Edited messages  `', emojis['edit'],           'Messages'],
     "bulk_message_delete":  [colours["delete"], '`Purged messages  `', emojis['purge'],          'Messages'],
     "channel_pins_update":  [colours[ "edit" ], '`Pinned messages  `', emojis['pinned'],         'Messages'],
-    "reaction_clear":       [colours[ "edit" ], '`Cleared reactions`', emojis['reaction_clear'], 'Messages'], 
+    "reaction_clear":       [colours[ "edit" ], '`Cleared reactions`', emojis['reaction_clear'], 'Messages'],
     "everyone_here":        [colours[ "edit" ], '`@Everyone & @Here`', emojis['everyone_ping'],  'Messages'],
     "mass_mention":         [colours[ "edit" ], '`Mass mentioning  `', emojis['mass_ping'],      'Messages'],
     "roles":                [colours[ "edit" ], '`Role mentions    `', emojis['role_ping'],      'Messages'],
