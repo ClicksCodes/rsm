@@ -1,8 +1,8 @@
 {
     "token": "NzE1OTg5Mjc2MzgyNDYyMDUz.XtFO-Q.cSuhmCKFi5znZO-HCqN9yqxcbbw",
-    "token-dev": "Nzc5Mzg4ODU2NTM2NTMwOTg0.X7f0bw.N4cTy30T7ucEBBP4JkEtRl_fqmw",
+    "token-dev": "Nzc5Mzg4ODU2NTM2NTMwOTg0.X7f0bw.yzZg659UsLtHTfmeTsDXZa7O8K8",
 
-    "deepAIkey": "5d6cca50-2441-44a8-9ab4-703fbd38ce5b",
+    "deepAIkey": "fbcce80d-89bf-4d45-8d08-97ef93b37905",
 
     "mongoUrl-dev": "mongodb://localhost:27017/",
     "mongoDb-dev": "test",

@@ -14,11 +14,11 @@ class Config:
         with open(config_file) as config:
             self.config = json.load(config)
         try:
-            self.stage = Stage[(os.environ.get("PRODUCTION") or 'dev').upper()]
+            self.stage = Stage[(os.environ.get("PRODUCTION", 'DEV')).upper()]
         except KeyError:
             self.stage = Stage.DEV
 
     def __getattr__(self, item):
-        return self.config.get(f"{item}-{self.stage.name.lower()}", self.config.get(item, None))
+        return self.config.get(f"{item}-{self.stage.name.lower()}", self.config[item])
 
 config = Config("config.json")

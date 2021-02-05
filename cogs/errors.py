@@ -63,7 +63,7 @@ class Errors(commands.Cog):
                     return
                 tb = "\n".join(
                     [
-                        f"{C.RedDark}[C] {C.Red}" + line
+                        f"{C.RedDark.value}[C] {C.Red.value}" + line
                         for line in (
                             f"Command ran: {ctx.message.content}\nUser id:{ctx.author.id}\nGuild id:{ctx.guild.id if ctx.guild else 'N/A'}\n\n{tb}".split(
                                 "\n"
@@ -72,7 +72,7 @@ class Errors(commands.Cog):
                     ]
                 )
                 url = await postbin.postAsync(tb)
-                print(f"{C.RedDark}[C] {C.Red}FATAL:\n{tb}{C.c}\n{code}")
+                print(f"{C.RedDark.value}[C] {C.Red.value}FATAL:\n{tb}{C.c.value}\n{code}")
                 if self.bot.user.id == 715989276382462053:
                     await self.bot.get_channel(776418051003777034).send(
                         embed=discord.Embed(
