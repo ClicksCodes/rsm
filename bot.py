@@ -50,7 +50,6 @@ class Bot(commands.Bot):
             with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
                 entry = json.load(entry)
                 if "prefix" in entry and entry["prefix"]:
-                    print(entry["prefix"])
                     prefixes = (entry["prefix"],)
                 else:
                     prefixes = config.prefixes.copy()

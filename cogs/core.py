@@ -592,7 +592,11 @@ class Core(commands.Cog):
         except:
             pass
         print("FETCHING COLLECTION")
-        collection = pymongo.MongoClient(config.mongoUrl)[config.mongoDb][config.mongoCol]
+        collection = pymongo.MongoClient(config.mongoUrl)
+        print("FETCHED")
+        collection = collection[config.mongoDb]
+        print("FETCHED DB")
+        collection = collection[config.mongoCol]
         print("FETCHED, GETTING CODE")
         code = secrets.token_urlsafe(16)
         out = collection.insert_one({
