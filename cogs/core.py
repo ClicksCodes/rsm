@@ -595,7 +595,7 @@ class Core(commands.Cog):
         collection = pymongo.MongoClient(config.mongoUrl)
         print("FETCHED")
         collection = collection[config.mongoDb]
-        print("FETCHED DB")
+
         collection = collection[config.mongoCol]
         print("FETCHED, GETTING CODE")
         code = secrets.token_urlsafe(16)
