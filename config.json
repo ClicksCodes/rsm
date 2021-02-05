@@ -8,6 +8,11 @@
     "mongoDb-dev": "test",
     "mongoCollection-dev": "rsm",
 
+
+    "mongoUrl": "mongodb://localhost:27017/",
+    "mongoDb": "rsm",
+    "mongoCollection": "rsmv-tokens",
+
     "cogs": [
         "cogs.core",
         "jishaku",
