@@ -5,6 +5,7 @@ import secrets
 from datetime import datetime
 from discord.ext import commands, tasks
 from textwrap import shorten
+from urllib.parse import quote
 
 import config
 from cogs.consts import *
@@ -592,10 +593,8 @@ class Core(commands.Cog):
         except:
             pass
         print("FETCHING COLLECTION")
-        collection = pymongo.MongoClient(config.mongoUrl)
-        print("FETCHED")
-        collection = collection[config.mongoDb]
-
+        collection = pymongo.MongoClient(quote(config.mongoUrl))[config.mongoDb]
+        print("FETCHED DB")
         collection = collection[config.mongoCol]
         print("FETCHED, GETTING CODE")
         code = secrets.token_urlsafe(16)
