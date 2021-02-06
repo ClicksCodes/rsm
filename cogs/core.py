@@ -22,6 +22,7 @@ class User(mongoengine.Document):
     guild_name = mongoengine.StringField(required=True)
     guild_icon_url = mongoengine.StringField(required=True)
     guild_size = mongoengine.StringField(required=True)
+    timestamp = time.time()
 
     meta = {'collection': 'rsmv-tokens'}
 
