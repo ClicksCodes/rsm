@@ -31,11 +31,14 @@ class Ping(commands.Cog):
 
         @app.route("/role/gid/<string:guild>/rid/<string:role>/user/<string:user>/secret/<string:secret>")
         async def role(guild, role, user, secret):
-            if secret != "slwu0rZV5W6WdmGtgI16du8Ar2tQGMr3Q9dE6u3poKiVODNV9SweaA3buawgkTmTuITXDWOUpBcTFA0qWrUvoshi1JB180WOFwA7"
-            g = self.bot.get_guild(int(guild))
-            mem = await g.fetch_member(int(user))
-            await mem.add_roles(g.get_role(int(role)))
-            return "200"
+            try:
+                if secret != "slwu0rZV5W6WdmGtgI16du8Ar2tQGMr3Q9dE6u3poKiVODNV9SweaA3buawgkTmTuITXDWOUpBcTFA0qWrUvoshi1JB180WOFwA7"
+                g = self.bot.get_guild(int(guild))
+                mem = await g.fetch_member(int(user))
+                await mem.add_roles(g.get_role(int(role)))
+                return "200"
+            except:
+                return "400"
 
         self.bot.server_teardown = self._signal_handler
         task = await app.run_task(
