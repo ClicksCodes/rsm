@@ -1,5 +1,5 @@
 import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio, datetime, random
-import pymongo
+import mongoengine
 import secrets
 
 from datetime import datetime
@@ -11,6 +11,17 @@ import config
 from cogs.consts import *
 from config import config
 deepAiKey = config.deepAIkey
+
+
+class User(mongoengine.Document):
+    code = mongoengine.StringField(required=True)
+    user = mongoengine.StringField(required=True)
+    role = mongoengine.StringField(required=True)
+    role_name = mongoengine.StringField(required=True)
+    guild = mongoengine.StringField(required=True)
+    guild_name = mongoengine.StringField(required=True)
+    guild_icon_url = mongoengine.StringField(required=True)
+    guild_size = mongoengine.StringField(required=True)
 
 
 class NotLogging:
@@ -592,26 +603,25 @@ class Core(commands.Cog):
             await ctx.message.delete()
         except:
             pass
-        print(f"FETCHING CLIENT WITH {quote(config.mongoUrl)}")
-        collection = pymongo.MongoClient(quote(config.mongoUrl))
-        print(f"COLLECTION: {collection} | FETCHING DB WITH {config.mongoDb}")
-        collection = collection[config.mongoDb]
-        print(f"COLLECTION: {collection} | FETCHING COLLECTION WITH {config.mongoCollection}")
-        collection = collection[config.mongoCollection]
-        print("FETCHED DATABASE SUCCESSFULLY")
+        print("CONNECTING")
+        mongoengine.connect(
+            'rsm',
+            host=config.mongoUrl
+        )
         code = secrets.token_urlsafe(16)
         print(f"CODE IS {code}")
-        out = collection.insert({
-            "code": str(code),
-            "user": str(ctx.author.id),
-            "role": str(roleid),
-            "role_name": str(ctx.guild.get_role(roleid).name),
-            "guild": str(ctx.guild.id),
-            "guild_name": str(ctx.guild.name),
-            "guild_icon_url": str(ctx.guild.icon_url),
-            "guild_size": str(len(ctx.guild.members))
-        })
-        print(f"ADDED {out} TO DATABASE")
+        entry = User(
+            code=str(code),
+            user=str(ctx.author.id),
+            role=str(roleid),
+            role_name=str(ctx.guild.get_role(roleid).name),
+            guild=str(ctx.guild.id),
+            guild_name=str(ctx.guild.name),
+            guild_icon_url=str(ctx.guild.icon_url),
+            guild_size=str(len(ctx.guild.members))
+        ).save()
+        print("CREATED ENTRY")
+        # TODO
         await ctx.author.send(
             embed=discord.Embed(
                 title=f"{emojis['tick']} Verify",
