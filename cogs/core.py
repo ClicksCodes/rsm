@@ -23,7 +23,7 @@ class User(mongoengine.Document):
     guild_icon_url = mongoengine.StringField(required=True)
     guild_size = mongoengine.StringField(required=True)
 
-    meta = {'collection': 'rsm-tokens'}
+    meta = {'collection': 'rsmv-tokens'}
 
 
 class NotLogging:
