@@ -603,13 +603,11 @@ class Core(commands.Cog):
             await ctx.message.delete()
         except:
             pass
-        print("CONNECTING")
         mongoengine.connect(
             'rsm',
             host=config.mongoUrl
         )
         code = secrets.token_urlsafe(16)
-        print(f"CODE IS {code}")
         entry = User(
             code=str(code),
             user=str(ctx.author.id),
@@ -620,8 +618,6 @@ class Core(commands.Cog):
             guild_icon_url=str(ctx.guild.icon_url),
             guild_size=str(len(ctx.guild.members))
         ).save()
-        print("CREATED ENTRY")
-        # TODO
         await ctx.author.send(
             embed=discord.Embed(
                 title=f"{emojis['tick']} Verify",
@@ -629,7 +625,6 @@ class Core(commands.Cog):
                 color=colours["create"],
             )
         )
-        print("COMPLETE")
 
     @commands.command()
     @commands.guild_only()
