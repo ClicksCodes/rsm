@@ -23,6 +23,8 @@ class User(mongoengine.Document):
     guild_icon_url = mongoengine.StringField(required=True)
     guild_size = mongoengine.StringField(required=True)
 
+    meta = {'collection': 'rsm-tokens'}
+
 
 class NotLogging:
     def __init__(self, etype, reason, details="No Further Info", *, cog, guild):
