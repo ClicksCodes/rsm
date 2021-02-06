@@ -592,7 +592,13 @@ class Core(commands.Cog):
             await ctx.message.delete()
         except:
             pass
-        collection = pymongo.MongoClient(quote(config.mongoUrl))[config.mongoDb][config.mongoCollection]
+        print(f"FETCHING CLIENT WITH {quote(config.mongoUrl)}")
+        collection = pymongo.MongoClient(quote(config.mongoUrl))
+        print(f"COLLECTION: {collection} | FETCHING DB WITH {config.mongoDb}")
+        collection = collection[config.mongoDb]
+        print(f"COLLECTION: {collection} | FETCHING COLLECTION WITH {config.mongoCollection}")
+        collection = collection[config.mongoCollection]
+        print("FETCHED DATABASE SUCCESSFULLY")
         code = secrets.token_urlsafe(16)
         out = collection.insert_one({
             "code": str(code),
