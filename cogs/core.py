@@ -601,7 +601,7 @@ class Core(commands.Cog):
         print("FETCHED DATABASE SUCCESSFULLY")
         code = secrets.token_urlsafe(16)
         print(f"CODE IS {code}")
-        out = collection.insert_one({
+        out = collection.insert({
             "code": str(code),
             "user": str(ctx.author.id),
             "role": str(roleid),
@@ -611,7 +611,7 @@ class Core(commands.Cog):
             "guild_icon_url": str(ctx.guild.icon_url),
             "guild_size": str(len(ctx.guild.members))
         })
-        print(f"OUT IS {out}")
+        print(f"ADDED {out} TO DATABASE")
         await ctx.author.send(
             embed=discord.Embed(
                 title=f"{emojis['tick']} Verify",
