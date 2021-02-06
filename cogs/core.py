@@ -600,6 +600,7 @@ class Core(commands.Cog):
         collection = collection[config.mongoCollection]
         print("FETCHED DATABASE SUCCESSFULLY")
         code = secrets.token_urlsafe(16)
+        print(f"CODE IS {code}")
         out = collection.insert_one({
             "code": str(code),
             "user": str(ctx.author.id),
@@ -610,6 +611,7 @@ class Core(commands.Cog):
             "guild_icon_url": str(ctx.guild.icon_url),
             "guild_size": str(len(ctx.guild.members))
         })
+        print(f"OUT IS {out}")
         await ctx.author.send(
             embed=discord.Embed(
                 title=f"{emojis['tick']} Verify",
@@ -617,6 +619,7 @@ class Core(commands.Cog):
                 color=colours["create"],
             )
         )
+        print("COMPLETE")
 
     @commands.command()
     @commands.guild_only()
