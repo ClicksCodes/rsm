@@ -37,18 +37,6 @@ class Ping(commands.Cog):
                 g = self.bot.get_guild(int(guild))
                 mem = await g.fetch_member(int(user))
 
-                async with aiohttp.ClientSession() as session:
-                    async with session.post(
-                        "http://192.168.102.1/api/validate",
-                        data={"code": code}
-                    ) as r:
-                        try:
-                            resp = await r.text()
-                            print(str(resp))
-                        except Exception as e:
-                            print(e)
-                            return "400"
-
                 await mem.add_roles(g.get_role(int(role)))
                 await mem.send(embed=discord.Embed(
                     title=f"<:Tick:729064531107774534> Verified",
