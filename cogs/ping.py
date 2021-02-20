@@ -1,6 +1,7 @@
 from quart import Quart
 from discord.ext import commands
 import discord
+import aiohttp
 import asyncio
 import bot as customBot
 from config import config
@@ -29,12 +30,25 @@ class Ping(commands.Cog):
         async def stage():
             return str(config.stage.name)
 
-        @app.route("/role/gid/<string:guild>/rid/<string:role>/user/<string:user>/secret/<string:secret>")
-        async def role(guild, role, user, secret):
+        @app.route("/role/gid/<string:guild>/rid/<string:role>/user/<string:user>/secret/<string:secret>/code/<string:code>")
+        async def role(guild, role, user, secret, code):
             try:
                 if secret != "slwu0rZV5W6WdmGtgI16du8Ar2tQGMr3Q9dE6u3poKiVODNV9SweaA3buawgkTmTuITXDWOUpBcTFA0qWrUvoshi1JB180WOFwA7": return "403"
                 g = self.bot.get_guild(int(guild))
                 mem = await g.fetch_member(int(user))
+
+                async with aiohttp.ClientSession() as session:
+                    async with session.post(
+                        "https://clicksminuteper.net/api/validate",
+                        data={"code": code}
+                    ) as r:
+                        try:
+                            resp = await r.json()
+                            print(resp)
+                        except Exception as e:
+                            print(e)
+                            return "400"
+
                 await mem.add_roles(g.get_role(int(role)))
                 await mem.send(embed=discord.Embed(
                     title=f"<:Tick:729064531107774534> Verified",
