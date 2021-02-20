@@ -39,13 +39,12 @@ class Ping(commands.Cog):
 
                 async with aiohttp.ClientSession() as session:
                     async with session.post(
-                        "http://clicksminuteper.net/api/validate",
+                        "192.168.102.1/api/validate",
                         data={"code": code}
                     ) as r:
                         try:
                             resp = await r.text()
                             print(str(resp))
-                            print(await r.__dict__)
                         except Exception as e:
                             print(e)
                             return "400"
