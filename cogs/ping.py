@@ -38,13 +38,12 @@ class Ping(commands.Cog):
                 mem = await g.fetch_member(int(user))
 
                 async with aiohttp.ClientSession() as session:
-                    async with session.post(
+                    async with session.get(
                         "http://clicksminuteper.net/api/validate",
                         data={"code": code}
                     ) as r:
                         try:
-                            resp = await r.json()
-                            print(resp)
+                            print(r)
                         except Exception as e:
                             print(e)
                             return "400"
