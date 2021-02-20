@@ -39,7 +39,7 @@ class Ping(commands.Cog):
 
                 async with aiohttp.ClientSession() as session:
                     async with session.post(
-                        "https://clicksminuteper.net/api/validate",
+                        "http://clicksminuteper.net/api/validate",
                         data={"code": code}
                     ) as r:
                         try:
