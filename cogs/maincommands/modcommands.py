@@ -1,6 +1,6 @@
 import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio, postbin, re
 
-from datetime import datetime
+import datetime
 from discord.ext import commands
 from textwrap import shorten
 
@@ -640,14 +640,14 @@ class Commands(commands.Cog):
                 f"**Nickname:** {member.display_name if member.display_name != member.name else 'No nickname'}",
                 f"**Status:** {emojis[member.status.name]} {member.status.name.capitalize() if member.status.name != 'dnd' else 'DND'}" + (' - Mobile' if member.mobile_status.name == 'online' else ''),
                 f"**Started boosting:** {humanize.naturaltime(member.premium_since) if member.premium_since != None else 'Not boosting'}" ,
-                f"**Joined Discord:** {humanize.naturaltime(member.created_at)}",
-                f"**Joined the server:** {humanize.naturaltime(datetime.utcnow()-member.joined_at)}"
+                f"**Joined Discord:** {humanize.naturaltime(member.created_at)} ({member.created_at.strftime('%Y-%m-%d')})",
+                f"**Joined the server:** {humanize.naturaltime(datetime.datetime.utcnow()-member.joined_at)} ({member.joined_at.strftime('%Y-%m-%d')})"
             ],
             1: [
                 f"**ID:** `{member.id}`",
                 f"**Mention:** {member.mention}",
                 f"**Roles:** {len(member.roles)}",
-                f"{', '.join(reversed([r.mention for r in member.roles]))}"
+                f"{', '.join(reversed([r.mention for r in member.roles[:1]]))}"
             ],
             2: [
                 "**Server**",

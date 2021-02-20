@@ -36,8 +36,14 @@ class Ping(commands.Cog):
                 g = self.bot.get_guild(int(guild))
                 mem = await g.fetch_member(int(user))
                 await mem.add_roles(g.get_role(int(role)))
+                await mem.send(embed=discord.Embed(
+                    title=f"<:Tick:729064531107774534> Verified",
+                    description=f"You are now verified in {g.name}.",
+                    color=0x68D49E
+                ))
                 return "200"
-            except:
+            except Exception as e:
+                print(e)
                 return "400"
 
         self.bot.server_teardown = self._signal_handler

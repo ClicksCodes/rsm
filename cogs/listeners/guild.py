@@ -269,7 +269,7 @@ class Guild(commands.Cog):
                 log = self.get_log(after.guild)
                 e = discord.Embed(
                     title=emojis[changes[0]] + " Channel updated",
-                    description=(f"**Name:** {before.name} > {after.name} ({after.mention})\n" if "TitleUpdate" in changes else "") +
+                    description=(f"**Name:** {before.name} > {after.name} ({after.mention})\n" if "TitleUpdate" in changes else f"**Name:** {after.mention}") +
                                 (f"**Topic:** {before.topic} > {after.topic}\n" if "TopicUpdate" in changes else "") +
                                 (f"**NSFW:** {'Now NSFW' if 'nsfw_on' in changes else 'No longer NSFW'}\n" if "nsfw_on" in changes or "nsfw_off" in changes else "") +
                                 f"**Changed by:** {audit.user.mention}",
@@ -316,7 +316,7 @@ class Guild(commands.Cog):
         log = self.get_log(invite.guild)
         e = discord.Embed(
             title=emojis["invite_create"] + " Invite Created",
-            description=f"**Max Age:** {invite.max_age / 3600 if invite.max_age else 'Infinite'}\n"
+            description=f"**Max Age:** {((invite.max_age / 3600) + ' hours') if invite.max_age else 'Infinite'}\n"
                         f"**Max Uses:** {humanize.intcomma(invite.max_uses or 'infinite')}\n"
                         f"**Invite:** {invite.url}\n"
                         f"**Temporary:** {emojis['tick'] if invite.temporary else emojis['cross']}\n"
