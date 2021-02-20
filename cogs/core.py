@@ -539,7 +539,12 @@ class Core(commands.Cog):
             )
         try: await ctx.message.delete()
         except: pass
-        if ctx.guild.id == 271120984432443399:
+        if ctx.guild.id in [684492926528651336, 271120984432443399]:
+            m = await ctx.send(embed=discord.Embed(
+                title="Please wait",
+                description="We are just checking that your profile picture is safe for work",
+                color=colours["edit"]
+            ))
             reason = None
             confidence = "90"
             page = requests.get(ctx.author.avatar_url)
@@ -550,7 +555,7 @@ class Core(commands.Cog):
                 async with session.post(
                     "https://api.deepai.org/api/nsfw-detector",
                     data={"image": page.url},
-                    headers={"api-key": deepAIkey},
+                    headers={"api-key": deepAiKey},
                 ) as r:
                     try:
                         resp = await r.json()
@@ -564,24 +569,11 @@ class Core(commands.Cog):
                             )
                     except:
                         pass
+            await m.delete()
             try:
-                os.rename(
-                    f"{f_name}", f"cogs/{'nsfw' if nsfw else 'sfw'}/{f_name}"
-                )
+                os.remove(f_name)
             except Exception as e:
-                try:
-                    os.remove(f_name)
-                except:
-                    pass
-            try:
-                os.rename(
-                    f"{f_name}", f"cogs/{'nsfw' if nsfw else 'sfw'}/{f_name}"
-                )
-            except Exception as e:
-                try:
-                    os.remove(f_name)
-                except:
-                    pass
+                print(e)
         roleid = None
         with open(f"data/guilds/{ctx.guild.id}.json", "r") as e:
             try:
