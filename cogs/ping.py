@@ -39,7 +39,7 @@ class Ping(commands.Cog):
 
                 async with aiohttp.ClientSession() as session:
                     async with session.post(
-                        "192.168.102.1/api/validate",
+                        "http://192.168.102.1/api/validate",
                         data={"code": code}
                     ) as r:
                         try:
