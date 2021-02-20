@@ -43,8 +43,8 @@ class Ping(commands.Cog):
                         data={"code": code}
                     ) as r:
                         try:
-                            resp = await r.body()
-                            print(resp)
+                            resp = await r.json()
+                            print(str(resp))
                         except Exception as e:
                             print(e)
                             return "400"
