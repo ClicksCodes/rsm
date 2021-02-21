@@ -23,7 +23,7 @@ class GuildCommands(commands.Cog):
             g = ctx.guild
             n = '\n'
 
-            joins_x_values = sorted(m.created_at for m in g.roles)
+            joins_x_values = sorted(m.joined_at for m in g.members)
             plt.grid(True)
             fig, ax = plt.subplots(figsize=(10, 6))
             ax.plot(joins_x_values, tuple(range(1, len(joins_x_values) + 1)), 'k', lw=2, label="Members in server")
