@@ -1,4 +1,11 @@
-import copy, discord, json, humanize, aiohttp, traceback, typing, time
+import copy
+import discord
+import json
+import humanize
+import aiohttp
+import traceback
+import typing
+import time
 
 from datetime import datetime
 from discord.ext import commands
@@ -6,72 +13,99 @@ from textwrap import shorten
 
 from cogs.consts import *
 
+
 class NotLogging:
     def __init__(self, etype, reason, details="No Further Info", *, cog, guild):
         self.etype = etype
         self.reason = reason
         self.details = details
-        if cog and guild: cog.bot.loop.create_task(cog.vbl(guild, self))
+        if cog and guild:
+            cog.bot.loop.create_task(cog.vbl(guild, self))
         else:
             self.cog = None
             self.guild = None
 
-    def __str__(self): return f"Not logging event \"{self.etype}\" for reason: {self.reason}. See extra details in __repr__."""
-    def __repr__(self): return f"NotLogging(etype={self.etype} reason={self.reason} details={self.details})"
-    def __bool__(self): return False
+    def __str__(self):
+        return f"Not logging event \"{self.etype}\" for reason: {self.reason}. See extra details in __repr__."""
 
-async def get_alog_entry(ctx, *, type: discord.AuditLogAction, check = None):
+    def __repr__(self):
+        return f"NotLogging(etype={self.etype} reason={self.reason} details={self.details})"
+
+    def __bool__(self):
+        return False
+
+
+async def get_alog_entry(ctx, *, type: discord.AuditLogAction, check=None):
     """Retrieves the first matching audit log entry for the specified type.
 
     If you provide a check it MUST take an auditLogEntry as its only argument."""
-    if not ctx.guild.me.guild_permissions.view_audit_log: raise commands.BotMissingPermissions("view_audit_log")
+    if not ctx.guild.me.guild_permissions.view_audit_log:
+        raise commands.BotMissingPermissions("view_audit_log")
     async for log in ctx.guild.audit_logs(action=type):
         if check:
-            if check(log): return log
-            else: continue
-        else: return log
-    else: return None
+            if check(log):
+                return log
+            else:
+                continue
+        else:
+            return log
+    else:
+        return None
+
 
 class Users(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.session = aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10.0))
 
-    def tohex(self, i): return hex(i).split('x')[-1]
+    def tohex(self, i):
+        return hex(i).split('x')[-1]
 
-    def cog_unload(self): self.bot.loop.create_task(self.session.close())
+    def cog_unload(self):
+        self.bot.loop.create_task(self.session.close())
 
-    def is_logging(self, guild: discord.Guild, *, channel = None, member: discord.Member = None, eventname):
-        if not os.path.exists(f'data/guilds/{guild.id}.json'): return bool(NotLogging(eventname, "Guild not configured.", cog=self, guild=guild))
-        if eventname not in events.keys():                     return bool(NotLogging(eventname, "Event Name is not in registered events.", cog=self, guild=guild))
-        if not guild:                                          return bool(NotLogging(eventname, "Event occurred in DMs, thus has no targeted channel.", cog=self, guild=guild))
+    def is_logging(self, guild: discord.Guild, *, channel=None, member: discord.Member = None, eventname):
+        if not os.path.exists(f'data/guilds/{guild.id}.json'):
+            return bool(NotLogging(eventname, "Guild not configured.", cog=self, guild=guild))
+        if eventname not in events.keys():
+            return bool(NotLogging(eventname, "Event Name is not in registered events.", cog=self, guild=guild))
+        if not guild:
+            return bool(NotLogging(eventname, "Event occurred in DMs, thus has no targeted channel.", cog=self, guild=guild))
 
         try:
             with open(f"data/guilds/{guild.id}.json") as entry:
                 entry = json.load(entry)
                 if member:
-                    if member.bot and entry["ignore_info"]["ignore_bots"] is True: return bool(NotLogging(eventname, f"You are ignoring bots.", cog=self, guild=guild))
-                    if member.id in entry["ignore_info"]["members"]:               return bool(NotLogging(eventname, f"Member \"{member}\" is being ignored.", cog=self, guild=guild))
-                    if member == self.bot.user:                                    return bool(NotLogging(eventname, f"Not logging bot actions", cog=self, guild=guild))
+                    if member.bot and entry["ignore_info"]["ignore_bots"] is True:
+                        bool(NotLogging(eventname, f"You are ignoring bots.", cog=self, guild=guild))
+                    if member.id in entry["ignore_info"]["members"]:
+                        return bool(NotLogging(eventname, f"Member \"{member}\" is being ignored.", cog=self, guild=guild))
+                    if member == self.bot.user:
+                        return bool(NotLogging(eventname, f"Not logging bot actions", cog=self, guild=guild))
 
                 if channel:
-                    if channel.id in entry["ignore_info"]["channels"]:   return bool(NotLogging(eventname, f"Channel \"{channel}\" is being ignored.", cog=self, guild=guild))
-                    if channel.id == entry["log_info"]["log_channel"]:   return bool(NotLogging(eventname, f"This is the log channel.", cog=self, guild=guild))
-                if eventname.lower() not in entry["log_info"]["to_log"]: return bool(NotLogging(eventname, f"Guild is ignoring event \"{eventname}\".", cog=self, guild=guild))
-                if not entry["enabled"]:                                 return bool(NotLogging(eventname, f"This guild has disabled logs.", cog=self, guild=guild))
+                    if channel.id in entry["ignore_info"]["channels"]:
+                        return bool(NotLogging(eventname, f"Channel \"{channel}\" is being ignored.", cog=self, guild=guild))
+                    if channel.id == entry["log_info"]["log_channel"]:
+                        return bool(NotLogging(eventname, f"This is the log channel.", cog=self, guild=guild))
+                if eventname.lower() not in entry["log_info"]["to_log"]:
+                    return bool(NotLogging(eventname, f"Guild is ignoring event \"{eventname}\".", cog=self, guild=guild))
+                if not entry["enabled"]:
+                    return bool(NotLogging(eventname, f"This guild has disabled logs.", cog=self, guild=guild))
                 return True
-        except Exception as e: print(e)
+        except Exception as e:
+            print(e)
 
     def get_log(self, guild: discord.Guild):
         with open(f"data/guilds/{guild.id}.json") as f:
-            entry =  json.load(f)
+            entry = json.load(f)
             return self.bot.get_channel(entry["log_info"]["log_channel"])
 
     async def vbl(self, guild, e: NotLogging):
         """VerboseLog: Log NotLogging events if verbose is enabled"""
         return True
 
-    async def log(self, logType:str, guild:int, occurredAt:int, content:dict):
+    async def log(self, logType: str, guild: int, occurredAt: int, content: dict):
         try:
             with open(f"data/guilds/{guild}.json", 'r') as entry:
                 entry = json.load(entry)
@@ -79,15 +113,18 @@ class Users(commands.Cog):
                 entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
             with open(f"data/guilds/{guild}.json", 'w') as f:
                 json.dump(entry, f, indent=2)
-            try: json.loads(f"data/guilds/{guild}.json")
+            try:
+                json.loads(f"data/guilds/{guild}.json")
             except ValueError:
                 with open(f"data/guilds/{guild}.json", 'w') as f:
                     json.dump(entry, f, indent=2)
-        except: pass
+        except Exception as e:
+            print(e)
 
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
-        if not self.is_logging(member.guild, member=member, eventname="member_join"): return
+        if not self.is_logging(member.guild, member=member, eventname="member_join"):
+            return
         e = discord.Embed(
             title=(emojis["bot_join"] if member.bot else emojis["join"]) + f" Member Joined",
             description=f"**Name:** {member.mention}\n"
@@ -114,9 +151,11 @@ class Users(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member):
-        if not self.is_logging(member.guild, member=member, eventname="member_leave"): return
+        if not self.is_logging(member.guild, member=member, eventname="member_leave"):
+            return
         audit = await get_alog_entry(member, type=discord.AuditLogAction.ban)
-        if audit.target.id == member.id: return
+        if audit.target.id == member.id:
+            return
         e = discord.Embed(
             title=(emojis["bot_leave"] if member.bot else emojis["leave"]) + f" Member Left",
             description=f"**Name:** {member.name}\n"
@@ -145,13 +184,14 @@ class Users(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_ban(self, guild, member: discord.Member):
-        if not self.is_logging(member.guild, member=member, eventname="member_ban"): return
+        if not self.is_logging(member.guild, member=member, eventname="member_ban"):
+            return
         audit = await get_alog_entry(member, type=discord.AuditLogAction.ban)
         e = discord.Embed(
             title=emojis["ban"] + f" Member Banned",
             description=f"**Name:** {member.name}\n"
                         f"**Banned By:** {audit.user.mention}\n"
-                        f"**Reason:** {audit.reason if audit.reason != None else 'No reason provided'}",
+                        f"**Reason:** {audit.reason if audit.reason is not None else 'No reason provided'}",
             color=events["member_ban"][0],
             timestamp=datetime.utcnow()
         )
@@ -164,13 +204,14 @@ class Users(commands.Cog):
             content={
                 "username": member.id,
                 "bannedBy": audit.user.id,
-                "reason": audit.reason if audit.reason != None else 'No reason provided'
+                "reason": audit.reason if audit.reason is not None else 'No reason provided'
             }
         )
 
     @commands.Cog.listener()
     async def on_member_unban(self, guild, member: discord.Member):
-        if not self.is_logging(guild, member=member, eventname="member_unban"): return
+        if not self.is_logging(guild, member=member, eventname="member_unban"):
+            return
         audit = await get_alog_entry(guild.channels[0], type=discord.AuditLogAction.unban)
         e = discord.Embed(
             title=emojis["unban"] + f" Member Unbanned",
@@ -193,8 +234,10 @@ class Users(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
-        if not self.is_logging(after.guild, eventname="nickname_change"): return
-        elif before.nick == after.nick: return
+        if not self.is_logging(after.guild, eventname="nickname_change"):
+            return
+        elif before.nick == after.nick:
+            return
         audit = await get_alog_entry(after, type=discord.AuditLogAction.member_update)
         e = discord.Embed(
             title=emojis["nickname_change"] + f" Nickname Changed",
@@ -221,8 +264,9 @@ class Users(commands.Cog):
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, m, before, after):
-        if before.channel == None and after.channel != None:
-            if not self.is_logging(after.channel.guild, eventname="connect"): return
+        if before.channel is None and after.channel is not None:
+            if not self.is_logging(after.channel.guild, eventname="connect"):
+                return
             e = discord.Embed(
                 title=emojis["Connect"] + f" Joined voice channel",
                 description=f"**User:** {m.mention}\n"
@@ -241,8 +285,9 @@ class Users(commands.Cog):
                     "channel": after.channel.name
                 }
             )
-        elif before.channel != None and after.channel == None:
-            if not self.is_logging(before.channel.guild, eventname="disconnect"): return
+        elif before.channel is not None and after.channel is None:
+            if not self.is_logging(before.channel.guild, eventname="disconnect"):
+                return
             e = discord.Embed(
                 title=emojis["Leave"] + f" Left voice channel",
                 description=f"**User:** {m.mention}\n"
@@ -261,8 +306,9 @@ class Users(commands.Cog):
                     "channel": before.channel.name
                 }
             )
-        elif before.channel != None and after.channel != None and before.channel != after.channel:
-            if not self.is_logging(after.channel.guild, eventname="move"): return
+        elif before.channel is not None and after.channel is not None and before.channel != after.channel:
+            if not self.is_logging(after.channel.guild, eventname="move"):
+                return
             e = discord.Embed(
                 title=emojis["Change"] + f" Change voice channel",
                 description=f"**User:** {m.mention}\n"
@@ -282,7 +328,8 @@ class Users(commands.Cog):
                 }
             )
         elif after.deaf and not before.deaf:
-            if not self.is_logging(after.channel.guild, eventname="server_deafen"): return
+            if not self.is_logging(after.channel.guild, eventname="server_deafen"):
+                return
             e = discord.Embed(
                 title=emojis["Deafen"] + f" Server deafen",
                 description=f"**User:** {m.mention}\n"
@@ -302,7 +349,8 @@ class Users(commands.Cog):
                 }
             )
         elif before.deaf and not after.deaf:
-            if not self.is_logging(after.channel.guild, eventname="server_undeafen"): return
+            if not self.is_logging(after.channel.guild, eventname="server_undeafen"):
+                return
             e = discord.Embed(
                 title=emojis["Deafen"] + f" Server undeafen",
                 description=f"**User:** {m.mention}\n"
@@ -322,7 +370,8 @@ class Users(commands.Cog):
                 }
             )
         elif after.mute and not before.mute:
-            if not self.is_logging(after.channel.guild, eventname="server_mute"): return
+            if not self.is_logging(after.channel.guild, eventname="server_mute"):
+                return
             e = discord.Embed(
                 title=emojis["Mute"] + f" Server mute",
                 description=f"**User:** {m.mention}\n"
@@ -342,7 +391,8 @@ class Users(commands.Cog):
                 }
             )
         elif before.mute and not after.mute:
-            if not self.is_logging(after.channel.guild, eventname="server_unmute"): return
+            if not self.is_logging(after.channel.guild, eventname="server_unmute"):
+                return
             e = discord.Embed(
                 title=emojis["Unmute"] + f" Server unmute",
                 description=f"**User:** {m.mention}\n"
@@ -362,7 +412,8 @@ class Users(commands.Cog):
                 }
             )
         elif after.self_deaf and not before.self_deaf:
-            if not self.is_logging(after.channel.guild, eventname="deafen"): return
+            if not self.is_logging(after.channel.guild, eventname="deafen"):
+                return
             e = discord.Embed(
                 title=emojis["Deafen"] + f" Deafen",
                 description=f"**User:** {m.mention}\n"
@@ -382,7 +433,8 @@ class Users(commands.Cog):
                 }
             )
         elif before.self_deaf and not after.self_deaf:
-            if not self.is_logging(after.channel.guild, eventname="undeafen"): return
+            if not self.is_logging(after.channel.guild, eventname="undeafen"):
+                return
             e = discord.Embed(
                 title=emojis["Undeafen"] + f" Undeafen",
                 description=f"**User:** {m.mention}\n"
@@ -402,7 +454,8 @@ class Users(commands.Cog):
                 }
             )
         elif after.self_mute and not before.self_mute:
-            if not self.is_logging(after.channel.guild, eventname="mute"): return
+            if not self.is_logging(after.channel.guild, eventname="mute"):
+                return
             e = discord.Embed(
                 title=emojis["Mute"] + f" Mute",
                 description=f"**User:** {m.mention}\n"
@@ -422,7 +475,8 @@ class Users(commands.Cog):
                 }
             )
         elif before.self_mute and not after.self_mute:
-            if not self.is_logging(after.channel.guild, eventname="unmute"): return
+            if not self.is_logging(after.channel.guild, eventname="unmute"):
+                return
             e = discord.Embed(
                 title=emojis["Unmute"] + f" Unmute",
                 description=f"**User:** {m.mention}\n"
@@ -441,6 +495,7 @@ class Users(commands.Cog):
                     "channel": after.channel.name
                 }
             )
+
 
 def setup(bot):
     bot.add_cog(Users(bot))
