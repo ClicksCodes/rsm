@@ -106,20 +106,21 @@ class Messages(commands.Cog):
         return True
 
     async def log(self, logType: str, guild: int, occurredAt: int, content: dict):
-        try:
-            with open(f"data/guilds/{guild}.json", 'r') as entry:
-                entry = json.load(entry)
-                logID = len(entry)-4
-                entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
-            with open(f"data/guilds/{guild}.json", 'w') as f:
-                json.dump(entry, f, indent=2)
-            try:
-                json.loads(f"data/guilds/{guild}.json")
-            except ValueError:
-                with open(f"data/guilds/{guild}.json", 'w') as f:
-                    json.dump(entry, f, indent=2)
-        except Exception as e:
-            print(e)
+        pass
+        # try:
+        #     with open(f"data/guilds/{guild}.json", 'r') as entry:
+        #         entry = json.load(entry)
+        #         logID = len(entry)-4
+        #         entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
+        #     with open(f"data/guilds/{guild}.json", 'w') as f:
+        #         json.dump(entry, f, indent=2)
+        #     try:
+        #         json.loads(f"data/guilds/{guild}.json")
+        #     except ValueError:
+        #         with open(f"data/guilds/{guild}.json", 'w') as f:
+        #             json.dump(entry, f, indent=2)
+        # except Exception as e:
+        #     print(e)
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.message):
@@ -426,12 +427,10 @@ class Messages(commands.Cog):
         else:
             message = await channel.fetch_message(audit.extra.message_id)
         e = discord.Embed(
-            title=emojis["pinned"] + f" Message {'un' if not message.pinned else ''}pinned",
-            description=(
-                (f"**Message:**```{shorten(message.clean_content, 2042).replace('```', '***')}```\n" if message.content else "")
-                f"**Message by:** {message.author.mention}\n"
-                f"**In:** {message.channel.mention}"
-            ),
+            title=(emojis["pinned"] + f" Message {'un' if not message.pinned else ''}pinned"),
+            description=(f"**Message:**```{shorten(message.clean_content, 2042).replace('```', '***')}```\n" if message.content else "") + \
+                        f"**Message by:** {message.author.mention}\n"
+                        f"**In:** {message.channel.mention}",
             color=events["channel_pins_update"][0],
             timestamp=datetime.utcnow()
         )

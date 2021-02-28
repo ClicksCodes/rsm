@@ -20,6 +20,7 @@
         "cogs.listeners.guild",
         "cogs.listeners.messages",
         "cogs.listeners.users",
+        "cogs.listeners.images",
 
         "cogs.maincommands.modcommands",
         "cogs.maincommands.info",

@@ -106,20 +106,21 @@ class Users(commands.Cog):
         return True
 
     async def log(self, logType: str, guild: int, occurredAt: int, content: dict):
-        try:
-            with open(f"data/guilds/{guild}.json", 'r') as entry:
-                entry = json.load(entry)
-                logID = len(entry)-4
-                entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
-            with open(f"data/guilds/{guild}.json", 'w') as f:
-                json.dump(entry, f, indent=2)
-            try:
-                json.loads(f"data/guilds/{guild}.json")
-            except ValueError:
-                with open(f"data/guilds/{guild}.json", 'w') as f:
-                    json.dump(entry, f, indent=2)
-        except Exception as e:
-            print(e)
+        pass
+        # try:
+        #     with open(f"data/guilds/{guild}.json", 'r') as entry:
+        #         entry = json.load(entry)
+        #         logID = len(entry)-4
+        #         entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
+        #     with open(f"data/guilds/{guild}.json", 'w') as f:
+        #         json.dump(entry, f, indent=2)
+        #     try:
+        #         json.loads(f"data/guilds/{guild}.json")
+        #     except ValueError:
+        #         with open(f"data/guilds/{guild}.json", 'w') as f:
+        #             json.dump(entry, f, indent=2)
+        # except Exception as e:
+        #     print(e)
 
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
@@ -184,9 +185,9 @@ class Users(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_ban(self, guild, member: discord.Member):
-        if not self.is_logging(member.guild, member=member, eventname="member_ban"):
+        if not self.is_logging(guild, member=member, eventname="member_ban"):
             return
-        audit = await get_alog_entry(member, type=discord.AuditLogAction.ban)
+        audit = await get_alog_entry(guild.roles[0], type=discord.AuditLogAction.ban)
         e = discord.Embed(
             title=emojis["ban"] + f" Member Banned",
             description=f"**Name:** {member.name}\n"
@@ -195,12 +196,12 @@ class Users(commands.Cog):
             color=events["member_ban"][0],
             timestamp=datetime.utcnow()
         )
-        log = self.get_log(member.guild)
+        log = self.get_log(guild)
         await log.send(embed=e)
         return await self.log(
             logType="memberBan",
             occurredAt=round(time.time()),
-            guild=member.guild.id,
+            guild=guild.id,
             content={
                 "username": member.id,
                 "bannedBy": audit.user.id,

@@ -106,37 +106,38 @@ class Guild(commands.Cog):
         return True
 
     async def log(self, logType: str, guild: int, occurredAt: int, content: dict):
-        try:
-            with open(f"data/guilds/{guild}.json", 'r') as entry:
-                entry = json.load(entry)
-                logID = len(entry)-4
-                entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
-            with open(f"data/guilds/{guild}.json", 'w') as f:
-                json.dump(entry, f, indent=2)
-            try:
-                json.loads(f"data/guilds/{guild}.json")
-            except ValueError:
-                with open(f"data/guilds/{guild}.json", 'w') as f:
-                    json.dump(entry, f, indent=2)
-        except Exception as e:
-            print(e)
+        pass
+        # try:
+        #     with open(f"data/guilds/{guild}.json", 'r') as entry:
+        #         entry = json.load(entry)
+        #         logID = len(entry)-4
+        #         entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
+        #     with open(f"data/guilds/{guild}.json", 'w') as f:
+        #         json.dump(entry, f, indent=2)
+        #     try:
+        #         json.loads(f"data/guilds/{guild}.json")
+        #     except ValueError:
+        #         with open(f"data/guilds/{guild}.json", 'w') as f:
+        #             json.dump(entry, f, indent=2)
+        # except Exception as e:
+        #     print(e)
 
     @commands.Cog.listener()
     async def on_guild_update(self, before, after):
         changes = []
         if (before.name != after.name) and self.is_logging(after, eventname="name_changed"):
-            changes.append("name_change")
+            changes.append("name_changed")
         if (before.verification_level.name != after.verification_level.name) and self.is_logging(after, eventname="mod_changed"):
-            changes.append("mod_update")
+            changes.append("mod_changed")
         if (before.icon_url != after.icon_url) and self.is_logging(after, eventname="icon_update"):
             changes.append("icon_update")
         if len(changes):
-            audit = await get_alog_entry(self, type=discord.AuditLogAction.guild_update)
+            audit = await get_alog_entry(after.roles[0], type=discord.AuditLogAction.guild_update)
             log = self.get_log(after)
             e = discord.Embed(
                 title=emojis[changes[0]] + " Server updated",
-                description=f"**Name:** {before.name} > {after.name}\n" if "name_change" in changes else ""
-                            f"**Mod Level:** {before.verification_level.name.capitalize()} > {after.verification_level.name.capitalize()}\n" if "mod_update" in changes else ""
+                description=f"**Name:** {before.name} > {after.name}\n" if "name_changed" in changes else ""
+                            f"**Mod Level:** {before.verification_level.name.capitalize()} > {after.verification_level.name.capitalize()}\n" if "mod_changed" in changes else ""
                             f"**Icon:** [Before]({before.icon_url}) > [After]({after.icon_url})\n" if "icon_update" in changes else ""
                             f"**Changed by:** {audit.user.mention}",
                 color=events[changes[0]][0],
@@ -331,7 +332,7 @@ class Guild(commands.Cog):
                 e = discord.Embed(
                     title=emojis[changes[0]] + " Channel updated",
                     description=(
-                        (f"**Name:** {before.name} > {after.name} ({after.mention})\n" if "TitleUpdate" in changes else f"**Name:** {after.mention}") +
+                        (f"**Name:** {before.name} > {after.name} ({after.mention})\n" if "TitleUpdate" in changes else f"**Name:** {after.mention}\n") +
                         (f"**Topic:** {before.topic} > {after.topic}\n" if "TopicUpdate" in changes else "") +
                         (f"**NSFW:** {'Now NSFW' if 'nsfw_on' in changes else 'No longer NSFW'}\n" if "nsfw_on" in changes or "nsfw_off" in changes else "") +
                         (f"**Changed by:** {audit.user.mention}")
@@ -352,7 +353,7 @@ class Guild(commands.Cog):
                     }
                 )
         else:
-            log = self.get_log(after)
+            log = self.get_log(after.guild)
             if before.name != after.name:
                 e = discord.Embed(
                     title=emojis["catEdit"] + " Category updated",
@@ -477,13 +478,11 @@ class Guild(commands.Cog):
         if audit.user.id != self.bot.user.id:
             e = discord.Embed(
                 title=emojis["role_edit"] + f" Role Edited",
-                description=(
-                    (f"**ID:** `{after.id}`\n")
-                    (f"**Name:** {before.name} > {after.name}\n" if before.name != after.name else f"**Name:** {after.name}\n")
-                    (f"**Position:** {before.position} > {after.position}\n" if before.position != after.position else "")
-                    (f"**Colour:** {self.tohex(before.colour.value)} > {self.tohex(after.colour.value)}\n" if before.colour.value != after.colour.value else "")
-                    (f"**Edited by:** {audit.user.mention}")
-                ),
+                description=(f"**ID:** `{after.id}`\n") + \
+                            (f"**Name:** {before.name} > {after.name}\n" if before.name != after.name else f"**Name:** {after.name}\n") + \
+                            (f"**Position:** {before.position} > {after.position}\n" if before.position != after.position else "") + \
+                            (f"**Colour:** #{self.tohex(before.colour.value)} > #{self.tohex(after.colour.value)}\n" if before.colour.value != after.colour.value else "") + \
+                            f"**Edited by:** {audit.user.mention}",
                 color=events["roles"][0],
                 timestamp=datetime.utcnow()
             )

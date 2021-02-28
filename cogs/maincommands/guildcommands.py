@@ -1,4 +1,14 @@
-import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio, io, math
+import copy
+import discord
+import json
+import humanize
+import aiohttp
+import traceback
+import typing
+import time
+import asyncio
+import io
+import math
 
 import datetime as dt
 from discord.ext import commands

@@ -21,7 +21,7 @@ from colorthief import ColorThief as cf
 
 from cogs.consts import *
 from config import config
-deepAiKey = config.deepAiKey
+deepAIkey = config.deepAIkey
 
 
 class NotLogging:
@@ -98,30 +98,33 @@ class ImageDetect(commands.Cog):
         return True
 
     async def log(self, logType: str, guild: int, occurredAt: int, content: dict):
-        try:
-            with open(f"data/guilds/{guild}.json", 'r') as entry:
-                entry = json.load(entry)
-                logID = len(entry)-4
-                entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
-            with open(f"data/guilds/{guild}.json", 'w') as f:
-                json.dump(entry, f, indent=2)
-            try:
-                json.loads(f"data/guilds/{guild}.json")
-            except ValueError:
-                with open(f"data/guilds/{guild}.json", 'w') as f:
-                    json.dump(entry, f, indent=2)
-        except Exception as e:
-            print(e)
+        pass
+        # try:
+        #     with open(f"data/guilds/{guild}.json", 'r') as entry:
+        #         entry = json.load(entry)
+        #         logID = len(entry)-4
+        #         entry[logID] = {"logType": logType, "occurredAt": occurredAt, "content": content}
+        #     with open(f"data/guilds/{guild}.json", 'w') as f:
+        #         json.dump(entry, f, indent=2)
+        #     try:
+        #         json.loads(f"data/guilds/{guild}.json")
+        #     except ValueError:
+        #         with open(f"data/guilds/{guild}.json", 'w') as f:
+        #             json.dump(entry, f, indent=2)
+        # except Exception as e:
+        #     print(e)
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.message):
+        if message.guild.id != 684492926528651336:
+            return
         att = [a.url for a in message.attachments]
         att += re.findall(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", message.content)
 
         if len(att):
             for attachment in att:
                 page = requests.get(attachment)
-                f_name = f'{random.randint(0,9999999999999999)}.png'
+                f_name = f'tmp/{message.channel.id}{message.id}.png'
                 with open(f_name, 'wb') as f:
                     f.write(page.content)
                 try:
@@ -136,17 +139,18 @@ class ImageDetect(commands.Cog):
                         return
                     if min(dimensions) < low_thresh:
                         await message.channel.send('Too small')
-                    if max(dimensions) > up_thresh:
-                        await message.channel.send('Too large')
+                    # if max(dimensions) > up_thresh:
+                    #     await message.channel.send('Too large')
 
-                    # if dimensions[1] > dimensions[0]:
-                    #     w = 5000
-                    #     h = (w//(dimensions[1] if dimensions[1] != 0 else 10)) * dimensions[0]
-                    # else:
-                    #     h = 5000
-                    #     w = (h//(dimensions[0] if dimensions[0] != 0 else 10)) * dimensions[1]
-                    # dim = (w, h)
-                    # img = cv2.resize(img, dim)
+                    if dimensions[1] > dimensions[0]:
+                        w = 5000
+                        h = (w//(dimensions[1] if dimensions[1] != 0 else 10)) * dimensions[0]
+                    else:
+                        h = 5000
+                        w = (h//(dimensions[0] if dimensions[0] != 0 else 10)) * dimensions[1]
+
+                    dim = (w, h)
+                    img = cv2.resize(img, dim)
                     custom_config = r'--oem 3 --psm 6'
 
                     read_start = time.time()
@@ -187,7 +191,8 @@ class ImageDetect(commands.Cog):
                                 nsfw = False
                             try:
                                 reason = ",".join([x['name']] for x in resp['output']['detections'])
-                                confidence = max([int(x['confidence'])*100] for x in resp['output']['detections'])
+                                detections = len(resp['output']['detections'])
+                                score = resp['output']['nsfw_score'] * 100
                             except Exception as e:
                                 print(e)
                             if "Exposed" in reason:
@@ -199,37 +204,35 @@ class ImageDetect(commands.Cog):
                         conf = str(resp['output'])
                     end = time.time()
 
-                    e = discord.Embed(
-                        title="Image sent",
-                        description=f"**Size:** {dimensions[0]}x{dimensions[1]}\n"
-                                    f"**NSFW:** {emojis['tick'] if nsfw else emojis['cross']}\n"
-                                    f"**Reason:** {reason}\n"
-                                    f"**Text:** {text}\n"
-                                    f"**RGB Colour:** {dc}\n"
-                                    f"**Blank Image:** {emojis['tick'] if blank else emojis['cross']}\n"
-                                    f"**Image Read Time Taken:** {round(read_end - read_start, 2)}s\n"
-                                    f"**Web Request Time Taken:** {round(end - start, 2)}s",
-                        color=discord.Color(0x00ff00)
-                    )
-                    if message.author.bot is False:
-                        await message.channel.send(embed=e)
+                    # e = discord.Embed(
+                    #     title="Image sent",
+                    #     description=f"**Size:** {dimensions[0]}x{dimensions[1]}\n"
+                    #                 f"**NSFW:** {emojis['tick'] if nsfw else emojis['cross']}\n"
+                    #                 f"**Reason:** {reason} ({detections} detections, {round(score, 2)}% NSFW)\n"
+                    #                 f"**Text:** {text}\n"
+                    #                 f"**RGB Colour:** {dc}\n"
+                    #                 f"**Blank Image:** {emojis['tick'] if blank else emojis['cross']}\n"
+                    #                 f"**Image Read Time Taken:** {round(read_end - read_start, 2)}s\n"
+                    #                 f"**Web Request Time Taken:** {round(end - start, 2)}s",
+                    #     color=discord.Color(0x00ff00)
+                    # )
+                    # if message.author.bot is False:
+                    #     await message.channel.send(embed=e)
+                    if nsfw:
+                        await message.delete()
+                        await message.send(embed=discord.Embed(
+                            title="Your message was NSFW",
+                            description="If you believe this was a mistake, please let us know. Just DM a member of Clicks Leadership with"
+                                        f" the image, along with this:\n```{await resp.json()}```",
+                            color=colours["delete"]
+                        ))
                 except Exception as e:
                     print(e)
-                finally:
-                    try:
-                        os.rename(f"{f_name}", f"cogs/{'nsfw' if nsfw else 'sfw'}/{f_name}")
-                    except Exception as e:
-                        try:
-                            os.remove(f_name)
-                        except Exception as e:
-                            print(e)
-                    try:
-                        os.rename(f"{f_name}", f"cogs/{'nsfw' if nsfw else 'sfw'}/{f_name}")
-                    except Exception as e:
-                        try:
-                            os.remove(f_name)
-                        except Exception as e:
-                            print(e)
+
+                try:
+                    os.remove(f_name)
+                except Exception as e:
+                    print(e)
 
 
 def setup(bot):
