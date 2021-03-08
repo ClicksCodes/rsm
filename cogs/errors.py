@@ -24,17 +24,17 @@ class Errors(commands.Cog):
                 code = ctx.message.id
 
             if isinstance(error, commands.errors.NoPrivateMessage):
-                return print(f"{C['GreenDark']}[N] {C['Green']}{str(error)}{C['c']}")
+                return print(f"{C.GreenDark.value}[N] {C.Green.value}{str(error)}{C.c.value}")
             elif isinstance(error, commands.errors.BotMissingPermissions):
-                return print(f"{C['GreenDark']}[N] {C['Green']}{str(error)}{C['c']}")
+                return print(f"{C.GreenDark.value}[N] {C.Green.value}{str(error)}{C.c.value}")
             elif isinstance(error, commands.errors.CommandNotFound):
-                return print(f"{C['GreenDark']}[N] {C['Green']}{str(error)}{C['c']}")
+                return print(f"{C.GreenDark.value}[N] {C.Green.value}{str(error)}{C.c.value}")
             elif isinstance(error, asyncio.TimeoutError):
-                return print(f"{C['GreenDark']}[N] {C['Green']}{str(error)}{C['c']}")
+                return print(f"{C.GreenDark.value}[N] {C.Green.value}{str(error)}{C.c.value}")
             elif isinstance(error, commands.errors.NotOwner):
-                return print(f"{C['GreenDark']}[N] {C['Green']}{str(error)}{C['c']}")
+                return print(f"{C.GreenDark.value}[N] {C.Green.value}{str(error)}{C.c.value}")
             elif isinstance(error, commands.errors.TooManyArguments):
-                return print(f"{C['GreenDark']}[N] {C['Green']}{str(error)}{C['c']}")
+                return print(f"{C.GreenDark.value}[N] {C.Green.value}{str(error)}{C.c.value}")
             elif isinstance(error, commands.errors.MissingPermissions):
                 return await ctx.send(
                     embed=discord.Embed(
@@ -98,7 +98,7 @@ class Errors(commands.Cog):
         exc_type, exc, tb_type = sys.exc_info()
         tb = "".join(traceback.format_exception(exc_type, exc, tb_type))
         tb = f"Event ran: {event}\nArgs:{', '.join(args)}\n\n{tb}"
-        return print(f"{C.RedDark}[C] {C.Red}Error Below\n{tb}{C.c}")
+        return print(f"{C.RedDark.value}[C] {C.Red.value}Error Below\n{tb}{C.c.value}")
 
     # noinspection PyUnresolvedReferences
     @commands.command()
