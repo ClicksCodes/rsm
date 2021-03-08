@@ -9,8 +9,8 @@ import time
 import asyncio
 import io
 import math
+import datetime
 
-import datetime as dt
 from discord.ext import commands
 from textwrap import shorten
 import matplotlib.pyplot as plt
@@ -210,6 +210,7 @@ class GuildCommands(commands.Cog):
             e=discord.Embed(
                 title="Server stats",
                 description=f"**Name:** {g.name}{n}"
+                            f"**Created:** {g.created_at.strftime('%Y-%m-%d')}@{g.created_at.strftime('%H:%M')} ({humanize.naturaldelta(datetime.datetime.now() - g.created_at)}){n}"
                             f"**Region:** {flag} {str(g.region).replace('-', ' ').capitalize()}{n}"
                             f"**Emojis:** {len(g.emojis)}{n}"
                             f"**Icon:** [Discord.com](https://cdn.discordapp.com/icons/{g.id}/{g.icon}){n}"
@@ -790,7 +791,7 @@ class GuildCommands(commands.Cog):
 
         await m.edit(embed=discord.Embed(
             title=f"{emojis['loading']} Please wait",
-            description=f"This will take about {humanize.naturaldelta(dt.timedelta(seconds=len(ctx.guild.members)))}",
+            description=f"This will take about {humanize.naturaldelta(datetime.timedelta(seconds=len(ctx.guild.members)))}",
             color=colours["create"]
         ))
         await m.clear_reactions()

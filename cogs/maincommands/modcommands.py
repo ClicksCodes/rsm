@@ -93,9 +93,10 @@ class Commands(commands.Cog):
     async def warnPun(self, m, member, ctx, reason=None):
         createEmbed = self.createEmbed
         try:
-            if not ctx.author.guild_permissions.kick_members:   return await m.edit(embed=createEmbed(f"{emojis['PunWarn']} Looks like you don't have permissions", "You need the `kick_members` permission to warn someone.", colours["delete"]))
-            if not ctx.guild.me.guild_permissions.kick_members: return await m.edit(embed=createEmbed(f"{emojis['PunWarn']} Looks like I don't have permissions", "I need the `kick_members` permission to warn someone.", colours["delete"]))
-        except: return
+            if not ctx.author.guild_permissions.manage_messages:
+                return await m.edit(embed=createEmbed(f"{emojis['PunWarn']} Looks like you don't have permissions", "You need the `manage_messages` permission to warn someone.", colours["delete"]))
+        except:
+            return
 
         with open(f"data/stats.json", 'r') as entry:
                 entry = json.load(entry)
@@ -613,6 +614,7 @@ class Commands(commands.Cog):
                 f"{emojis['graphs']        } `{prefix}stats         {'' if mob else '|'} ` {n if mob else ''}Shows the bot statistics",
                 f"{emojis['settings']      } `{prefix}settings      {'' if mob else '|'} ` {n if mob else ''}Shows your servers log settings.",
                 f"{emojis['join']          } `{prefix}user     [*@] {'' if mob else '|'} ` {n if mob else ''}Shows information about a user.",
+                f"{emojis['join']          } `{prefix}avatar   [*@] {'' if mob else '|'} ` {n if mob else ''}Shows a users avatar.",
                 f"{emojis['role_edit']     } `{prefix}roleall  [*T] {'' if mob else '|'} ` {n if mob else ''}Role all humans or bots in the server. [T] to search",
                 f"{emojis['support']       } `{prefix}contact   [T] {'' if mob else '|'} ` {n if mob else ''}Sends [T] to the staff for support.",
                 f"{emojis['commands']      } `{prefix}suggest   [T] {'' if mob else '|'} ` {n if mob else ''}Sends [T] to the staff to add to the bot for voting.",
@@ -786,8 +788,8 @@ class Commands(commands.Cog):
             1: [
                 f"**ID:** `{member.id}`",
                 f"**Mention:** {member.mention}",
-                f"**Roles:** {len(member.roles)}",
-                f"{', '.join(reversed([r.mention for r in member.roles[:1]]))}"
+                f"**Roles:** {len(member.roles)-1}",
+                f"{', '.join(reversed([r.mention for r in member.roles[1:]]))}"
             ],
             2: [
                 "**Server**",
@@ -934,6 +936,19 @@ class Commands(commands.Cog):
                 description="I can't change that person's nickname",
                 color=colours["delete"]
             ))
+
+    @commands.command(aliases=["av"])
+    @commands.guild_only()
+    async def avatar(self, ctx, user: typing.Optional[discord.Member]):
+        if not user:
+            user = ctx.author
+        embed = discord.Embed(
+            title=f"{emojis['join']} Avatar",
+            description=f"URL: {user.avatar_url}",
+            color=colours["create"]
+        )
+        embed.set_image(url=user.avatar_url)
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Commands(bot))

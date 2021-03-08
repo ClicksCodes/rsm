@@ -24,17 +24,17 @@ class Errors(commands.Cog):
                 code = ctx.message.id
 
             if isinstance(error, commands.errors.NoPrivateMessage):
-                return print(f"{C.GreenDark}[N] {C.Green}{str(error)}{C.c}")
+                return print(f"{C['GreenDark']}[N] {C['Green']}{str(error)}{C['c']}")
             elif isinstance(error, commands.errors.BotMissingPermissions):
-                return print(f"{C.GreenDark}[N] {C.Green}{str(error)}{C.c}")
+                return print(f"{C['GreenDark']}[N] {C['Green']}{str(error)}{C['c']}")
             elif isinstance(error, commands.errors.CommandNotFound):
-                return print(f"{C.GreenDark}[N] {C.Green}{str(error)}{C.c}")
+                return print(f"{C['GreenDark']}[N] {C['Green']}{str(error)}{C['c']}")
             elif isinstance(error, asyncio.TimeoutError):
-                return print(f"{C.GreenDark}[N] {C.Green}{str(error)}{C.c}")
+                return print(f"{C['GreenDark']}[N] {C['Green']}{str(error)}{C['c']}")
             elif isinstance(error, commands.errors.NotOwner):
-                return print(f"{C.GreenDark}[N] {C.Green}{str(error)}{C.c}")
+                return print(f"{C['GreenDark']}[N] {C['Green']}{str(error)}{C['c']}")
             elif isinstance(error, commands.errors.TooManyArguments):
-                return print(f"{C.GreenDark}[N] {C.Green}{str(error)}{C.c}")
+                return print(f"{C['GreenDark']}[N] {C['Green']}{str(error)}{C['c']}")
             elif isinstance(error, commands.errors.MissingPermissions):
                 return await ctx.send(
                     embed=discord.Embed(

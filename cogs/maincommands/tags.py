@@ -39,7 +39,7 @@ class Tags(commands.Cog):
             m = await ctx.send(embed=loadingEmbed)
             try:
                 if not ctx.author.guild_permissions.manage_messages: return await m.edit(embed=self.createEmbed(f"{emojis['store_delete']} Looks like you don't have permissions", "You need the `manage_messages` permission to edit tags.", colours["delete"]))
-                else: print("fine")
+                else: pass
             except: return
             with open(f"data/guilds/{ctx.guild.id}.json", 'r') as e:
                 entry = json.load(e)
