@@ -1,10 +1,20 @@
-import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio, os
+import copy
+import discord
+import json
+import humanize
+import aiohttp
+import traceback
+import typing
+import time
+import asyncio
+import os
 
 from datetime import datetime
 from discord.ext import commands
 from textwrap import shorten
 
 from cogs.consts import *
+
 
 class InfoCommands(commands.Cog):
     def __init__(self, bot):
@@ -27,14 +37,16 @@ class InfoCommands(commands.Cog):
     @commands.command()
     @commands.cooldown(2, 30, commands.BucketType.user)
     async def suggest(self, ctx, *, msg: typing.Optional[str]):
-        try: await ctx.message.delete()
-        except: pass
+        try:
+            await ctx.message.delete()
+        except Exception as e:
+            print(e)
         if not msg:
             return await ctx.send(embed=discord.Embed(
-            title=f"{emojis['cross']} No suggestion",
-            description=f"Please enter a suggestion after `{ctx.prefix}suggest`.",
-            color=colours["delete"]
-        ), delete_after=10)
+                title=f"{emojis['cross']} No suggestion",
+                description=f"Please enter a suggestion after `{ctx.prefix}suggest`.",
+                color=colours["delete"]
+            ), delete_after=10)
         r = await self.bot.get_channel(777214577187487744).send(embed=discord.Embed(
             title="Suggestion",
             description=f"Ticket: `{ctx.author.id}`\nName: `{ctx.author.name}`\n\n" + str(msg),
@@ -51,14 +63,16 @@ class InfoCommands(commands.Cog):
     @commands.command(aliases=["support"])
     @commands.cooldown(2, 30, commands.BucketType.user)
     async def contact(self, ctx, *, msg: typing.Optional[str]):
-        try: await ctx.message.delete()
-        except: pass
+        try:
+            await ctx.message.delete()
+        except Exception as e:
+            print(e)
         if not msg:
             return await ctx.send(embed=discord.Embed(
-            title=f"{emojis['cross']} No message",
-            description=f"Please enter a message after `{ctx.prefix}contact`.",
-            color=colours["delete"]
-        ), delete_after=10)
+                title=f"{emojis['cross']} No message",
+                description=f"Please enter a message after `{ctx.prefix}contact`.",
+                color=colours["delete"]
+            ), delete_after=10)
         await self.bot.get_channel(777220967315406929).send(embed=discord.Embed(
             title="Support",
             description=f"Ticket: `{ctx.author.id}`\nName: `{ctx.author.name}`\n\n" + str(msg),
@@ -81,7 +95,9 @@ class InfoCommands(commands.Cog):
             ))
             await r.add_reaction(self.bot.get_emoji(729064531107774534))
             await r.add_reaction(self.bot.get_emoji(729064530310594601))
-        elif user.id != 715989276382462053 and reaction.message.channel.id == 777214577187487744 and reaction.emoji.name == 'Cross': await reaction.message.delete()
+        elif user.id != 715989276382462053 and reaction.message.channel.id == 777214577187487744 and reaction.emoji.name == 'Cross':
+            await reaction.message.delete()
+
 
 def setup(bot):
     bot.add_cog(InfoCommands(bot))

@@ -1,10 +1,19 @@
-import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio
+import copy
+import discord
+import json
+import humanize
+import aiohttp
+import traceback
+import typing
+import time
+import asyncio
 
 from datetime import datetime
 from discord.ext import commands, tasks
 from textwrap import shorten
 
 from cogs.consts import *
+
 
 class Tags(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -22,8 +31,10 @@ class Tags(commands.Cog):
     async def tag(self, ctx, *, s: str = None):
         with open(f"data/guilds/{ctx.guild.id}.json", 'r') as entry:
             entry = json.load(entry)
-            try: entry["tags"]
-            except KeyError: entry["tags"] = {}
+            try:
+                entry["tags"]
+            except KeyError:
+                entry["tags"] = {}
         with open(f"data/guilds/{ctx.guild.id}.json", 'w') as f:
             json.dump(entry, f, indent=2)
         if not s:
@@ -38,20 +49,32 @@ class Tags(commands.Cog):
         if s[0] in ["create", "add", "new"]:
             m = await ctx.send(embed=loadingEmbed)
             try:
-                if not ctx.author.guild_permissions.manage_messages: return await m.edit(embed=self.createEmbed(f"{emojis['store_delete']} Looks like you don't have permissions", "You need the `manage_messages` permission to edit tags.", colours["delete"]))
-                else: pass
-            except: return
+                if not ctx.author.guild_permissions.manage_messages:
+                    return await m.edit(embed=self.createEmbed(
+                        f"{emojis['store_delete']} Looks like you don't have permissions",
+                        "You need the `manage_messages` permission to edit tags.",
+                        colours["delete"]
+                    ))
+                else:
+                    pass
+            except Exception as e:
+                return print(e)
             with open(f"data/guilds/{ctx.guild.id}.json", 'r') as e:
                 entry = json.load(e)
-            try: title = s[1]
-            except:
+            try:
+                title = s[1]
+            except Exception as e:
+                print(e)
                 await m.edit(embed=self.createEmbed(
                     f"{emojis['store_create']} Please enter a tag mention:",
                     f"This is what you type, for example `{ctx.prefix}tag welcome`.",
                     color=colours["create"]
                 ))
-                try: mess = await ctx.bot.wait_for('message', timeout=120, check=lambda message : message.author == ctx.author and message.channel.id == ctx.channel.id)
-                except: return await m.edit(embed=self.createEmbed(
+                try:
+                    mess = await ctx.bot.wait_for('message', timeout=120, check=lambda message: message.author == ctx.author and message.channel.id == ctx.channel.id)
+                except Exception as e:
+                    print(e)
+                    return await m.edit(embed=self.createEmbed(
                         f"{emojis['store_create']} Please enter a tag mention:",
                         f"This is what you type, for example: 'welcome' for `{ctx.prefix}tag welcome`.",
                         color=colours["delete"]
@@ -63,31 +86,45 @@ class Tags(commands.Cog):
                     f"You can either <:Tick:729064531107774534> overwrite it, or <:Cross:729064530310594601> cancel.",
                     color=colours["create"]
                 ))
-                for emoji in [729064531107774534, 729064530310594601]: await m.add_reaction(ctx.bot.get_emoji(emoji))
+                for emoji in [729064531107774534, 729064530310594601]:
+                    await m.add_reaction(ctx.bot.get_emoji(emoji))
 
                 reaction = None
-                try: reaction = await ctx.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user : emoji.message.id == m.id and user == ctx.author)
-                except asyncio.TimeoutError: await m.edit(embed=self.createEmbed(
-                    f"{emojis['store_create']} That tag already exists.",
-                    f"You can either <:Tick:729064531107774534> overwrite it, or <:Cross:729064530310594601> cancel.",
-                    color=colours["delete"]
-                ))
+                try:
+                    reaction = await ctx.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user: emoji.message.id == m.id and user == ctx.author)
+                except asyncio.TimeoutError:
+                    await m.edit(embed=self.createEmbed(
+                        f"{emojis['store_create']} That tag already exists.",
+                        f"You can either <:Tick:729064531107774534> overwrite it, or <:Cross:729064530310594601> cancel.",
+                        color=colours["delete"]
+                    ))
 
-                try: await m.clear_reactions()
-                except: pass
+                try:
+                    await m.clear_reactions()
+                except Exception as e:
+                    print(e)
 
-                if reaction[0].emoji.name != "Tick": return await m.edit(embed=self.createEmbed("<:NicknameChange:729064531019694090> Tags", "No changes were made.", color=colours["delete"]))
+                if reaction[0].emoji.name != "Tick":
+                    return await m.edit(embed=self.createEmbed(
+                        "<:NicknameChange:729064531019694090> Tags",
+                        "No changes were made.",
+                        color=colours["delete"]
+                    ))
             try:
                 text = " ".join(s[2:])
-                if not len(text): raise Exception
-            except:
+                if not len(text):
+                    raise Exception
+            except Exception as e:
+                print(e)
                 await m.edit(embed=self.createEmbed(
                     f"{emojis['store_create']} Please enter a tag content:",
                     f"This is the text that appears when you do `{ctx.prefix}tag {title}`.",
                     color=colours["create"]
                 ))
-                try: mess = await ctx.bot.wait_for('message', timeout=120, check=lambda message : message.author == ctx.author and message.channel.id == ctx.channel.id)
-                except: return await m.edit(embed=self.createEmbed(
+                try:
+                    mess = await ctx.bot.wait_for('message', timeout=120, check=lambda message: message.author == ctx.author and message.channel.id == ctx.channel.id)
+                except Exception as e:
+                    return await m.edit(embed=self.createEmbed(
                         f"{emojis['store_create']} Please enter a tag content:",
                         f"This is the text that appears when you do `{ctx.prefix}tag {title}`.",
                         color=colours["create"]
@@ -111,21 +148,30 @@ class Tags(commands.Cog):
             m = await ctx.send(embed=loadingEmbed)
             try:
                 if not ctx.author.guild_permissions.manage_messages:
-                    return await m.edit(embed=self.createEmbed(f"{emojis['store_delete']} Looks like you don't have permissions", "You need the `manage_messages` permission to edit tags.", colours["delete"]))
-            except: return
-            try: title = s[1]
-            except:
+                    return await m.edit(embed=self.createEmbed(
+                        f"{emojis['store_delete']} Looks like you don't have permissions",
+                        "You need the `manage_messages` permission to edit tags.",
+                        colours["delete"]
+                    ))
+            except Exception as e:
+                return print(e)
+            try:
+                title = s[1]
+            except Exception as e:
+                print(e)
                 await m.edit(embed=self.createEmbed(
                     f"{emojis['store_create']} Please enter a tag to delete",
                     f"Enter the name of the tag you want to delete.",
                     color=colours["create"]
                 ))
-                try: mess = await ctx.bot.wait_for('message', timeout=120, check=lambda message : message.author == ctx.author and message.channel.id == ctx.channel.id)
-                except: return await m.edit(embed=self.createEmbed(
-                    f"{emojis['store_create']} Please enter a tag to delete",
-                    f"Enter the name of the tag you want to delete.",
-                    color=colours["create"]
-                ))
+                try:
+                    mess = await ctx.bot.wait_for('message', timeout=120, check=lambda message: message.author == ctx.author and message.channel.id == ctx.channel.id)
+                except Exception as e:
+                    return await m.edit(embed=self.createEmbed(
+                        f"{emojis['store_create']} Please enter a tag to delete",
+                        f"Enter the name of the tag you want to delete.",
+                        color=colours["create"]
+                    ))
                 title = mess.content.split(" ")[0]
             with open(f"data/guilds/{ctx.guild.id}.json", 'r') as e:
                 entry = json.load(e)
@@ -145,13 +191,17 @@ class Tags(commands.Cog):
                     color=colours["create"]
                 ))
         else:
-            with open(f"data/guilds/{ctx.guild.id}.json", 'r') as e: entry = json.load(e)
-            if s[0] in entry["tags"]: return await ctx.send(embed=discord.Embed(description=entry["tags"][s[0]], color=colours['create']))
-            else: return await ctx.send(embed=self.createEmbed(
-                "<:StoreDelete:729064530768035922> Tag not found",
-                f"No tag with the name {s[0]}.",
-                color=colours["delete"]
-            ))
+            with open(f"data/guilds/{ctx.guild.id}.json", 'r') as e:
+                entry = json.load(e)
+            if s[0] in entry["tags"]:
+                return await ctx.send(embed=discord.Embed(description=entry["tags"][s[0]], color=colours['create']))
+            else:
+                return await ctx.send(embed=self.createEmbed(
+                    "<:StoreDelete:729064530768035922> Tag not found",
+                    f"No tag with the name {s[0]}.",
+                    color=colours["delete"]
+                ))
+
 
 def setup(bot):
     bot.add_cog(Tags(bot))
