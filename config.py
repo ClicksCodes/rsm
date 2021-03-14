@@ -3,6 +3,7 @@ from cogs.consts import C
 import json
 import enum
 
+
 class Stage(enum.Enum):
     PRODUCTION = enum.auto()
     BETA = enum.auto()
@@ -20,5 +21,6 @@ class Config:
 
     def __getattr__(self, item):
         return self.config.get(f"{item}-{self.stage.name.lower()}", self.config[item])
+
 
 config = Config("config.json")

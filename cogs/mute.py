@@ -10,8 +10,11 @@ from cogs.consts import emojis, colours, C
 
 class Mute(commands.Cog):
     """As soon as you mute someone
-    1 -- You store information about the mute: what was the state before? when will the mute expire? when was it created? by who? for who? what's the reason?; You add the mute to the unmute list
-    2 -- You mute the user by changing user-specific channel permissions. You do not change permission on channels that have a :white_check_mark: as a user-specific send-messages permission for that user, as those are normally only used on modmail threads and other channels that the user needs access to
+    1 -- You store information about the mute: what was the state before? when will the mute expire? \
+        when was it created? by who? for who? what's the reason?; You add the mute to the unmute list
+    2 -- You mute the user by changing user-specific channel permissions. You do not change permission \
+        on channels that have a :white_check_mark: as a user-specific send-messages permission for that \
+            user, as those are normally only used on modmail threads and other channels that the user needs access to
     3 -- You send a DM telling the user they were muted
     --- end of part ---
 
@@ -25,7 +28,8 @@ class Mute(commands.Cog):
 
     In the unmute tasks
     1 -- You asyncio.sleep until the person needs to be unmuted
-    2 -- You revert to the stored state. Do not change permissions that have been changed by a user (for example ones that are not :x:, or ones that are :x: but were originally :white_check_mark:)
+    2 -- You revert to the stored state. Do not change permissions that have been changed by a user (for \
+        example ones that are not :x:, or ones that are :x: but were originally :white_check_mark:)
     3 -- You edit the data to reflect that they have been unmuted
     4 -- You send a DM telling the user they were unmuted
     --- end of part ---
@@ -78,9 +82,13 @@ class Mute(commands.Cog):
     async def mute(self, member, duration=None):
         """
         As soon as you mute someone
-        DONE: 1 -- You store information about the mute: what was the state before? when will the mute expire for who?; You add the mute to the unmute list
+        DONE: 1 -- You store information about the mute: what was the state before? when will the mute \
+            expire for who?; You add the mute to the unmute list
         TODO:   -- Add saving
-        DONE: 2 -- You mute the user by changing user-specific channel permissions. You do not change permission on channels that have a :white_check_mark: as a user-specific send-messages permission for that user, as those are normally only used on modmail threads and other channels that the user needs access to
+        DONE: 2 -- You mute the user by changing user-specific channel permissions. You do not change \
+            permission on channels that have a :white_check_mark: as a user-specific send-messages permission \
+            for that user, as those are normally only used on modmail threads and other channels that the \
+            user needs access to
         TODO: 3 -- You send a DM telling the user they were muted
         """
         mute_info = {
@@ -128,8 +136,8 @@ class Mute(commands.Cog):
 
     @staticmethod
     async def splice_unmute_perms(before_mute, current):
-        if current.send_messages != False or before_mute == True:
-            return current
+        if current.send_messages is not False or before_mute:
+            return current1
         current.send_messages = before_mute
         return current
 
@@ -184,15 +192,16 @@ class Mute(commands.Cog):
             errored = False
             try:
                 r = int(msg.content)
-            except:
+            except ValueError:
                 try:
                     user = msg.mentions[0]
-                except:
+                except IndexError:
                     errored = True
             if r:
                 try:
                     user = self.bot.get_member(r)
-                except:
+                except Exception as e:
+                    print(e)
                     errored = True
             if errored:
                 return await m.edit(
@@ -220,8 +229,8 @@ class Mute(commands.Cog):
                     )
                 )
                 return await ctx.delete()
-        except:
-            return
+        except Exception as e:
+            return print(e)
         m = await ctx.send(embed=self.loadingEmbed)
         if not user:
             await m.edit(
@@ -250,15 +259,16 @@ class Mute(commands.Cog):
             errored = False
             try:
                 r = int(msg.content)
-            except:
+            except ValueError:
                 try:
                     user = msg.mentions[0]
-                except:
+                except IndexError:
                     errored = True
             if r:
                 try:
                     user = self.bot.get_member(r)
-                except:
+                except Exception as e:
+                    print(e)
                     errored = True
             if errored:
                 return await m.edit(

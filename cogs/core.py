@@ -1,4 +1,14 @@
-import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio, datetime, random
+import copy
+import discord
+import json
+import humanize
+import aiohttp
+import traceback
+import typing
+import time
+import asyncio
+import datetime
+import random
 import mongoengine
 import secrets
 
@@ -170,8 +180,8 @@ class Core(commands.Cog):
                         )
                     )
                 return True
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
     def get_log(self, guild: discord.Guild):
         with open(f"data/guilds/{guild.id}.json") as f:
@@ -194,8 +204,8 @@ class Core(commands.Cog):
                 }
             with open(f"data/guilds/{guild}.json", "w") as f:
                 json.dump(entry, f, indent=2)
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
     @commands.command(aliases=["config"])
     @commands.has_permissions(manage_guild=True)
@@ -258,10 +268,10 @@ class Core(commands.Cog):
 
             try:
                 await m.remove_reaction(reaction[0].emoji, ctx.author)
-            except:
-                pass
+            except Exception as e:
+                print(e)
 
-            if reaction == None:
+            if reaction is None:
                 break
             elif reaction[0].emoji.name == "Left":
                 page -= 1
@@ -317,8 +327,8 @@ class Core(commands.Cog):
                     channel = ctx.guild.get_channel(
                         int(re.sub(r"[^0-9]*", "", str(m.content)))
                     )
-                except:
-                    return
+                except Exception as e:
+                    return print(e)
                 if channel is None:
                     return
             else:
@@ -336,8 +346,8 @@ class Core(commands.Cog):
                 color=colours["create"],
             )
             await ctx.send(embed=e)
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
     @commands.command()
     @commands.guild_only()
@@ -374,12 +384,15 @@ class Core(commands.Cog):
 
             e = discord.Embed(
                 title="<:ChannelCreate:729066924943737033> You are now ignoring the following things:",
-                description=f"**Roles:** {', '.join([ctx.guild.get_role(r).mention for r in roles])}\n**Member:** {', '.join([ctx.guild.get_member(r).mention for r in members])}\n**Channels:** {', '.join([ctx.guild.get_channel(r).mention for r in channels])}\n**Bots:** {'yes' if bots else 'no'}",
+                description=f"**Roles:** {', '.join([ctx.guild.get_role(r).mention for r in roles])}\n"
+                            f"**Member:** {', '.join([ctx.guild.get_member(r).mention for r in members])}\n"
+                            f"**Channels:** {', '.join([ctx.guild.get_channel(r).mention for r in channels])}\n"
+                            f"**Bots:** {'yes' if bots else 'no'}",
                 color=colours["create"],
             )
             await ctx.send(embed=e)
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
     @commands.command()
     @commands.has_permissions(manage_guild=True)
@@ -393,7 +406,10 @@ class Core(commands.Cog):
             channels = entry["ignore_info"]["channels"]
         e = discord.Embed(
             title="<:ChannelCreate:729066924943737033> You are ignoring the following things:",
-            description=f"**Roles:** {', '.join([ctx.guild.get_role(r).mention for r in roles])}\n**Member:** {', '.join([ctx.guild.get_member(r).mention for r in members])}\n**Channels:** {', '.join([ctx.guild.get_channel(r).mention for r in channels])}\n**Bots:** {'yes' if bots else 'no'}",
+            description=f"**Roles:** {', '.join([ctx.guild.get_role(r).mention for r in roles])}\n"
+                        f"**Member:** {', '.join([ctx.guild.get_member(r).mention for r in members])}\n"
+                        f"**Channels:** {', '.join([ctx.guild.get_channel(r).mention for r in channels])}\n"
+                        f"**Bots:** {'yes' if bots else 'no'}",
             color=colours["create"],
         )
         await ctx.send(embed=e)
@@ -441,8 +457,8 @@ class Core(commands.Cog):
                         color=colours["delete"],
                     )
                 )
-        except:
-            return
+        except Exception as e:
+            return print(e)
         if not prefix:
             m = await ctx.send(
                 embed=discord.Embed(
@@ -537,8 +553,10 @@ class Core(commands.Cog):
                     color=colours["delete"],
                 )
             )
-        try: await ctx.message.delete()
-        except: pass
+        try:
+            await ctx.message.delete()
+        except Exception as e:
+            print(e)
         if ctx.guild.id in [684492926528651336, 271120984432443399]:
             m = await ctx.send(embed=discord.Embed(
                 title="Please wait",
@@ -567,8 +585,8 @@ class Core(commands.Cog):
                                     color=colours["delete"],
                                 )
                             )
-                    except:
-                        pass
+                    except Exception as e:
+                        print(e)
             await m.delete()
             try:
                 os.remove(f_name)
@@ -596,8 +614,8 @@ class Core(commands.Cog):
             )
         try:
             await ctx.message.delete()
-        except:
-            pass
+        except Exception as e:
+            print(e)
         mongoengine.connect(
             'rsm',
             host=config.mongoUrl

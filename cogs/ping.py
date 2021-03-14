@@ -6,6 +6,7 @@ import asyncio
 import bot as customBot
 from config import config
 
+
 class Ping(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -33,7 +34,8 @@ class Ping(commands.Cog):
         @app.route("/role/gid/<string:guild>/rid/<string:role>/user/<string:user>/secret/<string:secret>/code/<string:code>")
         async def role(guild, role, user, secret, code):
             try:
-                if secret != "slwu0rZV5W6WdmGtgI16du8Ar2tQGMr3Q9dE6u3poKiVODNV9SweaA3buawgkTmTuITXDWOUpBcTFA0qWrUvoshi1JB180WOFwA7": return "403"
+                if secret != "slwu0rZV5W6WdmGtgI16du8Ar2tQGMr3Q9dE6u3poKiVODNV9SweaA3buawgkTmTuITXDWOUpBcTFA0qWrUvoshi1JB180WOFwA7":
+                    return "403"
                 g = self.bot.get_guild(int(guild))
                 mem = await g.fetch_member(int(user))
 
@@ -60,8 +62,10 @@ class Ping(commands.Cog):
             shutdown_trigger=self.shutdown_event.wait
         )
 
+
 def setup(bot):
     bot.add_cog(Ping(bot))
+
 
 def teardown(bot):
     bot.server_teardown()

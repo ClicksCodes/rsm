@@ -2,7 +2,7 @@ import discord
 from config import config
 from cogs.consts import C
 import bot
-#from api import server
+# from api import server
 
 
 print(f"{C.Cyan.value}[S] {C.CyanDark.value}Launching {config.stage.name} mode")
@@ -21,6 +21,6 @@ bot = bot.Bot(
 bot.errors = 0
 bot.runningPing = False
 
-#server.start(bot.loop)
+# server.start(bot.loop)
 
 bot.run(config.token)

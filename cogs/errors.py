@@ -20,7 +20,8 @@ class Errors(commands.Cog):
             # Status Blue
             try:
                 code = str(sha256(str.encode(str(ctx.message.id))).hexdigest())[20:]
-            except:
+            except Exception as e:
+                print(e)
                 code = ctx.message.id
 
             if isinstance(error, commands.errors.NoPrivateMessage):
