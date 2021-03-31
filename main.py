@@ -1,4 +1,5 @@
 import discord
+import datetime
 from config import config
 from cogs.consts import C
 import bot
@@ -23,4 +24,5 @@ bot.runningPing = False
 
 # server.start(bot.loop)
 
+bot.uptime = datetime.datetime.now()
 bot.run(config.token)

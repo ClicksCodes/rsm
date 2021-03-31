@@ -4,12 +4,14 @@ import json
 import humanize
 import aiohttp
 import traceback
+import subprocess
+import functools
 import typing
 import time
 import asyncio
 import os
 
-from datetime import datetime
+import datetime
 from discord.ext import commands
 from textwrap import shorten
 
@@ -20,6 +22,7 @@ class InfoCommands(commands.Cog):
     def __init__(self, bot):
         self.loadingEmbed = loadingEmbed
         self.bot = bot
+        self.assignees = "PineaFan"
 
     def createEmbed(self, title, description, color=0x000000):
         return discord.Embed(
@@ -97,6 +100,38 @@ class InfoCommands(commands.Cog):
             await r.add_reaction(self.bot.get_emoji(729064530310594601))
         elif user.id != 715989276382462053 and reaction.message.channel.id == 777214577187487744 and reaction.emoji.name == 'Cross':
             await reaction.message.delete()
+
+    async def run_sync(self, func: callable, *args, **kwargs):
+        return await self.bot.loop.run_in_executor(None, functools.partial(func, *args, **kwargs))
+
+    @commands.command(aliases=["v"])
+    async def version(self, ctx):
+        head = str(await self.run_sync(subprocess.check_output, ["git", "rev-parse", "HEAD"]))[2:-3]
+        branch = str(await self.run_sync(subprocess.check_output, ["git", "rev-parse", "--abbrev-ref", "HEAD"]))[2:-3]
+        commit = str(await self.run_sync(subprocess.check_output, ["git", "show-branch", branch]))[(5+(len(branch))):-3]
+        url = str(await self.run_sync(subprocess.check_output, ["git", "config", "--get", "remote.origin.url"]))[2:-3]
+
+        total_size = 0
+        for path, dirs, files in os.walk("./data/guilds"):
+            for f in files:
+                fp = os.path.join(path, f)
+                total_size += os.path.getsize(fp)
+
+        await ctx.send(embed=discord.Embed(
+            title=f"{self.bot.user.name}",
+            description=f"**Repository:** [{url.split('/')[-2]}/{url.split('/')[-1]}]({url})\n"
+                        f"**Branch:** `{branch}`\n"
+                        f"**HEAD:** `{head}`\n"
+                        f"**Commit:** `{commit}`\n"
+                        f"**Server size:** `{humanize.naturalsize(os.path.getsize(f'./data/guilds/{ctx.guild.id}.json'))}` • `{humanize.naturalsize(total_size)}`\n"
+                        f"**Uptime:** `{str(datetime.datetime.now()-self.bot.uptime).split('.')[0]}`",
+            color=colours["delete"],
+            url="https://discord.gg/bPaNnxe"
+        ).set_footer(
+            text=f"You probably don't know what most of this means - "
+                 f"If you do know what this means, you can become a programmer of {self.bot.user.name} and other bots at https://discord.gg/bPaNnxe",
+            icon_url=self.bot.user.avatar_url
+        ))
 
 
 def setup(bot):
