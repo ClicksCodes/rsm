@@ -254,17 +254,16 @@ class Users(commands.Cog):
             return
         if before.nick == after.nick:
             return
-        else:
+        audit = await get_alog_entry(after, type=discord.AuditLogAction.member_update)
+        if before.nick != after.nick and audit.user.id != self.bot.user.id:
             try:
                 with open(f"data/guilds/{after.guild.id}.json") as entry:
                     entry = json.load(entry)
                 if await self.checkWith(entry, after):
-                    await asyncio.sleep(1)
                     await after.edit(nick=before.nick)
                     return
             except FileNotFoundError:
                 pass
-        audit = await get_alog_entry(after, type=discord.AuditLogAction.member_update)
         e = discord.Embed(
             title=emojis["nickname_change"] + f" Nickname Changed",
             description=f"**User:** {after.mention}\n"
