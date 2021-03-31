@@ -3,6 +3,7 @@ import discord
 import json
 import humanize
 import aiohttp
+import asyncio
 import traceback
 import typing
 import time
@@ -63,6 +64,20 @@ class Users(commands.Cog):
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
+
+    async def checkWith(self, entry, user):
+        if "wordfilter" in entry:
+            if "prefix" in entry:
+                if user.nick.startswith(entry["prefix"]):
+                    return
+            if user.id not in entry["wordfilter"]["ignore"]["members"]:
+                for role in user.roles:
+                    if role.id in entry["wordfilter"]["ignore"]["roles"]:
+                        return
+                for word in [x.group().lower() for x in re.finditer( r'[a-zA-Z]+', str(user.nick))]:
+                    if word in entry["wordfilter"]["banned"]:
+                        return True
+                        break
 
     def is_logging(self, guild: discord.Guild, *, channel=None, member: discord.Member = None, eventname):
         if not os.path.exists(f'data/guilds/{guild.id}.json'):
@@ -237,8 +252,18 @@ class Users(commands.Cog):
     async def on_member_update(self, before, after):
         if not self.is_logging(after.guild, eventname="nickname_change"):
             return
-        elif before.nick == after.nick:
+        if before.nick == after.nick:
             return
+        else:
+            try:
+                with open(f"data/guilds/{after.guild.id}.json") as entry:
+                    entry = json.load(entry)
+                if await self.checkWith(entry, after):
+                    await asyncio.sleep(1)
+                    await after.edit(nick=before.nick)
+                    return
+            except FileNotFoundError:
+                pass
         audit = await get_alog_entry(after, type=discord.AuditLogAction.member_update)
         e = discord.Embed(
             title=emojis["nickname_change"] + f" Nickname Changed",

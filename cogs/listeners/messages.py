@@ -127,7 +127,7 @@ class Messages(commands.Cog):
             if "prefix" in entry:
                 if message.content.startswith(entry["prefix"]):
                     return
-            if message.author.id not in entry["wordfilter"]["ignore"]["members"] and message.channel.id not in entry["wordfilter"]["ignore"]["channels"]:
+            if message.author.id not in entry["wordfilter"]["ignore"]["members"]:
                 for role in message.author.roles:
                     if role.id in entry["wordfilter"]["ignore"]["roles"]:
                         return
