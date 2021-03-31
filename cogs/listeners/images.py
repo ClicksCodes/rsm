@@ -124,8 +124,11 @@ class ImageDetect(commands.Cog):
         att = [a.url for a in message.attachments]
         att += re.findall(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", message.content)
 
-        with open(f"data/guilds/{message.guild.id}.json") as entry:
-            entry = json.load(entry)
+        try:
+            with open(f"data/guilds/{message.guild.id}.json") as entry:
+                entry = json.load(entry)
+        except FileNotFoundError:
+            return
 
         if len(att):
             for attachment in att:

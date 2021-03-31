@@ -141,9 +141,12 @@ class Messages(commands.Cog):
         if isinstance(message.channel, discord.channel.DMChannel):
             return
         if message.guild is not None:
-            with open(f"data/guilds/{message.guild.id}.json") as entry:
-                entry = json.load(entry)
-            await self.checkWith(entry, message)
+            try:
+                with open(f"data/guilds/{message.guild.id}.json") as entry:
+                    entry = json.load(entry)
+                await self.checkWith(entry, message)
+            except FileNotFoundError:
+                pass
 
         guild = message.guild
         if message.mention_everyone and self.is_logging(guild, channel=message.channel, member=message.author, eventname="everyone_here"):
