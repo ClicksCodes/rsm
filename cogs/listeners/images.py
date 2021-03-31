@@ -116,6 +116,9 @@ class ImageDetect(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.message):
+        if message.guild is None:
+            return
+
         if message.guild.id != 684492926528651336:
             return
         att = [a.url for a in message.attachments]
@@ -162,7 +165,6 @@ class ImageDetect(commands.Cog):
                     except Exception as e:
                         print(e)
                         text = 'No text found'
-
                     if "wordfilter" in entry:
                         if message.author.id not in entry["wordfilter"]["ignore"]["members"] and message.channel.id not in entry["wordfilter"]["ignore"]["channels"]:
                             passed = False

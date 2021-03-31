@@ -146,8 +146,7 @@ class Report(commands.Cog):
                     elif len(reaction.emoji.name) == 2:
                         reaction = str(reaction.emoji.name)[:1]
                         await m.delete()
-                        m = await ctx.send(embed=loadingEmbed)
-                        guild = chunked[page][int(reaction)]
+                        guild = chunked[page][int(reaction)-1]
                         break
                     else:
                         break
@@ -171,7 +170,7 @@ class Report(commands.Cog):
         if not logchan:
             return await m.edit(embed=discord.Embed(
                     title=f"{emojis['channel_delete']} This server isn't accepting reports",
-                    description=f"The server `{guild.name}` is not allowing reports. Your request was cancelled.",
+                    description=f"The server `{guild.name}` is not allowing reports. Your report was cancelled.",
                     color=colours['delete']
                 ))
         if not content:
@@ -195,18 +194,44 @@ class Report(commands.Cog):
                     description=f"What text would you like to send to the mod team? Say `cancel` to cancel.",
                     color=colours['delete']
                 ))
+        if "prefix" not in entry:
+            prefix = "m!"
+        else:
+            prefix = entry["prefix"]
         await logchan.send(embed=discord.Embed(
-            title=f" {emojis['leave']} Request by {ctx.author.name}",
+            title=f" {emojis['leave']} Report by {ctx.author.name}",
             description=f"**User:** {ctx.author.name}\n"
                         f"**ID:** `{ctx.author.id}`\n"
-                        f"**Request:**\n"
+                        f"**Report:**\n"
                         f"{content}",
             color=colours['edit']
-        ))
+        ).set_footer(icon_url=ctx.author.avatar_url, text=f"Use {prefix}reply, with the users name or ID to reply. Manage messages required, your name is not shown"))
         return await m.edit(embed=discord.Embed(
                 title=f"{emojis['channel_create']} Report",
                 description=f"Your message was successfully sent.",
                 color=colours['create']
+            ))
+
+    @commands.command()
+    @commands.has_permissions(manage_messages=True)
+    async def reply(self, ctx, member: discord.Member, string):
+        try:
+            await member.send(embed=discord.Embed(
+                title="Report reply",
+                description=f"Heres what the mods said:\n\n>>> {string}",
+                color=colours["create"]
+            ))
+            await ctx.send(embed=discord.Embed(
+                title="Success",
+                description=f"Message sent successfully",
+                color=colours["create"]
+            ))
+        except Exception as e:
+            print(e)
+            await ctx.send(embed=discord.Embed(
+                title="Failed",
+                description=f"The message could not be sent",
+                color=colours["delete"]
             ))
 
 
