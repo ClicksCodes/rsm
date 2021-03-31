@@ -119,7 +119,7 @@ class InfoCommands(commands.Cog):
 
         await ctx.send(embed=discord.Embed(
             title=f"{self.bot.user.name}",
-            description=f"**Repository:** [{url.split('/')[-2]}/{url.split('/')[-1]}]({url})\n"
+            description=f"**Repository:** {url.split('/')[-2]}/{url.split('/')[-1]}\n"
                         f"**Branch:** `{branch}`\n"
                         f"**HEAD:** `{head}`\n"
                         f"**Commit:** `{commit}`\n"

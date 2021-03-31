@@ -121,6 +121,9 @@ class ImageDetect(commands.Cog):
         att = [a.url for a in message.attachments]
         att += re.findall(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", message.content)
 
+        with open(f"data/guilds/{message.guild.id}.json") as entry:
+            entry = json.load(entry)
+
         if len(att):
             for attachment in att:
                 page = requests.get(attachment)
@@ -160,49 +163,60 @@ class ImageDetect(commands.Cog):
                         print(e)
                         text = 'No text found'
 
-                    read_end = time.time()
+                    if "wordfilter" in entry:
+                        if message.author.id not in entry["wordfilter"]["ignore"]["members"] and message.channel.id not in entry["wordfilter"]["ignore"]["channels"]:
+                            passed = False
+                            for role in message.author.roles:
+                                if role.id in entry["wordfilter"]["ignore"]["roles"]:
+                                    passed = True
+                            if not passed:
+                                for word in [x.group().lower() for x in re.finditer( r'[a-zA-Z]+', text)]:
+                                    if word in entry["wordfilter"]["banned"]:
+                                        await message.delete()
+                                        break
+                    # read_end = time.time()
 
-                    cfimg = cf(f_name)
-                    try:
-                        dc = cfimg.get_color(quality=2)
-                    except Exception as e:
-                        print(e)
-                        dc = (0, 0, 0)
+                    # cfimg = cf(f_name)
+                    # try:
+                    #     dc = cfimg.get_color(quality=2)
+                    # except Exception as e:
+                    #     print(e)
+                    #     dc = (0, 0, 0)
 
-                    try:
-                        if dc == (52, 60, 60):
-                            blank = True
-                        else:
-                            blank = False
-                    except Exception as e:
-                        print(e)
-                        blank = True
+                    # try:
+                    #     if dc == (52, 60, 60):
+                    #         blank = True
+                    #     else:
+                    #         blank = False
+                    # except Exception as e:
+                    #     print(e)
+                    #     blank = True
 
-                    # NSFW
-                    start = time.time()
-                    reason = None
-                    confidence = "90"
-                    async with self.session.post("https://api.deepai.org/api/nsfw-detector", data={'image': page.url}, headers={'api-key': deepAIkey}) as r:
-                        try:
-                            resp = await r.json()
-                            if len(resp['output']['detections']):
-                                nsfw = True
-                            else:
-                                nsfw = False
-                            try:
-                                reason = ",".join([x['name']] for x in resp['output']['detections'])
-                                detections = len(resp['output']['detections'])
-                                score = resp['output']['nsfw_score'] * 100
-                            except Exception as e:
-                                print(e)
-                            if "Exposed" in reason:
-                                nsfw = True
-                            else:
-                                nsfw = False
-                        except Exception as e:
-                            pass
-                        conf = str(resp['output'])
-                    end = time.time()
+                    # # NSFW
+                    # start = time.time()
+                    # reason = None
+                    # confidence = "90"
+                    # async with self.session.post("https://api.deepai.org/api/nsfw-detector", data={'image': page.url}, headers={'api-key': deepAIkey}) as r:
+                    #     try:
+                    #         resp = await r.json()
+                    #         if len(resp['output']['detections']):
+                    #             nsfw = True
+                    #         else:
+                    #             nsfw = False
+                    #         try:
+                    #             reason = ",".join([x['name']] for x in resp['output']['detections'])
+                    #             detections = len(resp['output']['detections'])
+                    #             score = resp['output']['nsfw_score'] * 100
+                    #         except Exception as e:
+                    #             print(e)
+                    #         if "Exposed" in reason:
+                    #             nsfw = True
+                    #         else:
+                    #             nsfw = False
+                    #     except Exception as e:
+                    #         pass
+                    #     conf = str(resp['output'])
+                    # end = time.time()
 
                     # e = discord.Embed(
                     #     title="Image sent",
@@ -218,14 +232,14 @@ class ImageDetect(commands.Cog):
                     # )
                     # if message.author.bot is False:
                     #     await message.channel.send(embed=e)
-                    if nsfw:
-                        await message.delete()
-                        await message.send(embed=discord.Embed(
-                            title="Your message was NSFW",
-                            description="If you believe this was a mistake, please let us know. Just DM a member of Clicks Leadership with"
-                                        f" the image, along with this:\n```{await resp.json()}```",
-                            color=colours["delete"]
-                        ))
+                    # if nsfw:
+                    #     await message.delete()
+                    #     await message.send(embed=discord.Embed(
+                    #         title="Your message was NSFW",
+                    #         description="If you believe this was a mistake, please let us know. Just DM a member of Clicks Leadership with"
+                    #                     f" the image, along with this:\n```{await resp.json()}```",
+                    #         color=colours["delete"]
+                    #     ))
                 except Exception as e:
                     print(e)
 

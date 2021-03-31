@@ -28,6 +28,7 @@
         "cogs.maincommands.raid",
         "cogs.maincommands.tags",
         "cogs.maincommands.report",
+        "cogs.maincommands.bannedwords",
 
         "cogs.errors",
         "cogs.ping"

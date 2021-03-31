@@ -4,6 +4,7 @@ import json
 import humanize
 import aiohttp
 import traceback
+import re
 import typing
 import time
 
@@ -121,11 +122,28 @@ class Messages(commands.Cog):
         #             json.dump(entry, f, indent=2)
         # except Exception as e:
         #     print(e)
+    async def checkWith(self, entry, message):
+        if "wordfilter" in entry:
+            if "prefix" in entry:
+                if message.content.startswith(entry["prefix"]):
+                    return
+            if message.author.id not in entry["wordfilter"]["ignore"]["members"] and message.channel.id not in entry["wordfilter"]["ignore"]["channels"]:
+                for role in message.author.roles:
+                    if role.id in entry["wordfilter"]["ignore"]["roles"]:
+                        return
+                for word in [x.group().lower() for x in re.finditer( r'[a-zA-Z]+', message.content)]:
+                    if word in entry["wordfilter"]["banned"]:
+                        await message.delete()
+                        break
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.message):
         if isinstance(message.channel, discord.channel.DMChannel):
             return
+        with open(f"data/guilds/{message.guild.id}.json") as entry:
+            entry = json.load(entry)
+        await self.checkWith(entry, message)
+
         guild = message.guild
         if message.mention_everyone and self.is_logging(guild, channel=message.channel, member=message.author, eventname="everyone_here"):
             log = self.get_log(message.guild)
