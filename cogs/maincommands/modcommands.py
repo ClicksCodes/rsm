@@ -180,7 +180,8 @@ class Commands(commands.Cog):
         if reason != None:
             try:
                 if member.id in [m.id for m in ctx.guild.members]:
-                    if ctx.guild.me.top_role.position <= member.top_role.position or ctx.author.top_role.position <= member.top_role.position: int("return an error, quite clearly")
+                    if ctx.guild.me.top_role.position <= member.top_role.position or ctx.author.top_role.position <= member.top_role.position:
+                        raise(Warning)
                 try:
                     if reason is not False:
                         bm = await member.send(embed=createEmbed(f"{emojis['PunBan']} Banned", f"You were banned from {ctx.guild.name} for {reason}.", colours["delete"]))
@@ -533,7 +534,7 @@ class Commands(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def ban(self, ctx, member: typing.Optional[discord.User], *, reason:typing.Optional[str]):
+    async def ban(self, ctx, member: typing.Optional[discord.Member], *, reason:typing.Optional[str]):
         try: reason = str(''.join(reason))
         except: reason = ""
         tooMany = discord.Embed(

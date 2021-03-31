@@ -478,7 +478,7 @@ class Guild(commands.Cog):
         if audit.user.id != self.bot.user.id:
             e = discord.Embed(
                 title=emojis["role_edit"] + f" Role Edited",
-                description=f"**ID:** `{after.id}`\n"
+                description=f"**ID:** `{after.id}`\n" +
                             (f"**Name:** {before.name} > {after.name}\n" if before.name != after.name else f"**Name:** {after.name}\n")
                             (f"**Position:** {before.position} > {after.position}\n" if before.position != after.position else "")
                             (f"**Colour:** #{self.tohex(before.colour.value)} > #{self.tohex(after.colour.value)}\n" if before.colour.value != after.colour.value else "")
