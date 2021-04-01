@@ -24,6 +24,11 @@ class InfoCommands(commands.Cog):
         self.bot = bot
         self.assignees = "PineaFan"
 
+        self.head = str(subprocess.check_output(["git", "rev-parse", "HEAD"]))[2:-3]
+        self.branch = str(subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"]))[2:-3]
+        self.commit = str(subprocess.check_output(["git", "show-branch", self.branch]))[(5+(len(self.branch))):-3]
+        self.url = str(subprocess.check_output(["git", "config", "--get", "remote.origin.url"]))[2:-3]
+
     def createEmbed(self, title, description, color=0x000000):
         return discord.Embed(
             title=title,
@@ -106,11 +111,6 @@ class InfoCommands(commands.Cog):
 
     @commands.command(aliases=["v"])
     async def version(self, ctx):
-        head = str(await self.run_sync(subprocess.check_output, ["git", "rev-parse", "HEAD"]))[2:-3]
-        branch = str(await self.run_sync(subprocess.check_output, ["git", "rev-parse", "--abbrev-ref", "HEAD"]))[2:-3]
-        commit = str(await self.run_sync(subprocess.check_output, ["git", "show-branch", branch]))[(5+(len(branch))):-3]
-        url = str(await self.run_sync(subprocess.check_output, ["git", "config", "--get", "remote.origin.url"]))[2:-3]
-
         total_size = 0
         for path, dirs, files in os.walk("./data/guilds"):
             for f in files:
@@ -119,10 +119,10 @@ class InfoCommands(commands.Cog):
 
         await ctx.send(embed=discord.Embed(
             title=f"{self.bot.user.name}",
-            description=f"**Repository:** {url.split('/')[-2]}/{url.split('/')[-1]}\n"
-                        f"**Branch:** `{branch}`\n"
-                        f"**HEAD:** `{head}`\n"
-                        f"**Commit:** `{commit}`\n"
+            description=f"**Repository:** {self.url.split('/')[-2]}/{self.url.split('/')[-1]}\n"
+                        f"**Branch:** `{self.branch}`\n"
+                        f"**HEAD:** `{self.head}`\n"
+                        f"**Commit:** `{self.commit}`\n"
                         f"**Server size:** `{humanize.naturalsize(os.path.getsize(f'./data/guilds/{ctx.guild.id}.json'))}` • `{humanize.naturalsize(total_size)}`\n"
                         f"**Uptime:** `{str(datetime.datetime.now()-self.bot.uptime).split('.')[0]}`",
             color=colours["delete"],
