@@ -51,7 +51,7 @@ class InfoCommands(commands.Cog):
                             f"**Exempt channels:** {', '.join([ctx.guild.get_channel(m).mention for m in entry['wordfilter']['ignore']['channels']])}",
                 color=colours["delete"]
             ))
-            for r in [826823514904330251, 826823515268186152, 729066519337762878, 729064530709315715, 729066924943737033]:
+            for r in [826823514904330251, 826823515268186152, 729066519337762878, 729064530709315715, 729066924943737033, 729064530310594601]:
                 await m.add_reaction(self.bot.get_emoji(r))
 
             try:
@@ -163,6 +163,8 @@ class InfoCommands(commands.Cog):
                             pass
                 entry["wordfilter"]["ignore"]["channels"] = channel
                 json.dump(entry, open(f"data/guilds/{ctx.guild.id}.json", "w"), indent=2)
+            else:
+                break
         await m.clear_reactions()
 
 
