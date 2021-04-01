@@ -40,7 +40,7 @@ class InfoCommands(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(manage_guild=True)
-    async def words(self, ctx, args: typing.Optional[str]):
+    async def filter(self, ctx, args: typing.Optional[str]):
         while True:
             entry = await self.fetch(ctx.guild.id, ctx)
             m = await ctx.send(embed=discord.Embed(
