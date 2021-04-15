@@ -119,8 +119,6 @@ class ImageDetect(commands.Cog):
         if message.guild is None:
             return
 
-        if message.guild.id != 684492926528651336:
-            return
         att = [a.url for a in message.attachments]
         att += re.findall(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", message.content)
 
@@ -212,7 +210,6 @@ class ImageDetect(commands.Cog):
                                 nsfw = False
                             try:
                                 reason = ",".join([x['name']] for x in resp['output']['detections'])
-                                detections = len(resp['output']['detections'])
                                 score = resp['output']['nsfw_score'] * 100
                             except Exception as e:
                                 print(e)
@@ -225,6 +222,16 @@ class ImageDetect(commands.Cog):
                         conf = str(resp['output'])
                     if nsfw:
                         await message.delete()
+                        e = discord.Embed(
+                            title=emojis["nsfw_on"] + f" NSFW image sent",
+                            description=f"**Name:** {message.author.mention}\n"
+                                        f"**Channel:** {message.channel.mention}\n"
+                                        f"**ID:** `{message.author.id}`",
+                            color=colours["edit"],
+                            timestamp=datetime.utcnow()
+                        )
+                        log = self.get_log(message.guild)
+                        await log.send(embed=e)
                         break
                 except Exception as e:
                     print(e)
@@ -278,7 +285,7 @@ class ImageDetect(commands.Cog):
             if nsfw:
                 if "staff" in entry["log_info"]:
                     await self.bot.get_channel(entry["log_info"]["staff"]).send(embed=discord.Embed(
-                        title="NSFW pfp",
+                        title="NSFW profile picture",
                         description=f"User {member.mention} ({member.display_name}, {member.id}) had an NSFW profile picture. [View here]({member.avatar_url})",
                         color=colours["delete"]
                     ))
