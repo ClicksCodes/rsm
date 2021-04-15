@@ -220,6 +220,10 @@ class ImageDetect(commands.Cog):
                         except Exception as e:
                             pass
                         conf = str(resp['output'])
+                    try:
+                        os.remove(f_name)
+                    except Exception as e:
+                        print(e)
                     if nsfw:
                         await message.delete()
                         e = discord.Embed(
@@ -236,10 +240,6 @@ class ImageDetect(commands.Cog):
                 except Exception as e:
                     print(e)
 
-                try:
-                    os.remove(f_name)
-                except Exception as e:
-                    print(e)
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
