@@ -2,6 +2,8 @@
     "token": "NzE1OTg5Mjc2MzgyNDYyMDUz.XtFO-Q.cSuhmCKFi5znZO-HCqN9yqxcbbw",
     "token-dev": "Nzc5Mzg4ODU2NTM2NTMwOTg0.X7f0bw.yzZg659UsLtHTfmeTsDXZa7O8K8",
 
+    "urlsecret": "slwu0rZV5W6WdmGtgI16du8Ar2tQGMr3Q9dE6u3poKiVODNV9SweaA3buawgkTmTuITXDWOUpBcTFA0qWrUvoshi1JB180WOFwA7",
+
     "deepAIkey": "fbcce80d-89bf-4d45-8d08-97ef93b37905",
 
     "mongoUrl-dev": "mongodb://localhost:27017/",

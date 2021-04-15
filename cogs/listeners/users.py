@@ -65,16 +65,16 @@ class Users(commands.Cog):
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
 
-    async def checkWith(self, entry, user):
+    async def checkWith(self, entry, user, name):
         if "wordfilter" in entry:
             if "prefix" in entry:
-                if user.nick.startswith(entry["prefix"]):
+                if user.startswith(entry["prefix"]):
                     return
             if user.id not in entry["wordfilter"]["ignore"]["members"]:
                 for role in user.roles:
                     if role.id in entry["wordfilter"]["ignore"]["roles"]:
                         return
-                for word in [x.group().lower() for x in re.finditer( r'[a-zA-Z]+', str(user.nick))]:
+                for word in [x.group().lower() for x in re.finditer( r'[a-zA-Z]+', str(name))]:
                     if word in entry["wordfilter"]["banned"]:
                         return True
                         break
@@ -139,6 +139,18 @@ class Users(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
+        try:
+            with open(f"data/guilds/{member.guild.id}.json") as entry:
+                entry = json.load(entry)
+            if await self.checkWith(entry, member, member.display_name):
+                await member.edit(nick="[!] Nickname broke rules")
+                await member.send(embed=discord.Embed(
+                    title="Nickname did not follow rules",
+                    description=f"You joined {member.guild.name}, but your name contained word(s) that aren't allowed. Please contact the moderators for more information",
+                    color=colours["delete"]
+                ))
+        except FileNotFoundError:
+            pass
         if not self.is_logging(member.guild, member=member, eventname="member_join"):
             return
         e = discord.Embed(
@@ -259,7 +271,7 @@ class Users(commands.Cog):
             try:
                 with open(f"data/guilds/{after.guild.id}.json") as entry:
                     entry = json.load(entry)
-                if await self.checkWith(entry, after):
+                if await self.checkWith(entry, after, after.nick):
                     await after.edit(nick=before.nick)
                     return
             except FileNotFoundError:

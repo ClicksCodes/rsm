@@ -34,7 +34,7 @@ class Ping(commands.Cog):
         @app.route("/role/gid/<string:guild>/rid/<string:role>/user/<string:user>/secret/<string:secret>/code/<string:code>")
         async def role(guild, role, user, secret, code):
             try:
-                if secret != "slwu0rZV5W6WdmGtgI16du8Ar2tQGMr3Q9dE6u3poKiVODNV9SweaA3buawgkTmTuITXDWOUpBcTFA0qWrUvoshi1JB180WOFwA7":
+                if secret != config.urlsecret:
                     return "403"
                 g = self.bot.get_guild(int(guild))
                 mem = await g.fetch_member(int(user))
@@ -42,7 +42,7 @@ class Ping(commands.Cog):
                 await mem.add_roles(g.get_role(int(role)))
                 await mem.send(embed=discord.Embed(
                     title=f"<:Tick:729064531107774534> Verified",
-                    description=f"You are now verified in {g.name}.",
+                    description=f"You are now verified in {g.name}. (Code {code})",
                     color=0x68D49E
                 ))
                 return "200"

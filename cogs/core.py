@@ -83,9 +83,9 @@ class Core(commands.Cog):
         self,
         guild: discord.Guild,
         *,
+        eventname,
         channel=None,
         member: discord.Member = None,
-        eventname,
     ):
         if not os.path.exists(f"data/guilds/{guild.id}.json"):
             return bool(
@@ -557,41 +557,60 @@ class Core(commands.Cog):
             await ctx.message.delete()
         except Exception as e:
             print(e)
-        if ctx.guild.id in [684492926528651336, 271120984432443399]:
-            m = await ctx.send(embed=discord.Embed(
-                title="Please wait",
-                description="We are just checking that your profile picture is safe for work",
-                color=colours["edit"]
-            ))
-            reason = None
-            confidence = "90"
-            page = requests.get(ctx.author.avatar_url)
-            f_name = f"{random.randint(0,9999999999999999)}.png"
-            with open(f_name, "wb") as f:
-                f.write(page.content)
-            async with aiohttp.ClientSession() as session:
-                async with session.post(
-                    "https://api.deepai.org/api/nsfw-detector",
-                    data={"image": page.url},
-                    headers={"api-key": deepAiKey},
-                ) as r:
-                    try:
-                        resp = await r.json()
-                        if resp["nsfw_score"] >= 0.9:
-                            return await ctx.author.send(
-                                embed=discord.Embed(
-                                    title=f"{emojis['cross']} Verify",
-                                    description=f"Your profile picture was detected as Not Safe For Work. Please contact the moderators for manual review.",
-                                    color=colours["delete"],
-                                )
-                            )
-                    except Exception as e:
-                        print(e)
-            await m.delete()
-            try:
-                os.remove(f_name)
-            except Exception as e:
-                print(e)
+        try:
+            with open(f"data/guilds/{ctx.guild.id}.json") as entry:
+                entry = json.load(entry)
+        except FileNotFoundError:
+            pass
+        if "nsfw" in entry:
+            if not entry["nsfw"]:
+                m = await ctx.send(embed=discord.Embed(
+                    title="Please wait",
+                    description="We are just checking that your profile picture is safe for work",
+                    color=colours["edit"]
+                ))
+                reason = None
+                confidence = "90"
+                page = requests.get(ctx.author.avatar_url)
+                f_name = f"{random.randint(0,9999999999999999)}.png"
+                with open(f_name, "wb") as f:
+                    f.write(page.content)
+                async with aiohttp.ClientSession() as session:
+                    async with session.post(
+                        "https://api.deepai.org/api/nsfw-detector",
+                        data={"image": page.url},
+                        headers={"api-key": deepAiKey},
+                    ) as r:
+                        try:
+                            resp = await r.json()
+                            if len(resp['output']['detections']):
+                                nsfw = True
+                            else:
+                                nsfw = False
+                            try:
+                                reason = ",".join([x['name']] for x in resp['output']['detections'])
+                                score = resp['output']['nsfw_score'] * 100
+                            except Exception as e:
+                                print(e)
+                            if "Exposed" in reason:
+                                nsfw = True
+                            if int(score) > int(confidence):
+                                nsfw = True
+                            else:
+                                nsfw = False
+                        except Exception as e:
+                            print(e)
+                try:
+                    os.remove(f_name)
+                except Exception as e:
+                    print(e)
+                await m.delete()
+                if nsfw:
+                    return await ctx.author.send(embed=discord.Embed(
+                        title="NSFW profile picture detected",
+                        description=f"Your profile picture was flagged when you joined {ctx.guild.name}, as NSFW protection is enabled",
+                        color=colours["delete"]
+                    ).set_footer(text="No NSFW filter is 100% accurate, but yours was flagged. If it is not NSFW, you do not need to worry - Just let the moderators you were flagged"))
         roleid = None
         with open(f"data/guilds/{ctx.guild.id}.json", "r") as e:
             try:
@@ -665,6 +684,51 @@ class Core(commands.Cog):
                     color=colours["create"],
                 )
             )
+
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(manage_guild=True)
+    async def nsfw(self, ctx):
+        with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+            entry = json.load(entry)
+            if "nsfw" not in entry:
+                entry["nsfw"] = True
+                with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                    json.dump(entry, f, indent=2)
+        m = await ctx.send(embed=loadingEmbed)
+        while True:
+            await m.edit(
+                embed=discord.Embed(
+                    title=f"{emojis['nsfw_on'] if not entry['nsfw'] else emojis['nsfw_off']} NSFW protection",
+                    description=f"**You are {'not ' if entry['nsfw'] else ''}currently moderating NSFW content** like profile pictures and images in chat\n"
+                                f"When a user changes their profile picture to something NSFW, you will recieve a message in your stafflog channel\n"
+                                f"NSFW images are automatically deleted and logged with normal server logs",
+                    color=colours["edit"],
+                ).set_footer(text="No NSFW filter is 100% accurate, however we try our best to ensure only NSFW content triggers our checks", icon_url="")
+            )
+            for r in [729064531208175736, 729064530310594601]:
+                await m.add_reaction(self.bot.get_emoji(r))
+            try:
+                reaction = await ctx.bot.wait_for("reaction_add", timeout=60, check=lambda _, user: user == ctx.author)
+            except asyncio.TimeoutError:
+                break
+
+            try:
+                await m.remove_reaction(reaction[0].emoji, ctx.author)
+            except Exception as e:
+                print(e)
+
+            if reaction is None:
+                break
+            elif reaction[0].emoji.name == "NsfwOn":
+                with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                    entry = json.load(entry)
+                entry["nsfw"] = not entry["nsfw"]
+                with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                    json.dump(entry, f, indent=2)
+            else:
+                break
+        await m.clear_reactions()
 
 
 def setup(bot):
