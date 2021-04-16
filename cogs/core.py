@@ -590,7 +590,7 @@ class Core(commands.Cog):
                                 score = resp['output']['nsfw_score'] * 100
                             except Exception as e:
                                 print(e)
-                            if "Exposed" in [x['name'] if float(x['confidence']) > 80 else "" for x in resp['output']['detections']]:
+                            if "Exposed" in [x['name'] if float(x['confidence']) > 75 else "" for x in resp['output']['detections']]:
                                 nsfw = True
                             if int(score) > int(confidence):
                                 nsfw = True
