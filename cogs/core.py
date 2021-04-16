@@ -569,7 +569,7 @@ class Core(commands.Cog):
                     color=colours["edit"]
                 ))
                 reason = None
-                confidence = "90"
+                confidence = "80"
                 page = requests.get(ctx.author.avatar_url)
                 f_name = f"{random.randint(0,9999999999999999)}.png"
                 with open(f_name, "wb") as f:
