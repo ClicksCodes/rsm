@@ -42,7 +42,7 @@ class Ping(commands.Cog):
                 await mem.add_roles(g.get_role(int(role)))
                 await mem.send(embed=discord.Embed(
                     title=f"<:Tick:729064531107774534> Verified",
-                    description=f"You are now verified in {g.name}. (Code {code})",
+                    description=f"You are now verified in {g.name}. The `@{self.bot.get_guild(int(guild)).get_role(int(role)).name}` role has now been given.",
                     color=0x68D49E
                 ))
                 return "200"

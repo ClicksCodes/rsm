@@ -33,7 +33,8 @@
         "cogs.maincommands.bannedwords",
 
         "cogs.errors",
-        "cogs.ping"
+        "cogs.ping",
+        "cogs.automations"
     ],
 
     "colour-dev": "Pink",

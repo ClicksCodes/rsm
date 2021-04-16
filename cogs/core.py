@@ -10,6 +10,7 @@ import asyncio
 import datetime
 import random
 import mongoengine
+import psutil
 import secrets
 
 from datetime import datetime
@@ -69,9 +70,7 @@ class Core(commands.Cog):
 
     @tasks.loop(minutes=5.0)
     async def check_latency(self):
-        print(
-            f"\033[93m[P] {round(self.bot.latency*1000,3)} | {self.bot.errors} Errors since restart\033[0m"
-        )
+        print(f"\033[93m[P] {round(self.bot.latency*1000,3)} | {self.bot.errors} Errors since restart\033[0m")
 
     @check_latency.before_loop
     async def before_check_latency(self):

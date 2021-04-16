@@ -115,9 +115,9 @@ class Commands(commands.Cog):
             )
 
         if reason != None:
-            try: await member.send(embed=createEmbed(f"{emojis['PunWarn']} Warning", f"You were warned in {ctx.guild.name} {('for ' + reason) if reason is not False else 'with no reason provided'}.", colours["edit"]))
+            try: await member.send(embed=createEmbed(f"{emojis['PunWarn']} Warning", f"You were warned in {ctx.guild.name} {('for ' + reason) if reason else 'with no reason provided'}.", colours["edit"]))
             except: return
-            await m.edit(embed=createEmbed(f"{emojis['PunWarn']} Warning", f"User {member.mention} was successfully warned for {reason if reason is not False else 'No reason provided'}.", colours["create"]))
+            await m.edit(embed=createEmbed(f"{emojis['PunWarn']} Warning", f"User {member.mention} was successfully warned for {reason if reason else 'No reason provided'}.", colours["create"]))
             await m.clear_reactions()
 
     async def kickPun(self, m, member, ctx, reason=None):
@@ -147,9 +147,10 @@ class Commands(commands.Cog):
                 try:
                     if reason is not False: await member.send(embed=createEmbed(f"{emojis['PunKick']} Kicked", f"You were kicked from {ctx.guild.name} for {reason}.", colours["delete"]))
                 except: pass
-                await member.kick(member, reason=reason)
-                await m.edit(embed=createEmbed(f"{emojis['PunKick']} Kick", f"User {member.mention} was successfully kicked{' for' + str(reason) if reason is not False else ''}.", colours["create"]))
-            except:
+                await member.kick(reason=reason)
+                await m.edit(embed=createEmbed(f"{emojis['PunKick']} Kick", f"User {member.mention} was successfully kicked{' for' + str(reason) if reason else ''}.", colours["create"]))
+            except Exception as e:
+                print(e)
                 await m.edit(embed=createEmbed(f"{emojis['PunKick']} Kick", f"Something went wrong. I may not have permissions, or the user couldn't be kicked.", colours["delete"]))
             await m.clear_reactions()
 
@@ -188,7 +189,7 @@ class Commands(commands.Cog):
                 except:
                     pass
                 await ctx.guild.ban(self.bot.get_user(member.id), reason=reason, delete_message_days=7)
-                await m.edit(embed=createEmbed(f"{emojis['PunBan']} Ban", f"User {member.mention} was successfully banned{' for ' + str(reason) if reason is not False else ''}.", colours["create"]))
+                await m.edit(embed=createEmbed(f"{emojis['PunBan']} Ban", f"User {member.mention} was successfully banned{' for ' + str(reason) if reason else ''}.", colours["create"]))
             except Exception as e:
                 print(e)
                 await m.edit(embed=createEmbed(f"{emojis['PunBan']} Ban", f"Something went wrong. I may not have permissions, or the user couldn't be banned.", colours["delete"]))
@@ -225,7 +226,7 @@ class Commands(commands.Cog):
                 except: pass
                 await ctx.guild.ban(member, reason=reason, delete_message_days=7)
                 await ctx.guild.unban(member, reason="RSM Soft Ban")
-                await m.edit(embed=createEmbed(f"{emojis['PunSoftBan']} Soft Ban", f"User {member.mention} was successfully soft banned{' for' + str(reason) if reason is not False else ''}.", colours["create"]))
+                await m.edit(embed=createEmbed(f"{emojis['PunSoftBan']} Soft Ban", f"User {member.mention} was successfully soft banned{' for' + str(reason) if reason else ''}.", colours["create"]))
             except:
                 await m.edit(embed=createEmbed(f"{emojis['PunSoftBan']} Soft Ban", f"Something went wrong. I may not have permissions, or the user couldn't be banned.", colours["delete"]))
             await m.clear_reactions()
@@ -457,7 +458,7 @@ class Commands(commands.Cog):
     @commands.guild_only()
     async def kick(self, ctx, member: typing.Optional[discord.Member], *, reason:typing.Optional[str]):
         try: reason = str(''.join(reason))
-        except: reason = ""
+        except: reason = None
         tooMany = discord.Embed(
             title=f'{events["nsfw_update"][2]} You mentioned too many people there',
             description="You can only punish one person at a time.",
@@ -511,7 +512,7 @@ class Commands(commands.Cog):
     @commands.guild_only()
     async def softBan(self, ctx, member: typing.Optional[discord.Member], *, reason:typing.Optional[str]):
         try: reason = str(''.join(reason))
-        except: reason = ""
+        except: reason = None
         tooMany = discord.Embed(
             title=f'{events["nsfw_update"][2]} You mentioned too many people there',
             description="You can only punish one person at a time.",
@@ -536,7 +537,7 @@ class Commands(commands.Cog):
     @commands.guild_only()
     async def ban(self, ctx, member: typing.Optional[discord.Member], *, reason:typing.Optional[str]):
         try: reason = str(''.join(reason))
-        except: reason = ""
+        except: reason = None
         tooMany = discord.Embed(
             title=f'{events["nsfw_update"][2]} You mentioned too many people there',
             description="You can only punish one person at a time.",
@@ -630,21 +631,22 @@ class Commands(commands.Cog):
                 f"{emojis['join']          } `{prefix}setverify [R] {'' if mob else '|'} ` {n if mob else ''}Sets the role given when you `{prefix}verify`. Name or ID."
             ],
             "Moderation": [
-                f"{emojis['PunMute']   } `{prefix}prefix            {'' if mob else '|'} ` {n if mob else ''}Shows the bots prefix. Use @ if unknown.",
-                f"{emojis['PunMute']   } `{prefix}setprefix     [T] {'' if mob else '|'} ` {n if mob else ''}Sets the bots prefix. You can always @ the bot.",
-                f"{emojis['PunWarn']   } `{prefix}warn    [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Warns [@] for reason [T].",
-                f"{emojis['PunHistory']} `{prefix}clear   [*@] [*N] {'' if mob else '|'} ` {n if mob else ''}Clears [N] messages from [@].",
-                f"{emojis['PunKick']   } `{prefix}kick    [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Kicks [@] for reason [T].",
-                f"{emojis['PunSoftBan']} `{prefix}softban [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Soft bans [@] for reason [T].",
-                f"{emojis['PunBan']    } `{prefix}ban     [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Bans [@] for reason [T].",
-                f"{emojis['purge']     } `{prefix}purge        [*N] {'' if mob else '|'} ` {n if mob else ''}Deletes [N] messages in the channel.",
-                f"{emojis['PunWarn']   } `{prefix}punish       [*@] {'' if mob else '|'} ` {n if mob else ''}Punishes a user.",
-                f"{emojis['role_edit'] } `{prefix}setlog       [ C] {'' if mob else '|'} ` {n if mob else ''}Sets the servers log channel to [C].",
-                f"{emojis['ignore']    } `{prefix}ignore     [*CR@] {'' if mob else '|'} ` {n if mob else ''}Stops logging users, roles and channels privided.",
-                f"{emojis['ignore']    } `{prefix}ignored           {'' if mob else '|'} ` {n if mob else ''}Shows the ignored users, roles and channels.",
-                f"{emojis['rgeneral']  } `{prefix}stafflog     [*C] {'' if mob else '|'} ` {n if mob else ''}Sets the staff log channel for reports and messages."
-                f"{emojis['nsfw_on']   } `{prefix}nsfw              {'' if mob else '|'} ` {n if mob else ''}Lets you toggle NSFW checking on/off.",
-                f"{emojis['swear']     } `{prefix}filter            {'' if mob else '|'} ` {n if mob else ''}Opens the word filter page."
+                f"{emojis['PunMute']       } `{prefix}prefix            {'' if mob else '|'} ` {n if mob else ''}Shows the bots prefix. Use @ if unknown.",
+                f"{emojis['PunMute']       } `{prefix}setprefix     [T] {'' if mob else '|'} ` {n if mob else ''}Sets the bots prefix. You can always @ the bot.",
+                f"{emojis['PunWarn']       } `{prefix}warn    [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Warns [@] for reason [T].",
+                f"{emojis['PunHistory']    } `{prefix}clear   [*@] [*N] {'' if mob else '|'} ` {n if mob else ''}Clears [N] messages from [@].",
+                f"{emojis['PunKick']       } `{prefix}kick    [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Kicks [@] for reason [T].",
+                f"{emojis['PunSoftBan']    } `{prefix}softban [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Soft bans [@] for reason [T].",
+                f"{emojis['PunBan']        } `{prefix}ban     [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Bans [@] for reason [T].",
+                f"{emojis['purge']         } `{prefix}purge        [*N] {'' if mob else '|'} ` {n if mob else ''}Deletes [N] messages in the channel.",
+                f"{emojis['PunWarn']       } `{prefix}punish       [*@] {'' if mob else '|'} ` {n if mob else ''}Punishes a user.",
+                f"{emojis['role_edit']     } `{prefix}setlog       [ C] {'' if mob else '|'} ` {n if mob else ''}Sets the servers log channel to [C].",
+                f"{emojis['ignore']        } `{prefix}ignore     [*CR@] {'' if mob else '|'} ` {n if mob else ''}Stops logging users, roles and channels privided.",
+                f"{emojis['ignore']        } `{prefix}ignored           {'' if mob else '|'} ` {n if mob else ''}Shows the ignored users, roles and channels.",
+                f"{emojis['rgeneral']      } `{prefix}stafflog     [*C] {'' if mob else '|'} ` {n if mob else ''}Sets the staff log channel for reports and messages."
+                f"{emojis['nsfw_on']       } `{prefix}nsfw              {'' if mob else '|'} ` {n if mob else ''}Lets you toggle NSFW checking on/off.",
+                f"{emojis['swear']         } `{prefix}filter            {'' if mob else '|'} ` {n if mob else ''}Opens the word filter page.",
+                f"{emojis['webhook_create']} `{prefix}automation        {'' if mob else '|'} ` {n if mob else ''}(AKA `auto`) Lets you edit your server automations."
             ],
             "Raid": [
                 f"{emojis['slowmodeOn']} `{prefix}slowmode [*N]{'' if mob else '|'} ` {n if mob else ''}Sets the channel slowmode to [N]. Toggles if [N] is not provided.",
@@ -776,6 +778,11 @@ class Commands(commands.Cog):
             except: print(flag)
         perms = dict(member.guild_permissions)
 
+        joinpos = ""
+        if member.joined_at is None:
+            joinpos = "Could not calculate your join position"
+        joinpos = sum(m.joined_at < member.joined_at for m in ctx.guild.members if m.joined_at is not None)
+
         embeds = {
             0: [
                 flagstring,
@@ -786,7 +793,8 @@ class Commands(commands.Cog):
                 f"**Status:** {emojis[member.status.name]} {member.status.name.capitalize() if member.status.name != 'dnd' else 'DND'}" + (' - Mobile' if member.mobile_status.name == 'online' else ''),
                 f"**Started boosting:** {humanize.naturaltime(member.premium_since) if member.premium_since != None else 'Not boosting'}" ,
                 f"**Joined Discord:** {humanize.naturaltime(member.created_at)} ({member.created_at.strftime('%Y-%m-%d')})",
-                f"**Joined the server:** {humanize.naturaltime(datetime.datetime.utcnow()-member.joined_at)} ({member.joined_at.strftime('%Y-%m-%d')})"
+                f"**Joined the server:** {humanize.naturaltime(datetime.datetime.utcnow()-member.joined_at)} ({member.joined_at.strftime('%Y-%m-%d')})",
+                f"**Join position:** {joinpos}"
             ],
             1: [
                 f"**ID:** `{member.id}`",

@@ -1,6 +1,6 @@
 import json
-
 import discord
+
 from discord.ext import commands
 
 from config import config
@@ -32,9 +32,9 @@ class Bot(commands.Bot):
         for cog in config.cogs:
             x += 1
             try:
-                print(f"{C.Cyan.value}[S] {C.CyanDark.value}Loading cog {x}/{m} ({cog}){C.c.value}", end="\r")
+                print(f"[{'='*x}>{' '*(m-x)}] {C.Cyan.value}[S] {C.CyanDark.value}Loading cog {x}/{m} ({cog}){C.c.value}", end="\r")
                 self.load_extension(cog)
-                print(f"{C.Green.value}[S] {C.GreenDark.value}Loaded cog {x}/{m} ({cog}).{C.c.value}")
+                print(f"{C.Green.value}[S] {C.GreenDark.value}Loaded cog {x}/{m} ({cog}){' '*(m+5)}{C.c.value}")
             except Exception as exc:
                 print(f"{C.RedDark.value}[E] {C.Red.value}Failed cog {x}/{m} ({cog}) > {exc.__class__.__name__}: {exc}{C.c.value}")
         print()
