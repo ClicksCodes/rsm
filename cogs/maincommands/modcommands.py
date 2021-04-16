@@ -119,6 +119,19 @@ class Commands(commands.Cog):
             except: return
             await m.edit(embed=createEmbed(f"{emojis['PunWarn']} Warning", f"User {member.mention} was successfully warned for {reason if reason else 'No reason provided'}.", colours["create"]))
             await m.clear_reactions()
+            try:
+                with open(f"data/guilds/{ctx.guild.id}.json") as entry:
+                    entry = json.load(entry)
+            except FileNotFoundError:
+                pass
+            if entry["log_info"]["log_channel"]:
+                await ctx.guild.get_channel(entry["log_info"]["log_channel"]).send(embed=discord.Embed(
+                    title=f"{self.bot.get_emoji(self.emojiids['PunWarn'][0])} Member Warned",
+                    description=f"**Member warned:** {member.mention}\n"
+                                f"**Warned by:** {ctx.author.mention}\n"
+                                f"**Reason:**\n> {reason}",
+                    color=colours["edit"]
+                ))
 
     async def kickPun(self, m, member, ctx, reason=None):
         createEmbed = self.createEmbed
@@ -153,6 +166,19 @@ class Commands(commands.Cog):
                 print(e)
                 await m.edit(embed=createEmbed(f"{emojis['PunKick']} Kick", f"Something went wrong. I may not have permissions, or the user couldn't be kicked.", colours["delete"]))
             await m.clear_reactions()
+            try:
+                with open(f"data/guilds/{ctx.guild.id}.json") as entry:
+                    entry = json.load(entry)
+            except FileNotFoundError:
+                pass
+            if entry["log_info"]["log_channel"]:
+                await ctx.guild.get_channel(entry["log_info"]["log_channel"]).send(embed=discord.Embed(
+                    title=f"{self.bot.get_emoji(self.emojiids['PunKick'][0])} Member Kicked",
+                    description=f"**Member kicked:** {member.mention}\n"
+                                f"**Kicked by:** {ctx.author.mention}\n"
+                                f"**Reason:**\n> {reason}",
+                    color=colours["delete"]
+                ))
 
     async def banPun(self, m, member, ctx, reason=None):
         createEmbed = self.createEmbed
@@ -196,6 +222,19 @@ class Commands(commands.Cog):
                 try: bm.edit(embed=createEmbed(f"{emojis['PunBan']} Ban", f"The ban in {ctx.guild.name} failed.", colours["create"]))
                 except: pass
             await m.clear_reactions()
+            try:
+                with open(f"data/guilds/{ctx.guild.id}.json") as entry:
+                    entry = json.load(entry)
+            except FileNotFoundError:
+                pass
+            if entry["log_info"]["log_channel"]:
+                await ctx.guild.get_channel(entry["log_info"]["log_channel"]).send(embed=discord.Embed(
+                    title=f"{self.bot.get_emoji(self.emojiids['PunBan'][0])} Member Banned",
+                    description=f"**Member banned:** {member.mention}\n"
+                                f"**Banned by:** {ctx.author.mention}\n"
+                                f"**Reason:**\n> {reason}",
+                    color=colours["delete"]
+                ))
 
     async def softBanPun(self, m, member, ctx, reason=None):
         createEmbed = self.createEmbed
@@ -230,6 +269,19 @@ class Commands(commands.Cog):
             except:
                 await m.edit(embed=createEmbed(f"{emojis['PunSoftBan']} Soft Ban", f"Something went wrong. I may not have permissions, or the user couldn't be banned.", colours["delete"]))
             await m.clear_reactions()
+            try:
+                with open(f"data/guilds/{ctx.guild.id}.json") as entry:
+                    entry = json.load(entry)
+            except FileNotFoundError:
+                pass
+            if entry["log_info"]["log_channel"]:
+                await ctx.guild.get_channel(entry["log_info"]["log_channel"]).send(embed=discord.Embed(
+                    title=f"{self.bot.get_emoji(self.emojiids['PunSoftBan'][0])} Member Soft Banned",
+                    description=f"**Member soft banned:** {member.mention}\n"
+                                f"**Soft banend by:** {ctx.author.mention}\n"
+                                f"**Reason:**\n> {reason}",
+                    color=colours["edit"]
+                ))
 
     async def delHistoryPun(self, m, member, ctx, out=None, mod=None):
         createEmbed = self.createEmbed
@@ -268,6 +320,19 @@ class Commands(commands.Cog):
             try:
                 await m.delete()
             except: pass
+            try:
+                with open(f"data/guilds/{ctx.guild.id}.json") as entry:
+                    entry = json.load(entry)
+            except FileNotFoundError:
+                pass
+            if entry["log_info"]["log_channel"]:
+                await ctx.guild.get_channel(entry["log_info"]["log_channel"]).send(embed=discord.Embed(
+                    title=f"{self.bot.get_emoji(self.emojiids['PunHistory'][0])} Member History Cleared",
+                    description=f"**Member history cleared:** {member.mention}\n"
+                                f"**Cleared by:** {ctx.author.mention}\n"
+                                f"**Reason:**\n> {reason}",
+                    color=colours["edit"]
+                ))
 
     async def setSlowmode(self, ctx, channel, time):
         createEmbed = self.createEmbed
