@@ -587,11 +587,10 @@ class Core(commands.Cog):
                             else:
                                 nsfw = False
                             try:
-                                reason = ",".join([x['name']] for x in resp['output']['detections'])
                                 score = resp['output']['nsfw_score'] * 100
                             except Exception as e:
                                 print(e)
-                            if "Exposed" in reason:
+                            if "Exposed" in [x['name'] if float(x['confidence']) > 80 else "" for x in resp['output']['detections']]:
                                 nsfw = True
                             if int(score) > int(confidence):
                                 nsfw = True
@@ -605,9 +604,19 @@ class Core(commands.Cog):
                     print(e)
                 await m.delete()
                 if nsfw:
+                    backn = "\n"
+                    if "staff" in entry["log_info"]:
+                        backn = "\n"
+                        await self.bot.get_channel(entry["log_info"]["staff"]).send(embed=discord.Embed(
+                            title="NSFW profile picture",
+                            description=f"User {ctx.author.mention} ({ctx.author.display_name}, {ctx.author.id}) had an NSFW profile picture when verifying. [View here]({ctx.author.avatar_url})\n\n"
+                                        f"{backn.join([(r['name'] + ' Confidence: ' + str(round(float(r['confidence'])*100, 2)) + '%') for r in resp['output']['detections']])}\n\n"
+                                        f"Overall confidence: {round(float(resp['output']['nsfw_score'])*100)}%",
+                            color=colours["delete"]
+                        ))
                     return await ctx.author.send(embed=discord.Embed(
                         title="NSFW profile picture detected",
-                        description=f"Your profile picture was flagged when you joined {ctx.guild.name}, as NSFW protection is enabled",
+                        description=f"Your profile picture was flagged when you verified in {ctx.guild.name}, as NSFW protection is enabled",
                         color=colours["delete"]
                     ).set_footer(text="No NSFW filter is 100% accurate, but yours was flagged. If it is not NSFW, you do not need to worry - Just let the moderators you were flagged"))
         roleid = None

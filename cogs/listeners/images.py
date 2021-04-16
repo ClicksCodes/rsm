@@ -251,7 +251,7 @@ class ImageDetect(commands.Cog):
         except FileNotFoundError:
             return
         page = requests.get(member.avatar_url)
-        f_name = f'tmp{member.id}{member.guild.id}.png'
+        f_name = f'tmp/{member.id}{member.guild.id}.png'
         with open(f_name, 'wb') as f:
             f.write(page.content)
         try:
@@ -272,11 +272,10 @@ class ImageDetect(commands.Cog):
                     else:
                         nsfw = False
                     try:
-                        reason = ",".join([x['name']] for x in resp['output']['detections'])
                         score = resp['output']['nsfw_score'] * 100
                     except Exception as e:
                         print(e)
-                    if "Exposed" in reason:
+                    if "Exposed" in [x['name'] if float(x['confidence']) > 80 else "" for x in resp['output']['detections']]:
                         nsfw = True
                     if int(score) > int(confidence):
                         nsfw = True
@@ -286,9 +285,12 @@ class ImageDetect(commands.Cog):
                     pass
             if nsfw:
                 if "staff" in entry["log_info"]:
+                    backn = "\n"
                     await self.bot.get_channel(entry["log_info"]["staff"]).send(embed=discord.Embed(
                         title="NSFW profile picture",
-                        description=f"User {member.mention} ({member.display_name}, {member.id}) had an NSFW profile picture. [View here]({member.avatar_url})",
+                        description=f"User {member.mention} ({member.display_name}, {member.id}) had an NSFW profile picture. [View here]({member.avatar_url})"
+                                    f"{backn.join([(r['name'] + ' Confidence: ' + str(round(float(r['confidence'])*100, 2)) + '%') for r in resp['output']['detections']])}\n\n"
+                                    f"Overall confidence: {round(float(resp['output']['nsfw_score'])*100)}%",
                         color=colours["delete"]
                     ))
                 await member.send(embed=discord.Embed(
