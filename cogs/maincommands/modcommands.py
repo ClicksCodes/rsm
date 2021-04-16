@@ -349,6 +349,18 @@ class Commands(commands.Cog):
         except:
             await ctx.send(embed=createEmbed(f"{emojis['slowmodeOn'] if time > 0 else emojis['slowmodeOff']} Slowmode", "An unknown error occurred and slowmode could not be set.", colours["delete"]), delete_after=10)
             return
+        try:
+            with open(f"data/guilds/{ctx.guild.id}.json") as entry:
+                entry = json.load(entry)
+        except FileNotFoundError:
+            pass
+        if entry["log_info"]["log_channel"]:
+            await ctx.guild.get_channel(entry["log_info"]["log_channel"]).send(embed=discord.Embed(
+                title=f"{emojis['slowmodeOff']} Slowmode Toggled",
+                description=f"**Channel:** {channel.mention}\n"
+                            f"**Changed by:** {ctx.author.mention}\n",
+                color=colours["edit"]
+            ))
 
     async def lockdown(self, lock, channel, ctx):
         createEmbed = self.createEmbed
