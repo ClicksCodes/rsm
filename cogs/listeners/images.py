@@ -198,6 +198,8 @@ class ImageDetect(commands.Cog):
                         blank = True
 
                     # NSFW
+                    if ctx.channel.nsfw:
+                        return
                     start = time.time()
                     reason = None
                     confidence = "80"

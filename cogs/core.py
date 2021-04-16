@@ -632,31 +632,47 @@ class Core(commands.Cog):
                 )
             )
         try:
-            await ctx.message.delete()
+            mongoengine.connect(
+                'rsm',
+                host=config.mongoUrl
+            )
+            code = secrets.token_urlsafe(16)
+            entry = User(
+                code=str(code),
+                user=str(ctx.author.id),
+                role=str(roleid),
+                role_name=str(ctx.guild.get_role(roleid).name),
+                guild=str(ctx.guild.id),
+                guild_name=str(ctx.guild.name),
+                guild_icon_url=str(ctx.guild.icon_url),
+                guild_size=str(len(ctx.guild.members))
+            ).save()
         except Exception as e:
             print(e)
-        mongoengine.connect(
-            'rsm',
-            host=config.mongoUrl
-        )
-        code = secrets.token_urlsafe(16)
-        entry = User(
-            code=str(code),
-            user=str(ctx.author.id),
-            role=str(roleid),
-            role_name=str(ctx.guild.get_role(roleid).name),
-            guild=str(ctx.guild.id),
-            guild_name=str(ctx.guild.name),
-            guild_icon_url=str(ctx.guild.icon_url),
-            guild_size=str(len(ctx.guild.members))
-        ).save()
-        await ctx.author.send(
-            embed=discord.Embed(
-                title=f"{emojis['tick']} Verify",
-                description=f"In order to verify yourself in {ctx.guild.name}, you need to go [here](https://clicksminuteper.net/rsmv?code={code}) and complete the CAPTCHA.",
-                color=colours["create"],
+            return await ctx.channel.send(
+                embed=discord.Embed(
+                    title=f"{emojis['cross']} Verify",
+                    description=f"Our database appears to be down, and could not connect",
+                    color=colours["delete"],
+                ), delete_after=10
             )
-        )
+        try:
+            await ctx.author.send(
+                embed=discord.Embed(
+                    title=f"{emojis['tick']} Verify",
+                    description=f"In order to verify yourself in {ctx.guild.name}, you need to go [here](https://clicksminuteper.net/rsmv?code={code}) and complete the CAPTCHA.",
+                    color=colours["create"],
+                )
+            )
+        except Exception as e:
+            print(e)
+            await ctx.channel.send(
+                embed=discord.Embed(
+                    title=f"{emojis['cross']} Verify",
+                    description=f"Your DMs are disabled - We need to DM your code in order to keep verification secure. Please enable them and try again.",
+                    color=colours["delete"],
+                ), delete_after=10
+            )
 
     @commands.command()
     @commands.guild_only()
