@@ -79,7 +79,8 @@ class Automations(commands.Cog):
                 if reaction is None:
                     break
                 elif reaction[0].emoji.name == "Right":
-                    page += 1
+                    # page += 1
+                    pass
                 elif reaction[0].emoji.name == "ServerRole":
                     await asyncio.sleep(0.1)
                     await m.clear_reactions()
