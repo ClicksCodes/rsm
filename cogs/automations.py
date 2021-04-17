@@ -33,6 +33,8 @@ class Automations(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        if message.guild is None:
+            return
         try:
             with open(f"data/guilds/{message.guild.id}.json") as entry:
                 entry = json.load(entry)
