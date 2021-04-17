@@ -1,5 +1,6 @@
 import json
 import discord
+import os
 
 from discord.ext import commands
 
@@ -29,15 +30,30 @@ class Bot(commands.Bot):
         self.errors = 0
         x = 0
         m = len(config.cogs)
+        _, th = os.popen('stty size', 'r').read().split()
+        width = int(th)
+        failed = []
         for cog in config.cogs:
             x += 1
             try:
-                print(f"[{'='*x}>{' '*(m-x)}] {C.Cyan.value}[S] {C.CyanDark.value}Loading cog {x}/{m} ({cog}){C.c.value}", end="\r")
+                start = f"{C.YellowDark.value}[S] {C.Yellow.value}Loading cog {cog}"
+                end = f"{C.Yellow.value}[{C.Red.value}{'='*(len(failed))}{C.Green.value}{'='*(x-len(failed))}>{' '*(m-x)}{C.Yellow.value}] [{' '*(len(str(m))-len(str(x)))}{x}/{m}]"
+                print(f"{start}{' '*(width-len(start)-len(end)+(len(C.Yellow.value*4)))}{end}", end="\r")
                 self.load_extension(cog)
-                print(f"{C.Green.value}[S] {C.GreenDark.value}Loaded cog {x}/{m} ({cog}){' '*(m+5)}{C.c.value}")
+                start = f"{C.GreenDark.value}[S] {C.Green.value}Loaded cog {cog}"
+                end = f"[{' '*(len(str(m))-len(str(x)))}{x}/{m}]"
+                print(f"{start}{' '*(width-len(start)-len(end))}{end}")
             except Exception as exc:
-                print(f"{C.RedDark.value}[E] {C.Red.value}Failed cog {x}/{m} ({cog}) > {exc.__class__.__name__}: {exc}{C.c.value}")
-        print()
+                failed.append(exc)
+                start = f"{C.RedDark.value}[S] {C.Red.value}Failed to load cog {cog}"
+                end = f"[{' '*(len(str(m))-len(str(x)))}{x}/{m}]"
+                print(f"{start}{' '*(width-len(start)-len(end))}{end}")
+        x = 0
+        for error in failed:
+            x += 1
+            print(f"{C.RedDark.value}[{x}/{len(failed)}] {C.Red.value}{error.__class__.__name__}: {C.RedDark.value}{error}{C.c.value}")
+        lc = (len(failed), m)
+        print(f"{C[config.colour].value}[S] {C[str(config.colour) + 'Dark'].value}Starting with ({lc[1]-lc[0]}/{lc[1]}) cogs loaded")
 
     async def get_context(self, message, *, cls=Context):
         return await super().get_context(message, cls=cls)

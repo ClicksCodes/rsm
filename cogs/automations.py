@@ -1,5 +1,7 @@
 import discord
 import json
+import re
+import datetime
 import asyncio
 
 from discord.ext import commands
@@ -29,26 +31,65 @@ class Automations(commands.Cog):
                 else:
                     await member.guild.get_channel(w["message"]["channel"]).send(w["message"]["text"].replace("[@]", member.mention).replace("[mc]", str(len(member.guild.members))))
 
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        try:
+            with open(f"data/guilds/{message.guild.id}.json") as entry:
+                entry = json.load(entry)
+        except FileNotFoundError:
+            return
+        if "invite" in entry:
+            if not entry["invite"]["enabled"]:
+                return
+            if message.channel.id in entry["invite"]["whitelist"]["channels"]:
+                return
+            if message.author.id in entry["invite"]["whitelist"]["members"]:
+                return
+            if re.match(r"(?:https?://)?discord(?:app)?\.(?:com/invite|gg)/[a-zA-Z0-9]+/?", message.content):
+                await message.delete()
+                if entry["log_info"]["log_channel"]:
+                    await message.guild.get_channel(entry["log_info"]["log_channel"]).send(embed=discord.Embed(
+                        title=emojis['invite_delete'] + " Invite sent",
+                        description=(
+                            (f"```{message.clean_content[:2042].replace('```', '***')}```\n" if message.content else "") +
+                            f"**Channel:** {message.channel.mention}\n"
+                            f"**Sent By:** {message.author.mention}"
+                        ),
+                        color=colours["delete"],
+                        timestamp=datetime.datetime.utcnow()
+                    ))
+
     @commands.command(aliases=["auto", "automation"])
     @commands.guild_only()
     @commands.has_permissions(manage_guild=True)
     async def automations(self, ctx):
         with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
             entry = json.load(entry)
+            write = False
             if "welcome" not in entry:
+                write = True
                 entry["welcome"] = {"message": {"channel": None, "text": None}, "role": None}
+            if "invite" not in entry:
+                write = True
+                entry["invite"] = {"enabled": False, "whitelist": {"servers": [], "members": [], "roles": [], "channels": []}}
+            if write:
                 with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
                     json.dump(entry, f, indent=2)
         m = await ctx.send(embed=loadingEmbed)
-        pages = ["welcome"]
+        pages = ["welcome", "invite"]
         page = 0
+        skip = False
         while True:
+            page = max(0, min(page, len(pages)-1))
             with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
                 entry = json.load(entry)
-            await m.add_reaction(self.bot.get_emoji(729064530310594601))
-            await m.add_reaction(self.bot.get_emoji(729762938411548694))
-            await m.add_reaction(self.bot.get_emoji(729762938843430952))
-            await m.add_reaction(self.bot.get_emoji(752570111063228507))
+            if not skip:
+                await m.add_reaction(self.bot.get_emoji(729064530310594601))
+                await m.add_reaction(self.bot.get_emoji(729762938411548694))
+                await m.add_reaction(self.bot.get_emoji(729762938843430952))
+                await m.add_reaction(self.bot.get_emoji(752570111063228507))
+            else:
+                skip = False
             if pages[page] == "welcome":
                 role = entry['welcome']['role']
                 if isinstance(role, int):
@@ -58,11 +99,11 @@ class Automations(commands.Cog):
                 c = entry['welcome']['message']['channel']
                 if w is not None:
                     welcome = f"  **Text:**\n> {w}\n"
-                    welcome += f"  **Channel**: {self.bot.get_channel(c).mention if isinstance(c, int) else 'DMs'}"
+                    welcome += f"  **Channel**: {self.bot.get_channel(c).mention if isinstance(c, int) else 'DMs' if c is not None else '*None*'}"
                 await m.edit(embed=discord.Embed(
                     title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
                     description=f"**Welcome role:** {role} (Given to users on join)\n"
-                                f"**Welcome message:** {'None' if entry['welcome']['message']['channel'] is None else ''}\n"
+                                f"**Welcome message:** {'*Disabled*' if entry['welcome']['message']['channel'] is None else '*Enabled*'}\n"
                                 f"{welcome}",
                     color=colours["create"]
                 ))
@@ -72,6 +113,7 @@ class Automations(commands.Cog):
                     break
 
                 try:
+                    await asyncio.sleep(0.1)
                     await m.remove_reaction(reaction[0].emoji, ctx.author)
                 except Exception as e:
                     print(e)
@@ -79,8 +121,13 @@ class Automations(commands.Cog):
                 if reaction is None:
                     break
                 elif reaction[0].emoji.name == "Right":
-                    # page += 1
-                    pass
+                    page += 1
+                    skip = True
+                    await asyncio.sleep(0.1)
+                elif reaction[0].emoji.name == "Left":
+                    page -= 1
+                    skip = True
+                    await asyncio.sleep(0.1)
                 elif reaction[0].emoji.name == "ServerRole":
                     await asyncio.sleep(0.1)
                     await m.clear_reactions()
@@ -96,13 +143,12 @@ class Automations(commands.Cog):
                             role = ctx.guild.get_role(role).mention
                         w = entry['welcome']['message']['text']
                         c = entry['welcome']['message']['channel']
-                        if w is not None:
-                            welcome = f"{emojis['2']}  **Text:**\n> {w}\n"
-                            welcome += f"{emojis['3']}  **Channel**: {self.bot.get_channel(c).mention if isinstance(c, int) else 'DMs'}"
+                        welcome = f"{emojis['2']}  **Text:**\n> {w or '*None*'}\n"
+                        welcome += f"{emojis['3']}  **Channel**: {self.bot.get_channel(c).mention if isinstance(c, int) else 'DMs' if c is not None else '*None*'}"
                         await m.edit(embed=discord.Embed(
                             title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
                             description=f"{emojis['1']} **Welcome role:** {role} (Given to users on join)\n"
-                                        f"**Welcome message:** {'None' if entry['welcome']['message']['channel'] is None else ''}\n"
+                                        f"**Welcome message:** {'*Disabled*' if entry['welcome']['message']['channel'] is None else '*Enabled*'}\n"
                                         f"{welcome}",
                             color=colours["create"]
                         ))
@@ -160,6 +206,7 @@ class Automations(commands.Cog):
                             try:
                                 message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
                             except asyncio.TimeoutError:
+                                await m.clear_reactions()
                                 break
 
                             try:
@@ -173,7 +220,7 @@ class Automations(commands.Cog):
                                     with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
                                         json.dump(entry, f, indent=2)
                                 continue
-                            if message.content.lower() == "none":
+                            if message.content.lower() == "cancel":
                                 continue
                             with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
                                 entry = json.load(entry)
@@ -189,6 +236,7 @@ class Automations(commands.Cog):
                             try:
                                 message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
                             except asyncio.TimeoutError:
+                                await m.clear_reactions()
                                 break
 
                             try:
@@ -224,6 +272,162 @@ class Automations(commands.Cog):
                             break
                 else:
                     break
+            elif pages[page] == "invite":
+                role = entry['welcome']['role']
+                if isinstance(role, int):
+                    role = ctx.guild.get_role(role).mention
+                exclude = ""
+                w = entry['invite']['whitelist']
+                if entry['invite']['enabled']:
+                    exclude += f"  **Members:** {', '.join([ctx.guild.get_member(mem).mention for mem in w['members']])}\n"
+                    exclude += f"  **Channels**: {', '.join([self.bot.get_channel(cha).mention for cha in w['channels']])}"
+                await m.edit(embed=discord.Embed(
+                    title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                    description=f"**Invite deletion:** {'Enabled' if entry['invite']['enabled'] else 'Disabled'}\n"
+                                f"{exclude}",
+                    color=colours["create"]
+                ))
+                try:
+                    reaction = await ctx.bot.wait_for("reaction_add", timeout=60, check=lambda _, user: user == ctx.author)
+                except asyncio.TimeoutError:
+                    break
+
+                try:
+                    await asyncio.sleep(0.1)
+                    await m.remove_reaction(reaction[0].emoji, ctx.author)
+                except Exception as e:
+                    print(e)
+
+                if reaction is None:
+                    break
+                elif reaction[0].emoji.name == "Right":
+                    page += 1
+                    await asyncio.sleep(0.1)
+                elif reaction[0].emoji.name == "Left":
+                    page -= 1
+                    await asyncio.sleep(0.1)
+                elif reaction[0].emoji.name == "ServerRole":
+                    await asyncio.sleep(0.1)
+                    await m.clear_reactions()
+                    for r in [729064531107774534, 753259025990418515, 753259024409034896, 753259024358703205]:
+                        await asyncio.sleep(0.1)
+                        await m.add_reaction(self.bot.get_emoji(r))
+                    while True:
+                        with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                            entry = json.load(entry)
+                        welcome = ""
+                        role = entry['welcome']['role']
+                        if isinstance(role, int):
+                            role = ctx.guild.get_role(role).mention
+                        exclude = ""
+                        w = entry['invite']['whitelist']
+                        exclude += f"{emojis['2']}   **Members:** {', '.join([ctx.guild.get_member(mem).mention for mem in w['members']])}\n"
+                        exclude += f"{emojis['3']}   **Channels**: {', '.join([self.bot.get_channel(cha).mention for cha in w['channels']])}"
+                        await m.edit(embed=discord.Embed(
+                            title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                            description=f"{emojis['1']} **Invite deletion:** {'Enabled' if entry['invite']['enabled'] else 'Disabled'}\n"
+                                        f"{exclude}",
+                            color=colours["create"]
+                        ))
+                        try:
+                            reaction = await ctx.bot.wait_for("reaction_add", timeout=60, check=lambda _, user: user == ctx.author)
+                        except asyncio.TimeoutError:
+                            break
+
+                        try:
+                            await m.remove_reaction(reaction[0].emoji, ctx.author)
+                        except Exception as e:
+                            print(e)
+
+                        if reaction is None:
+                            break
+                        elif reaction[0].emoji.name == "1_":
+                            with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                entry = json.load(entry)
+                                entry["invite"]["enabled"] = not entry["invite"]["enabled"]
+                                with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                    json.dump(entry, f, indent=2)
+                            continue
+                        elif reaction[0].emoji.name == "2_":
+                            await m.edit(embed=discord.Embed(
+                                title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                                description=f"Which members should be allowed to send invites? Use their mention, ID or name. Type `none` for no exemptions or `cancel` to cancel",
+                                color=colours["create"]
+                            ))
+                            try:
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                            except asyncio.TimeoutError:
+                                await m.clear_reactions()
+                                break
+
+                            try:
+                                await message.delete()
+                            except Exception as e:
+                                print(e)
+                            if message.content.lower() == "none":
+                                with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                    entry = json.load(entry)
+                                    entry["invite"]["whitelist"]["members"] = []
+                                    with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                        json.dump(entry, f, indent=2)
+                                continue
+                            if message.content.lower() == "cancel":
+                                continue
+                            members = []
+                            for s in message.content.split(" "):
+                                try:
+                                    r = await commands.MemberConverter().convert(await self.bot.get_context(message), s)
+                                    members.append(r.id)
+                                except commands.MemberNotFound:
+                                    pass
+                            with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                entry = json.load(entry)
+                                entry["invite"]["whitelist"]["members"] = members
+                                with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                    json.dump(entry, f, indent=2)
+                        elif reaction[0].emoji.name == "3_":
+                            await m.edit(embed=discord.Embed(
+                                title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                                description=f"Which channels should allow invites? Use their mention, ID or name. Type `none` for no exemptions or `cancel` to cancel",
+                                color=colours["create"]
+                            ))
+                            try:
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                            except asyncio.TimeoutError:
+                                await m.clear_reactions()
+                                break
+
+                            try:
+                                await message.delete()
+                            except Exception as e:
+                                print(e)
+                            if message.content.lower() == "none":
+                                with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                    entry = json.load(entry)
+                                    entry["invite"]["whitelist"]["channels#"] = []
+                                    with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                        json.dump(entry, f, indent=2)
+                                continue
+                            if message.content.lower() == "cancel":
+                                continue
+                            channels = []
+                            for s in message.content.split(" "):
+                                try:
+                                    r = await commands.TextChannelConverter().convert(await self.bot.get_context(message), s)
+                                    channels.append(r.id)
+                                except commands.ChannelNotFound:
+                                    pass
+                            with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                entry = json.load(entry)
+                                entry["invite"]["whitelist"]["channels"] = channels
+                                with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                    json.dump(entry, f, indent=2)
+                        else:
+                            await asyncio.sleep(0.1)
+                            await m.clear_reactions()
+                            await asyncio.sleep(0.1)
+                            break
+        await m.clear_reactions()
 
 
 def setup(bot):

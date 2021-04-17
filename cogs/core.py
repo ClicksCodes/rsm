@@ -65,18 +65,7 @@ class NotLogging:
 class Core(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.check_latency.start()
         self.loadingEmbed = loadingEmbed
-
-    @tasks.loop(minutes=5.0)
-    async def check_latency(self):
-        print(f"\033[93m[P] {round(self.bot.latency*1000,3)} | {self.bot.errors} Errors since restart\033[0m")
-
-    @check_latency.before_loop
-    async def before_check_latency(self):
-        print(f"\033[93m[P] Starting latency test\033[0m", end="\r")
-        await self.bot.wait_until_ready()
-        print(f"\033[93m[P] Latency initialised  \033[0m")
 
     def is_logging(
         self,

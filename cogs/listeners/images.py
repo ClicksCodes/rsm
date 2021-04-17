@@ -143,6 +143,10 @@ class ImageDetect(commands.Cog):
                         dimensions = [img.shape[0], img.shape[1]]
                     except Exception as e:
                         print(e)
+                        try:
+                            os.remove(f_name)
+                        except Exception as e:
+                            print(e)
                         return
                     # if min(dimensions) < low_thresh:
                     #     await message.channel.send('Too small')
@@ -178,8 +182,16 @@ class ImageDetect(commands.Cog):
                                         break
 
                     if "nsfw" not in entry:
+                        try:
+                            os.remove(f_name)
+                        except Exception as e:
+                            print(e)
                         return
                     if entry["nsfw"]:
+                        try:
+                            os.remove(f_name)
+                        except Exception as e:
+                            print(e)
                         return
                     cfimg = cf(f_name)
                     try:
@@ -199,8 +211,11 @@ class ImageDetect(commands.Cog):
 
                     # NSFW
                     if ctx.channel.nsfw:
+                        try:
+                            os.remove(f_name)
+                        except Exception as e:
+                            print(e)
                         return
-                    start = time.time()
                     reason = None
                     confidence = "80"
                     async with self.session.post("https://api.deepai.org/api/nsfw-detector", data={'image': page.url}, headers={'api-key': deepAIkey}) as r:
