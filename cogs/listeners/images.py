@@ -141,8 +141,7 @@ class ImageDetect(commands.Cog):
                     up_thresh = 4097
                     try:
                         dimensions = [img.shape[0], img.shape[1]]
-                    except Exception as e:
-                        print(e)
+                    except AttributeError:
                         try:
                             os.remove(f_name)
                         except AttributeError:
