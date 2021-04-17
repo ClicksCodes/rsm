@@ -168,15 +168,15 @@ class ImageDetect(commands.Cog):
                     # if max(dimensions) > up_thresh:
                     #     await message.channel.send('Too large')
 
-                    if dimensions[1] > dimensions[0]:
-                        w = 5000
-                        h = (w//(dimensions[1] if dimensions[1] != 0 else 10)) * dimensions[0]
-                    else:
-                        h = 5000
-                        w = (h//(dimensions[0] if dimensions[0] != 0 else 10)) * dimensions[1]
+                    # if dimensions[1] > dimensions[0]:
+                    #     w = 5000
+                    #     h = (w//(dimensions[1] if dimensions[1] != 0 else 10)) * dimensions[0]
+                    # else:
+                    #     h = 5000
+                    #     w = (h//(dimensions[0] if dimensions[0] != 0 else 10)) * dimensions[1]
 
-                    dim = (w, h)
-                    img = cv2.resize(img, dim)
+                    # dim = (w, h)
+                    # img = cv2.resize(img, dim)
                     custom_config = r'--oem 3 --psm 6'
 
                     try:
