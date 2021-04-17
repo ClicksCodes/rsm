@@ -145,11 +145,27 @@ class ImageDetect(commands.Cog):
                         print(e)
                         try:
                             os.remove(f_name)
+                        except AttributeError:
+                            pass
+                        continue
+                    if min(dimensions) < low_thresh:
+                        await message.delete()
+                        e = discord.Embed(
+                            title=emojis["too_small"] + f" Image too small",
+                            description=f"**Name:** {message.author.mention}\n"
+                                        f"**Image size:** {dimensions[0]}x{dimensions[1]}px\n"
+                                        f"**Channel:** {message.channel.mention}\n"
+                                        f"**ID:** `{message.author.id}`",
+                            color=colours["delete"],
+                            timestamp=datetime.utcnow()
+                        )
+                        log = self.get_log(message.guild)
+                        await log.send(embed=e)
+                        try:
+                            os.remove(f_name)
                         except Exception as e:
                             print(e)
                         return
-                    # if min(dimensions) < low_thresh:
-                    #     await message.channel.send('Too small')
                     # if max(dimensions) > up_thresh:
                     #     await message.channel.send('Too large')
 
@@ -186,13 +202,45 @@ class ImageDetect(commands.Cog):
                             os.remove(f_name)
                         except Exception as e:
                             print(e)
-                        return
+                        continue
                     if entry["nsfw"]:
                         try:
                             os.remove(f_name)
                         except Exception as e:
                             print(e)
-                        return
+                        continue
+                    if "invite" in entry:
+                        if not entry["invite"]["enabled"]:
+                            try:
+                                os.remove(f_name)
+                            except Exception as e:
+                                print(e)
+                            return
+                        if message.channel.id in entry["invite"]["whitelist"]["channels"]:
+                            try:
+                                os.remove(f_name)
+                            except Exception as e:
+                                print(e)
+                        if message.author.id in entry["invite"]["whitelist"]["members"]:
+                            try:
+                                os.remove(f_name)
+                            except Exception as e:
+                                print(e)
+                        if re.search(r"(?:https?:\/\/)?discord(?:app)?\.(?:com\/invite|gg)\/[a-zA-Z0-9]+\/?", text, re.MULTILINE):
+                            await message.delete()
+                            if entry["log_info"]["log_channel"]:
+                                await message.guild.get_channel(entry["log_info"]["log_channel"]).send(embed=discord.Embed(
+                                    title=emojis['invite_delete'] + " Invite sent (image)",
+                                    description=f"**Channel:** {message.channel.mention}\n"
+                                                f"**Sent By:** {message.author.mention}",
+                                    color=colours["delete"],
+                                    timestamp=datetime.utcnow()
+                                ))
+                            try:
+                                os.remove(f_name)
+                            except Exception as e:
+                                print(e)
+                            return
                     cfimg = cf(f_name)
                     try:
                         dc = cfimg.get_color(quality=2)
@@ -210,12 +258,12 @@ class ImageDetect(commands.Cog):
                         blank = True
 
                     # NSFW
-                    if ctx.channel.nsfw:
+                    if message.channel.nsfw:
                         try:
                             os.remove(f_name)
                         except Exception as e:
                             print(e)
-                        return
+                        continue
                     reason = None
                     confidence = "80"
                     async with self.session.post("https://api.deepai.org/api/nsfw-detector", data={'image': page.url}, headers={'api-key': deepAIkey}) as r:
@@ -253,7 +301,11 @@ class ImageDetect(commands.Cog):
                         )
                         log = self.get_log(message.guild)
                         await log.send(embed=e)
-                        break
+                        try:
+                            os.remove(f_name)
+                        except Exception as e:
+                            print(e)
+                        return
                 except Exception as e:
                     print(e)
 
