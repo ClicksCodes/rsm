@@ -304,9 +304,11 @@ class Automations(commands.Cog):
                     break
                 elif reaction[0].emoji.name == "Right":
                     page += 1
+                    skip = True
                     await asyncio.sleep(0.1)
                 elif reaction[0].emoji.name == "Left":
                     page -= 1
+                    skip = True
                     await asyncio.sleep(0.1)
                 elif reaction[0].emoji.name == "ServerRole":
                     await asyncio.sleep(0.1)
@@ -453,9 +455,11 @@ class Automations(commands.Cog):
                     break
                 elif reaction[0].emoji.name == "Right":
                     page += 1
+                    skip = True
                     await asyncio.sleep(0.1)
                 elif reaction[0].emoji.name == "Left":
                     page -= 1
+                    skip = True
                     await asyncio.sleep(0.1)
                 elif reaction[0].emoji.name == "ServerRole":
                     await asyncio.sleep(0.1)
