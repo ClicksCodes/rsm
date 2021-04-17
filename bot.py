@@ -30,8 +30,11 @@ class Bot(commands.Bot):
         self.errors = 0
         x = 0
         m = len(config.cogs)
-        _, th = os.popen('stty size', 'r').read().split()
-        width = int(th)
+        try:
+            _, th = os.popen('stty size', 'r').read().split()
+            width = int(th)
+        except ValueError:
+            width = 50
         failed = []
         for cog in config.cogs:
             x += 1
