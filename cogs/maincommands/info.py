@@ -240,7 +240,7 @@ class InfoCommands(commands.Cog):
                     description=f"{self.bot.get_emoji(gc['commit'])} Commit\n\n>>> Committing",
                     color=colours["create"]
                 ))
-                out = subprocess.run(["git", "commit", "-am", f'{message.content}'], stdout=subprocess.PIPE)
+                out = subprocess.run(["git", "commit", "-am", f'"{message.content}"'], stdout=subprocess.PIPE)
                 backn = "\n"
                 await m.edit(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
