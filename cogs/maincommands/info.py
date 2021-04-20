@@ -154,7 +154,6 @@ class InfoCommands(commands.Cog):
         self.commit = str(subprocess.check_output(["git", "show-branch", self.branch]))[(5+(len(self.branch))):-3]
         self.url = str(subprocess.check_output(["git", "config", "--get", "remote.origin.url"]))[2:-3]
         while True:
-
             await m.edit(embed=discord.Embed(
                 title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
                 description=f"Current version for `{self.url.split('/')[-2]}/{self.url.split('/')[-1]}`\n"
@@ -226,11 +225,18 @@ class InfoCommands(commands.Cog):
                     color=colours["create"]
                 ))
                 await asyncio.sleep(5)
-            elif reaction[0].emoji.name == "Reload":
-                out = subprocess.run(["pm2", "reload", "3"], stdout=subprocess.PIPE)
+            elif reaction[0].emoji.name == "reload":
+                try:
+                    out = subprocess.run(["pm2", "reload", "3"], stdout=subprocess.PIPE).returncode
+                    self.head = str(subprocess.check_output(["git", "rev-parse", "HEAD"]))[2:-3]
+                    self.branch = str(subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"]))[2:-3]
+                    self.commit = str(subprocess.check_output(["git", "show-branch", self.branch]))[(5+(len(self.branch))):-3]
+                    self.url = str(subprocess.check_output(["git", "config", "--get", "remote.origin.url"]))[2:-3]
+                except FileNotFoundError:
+                    out = 1
                 await m.edit(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
-                    description=f"{self.bot.get_emoji(gc['reload'])} PM2 Reload\n\n>>> {'Reloaded successfully' if out.returncode == 0 else 'Exited with code `' + out.returncode +'`'}",
+                    description=f"{self.bot.get_emoji(gc['reload'])} PM2 Reload\n\n>>> {'Reloaded successfully' if out == 0 else 'Exited with code `' + str(out) +'`'}",
                     color=colours["create"]
                 ))
                 await asyncio.sleep(5)
