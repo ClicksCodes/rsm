@@ -197,7 +197,7 @@ class InfoCommands(commands.Cog):
             elif reaction[0].emoji.name == "Pull":
                 await m.edit(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
-                    description=f"{self.bot.get_emoji(gc['pull'])} Fetch\n\n>>> Pulling",
+                    description=f"{self.bot.get_emoji(gc['pull'])} Pull\n\n>>> Pulling",
                     color=colours["create"]
                 ))
                 out = subprocess.run(["git", "pull"], stdout=subprocess.PIPE)
