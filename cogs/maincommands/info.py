@@ -137,11 +137,12 @@ class InfoCommands(commands.Cog):
     @commands.is_owner()
     async def git(self, ctx):
         m = await ctx.send(embed=loadingEmbed)
-        for r in [834127343206400021, 834127343533555713, 834127343525822474, 834127343244673055, 834139266921267211]:  # 834127343576023130
+        for r in [834127343206400021, 834148997324472391, 834127343533555713, 834127343525822474, 834127343244673055, 834139266921267211]:  # 834127343576023130
             await m.add_reaction(self.bot.get_emoji(r))
 
         gc = {
             "commit": 834127343525822474,
+            "pull": 834148997324472391,
             "merge": 834127343533555713,
             "push": 834127343244673055,
             "fetch": 834127343206400021,
@@ -160,8 +161,9 @@ class InfoCommands(commands.Cog):
                             f"**Branch:** `{self.branch}`\n"
                             f"**HEAD:** `{self.head}`\n"
                             f"**Commit:** `{self.commit}`\n\n"
-                            f"{self.bot.get_emoji(gc['fetch'])} **Fetch** and pull\n"
-                            f"{self.bot.get_emoji(gc['merge'])} **Merge** with current\n"
+                            f"{self.bot.get_emoji(gc['fetch'])} **Fetch** latest commit\n"
+                            f"{self.bot.get_emoji(gc['pull'])} **Pull** fetched version\n"
+                            f"{self.bot.get_emoji(gc['merge'])} **Merge** with current version\n"
                             f"{self.bot.get_emoji(gc['commit'])} **Commit** current code\n"
                             f"{self.bot.get_emoji(gc['push'])} **Push** current commit\n\n"
                             f"{self.bot.get_emoji(gc['reload'])} **PM2 reload**",
@@ -189,6 +191,19 @@ class InfoCommands(commands.Cog):
                 await m.edit(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
                     description=f"{self.bot.get_emoji(gc['fetch'])} Fetch\n\n>>> {'Fetched successfully' if out.returncode == 0 else 'Exited with code `' + out.returncode +'`'}",
+                    color=colours["create"]
+                ))
+                await asyncio.sleep(3)
+            elif reaction[0].emoji.name == "Pull":
+                await m.edit(embed=discord.Embed(
+                    title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
+                    description=f"{self.bot.get_emoji(gc['pull'])} Fetch\n\n>>> Pulling",
+                    color=colours["create"]
+                ))
+                out = subprocess.run(["git", "pull"], stdout=subprocess.PIPE)
+                await m.edit(embed=discord.Embed(
+                    title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
+                    description=f"{self.bot.get_emoji(gc['pull'])} Pull\n\n>>> {'Pulled successfully' if out.returncode == 0 else 'Exited with code `' + out.returncode +'`'}",
                     color=colours["create"]
                 ))
                 await asyncio.sleep(3)
