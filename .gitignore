@@ -1,4 +1,5 @@
 /data/guilds/*
+/tmp/*.png
 /data/stats.json
 __pycache__
 .idea
