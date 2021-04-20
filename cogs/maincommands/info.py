@@ -225,7 +225,7 @@ class InfoCommands(commands.Cog):
                     description=f"{self.bot.get_emoji(gc['commit'])} Commit\n\n>>> Committing",
                     color=colours["create"]
                 ))
-                out = subprocess.run(["git", "commit", "-am", f'"{message.content}"'], stdout=subprocess.PIPE)
+                out = subprocess.run(["git", "commit", "-am", f'{message.content}'], stdout=subprocess.PIPE)
                 backn = "\n"
                 await m.edit(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
@@ -254,18 +254,14 @@ class InfoCommands(commands.Cog):
                 ))
                 try:
                     out = subprocess.run(["pm2", "reload", "3"], stdout=subprocess.PIPE).returncode
-                    self.head = str(subprocess.check_output(["git", "rev-parse", "HEAD"]))[2:-3]
-                    self.branch = str(subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"]))[2:-3]
-                    self.commit = str(subprocess.check_output(["git", "show-branch", self.branch]))[(5+(len(self.branch))):-3]
-                    self.url = str(subprocess.check_output(["git", "config", "--get", "remote.origin.url"]))[2:-3]
                 except FileNotFoundError:
                     out = 1
                 await m.edit(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
-                    description=f"{self.bot.get_emoji(gc['reload'])} PM2 Reload\n\n>>> {'Reloaded successfully' if out == 0 else 'Exited with code `' + str(out) +'`'}",
+                    description=f"{self.bot.get_emoji(gc['reload'])} PM2 Reload\n\n>>> {'Reloaded successfully' if out == -2 else 'Exited with code `' + str(out) +'`'}",
                     color=colours["create"]
                 ))
-                await asyncio.sleep(3)
+                return
 
 
 def setup(bot):
