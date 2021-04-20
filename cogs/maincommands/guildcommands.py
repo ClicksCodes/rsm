@@ -227,7 +227,7 @@ class GuildCommands(commands.Cog):
                             f"**Members:** {g.member_count}{n}",
 
                 color=colours["create"] if not final else colours["delete"]
-            )
+            ).set_thumbnail(url=g.icon_url)
             await m.delete()
             m = await ctx.send(embed=e)
             if final: return await m.clear_reactions()
