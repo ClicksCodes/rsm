@@ -180,25 +180,35 @@ class InfoCommands(commands.Cog):
             if reaction is None:
                 break
             elif reaction[0].emoji.name == "Fetch":
+                await m.edit(embed=discord.Embed(
+                    title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
+                    description=f"{self.bot.get_emoji(gc['fetch'])} Fetch\n\n>>> Fetching",
+                    color=colours["create"]
+                ))
                 out = subprocess.run(["git", "fetch"], stdout=subprocess.PIPE)
                 await m.edit(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
                     description=f"{self.bot.get_emoji(gc['fetch'])} Fetch\n\n>>> {'Fetched successfully' if out.returncode == 0 else 'Exited with code `' + out.returncode +'`'}",
                     color=colours["create"]
                 ))
-                await asyncio.sleep(5)
+                await asyncio.sleep(3)
             elif reaction[0].emoji.name == "Merge":
+                await m.edit(embed=discord.Embed(
+                    title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
+                    description=f"{self.bot.get_emoji(gc['merge'])} Merge\n\n>>> Merging",
+                    color=colours["create"]
+                ))
                 out = subprocess.run(["git", "merge"], stdout=subprocess.PIPE)
                 await m.edit(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
                     description=f"{self.bot.get_emoji(gc['merge'])} Merge\n\n>>> {'Merged successfully' if out.returncode == 0 else 'Exited with code `' + out.returncode +'`'}",
                     color=colours["create"]
                 ))
-                await asyncio.sleep(5)
+                await asyncio.sleep(3)
             elif reaction[0].emoji.name == "Commit":
                 await m.edit(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
-                    description=f"{self.bot.get_emoji(gc['commit'])} Commit\n\nEnter a commit message",
+                    description=f"{self.bot.get_emoji(gc['commit'])} Commit\n\n>>> Enter a commit message",
                     color=colours["create"]
                 ))
                 try:
@@ -210,22 +220,38 @@ class InfoCommands(commands.Cog):
                     await message.delete()
                 except Exception as e:
                     print(e)
-                out = subprocess.run(["git", "commit", "-am", f'"{message.content}"'], stdout=subprocess.PIPE)
                 await m.edit(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
-                    description=f"{self.bot.get_emoji(gc['commit'])} Commit\n\n>>> {f'Committed successfully with message {message.content}' if out.returncode == 0 else 'Exited with code `' + out.returncode +'`'}",
+                    description=f"{self.bot.get_emoji(gc['commit'])} Commit\n\n>>> Committing",
                     color=colours["create"]
                 ))
-                await asyncio.sleep(5)
+                out = subprocess.run(["git", "commit", "-am", f'"{message.content}"'], stdout=subprocess.PIPE)
+                backn = "\n"
+                await m.edit(embed=discord.Embed(
+                    title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
+                    description=f"{self.bot.get_emoji(gc['commit'])} Commit\n\n>>> {f'Committed successfully with message:{backn} {message.content}' if out.returncode == 0 else 'Exited with code `' + out.returncode +'`'}",
+                    color=colours["create"]
+                ))
+                await asyncio.sleep(3)
             elif reaction[0].emoji.name == "Push":
+                await m.edit(embed=discord.Embed(
+                    title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
+                    description=f"{self.bot.get_emoji(gc['push'])} Push\n\n>>> Pushing",
+                    color=colours["create"]
+                ))
                 out = subprocess.run(["git", "push"], stdout=subprocess.PIPE)
                 await m.edit(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
                     description=f"{self.bot.get_emoji(gc['push'])} Push\n\n>>> {'Pushed successfully' if out.returncode == 0 else 'Exited with code `' + out.returncode +'`'}",
                     color=colours["create"]
                 ))
-                await asyncio.sleep(5)
+                await asyncio.sleep(3)
             elif reaction[0].emoji.name == "reload":
+                await m.edit(embed=discord.Embed(
+                    title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
+                    description=f"{self.bot.get_emoji(gc['reload'])} PM2 Reload\n\n>>> Reloading",
+                    color=colours["create"]
+                ))
                 try:
                     out = subprocess.run(["pm2", "reload", "3"], stdout=subprocess.PIPE).returncode
                     self.head = str(subprocess.check_output(["git", "rev-parse", "HEAD"]))[2:-3]
@@ -239,7 +265,7 @@ class InfoCommands(commands.Cog):
                     description=f"{self.bot.get_emoji(gc['reload'])} PM2 Reload\n\n>>> {'Reloaded successfully' if out == 0 else 'Exited with code `' + str(out) +'`'}",
                     color=colours["create"]
                 ))
-                await asyncio.sleep(5)
+                await asyncio.sleep(3)
 
 
 def setup(bot):
