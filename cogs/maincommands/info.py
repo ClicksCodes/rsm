@@ -190,7 +190,7 @@ class InfoCommands(commands.Cog):
                 out = subprocess.run(["git", "fetch"], stdout=subprocess.PIPE)
                 await m.edit(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
-                    description=f"{self.bot.get_emoji(gc['fetch'])} Fetch\n\n>>> {'Fetched successfully' if out.returncode == 0 else 'Exited with code `' + out.returncode +'`'}",
+                    description=f"{self.bot.get_emoji(gc['fetch'])} Fetch\n\n>>> {'Fetched successfully' if out.returncode == 0 else 'Exited with code `' + str(out.returncode) +'`'}",
                     color=colours["create"]
                 ))
                 await asyncio.sleep(3)
@@ -203,7 +203,7 @@ class InfoCommands(commands.Cog):
                 out = subprocess.run(["git", "pull"], stdout=subprocess.PIPE)
                 await m.edit(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
-                    description=f"{self.bot.get_emoji(gc['pull'])} Pull\n\n>>> {'Pulled successfully' if out.returncode == 0 else 'Exited with code `' + out.returncode +'`'}",
+                    description=f"{self.bot.get_emoji(gc['pull'])} Pull\n\n>>> {'Pulled successfully' if out.returncode == 0 else 'Exited with code `' + str(out.returncode) +'`'}",
                     color=colours["create"]
                 ))
                 await asyncio.sleep(3)
@@ -216,7 +216,7 @@ class InfoCommands(commands.Cog):
                 out = subprocess.run(["git", "merge"], stdout=subprocess.PIPE)
                 await m.edit(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
-                    description=f"{self.bot.get_emoji(gc['merge'])} Merge\n\n>>> {'Merged successfully' if out.returncode == 0 else 'Exited with code `' + out.returncode +'`'}",
+                    description=f"{self.bot.get_emoji(gc['merge'])} Merge\n\n>>> {'Merged successfully' if out.returncode == 0 else 'Exited with code `' + str(out.returncode) +'`'}",
                     color=colours["create"]
                 ))
                 await asyncio.sleep(3)
@@ -244,7 +244,7 @@ class InfoCommands(commands.Cog):
                 backn = "\n"
                 await m.edit(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
-                    description=f"{self.bot.get_emoji(gc['commit'])} Commit\n\n>>> {f'Committed successfully with message:{backn} {message.content}' if out.returncode == 0 else 'Exited with code `' + out.returncode +'`'}",
+                    description=f"{self.bot.get_emoji(gc['commit'])} Commit\n\n>>> {f'Committed successfully with message:{backn} {message.content}' if out.returncode == 0 else 'Exited with code `' + str(out.returncode) +'`'}",
                     color=colours["create"]
                 ))
                 await asyncio.sleep(3)
