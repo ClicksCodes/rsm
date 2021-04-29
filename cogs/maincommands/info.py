@@ -257,7 +257,7 @@ class InfoCommands(commands.Cog):
                 out = subprocess.run(["git", "push"], stdout=subprocess.PIPE)
                 await m.edit(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
-                    description=f"{self.bot.get_emoji(gc['push'])} Push\n\n>>> {'Pushed successfully' if out.returncode == 0 else 'Exited with code `' + out.returncode +'`'}",
+                    description=f"{self.bot.get_emoji(gc['push'])} Push\n\n>>> {'Pushed successfully' if out.returncode == 0 else 'Exited with code `' + str(out.returncode) +'`'}",
                     color=colours["create"]
                 ))
                 await asyncio.sleep(3)
