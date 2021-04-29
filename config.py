@@ -24,3 +24,4 @@ class Config:
 
 
 config = Config("config.json")
+os.environ["GIT_SSH_COMMAND"] = "ssh -i sshkey -o IdentitiesOnly=yes"
