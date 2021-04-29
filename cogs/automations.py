@@ -87,7 +87,7 @@ class Automations(commands.Cog):
                 with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
                     json.dump(entry, f, indent=2)
         m = await ctx.send(embed=loadingEmbed)
-        pages = ["filter", "welcome", "invite", "images"]
+        pages = ["filter", "nsfw", "welcome", "invite", "images"]
         page = 0
         skip = False
         while True:
@@ -716,6 +716,75 @@ class Automations(commands.Cog):
                                 entry["invite"]["whitelist"]["channels"] = channels
                                 with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
                                     json.dump(entry, f, indent=2)
+                        else:
+                            await asyncio.sleep(0.1)
+                            await m.clear_reactions()
+                            await asyncio.sleep(0.1)
+                            break
+            elif pages[page] == "nsfw":
+                await m.edit(embed=discord.Embed(
+                    title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                    description=f"**You are {'not ' if entry['nsfw'] else ''}currently moderating NSFW content** like profile pictures and images in chat\n"
+                                f"When a user changes their profile picture to something NSFW, you will recieve a message in your stafflog channel\n"
+                                f"NSFW images are automatically deleted and logged with normal server logs",
+                    color=colours["create"]
+                ).set_footer(text="No NSFW filter is 100% accurate, however we try our best to ensure only NSFW content triggers our checks", icon_url=""))
+                try:
+                    reaction = await ctx.bot.wait_for("reaction_add", timeout=60, check=lambda _, user: user == ctx.author)
+                except asyncio.TimeoutError:
+                    break
+
+                try:
+                    await asyncio.sleep(0.1)
+                    await m.remove_reaction(reaction[0].emoji, ctx.author)
+                except Exception as e:
+                    print(e)
+
+                if reaction is None:
+                    break
+                elif reaction[0].emoji.name == "Right":
+                    page += 1
+                    skip = True
+                    await asyncio.sleep(0.1)
+                elif reaction[0].emoji.name == "Left":
+                    page -= 1
+                    skip = True
+                    await asyncio.sleep(0.1)
+                elif reaction[0].emoji.name == "ServerRole":
+                    await asyncio.sleep(0.1)
+                    await m.clear_reactions()
+                    for r in [729064531107774534, 729064531208175736]:
+                        await asyncio.sleep(0.1)
+                        await m.add_reaction(self.bot.get_emoji(r))
+                    while True:
+                        with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                            entry = json.load(entry)
+                        await m.edit(embed=discord.Embed(
+                            title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                            description=f"**You are {'not ' if entry['nsfw'] else ''}currently moderating NSFW content** like profile pictures and images in chat\n"
+                                        f"When a user changes their profile picture to something NSFW, you will recieve a message in your stafflog channel\n"
+                                        f"NSFW images are automatically deleted and logged with normal server logs",
+                            color=colours["create"]
+                        ).set_footer(text="No NSFW filter is 100% accurate, however we try our best to ensure only NSFW content triggers our checks", icon_url=""))
+                        try:
+                            reaction = await ctx.bot.wait_for("reaction_add", timeout=60, check=lambda _, user: user == ctx.author)
+                        except asyncio.TimeoutError:
+                            break
+
+                        try:
+                            await m.remove_reaction(reaction[0].emoji, ctx.author)
+                        except Exception as e:
+                            print(e)
+
+                        if reaction is None:
+                            break
+                        elif reaction[0].emoji.name == "NsfwOn":
+                            with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                entry = json.load(entry)
+                            entry["nsfw"] = not entry["nsfw"]
+                            with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                json.dump(entry, f, indent=2)
+                            continue
                         else:
                             await asyncio.sleep(0.1)
                             await m.clear_reactions()

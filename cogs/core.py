@@ -698,51 +698,6 @@ class Core(commands.Cog):
                 )
             )
 
-    @commands.command()
-    @commands.guild_only()
-    @commands.has_permissions(manage_guild=True)
-    async def nsfw(self, ctx):
-        with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
-            entry = json.load(entry)
-            if "nsfw" not in entry:
-                entry["nsfw"] = True
-                with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
-                    json.dump(entry, f, indent=2)
-        m = await ctx.send(embed=loadingEmbed)
-        while True:
-            await m.edit(
-                embed=discord.Embed(
-                    title=f"{emojis['nsfw_on'] if not entry['nsfw'] else emojis['nsfw_off']} NSFW protection",
-                    description=f"**You are {'not ' if entry['nsfw'] else ''}currently moderating NSFW content** like profile pictures and images in chat\n"
-                                f"When a user changes their profile picture to something NSFW, you will recieve a message in your stafflog channel\n"
-                                f"NSFW images are automatically deleted and logged with normal server logs",
-                    color=colours["edit"],
-                ).set_footer(text="No NSFW filter is 100% accurate, however we try our best to ensure only NSFW content triggers our checks", icon_url="")
-            )
-            for r in [729064531208175736, 729064530310594601]:
-                await m.add_reaction(self.bot.get_emoji(r))
-            try:
-                reaction = await ctx.bot.wait_for("reaction_add", timeout=60, check=lambda _, user: user == ctx.author)
-            except asyncio.TimeoutError:
-                break
-
-            try:
-                await m.remove_reaction(reaction[0].emoji, ctx.author)
-            except Exception as e:
-                print(e)
-
-            if reaction is None:
-                break
-            elif reaction[0].emoji.name == "NsfwOn":
-                with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
-                    entry = json.load(entry)
-                entry["nsfw"] = not entry["nsfw"]
-                with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
-                    json.dump(entry, f, indent=2)
-            else:
-                break
-        await m.clear_reactions()
-
 
 def setup(bot):
     bot.add_cog(Core(bot))
