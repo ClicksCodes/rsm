@@ -722,7 +722,6 @@ class Commands(commands.Cog):
                 f"{emojis['ignore']        } `{prefix}ignored           {'' if mob else '|'} ` {n if mob else ''}Shows the ignored users, roles and channels.",
                 f"{emojis['rgeneral']      } `{prefix}stafflog     [*C] {'' if mob else '|'} ` {n if mob else ''}Sets the staff log channel for reports and messages."
                 f"{emojis['nsfw_on']       } `{prefix}nsfw              {'' if mob else '|'} ` {n if mob else ''}Lets you toggle NSFW checking on/off.",
-                f"{emojis['swear']         } `{prefix}filter            {'' if mob else '|'} ` {n if mob else ''}Opens the word filter page.",
                 f"{emojis['webhook_create']} `{prefix}automation        {'' if mob else '|'} ` {n if mob else ''}(AKA `auto`) Lets you edit your server automations."
             ],
             "Raid": [
