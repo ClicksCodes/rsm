@@ -184,17 +184,25 @@ class ImageDetect(commands.Cog):
                     except Exception as e:
                         print(e)
                         text = 'No text found'
-                    if "wordfilter" in entry:
-                        if message.author.id not in entry["wordfilter"]["ignore"]["members"] and message.channel.id not in entry["wordfilter"]["ignore"]["channels"]:
-                            passed = False
-                            for role in message.author.roles:
-                                if role.id in entry["wordfilter"]["ignore"]["roles"]:
-                                    passed = True
-                            if not passed:
-                                for word in [x.group().lower() for x in re.finditer( r'[a-zA-Z]+', text)]:
-                                    if word in entry["wordfilter"]["banned"]:
-                                        await message.delete()
+                    for _ in range(1):
+                        if "wordfilter" in entry:
+                            if message.author.id not in entry["wordfilter"]["ignore"]["members"] and message.channel.id not in entry["wordfilter"]["ignore"]["channels"]:
+                                for role in [r.id for r in message.author.roles]:
+                                    if role in entry["wordfilter"]["ignore"]["roles"]:
                                         break
+                                passed = False
+                                for role in message.author.roles:
+                                    if role.id in entry["wordfilter"]["ignore"]["roles"]:
+                                        passed = True
+                                if not passed:
+                                    for word in [x.group().lower() for x in re.finditer( r'[a-zA-Z]+', text)]:
+                                        if word in [w.lower() for w in entry["wordfilter"]["soft"]]:
+                                            await message.delete()
+                                            return
+                                    for word in entry["wordfilter"]["banned"]:
+                                        if word.lower() in message.content.lower():
+                                            await message.delete()
+                                            return
 
                     if "nsfw" not in entry:
                         try:

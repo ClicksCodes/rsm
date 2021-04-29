@@ -75,9 +75,12 @@ class Users(commands.Cog):
                     if role.id in entry["wordfilter"]["ignore"]["roles"]:
                         return
                 for word in [x.group().lower() for x in re.finditer( r'[a-zA-Z]+', str(name))]:
-                    if word in entry["wordfilter"]["banned"]:
+                    if word in entry["wordfilter"]["soft"]:
                         return True
                         break
+                for word in entry["wordfilter"]["banned"]:
+                    if word in message.content:
+                        return True
 
     def is_logging(self, guild: discord.Guild, *, channel=None, member: discord.Member = None, eventname):
         if not os.path.exists(f'data/guilds/{guild.id}.json'):

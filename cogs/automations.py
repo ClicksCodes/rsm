@@ -77,11 +77,17 @@ class Automations(commands.Cog):
             if "images" not in entry:
                 write = True
                 entry["images"] = {"toosmall": False}
+            if "wordfilter" not in entry:
+                write = True
+                entry["wordfilter"] = {"ignore": {"roles": [], "channels": [], "members": [], "delta": None}, "banned": [], "soft": []}
+            if "soft" not in entry["wordfilter"]:
+                write = True
+                entry["wordfilter"]["soft"] = []
             if write:
                 with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
                     json.dump(entry, f, indent=2)
         m = await ctx.send(embed=loadingEmbed)
-        pages = ["welcome", "invite", "images"]
+        pages = ["filter", "welcome", "invite", "images"]
         page = 0
         skip = False
         while True:
@@ -95,7 +101,291 @@ class Automations(commands.Cog):
                 await m.add_reaction(self.bot.get_emoji(752570111063228507))
             else:
                 skip = False
-            if pages[page] == "welcome":
+            if pages[page] == "filter":
+                wf = entry['wordfilter']
+                await m.edit(embed=discord.Embed(
+                    title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                    description=f"**Exempt users:** {', '.join([ctx.guild.get_member(u).mention for u in wf['ignore']['members']]) or 'None'}\n"
+                                f"**Exempt roles:** {', '.join([ctx.guild.get_role(u).mention for u in wf['ignore']['roles']]) or 'None'}\n"
+                                f"**Exempt channels:** {', '.join([ctx.guild.get_channel(u).mention for u in wf['ignore']['channels']]) or 'None'}\n\n"
+                                f"**Banned words (strict):**\n> {', '.join(wf['banned']) or 'None'}\n"
+                                f"**Banned words (soft):**\n> {', '.join(wf['soft']) or 'None'}\n",
+                    color=colours["create"]
+                ))
+                try:
+                    reaction = await ctx.bot.wait_for("reaction_add", timeout=60, check=lambda _, user: user == ctx.author)
+                except asyncio.TimeoutError:
+                    break
+
+                try:
+                    await asyncio.sleep(0.1)
+                    await m.remove_reaction(reaction[0].emoji, ctx.author)
+                except Exception as e:
+                    print(e)
+
+                if reaction is None:
+                    break
+                elif reaction[0].emoji.name == "Right":
+                    page += 1
+                    skip = True
+                    await asyncio.sleep(0.1)
+                elif reaction[0].emoji.name == "Left":
+                    page -= 1
+                    skip = True
+                    await asyncio.sleep(0.1)
+                elif reaction[0].emoji.name == "ServerRole":
+                    await asyncio.sleep(0.1)
+                    await m.clear_reactions()
+                    for r in [
+                        729064531107774534, 752570111281594509, 729763053352124529,
+                        729066924943737033, 837355918831124500, 826823515268186152,
+                        826823514904330251, 837355918420869162
+                    ]:
+                        await asyncio.sleep(0.1)
+                        await m.add_reaction(self.bot.get_emoji(r))
+                    while True:
+                        with open(f"data/guilds/{ctx.guild.id}.json", "r") as e:
+                            entry = json.load(e)
+                        wf = entry['wordfilter']
+                        await m.edit(embed=discord.Embed(
+                            title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                            description=f"<:a:752570111281594509> **Exempt users:** {', '.join([ctx.guild.get_member(u).mention for u in wf['ignore']['members']]) or 'None'}\n"
+                                        f"<:a:729763053352124529> **Exempt roles:** {', '.join([ctx.guild.get_role(u).mention for u in wf['ignore']['roles']]) or 'None'}\n"
+                                        f"<:a:729066924943737033> **Exempt channels:** {', '.join([ctx.guild.get_channel(u).mention for u in wf['ignore']['channels']]) or 'None'}\n\n"
+                                        f"<:a:837355918831124500> **Banned words (strict):** Appearances anywhere in a message\n> {', '.join(wf['banned']) or 'None'}\n"
+                                        f"<:a:826823514904330251> **Banned words (soft):** Appearences surrounded by spaces or punctuation\n> {', '.join(wf['soft']) or 'None'}\n",
+                            color=colours["create"]
+                        ))
+                        try:
+                            reaction = await ctx.bot.wait_for("reaction_add", timeout=60, check=lambda _, user: user == ctx.author)
+                        except asyncio.TimeoutError:
+                            break
+
+                        try:
+                            await m.remove_reaction(reaction[0].emoji, ctx.author)
+                        except Exception as e:
+                            print(e)
+
+                        if reaction is None:
+                            break
+                        elif reaction[0].emoji.name == "MembersRole":
+                            await m.edit(embed=discord.Embed(
+                                title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                                description=f"Which members should be allowed to use banned words - Allows mentions, names or IDs",
+                                color=colours["create"]
+                            ))
+                            try:
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                            except asyncio.TimeoutError:
+                                break
+
+                            try:
+                                await message.delete()
+                            except Exception as e:
+                                print(e)
+                            if message.content.lower() == "cancel":
+                                continue
+                            if message.content.lower() == "none":
+                                with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                    entry = json.load(entry)
+                                    entry["wordfilter"]["ignore"]["members"] = []
+                                    with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                        json.dump(entry, f, indent=2)
+                                continue
+                            members = []
+                            for s in message.content.split(" "):
+                                try:
+                                    r = await commands.MemberConverter().convert(await self.bot.get_context(message), s)
+                                    members.append(r.id)
+                                except commands.MemberNotFound:
+                                    pass
+                            with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                entry = json.load(entry)
+                                entry["wordfilter"]["ignore"]["members"] = members
+                                with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                    json.dump(entry, f, indent=2)
+                        elif reaction[0].emoji.name == "ServerModerationUpdate":
+                            await m.edit(embed=discord.Embed(
+                                title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                                description=f"Which roles should be allowed to use banned words - Allows mentions, names or IDs",
+                                color=colours["create"]
+                            ))
+                            try:
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                            except asyncio.TimeoutError:
+                                break
+                            try:
+                                await message.delete()
+                            except Exception as e:
+                                print(e)
+                            if message.content.lower() == "cancel":
+                                continue
+                            if message.content.lower() == "none":
+                                with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                    entry = json.load(entry)
+                                    entry["wordfilter"]["ignore"]["roles"] = []
+                                    with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                        json.dump(entry, f, indent=2)
+                                continue
+                            roles = []
+                            for s in message.content.split(" "):
+                                try:
+                                    r = await commands.RoleConverter().convert(await self.bot.get_context(message), s)
+                                    roles.append(r.id)
+                                except commands.RoleNotFound:
+                                    pass
+                            with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                entry = json.load(entry)
+                                entry["wordfilter"]["ignore"]["roles"] = roles
+                                with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                    json.dump(entry, f, indent=2)
+                        elif reaction[0].emoji.name == "ChannelCreate":
+                            await m.edit(embed=discord.Embed(
+                                title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                                description=f"Which channels should be allowed to use banned words - Allows mentions, names or IDs",
+                                color=colours["create"]
+                            ))
+                            try:
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                            except asyncio.TimeoutError:
+                                break
+                            try:
+                                await message.delete()
+                            except Exception as e:
+                                print(e)
+                            if message.content.lower() == "cancel":
+                                continue
+                            if message.content.lower() == "none":
+                                with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                    entry = json.load(entry)
+                                    entry["wordfilter"]["ignore"]["channels"] = []
+                                    with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                        json.dump(entry, f, indent=2)
+                                continue
+                            channels = []
+                            for s in message.content.split(" "):
+                                try:
+                                    r = await commands.TextChannelConverter().convert(await self.bot.get_context(message), s)
+                                    channels.append(r.id)
+                                except commands.ChannelNotFound:
+                                    pass
+                            with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                entry = json.load(entry)
+                                entry["wordfilter"]["ignore"]["channels"] = channels
+                                with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                    json.dump(entry, f, indent=2)
+                        elif reaction[0].emoji.name == "addopp":
+                            await m.edit(embed=discord.Embed(
+                                title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                                description=f"Which words should be added to the strict banned word list - Separated by spaces",
+                                color=colours["create"]
+                            ))
+                            try:
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                            except asyncio.TimeoutError:
+                                break
+                            try:
+                                await message.delete()
+                            except Exception as e:
+                                print(e)
+                            if message.content.lower() == "cancel":
+                                continue
+                            if message.content.lower() == "none":
+                                continue
+                            with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                entry = json.load(entry)
+                            for s in message.content.split(" "):
+                                entry["wordfilter"]["banned"].append(s)
+                            with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                json.dump(entry, f, indent=2)
+                        elif reaction[0].emoji.name == "add":
+                            await m.edit(embed=discord.Embed(
+                                title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                                description=f"Which words should be added to the soft banned word list - Separated by spaces",
+                                color=colours["create"]
+                            ))
+                            try:
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                            except asyncio.TimeoutError:
+                                break
+                            try:
+                                await message.delete()
+                            except Exception as e:
+                                print(e)
+                            if message.content.lower() == "cancel":
+                                continue
+                            if message.content.lower() == "none":
+                                continue
+                            with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                entry = json.load(entry)
+                            for s in message.content.split(" "):
+                                entry["wordfilter"]["soft"].append(s)
+                            with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                json.dump(entry, f, indent=2)
+                        elif reaction[0].emoji.name == "remove":
+                            await m.edit(embed=discord.Embed(
+                                title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                                description=f"Which words should be removed from the strict banned word list - Separated by spaces",
+                                color=colours["create"]
+                            ))
+                            try:
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                            except asyncio.TimeoutError:
+                                break
+
+                            try:
+                                await message.delete()
+                            except Exception as e:
+                                print(e)
+                            if message.content.lower() == "cancel":
+                                continue
+                            if message.content.lower() == "none":
+                                continue
+                            with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                entry = json.load(entry)
+                            for s in message.content.split(" "):
+                                try:
+                                    entry["wordfilter"]["banned"].remove(s)
+                                except ValueError:
+                                    pass
+                            with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                json.dump(entry, f, indent=2)
+                        elif reaction[0].emoji.name == "removeopp":
+                            await m.edit(embed=discord.Embed(
+                                title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                                description=f"Which words should be removed from the soft banned word list - Separated by spaces",
+                                color=colours["create"]
+                            ))
+                            try:
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                            except asyncio.TimeoutError:
+                                break
+
+                            try:
+                                await message.delete()
+                            except Exception as e:
+                                print(e)
+                            if message.content.lower() == "cancel":
+                                continue
+                            if message.content.lower() == "none":
+                                continue
+                            with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                entry = json.load(entry)
+                            for s in message.content.split(" "):
+                                try:
+                                    entry["wordfilter"]["soft"].remove(s)
+                                except ValueError:
+                                    pass
+                            with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                json.dump(entry, f, indent=2)
+                        else:
+                            await asyncio.sleep(0.1)
+                            await m.clear_reactions()
+                            await asyncio.sleep(0.1)
+                            break
+                else:
+                    break
+            elif pages[page] == "welcome":
                 role = entry['welcome']['role']
                 if isinstance(role, int):
                     role = ctx.guild.get_role(role).mention

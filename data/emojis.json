@@ -99,5 +99,7 @@
     "Undeafen":        "<:Deafen:784785219324346378>",
     "catCreate":       "<:CatCreate:787987508465238026>",
     "catDelete":       "<:CatDelete:787987508507967488>",
-    "catEdit":         "<:CatEdit:787987508565770300>"
+    "catEdit":         "<:CatEdit:787987508565770300>",
+    "addopp":          "<:addopp:837355918831124500>",
+    "removeopp":       "<:removeopp:837355918420869162>"
 }

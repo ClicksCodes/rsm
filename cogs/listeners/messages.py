@@ -132,7 +132,11 @@ class Messages(commands.Cog):
                     if role.id in entry["wordfilter"]["ignore"]["roles"]:
                         return
                 for word in [x.group().lower() for x in re.finditer( r'[a-zA-Z]+', message.content)]:
-                    if word in entry["wordfilter"]["banned"]:
+                    if word in [w.lower() for w in entry["wordfilter"]["soft"]]:
+                        await message.delete()
+                        break
+                for word in entry["wordfilter"]["banned"]:
+                    if word.lower() in message.content.lower():
                         await message.delete()
                         break
 

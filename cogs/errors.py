@@ -74,7 +74,7 @@ class Errors(commands.Cog):
                 )
                 url = await postbin.postAsync(tb)
                 print(f"{C.RedDark.value}[C] {C.Red.value}FATAL:\n{tb}{C.c.value}\n{code}")
-                if self.bot.user.id == 715989276382462053:
+                if int(self.bot.user.id) == 715989276382462053:
                     await self.bot.get_channel(776418051003777034).send(
                         embed=discord.Embed(
                             title="Error",
@@ -101,7 +101,7 @@ class Errors(commands.Cog):
         tb = f"Event ran: {event}\nArgs:{', '.join(args)}\n\n{tb}"
         return print(f"{C.RedDark.value}[C] {C.Red.value}Error Below\n{tb}{C.c.value}")
 
-    # noinspection PyUnresolvedReferences
+    #  noinspection PyUnresolvedReferences
     @commands.command()
     @commands.is_owner()
     async def error(self, ctx):
