@@ -81,6 +81,9 @@ class Automations(commands.Cog):
             if "images" not in entry:
                 write = True
                 entry["images"] = {"toosmall": False}
+            if "nsfw" not in entry:
+                write = True
+                entry["nsfw"] = True
             if "wordfilter" not in entry:
                 write = True
                 entry["wordfilter"] = {"ignore": {"roles": [], "channels": [], "members": [], "delta": None}, "banned": [], "soft": []}
