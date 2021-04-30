@@ -47,6 +47,10 @@ class Automations(commands.Cog):
                 return
             if message.author.id in entry["invite"]["whitelist"]["members"]:
                 return
+            if "roles" in entry["invite"]["whitelist"]:
+                for role in entry["invite"]["whitelist"]["roles"]:
+                    if role in [r.id for r in message.author.roles]:
+                        return
             if re.search(r"(?:https?:\/\/)?discord(?:app)?\.(?:com\/invite|gg)\/[a-zA-Z0-9]+\/?", message.content, re.MULTILINE):
                 await message.delete()
                 if entry["log_info"]["log_channel"]:
@@ -83,6 +87,9 @@ class Automations(commands.Cog):
             if "soft" not in entry["wordfilter"]:
                 write = True
                 entry["wordfilter"]["soft"] = []
+            if "roles" not in entry["invite"]['whitelist']:
+                write = True
+                entry["invite"]["whitelist"]['roles'] = []
             if write:
                 with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
                     json.dump(entry, f, indent=2)
@@ -572,7 +579,8 @@ class Automations(commands.Cog):
                 w = entry['invite']['whitelist']
                 if entry['invite']['enabled']:
                     exclude += f"  **Members:** {', '.join([ctx.guild.get_member(mem).mention for mem in w['members']])}\n"
-                    exclude += f"  **Channels**: {', '.join([self.bot.get_channel(cha).mention for cha in w['channels']])}"
+                    exclude += f"  **Channels**: {', '.join([self.bot.get_channel(cha).mention for cha in w['channels']])}\n"
+                    exclude += f"  **Roles**: {', '.join([ctx.guild.get_role(cha).mention for cha in w['roles']])}"
                 await m.edit(embed=discord.Embed(
                     title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
                     description=f"**Invite deletion:** {'Enabled' if entry['invite']['enabled'] else 'Disabled'}\n"
@@ -603,7 +611,7 @@ class Automations(commands.Cog):
                 elif reaction[0].emoji.name == "ServerRole":
                     await asyncio.sleep(0.1)
                     await m.clear_reactions()
-                    for r in [729064531107774534, 753259025990418515, 753259024409034896, 753259024358703205]:
+                    for r in [729064531107774534, 753259025990418515, 753259024409034896, 753259024358703205, 753259024555835513]:
                         await asyncio.sleep(0.1)
                         await m.add_reaction(self.bot.get_emoji(r))
                     while True:
@@ -616,7 +624,8 @@ class Automations(commands.Cog):
                         exclude = ""
                         w = entry['invite']['whitelist']
                         exclude += f"{emojis['2']}   **Members:** {', '.join([ctx.guild.get_member(mem).mention for mem in w['members']])}\n"
-                        exclude += f"{emojis['3']}   **Channels**: {', '.join([self.bot.get_channel(cha).mention for cha in w['channels']])}"
+                        exclude += f"{emojis['3']}   **Channels**: {', '.join([self.bot.get_channel(cha).mention for cha in w['channels']])}\n"
+                        exclude += f"{emojis['4']}   **Roles**: {', '.join([ctx.guild.get_role(cha).mention for cha in w['roles']])}"
                         await m.edit(embed=discord.Embed(
                             title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
                             description=f"{emojis['1']} **Invite deletion:** {'Enabled' if entry['invite']['enabled'] else 'Disabled'}\n"
@@ -682,7 +691,7 @@ class Automations(commands.Cog):
                         elif reaction[0].emoji.name == "3_":
                             await m.edit(embed=discord.Embed(
                                 title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
-                                description=f"Which channels should allow invites? Use their mention, ID or name. Type `none` for no exemptions or `cancel` to cancel",
+                                description=f"Which members should allow invites? Use their mention, ID or name. Type `none` for no exemptions or `cancel` to cancel",
                                 color=colours["create"]
                             ))
                             try:
@@ -714,6 +723,43 @@ class Automations(commands.Cog):
                             with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
                                 entry = json.load(entry)
                                 entry["invite"]["whitelist"]["channels"] = channels
+                                with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                    json.dump(entry, f, indent=2)
+                        elif reaction[0].emoji.name == "4_":
+                            await m.edit(embed=discord.Embed(
+                                title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                                description=f"Which roles should allow invites? Use its mention, ID or name. Type `none` for no exemptions or `cancel` to cancel",
+                                color=colours["create"]
+                            ))
+                            try:
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                            except asyncio.TimeoutError:
+                                await m.clear_reactions()
+                                break
+
+                            try:
+                                await message.delete()
+                            except Exception as e:
+                                print(e)
+                            if message.content.lower() == "none":
+                                with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                    entry = json.load(entry)
+                                    entry["invite"]["whitelist"]["roles"] = []
+                                    with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                        json.dump(entry, f, indent=2)
+                                continue
+                            if message.content.lower() == "cancel":
+                                continue
+                            roles = []
+                            for s in message.content.split(" "):
+                                try:
+                                    r = await commands.RoleConverter().convert(await self.bot.get_context(message), s)
+                                    roles.append(r.id)
+                                except commands.RoleNotFound:
+                                    pass
+                            with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                entry = json.load(entry)
+                                entry["invite"]["whitelist"]["roles"] = roles
                                 with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
                                     json.dump(entry, f, indent=2)
                         else:
