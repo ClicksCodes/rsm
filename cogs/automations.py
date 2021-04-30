@@ -581,9 +581,9 @@ class Automations(commands.Cog):
                 exclude = ""
                 w = entry['invite']['whitelist']
                 if entry['invite']['enabled']:
-                    exclude += f"  **Members:** {', '.join([ctx.guild.get_member(mem).mention for mem in w['members']])}\n"
-                    exclude += f"  **Channels**: {', '.join([self.bot.get_channel(cha).mention for cha in w['channels']])}\n"
-                    exclude += f"  **Roles**: {', '.join([ctx.guild.get_role(cha).mention for cha in w['roles']])}"
+                    exclude += f"  **Exempt Members:** {', '.join([ctx.guild.get_member(mem).mention for mem in w['members']])}\n"
+                    exclude += f"  **Exempt Channels**: {', '.join([self.bot.get_channel(cha).mention for cha in w['channels']])}\n"
+                    exclude += f"  **Exempt Roles**: {', '.join([ctx.guild.get_role(cha).mention for cha in w['roles']])}"
                 await m.edit(embed=discord.Embed(
                     title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
                     description=f"**Invite deletion:** {'Enabled' if entry['invite']['enabled'] else 'Disabled'}\n"
@@ -626,9 +626,9 @@ class Automations(commands.Cog):
                             role = ctx.guild.get_role(role).mention
                         exclude = ""
                         w = entry['invite']['whitelist']
-                        exclude += f"{emojis['2']}   **Members:** {', '.join([ctx.guild.get_member(mem).mention for mem in w['members']])}\n"
-                        exclude += f"{emojis['3']}   **Channels**: {', '.join([self.bot.get_channel(cha).mention for cha in w['channels']])}\n"
-                        exclude += f"{emojis['4']}   **Roles**: {', '.join([ctx.guild.get_role(cha).mention for cha in w['roles']])}"
+                        exclude += f"{emojis['2']}   **Exempt Members:** {', '.join([ctx.guild.get_member(mem).mention for mem in w['members']])}\n"
+                        exclude += f"{emojis['3']}   **Exempt Channels**: {', '.join([self.bot.get_channel(cha).mention for cha in w['channels']])}\n"
+                        exclude += f"{emojis['4']}   **Exempt Roles**: {', '.join([ctx.guild.get_role(cha).mention for cha in w['roles']])}"
                         await m.edit(embed=discord.Embed(
                             title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
                             description=f"{emojis['1']} **Invite deletion:** {'Enabled' if entry['invite']['enabled'] else 'Disabled'}\n"
