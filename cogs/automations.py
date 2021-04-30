@@ -108,8 +108,8 @@ class Automations(commands.Cog):
                     description=f"**Exempt users:** {', '.join([ctx.guild.get_member(u).mention for u in wf['ignore']['members']]) or 'None'}\n"
                                 f"**Exempt roles:** {', '.join([ctx.guild.get_role(u).mention for u in wf['ignore']['roles']]) or 'None'}\n"
                                 f"**Exempt channels:** {', '.join([ctx.guild.get_channel(u).mention for u in wf['ignore']['channels']]) or 'None'}\n\n"
-                                f"**Banned words (strict):**\n> {', '.join(wf['banned']) or 'None'}\n"
-                                f"**Banned words (soft):**\n> {', '.join(wf['soft']) or 'None'}\n",
+                                f"**Banned words (strict):**\n> {', '.join(['||' + w + '||' for w in wf['banned']]) or 'None'}\n"
+                                f"**Banned words (soft):**\n> {', '.join(['||' + w + '||' for w in wf['soft']]) or 'None'}\n",
                     color=colours["create"]
                 ))
                 try:
@@ -152,8 +152,8 @@ class Automations(commands.Cog):
                             description=f"<:a:752570111281594509> **Exempt users:** {', '.join([ctx.guild.get_member(u).mention for u in wf['ignore']['members']]) or 'None'}\n"
                                         f"<:a:729763053352124529> **Exempt roles:** {', '.join([ctx.guild.get_role(u).mention for u in wf['ignore']['roles']]) or 'None'}\n"
                                         f"<:a:729066924943737033> **Exempt channels:** {', '.join([ctx.guild.get_channel(u).mention for u in wf['ignore']['channels']]) or 'None'}\n\n"
-                                        f"<:a:837355918831124500> **Banned words (strict):** Appearances anywhere in a message\n> {', '.join(wf['banned']) or 'None'}\n"
-                                        f"<:a:826823514904330251> **Banned words (soft):** Appearences surrounded by spaces or punctuation\n> {', '.join(wf['soft']) or 'None'}\n",
+                                        f"<:a:837355918831124500> **Banned words (strict):** Appearances anywhere in a message\n> {', '.join(['||' + w + '||' for w in wf['banned']]) or 'None'}\n"
+                                        f"<:a:826823514904330251> **Banned words (soft):** Appearences surrounded by spaces or punctuation\n> {', '.join(['||' + w + '||' for w in wf['soft']]) or 'None'}\n",
                             color=colours["create"]
                         ))
                         try:
