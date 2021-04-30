@@ -33,8 +33,7 @@
 
         "cogs.errors",
         "cogs.ping",
-        "cogs.automations",
-        "cogs.customcmd"
+        "cogs.automations"
     ],
 
     "colour-dev": "Pink",
