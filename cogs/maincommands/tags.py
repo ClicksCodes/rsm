@@ -194,7 +194,10 @@ class Tags(commands.Cog):
             with open(f"data/guilds/{ctx.guild.id}.json", 'r') as e:
                 entry = json.load(e)
             if s[0] in entry["tags"]:
-                return await ctx.send(embed=discord.Embed(description=entry["tags"][s[0]], color=colours['create']))
+                embed = discord.Embed(description=entry["tags"][s[0]], color=colours['create'])
+                # if entry["tags"][s[0]].startswith("http://") or entry["tags"][s[0]].startswith("https://"):
+                #     embed.set_image(url=entry["tags"][s[0]])
+                return await ctx.send(embed=embed)
             else:
                 return await ctx.send(embed=self.createEmbed(
                     "<:StoreDelete:729064530768035922> Tag not found",
