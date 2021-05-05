@@ -185,7 +185,7 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
                                 break
 
@@ -221,7 +221,7 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
                                 break
                             try:
@@ -256,7 +256,7 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
                                 break
                             try:
@@ -291,7 +291,7 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
                                 break
                             try:
@@ -315,7 +315,7 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
                                 break
                             try:
@@ -339,7 +339,7 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
                                 break
 
@@ -367,7 +367,7 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
                                 break
 
@@ -476,7 +476,7 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
                                 break
 
@@ -509,7 +509,7 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
                                 await m.clear_reactions()
                                 break
@@ -661,7 +661,7 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
                                 await m.clear_reactions()
                                 break
@@ -698,7 +698,7 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
                                 await m.clear_reactions()
                                 break
@@ -735,7 +735,7 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
                                 await m.clear_reactions()
                                 break
