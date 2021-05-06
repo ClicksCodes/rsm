@@ -684,7 +684,8 @@ class Commands(commands.Cog):
         headers = {
             "Commands": [emojis['commands'], "Basic commands for your server"],
             "Moderation": [emojis['PunWarn'], "Commands to moderate your server"],
-            "Raid": [emojis['lock'], "Emergency commands to use during a raid"]
+            "Raid": [emojis['lock'], "Emergency commands to use during a raid"],
+            "Failsafe": [emojis['dnd'], "Reset some of your data if something has broken"]
         }
         descriptions = {
             "Commands": [
@@ -724,16 +725,21 @@ class Commands(commands.Cog):
                 f"{emojis['webhook_create']} `{prefix}automation        {'' if mob else '|'} ` {n if mob else ''}(AKA `auto`) Lets you edit your server automations."
             ],
             "Raid": [
-                f"{emojis['slowmodeOn']} `{prefix}slowmode [*N]{'' if mob else '|'} ` {n if mob else ''}Sets the channel slowmode to [N]. Toggles if [N] is not provided.",
-                f"{emojis['lock']      } `{prefix}lock     [*T]{'' if mob else '|'} ` {n if mob else ''}Locks the channel. All roles are denied `send_messages` unless they have `manage_messages`. `{prefix}lock off` unlocks the channel.",
-                f"{emojis['lock']      } `{prefix}unlock       {'' if mob else '|'} ` {n if mob else ''}Unlocks the channel. All roles are given `send_messages` if they did before.",
-                f"{emojis['raidlock']  } `{prefix}raid     [*T]{'' if mob else '|'} ` {n if mob else ''}Locks down the entire server. All roles are denied `send_messages` if they do not have `manage_messages`. You can type `{prefix}raid off` to end a raid, and type `{prefix}raid` during a raid to view options like ban members."
+                f"{emojis['slowmodeOn']} `{prefix}slowmode [*N] {'' if mob else '|'} ` {n if mob else ''}Sets the channel slowmode to [N]. Toggles if [N] is not provided.",
+                f"{emojis['lock']      } `{prefix}lock     [*T] {'' if mob else '|'} ` {n if mob else ''}Locks the channel. All roles are denied `send_messages` unless they have `manage_messages`. `{prefix}lock off` unlocks the channel.",
+                f"{emojis['lock']      } `{prefix}unlock        {'' if mob else '|'} ` {n if mob else ''}Unlocks the channel. All roles are given `send_messages` if they did before.",
+                f"{emojis['raidlock']  } `{prefix}raid     [*T] {'' if mob else '|'} ` {n if mob else ''}Locks down the entire server. All roles are denied `send_messages` if they do not have `manage_messages`. You can type `{prefix}raid off` to end a raid, and type `{prefix}raid` during a raid to view options like ban members."
+            ],
+            "Failsafe": [
+                f"{emojis['cross']} `{prefix}resetfilter {'' if mob else '|'} ` {n if mob else ''}Reset any words that have been set to be automatically deleted.",
+                f"{emojis['cross']} `{prefix}resetauto   {'' if mob else '|'} ` {n if mob else ''}Reset all of your automation settings (NSFW detection, filters, invite deletion etc.)",
+                f"{emojis['cross']} `{prefix}resetprefix {'' if mob else '|'} ` {n if mob else ''}Sets your prefix back to the default."
             ]
         }
         nn = "\n\n"
 
         paginated = []
-        indeces = {0: "Commands", 1: "Moderation", 2: "Raid"}
+        indeces = {0: "Commands", 1: "Moderation", 2: "Raid", 3: "Failsafe"}
         for key in descriptions.keys():
             indeces[key] = len(paginated)
             itt, thisitt = "", ""
@@ -760,7 +766,9 @@ class Commands(commands.Cog):
             emb.set_footer(text="[@] = Mention | [T] = Text | [N] = Number | [R] = Role | [C] = Channel | [* ] = Optional")
             await m.edit(embed=emb)
 
-            for emoji in [729762938411548694, 729762938843430952, 729064530310594601, 751762088229339136, 729764054897524768, 776848800995868682]: await m.add_reaction(ctx.bot.get_emoji(emoji))
+            for emoji in [729762938411548694, 729762938843430952, 729064530310594601, 751762088229339136, 729764054897524768, 776848800995868682, 729064531057311886]:
+                await m.add_reaction(ctx.bot.get_emoji(emoji))
+                await asyncio.sleep(0.1)
 
             reaction = None
             done, pending = await asyncio.wait([
@@ -783,6 +791,7 @@ class Commands(commands.Cog):
             elif reaction.emoji.name == "Commands": page = indeces["Commands"]
             elif reaction.emoji.name == "PunishWarn": page = indeces["Moderation"]
             elif reaction.emoji.name == "Lock": page = indeces["Raid"]
+            elif reaction.emoji.name == "DND": page = indeces["Failsafe"]
             else: break
 
             page = min(len(paginated)-1, max(0, page))
