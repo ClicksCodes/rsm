@@ -698,6 +698,72 @@ class Core(commands.Cog):
                 )
             )
 
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(manage_guild=True)
+    async def resetprefix(self, ctx):
+        with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+            entry = json.load(entry)
+            del entry["prefix"]
+        with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+            json.dump(entry, f, indent=2)
+        return await ctx.send(embed=discord.Embed(
+            title="Your prefix has been reset - It is now m!",
+            color=colours["edit"]
+        ))
+
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(manage_guild=True)
+    async def resetauto(self, ctx):
+        with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+            entry = json.load(entry)
+            try:
+                entry["wordfilter"] = {"ignore": {"roles": [], "members": [], "channels": []}, "banned": [], "soft": []}
+            except KeyError:
+                pass
+            try:
+                entry["nsfw"] = True
+            except KeyError:
+                pass
+            try:
+                del entry["verifyrole"]
+            except KeyError:
+                pass
+            try:
+                entry["welcome"] = {"message": {},"role": None}
+            except KeyError:
+                pass
+            try:
+                entry["invite"] = {"enabled": False, "whitelist": {"members": [], "channels": [], "roles": []}}
+            except KeyError:
+                pass
+            try:
+                entry["images"] = {"toosmall": True}
+            except KeyError:
+                pass
+        with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+            json.dump(entry, f, indent=2)
+        return await ctx.send(embed=discord.Embed(
+            title="All your automations have been reset",
+            color=colours["edit"]
+        ))
+
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(manage_guild=True)
+    async def resetfilter(self, ctx):
+        with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+            entry = json.load(entry)
+            entry["wordfilter"]["banned"] = []
+            entry["wordfilter"]["soft"] = []
+        with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+            json.dump(entry, f, indent=2)
+        return await ctx.send(embed=discord.Embed(
+            title="All your banned words have been reset",
+            color=colours["edit"]
+        ))
+
 
 def setup(bot):
     bot.add_cog(Core(bot))
