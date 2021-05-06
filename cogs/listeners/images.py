@@ -184,25 +184,24 @@ class ImageDetect(commands.Cog):
                     except Exception as e:
                         print(e)
                         text = 'No text found'
-                    for _ in range(1):
-                        if "wordfilter" in entry:
-                            if message.author.id not in entry["wordfilter"]["ignore"]["members"] and message.channel.id not in entry["wordfilter"]["ignore"]["channels"]:
-                                for role in [r.id for r in message.author.roles]:
-                                    if role in entry["wordfilter"]["ignore"]["roles"]:
-                                        break
-                                passed = False
-                                for role in message.author.roles:
-                                    if role.id in entry["wordfilter"]["ignore"]["roles"]:
-                                        passed = True
-                                if not passed:
-                                    for word in [x.group().lower() for x in re.finditer( r'[a-zA-Z]+', text)]:
-                                        if word in [w.lower() for w in entry["wordfilter"]["soft"]]:
-                                            await message.delete()
-                                            return
-                                    for word in entry["wordfilter"]["banned"]:
-                                        if word.lower() in message.content.lower():
-                                            await message.delete()
-                                            return
+                    if "wordfilter" in entry:
+                        if message.author.id not in entry["wordfilter"]["ignore"]["members"] and message.channel.id not in entry["wordfilter"]["ignore"]["channels"]:
+                            for role in [r.id for r in message.author.roles]:
+                                if role in entry["wordfilter"]["ignore"]["roles"]:
+                                    break
+                            passed = False
+                            for role in message.author.roles:
+                                if role.id in entry["wordfilter"]["ignore"]["roles"]:
+                                    passed = True
+                            if not passed:
+                                for word in [x.group().lower() for x in re.finditer( r'[a-zA-Z]+', text)]:
+                                    if word in [w.lower() for w in entry["wordfilter"]["soft"]]:
+                                        await message.delete()
+                                        return
+                                for word in entry["wordfilter"]["banned"]:
+                                    if word.lower() in message.content.lower():
+                                        await message.delete()
+                                        return
 
                     if "nsfw" not in entry:
                         try:
@@ -281,11 +280,12 @@ class ImageDetect(commands.Cog):
                             else:
                                 nsfw = False
                             try:
-                                reason = ",".join([x['name']] for x in resp['output']['detections'])
                                 score = resp['output']['nsfw_score'] * 100
                             except Exception as e:
                                 print(e)
-                            if "Exposed" in reason:
+                            if "Exposed" in [x['name'] if float(x['confidence']) > 75 else "" for x in resp['output']['detections']]:
+                                nsfw = True
+                            if int(score) > int(confidence):
                                 nsfw = True
                             else:
                                 nsfw = False
@@ -297,12 +297,17 @@ class ImageDetect(commands.Cog):
                     except Exception as e:
                         print(e)
                     if nsfw:
+                        backn = "\n"
+                        nsfwInDepth = (
+                            f"{backn.join([(r['name'] + '| Confidence: ' + str(round(float(r['confidence'])*100, 2)) + '%') for r in resp['output']['detections']])}\n\n"
+                            f"Overall confidence: {round(float(resp['output']['nsfw_score'])*100)}%"
+                        )
                         await message.delete()
                         e = discord.Embed(
                             title=emojis["nsfw_on"] + f" NSFW image sent",
                             description=f"**Name:** {message.author.mention}\n"
                                         f"**Channel:** {message.channel.mention}\n"
-                                        f"**ID:** `{message.author.id}`",
+                                        f"**ID:** `{message.author.id}`\n\n{nsfwInDepth}",
                             color=colours["edit"],
                             timestamp=datetime.utcnow()
                         )
@@ -316,6 +321,105 @@ class ImageDetect(commands.Cog):
                 except Exception as e:
                     print(e)
 
+    @commands.command()
+    async def analyse(self, ctx):
+        try:
+            attachment = ctx.message.attachments[0].url
+        except IndexError:
+            return await ctx.send(embed=discord.Embed(
+                title="No image provided",
+                color=colours["delete"]
+            ))
+
+        page = requests.get(attachment)
+        f_name = f'tmp/{ctx.channel.id}{ctx.message.id}.png'
+        with open(f_name, 'wb') as f:
+            f.write(page.content)
+        toosmall = False
+        nsfw = False
+        text = ""
+        dimensions = None
+        try:
+            # OCR
+            img = cv2.imread(f_name)
+            low_thresh = 16
+            up_thresh = 4097
+            try:
+                dimensions = [img.shape[0], img.shape[1]]
+            except AttributeError:
+                try:
+                    os.remove(f_name)
+                except AttributeError:
+                    pass
+                return
+            if min(dimensions) < low_thresh:
+                toosmall = True
+            custom_config = r'--oem 3 --psm 6'
+
+            try:
+                text = (pytesseract.image_to_string(img, config=custom_config).lower().strip() or "No text found")
+            except Exception as e:
+                print(e)
+                text = 'No text found'
+            cfimg = cf(f_name)
+            try:
+                dc = cfimg.get_color(quality=2)
+            except Exception as e:
+                print(e)
+                dc = (0, 0, 0)
+
+            try:
+                if dc == (52, 60, 60):
+                    blank = True
+                else:
+                    blank = False
+            except Exception as e:
+                print(e)
+                blank = True
+
+            # NSFW
+            nsfwInDepth = ""
+            async with self.session.post("https://api.deepai.org/api/nsfw-detector", data={'image': page.url}, headers={'api-key': deepAIkey}) as r:
+                try:
+                    resp = await r.json()
+                    if len(resp['output']['detections']):
+                        nsfw = True
+                    else:
+                        nsfw = False
+                    try:
+                        score = resp['output']['nsfw_score'] * 100
+                    except Exception as e:
+                        print(e)
+                    if "Exposed" in [x['name'] if float(x['confidence']) > 75 else "" for x in resp['output']['detections']]:
+                        nsfw = True
+                    if int(score) > int(confidence):
+                        nsfw = True
+                    else:
+                        nsfw = False
+                except Exception as e:
+                    pass
+                conf = str(resp['output'])
+            try:
+                os.remove(f_name)
+            except Exception as e:
+                print(e)
+            if nsfw:
+                nsfw = True
+                backn = "\n"
+                nsfwInDepth = (
+                    f"\n{backn.join([(r['name'] + ' | Confidence: ' + str(round(float(r['confidence'])*100, 2)) + '%') for r in resp['output']['detections']])}\n\n"
+                    f"Overall confidence: {round(float(resp['output']['nsfw_score'])*100)}%"
+                )
+        except Exception as e:
+            print(e)
+        await ctx.send(embed=discord.Embed(
+            title="Image analysis",
+            description=f"**Size:** {dimensions[1]}x{dimensions[0]}\n"
+                        f"**NSFW:** {'Yes' if nsfw else 'No'}{nsfwInDepth}\n"
+                        f"**Too small:** {'Yes' if toosmall else 'No'}\n"
+                        f"**Text:** \n>>> {text}\n",
+            color=colours["create"]
+        ))
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -363,7 +467,7 @@ class ImageDetect(commands.Cog):
                     await self.bot.get_channel(entry["log_info"]["staff"]).send(embed=discord.Embed(
                         title="NSFW profile picture",
                         description=f"User {member.mention} ({member.display_name}, {member.id}) had an NSFW profile picture. [View here]({member.avatar_url})"
-                                    f"{backn.join([(r['name'] + ' Confidence: ' + str(round(float(r['confidence'])*100, 2)) + '%') for r in resp['output']['detections']])}\n\n"
+                                    f"{backn.join([(r['name'] + ' | Confidence: ' + str(round(float(r['confidence'])*100, 2)) + '%') for r in resp['output']['detections']])}\n\n"
                                     f"Overall confidence: {round(float(resp['output']['nsfw_score'])*100)}%",
                         color=colours["delete"]
                     ))

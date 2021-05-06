@@ -40,7 +40,7 @@ class Bot(commands.Bot):
             x += 1
             try:
                 start = f"{C.YellowDark.value}[S] {C.Yellow.value}Loading cog {cog}"
-                end = f"{C.Yellow.value}[{C.Red.value}{'='*(len(failed))}{C.Green.value}{'='*(x-len(failed))}>{' '*(m-x)}{C.Yellow.value}] [{' '*(len(str(m))-len(str(x)))}{x}/{m}]"
+                end = f"{C.Yellow.value}[{C.Red.value}{'='*(len(failed))}{C.Green.value}{'='*(x-len(failed)-1)}>{' '*(m-x)}{C.Yellow.value}] [{' '*(len(str(m))-len(str(x)))}{x}/{m}]"
                 print(f"{start}{' '*(width-len(start)-len(end)+(len(C.Yellow.value*4)))}{end}", end="\r")
                 self.load_extension(cog)
                 start = f"{C.GreenDark.value}[S] {C.Green.value}Loaded cog {cog}"

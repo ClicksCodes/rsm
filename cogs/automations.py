@@ -105,10 +105,9 @@ class Automations(commands.Cog):
             with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
                 entry = json.load(entry)
             if not skip:
-                await m.add_reaction(self.bot.get_emoji(729064530310594601))
-                await m.add_reaction(self.bot.get_emoji(729762938411548694))
-                await m.add_reaction(self.bot.get_emoji(729762938843430952))
-                await m.add_reaction(self.bot.get_emoji(752570111063228507))
+                for r in [729064530310594601, 729762938411548694, 729762938843430952, 752570111063228507]:
+                    await m.add_reaction(self.bot.get_emoji(r))
+                    await asyncio.sleep(0.1)
             else:
                 skip = False
             if pages[page] == "filter":
@@ -149,7 +148,7 @@ class Automations(commands.Cog):
                     for r in [
                         729064531107774534, 752570111281594509, 729763053352124529,
                         729066924943737033, 837355918831124500, 826823515268186152,
-                        826823514904330251, 837355918420869162
+                        826823514904330251, 837355918420869162, 729064530310594601
                     ]:
                         await asyncio.sleep(0.1)
                         await m.add_reaction(self.bot.get_emoji(r))
@@ -163,7 +162,8 @@ class Automations(commands.Cog):
                                         f"<:a:729763053352124529> **Exempt roles:** {', '.join([ctx.guild.get_role(u).mention for u in wf['ignore']['roles']]) or 'None'}\n"
                                         f"<:a:729066924943737033> **Exempt channels:** {', '.join([ctx.guild.get_channel(u).mention for u in wf['ignore']['channels']]) or 'None'}\n\n"
                                         f"<:a:837355918831124500> **Banned words (strict):** Appearances anywhere in a message\n> {', '.join(['||' + w + '||' for w in wf['banned']]) or 'None'}\n"
-                                        f"<:a:826823514904330251> **Banned words (soft):** Appearences surrounded by spaces or punctuation\n> {', '.join(['||' + w + '||' for w in wf['soft']]) or 'None'}\n",
+                                        f"<:a:826823514904330251> **Banned words (soft):** Appearences surrounded by spaces or punctuation\n> {', '.join(['||' + w + '||' for w in wf['soft']]) or 'None'}\n\n"
+                                        f"<:a:729064530310594601> Clear all words",
                             color=colours["create"]
                         ))
                         try:
@@ -290,7 +290,7 @@ class Automations(commands.Cog):
                         elif reaction[0].emoji.name == "addopp":
                             await m.edit(embed=discord.Embed(
                                 title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
-                                description=f"Which words should be added to the strict banned word list - Separated by spaces",
+                                description=f"Which words should be added to the strict banned word list - Separated by commas",
                                 color=colours["create"]
                             ))
                             try:
@@ -340,7 +340,7 @@ class Automations(commands.Cog):
                         elif reaction[0].emoji.name == "remove":
                             await m.edit(embed=discord.Embed(
                                 title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
-                                description=f"Which words should be removed from the strict banned word list - Separated by spaces",
+                                description=f"Which words should be removed from the strict banned word list - Separated by commas",
                                 color=colours["create"]
                             ))
                             try:
@@ -368,7 +368,7 @@ class Automations(commands.Cog):
                         elif reaction[0].emoji.name == "removeopp":
                             await m.edit(embed=discord.Embed(
                                 title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
-                                description=f"Which words should be removed from the soft banned word list - Separated by spaces",
+                                description=f"Which words should be removed from the soft banned word list - Separated by commas",
                                 color=colours["create"]
                             ))
                             try:
@@ -391,6 +391,13 @@ class Automations(commands.Cog):
                                     entry["wordfilter"]["soft"].remove(s.strip())
                                 except ValueError:
                                     pass
+                            with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                json.dump(entry, f, indent=2)
+                        elif reaction[0].emoji.name == "Cross":
+                            with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                entry = json.load(entry)
+                                entry["wordfilter"]["banned"] = []
+                                entry["wordfilter"]["soft"] = []
                             with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
                                 json.dump(entry, f, indent=2)
                         else:
