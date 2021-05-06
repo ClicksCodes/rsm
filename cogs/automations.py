@@ -123,7 +123,7 @@ class Automations(commands.Cog):
                     color=colours["create"]
                 ))
                 try:
-                    reaction = await ctx.bot.wait_for("reaction_add", timeout=60, check=lambda _, user: user == ctx.author)
+                    reaction = await ctx.bot.wait_for("reaction_add", timeout=180, check=lambda _, user: user == ctx.author)
                 except asyncio.TimeoutError:
                     break
 
@@ -167,7 +167,7 @@ class Automations(commands.Cog):
                             color=colours["create"]
                         ))
                         try:
-                            reaction = await ctx.bot.wait_for("reaction_add", timeout=60, check=lambda _, user: user == ctx.author)
+                            reaction = await ctx.bot.wait_for("reaction_add", timeout=180, check=lambda _, user: user == ctx.author)
                         except asyncio.TimeoutError:
                             break
 
@@ -185,8 +185,9 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
+                                message = await ctx.bot.wait_for("message", timeout=180, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
+                                await m.clear_reactions()
                                 break
 
                             try:
@@ -203,9 +204,9 @@ class Automations(commands.Cog):
                                         json.dump(entry, f, indent=2)
                                 continue
                             members = []
-                            for s in message.content.split(" "):
+                            for s in message.content.split(","):
                                 try:
-                                    r = await commands.MemberConverter().convert(await self.bot.get_context(message), s)
+                                    r = await commands.MemberConverter().convert(await self.bot.get_context(message), s.strip())
                                     members.append(r.id)
                                 except commands.MemberNotFound:
                                     pass
@@ -221,8 +222,9 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
+                                message = await ctx.bot.wait_for("message", timeout=180, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
+                                await m.clear_reactions()
                                 break
                             try:
                                 await message.delete()
@@ -238,9 +240,9 @@ class Automations(commands.Cog):
                                         json.dump(entry, f, indent=2)
                                 continue
                             roles = []
-                            for s in message.content.split(" "):
+                            for s in message.content.split(","):
                                 try:
-                                    r = await commands.RoleConverter().convert(await self.bot.get_context(message), s)
+                                    r = await commands.RoleConverter().convert(await self.bot.get_context(message), s.strip())
                                     roles.append(r.id)
                                 except commands.RoleNotFound:
                                     pass
@@ -256,8 +258,9 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
+                                message = await ctx.bot.wait_for("message", timeout=180, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
+                                await m.clear_reactions()
                                 break
                             try:
                                 await message.delete()
@@ -273,9 +276,9 @@ class Automations(commands.Cog):
                                         json.dump(entry, f, indent=2)
                                 continue
                             channels = []
-                            for s in message.content.split(" "):
+                            for s in message.content.split(","):
                                 try:
-                                    r = await commands.TextChannelConverter().convert(await self.bot.get_context(message), s)
+                                    r = await commands.TextChannelConverter().convert(await self.bot.get_context(message), s.strip())
                                     channels.append(r.id)
                                 except commands.ChannelNotFound:
                                     pass
@@ -291,8 +294,9 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
+                                message = await ctx.bot.wait_for("message", timeout=180, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
+                                await m.clear_reactions()
                                 break
                             try:
                                 await message.delete()
@@ -304,19 +308,20 @@ class Automations(commands.Cog):
                                 continue
                             with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
                                 entry = json.load(entry)
-                            for s in message.content.split(" "):
-                                entry["wordfilter"]["banned"].append(s)
+                            for s in message.content.split(","):
+                                entry["wordfilter"]["banned"].append(s.strip())
                             with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
                                 json.dump(entry, f, indent=2)
                         elif reaction[0].emoji.name == "add":
                             await m.edit(embed=discord.Embed(
                                 title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
-                                description=f"Which words should be added to the soft banned word list - Separated by spaces",
+                                description=f"Which words should be added to the soft banned word list - Separated by commas",
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
+                                message = await ctx.bot.wait_for("message", timeout=180, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
+                                await m.clear_reactions()
                                 break
                             try:
                                 await message.delete()
@@ -328,8 +333,8 @@ class Automations(commands.Cog):
                                 continue
                             with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
                                 entry = json.load(entry)
-                            for s in message.content.split(" "):
-                                entry["wordfilter"]["soft"].append(s)
+                            for s in message.content.split(","):
+                                entry["wordfilter"]["soft"].append(s.strip())
                             with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
                                 json.dump(entry, f, indent=2)
                         elif reaction[0].emoji.name == "remove":
@@ -339,10 +344,10 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
+                                message = await ctx.bot.wait_for("message", timeout=180, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
+                                await m.clear_reactions()
                                 break
-
                             try:
                                 await message.delete()
                             except Exception as e:
@@ -353,9 +358,9 @@ class Automations(commands.Cog):
                                 continue
                             with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
                                 entry = json.load(entry)
-                            for s in message.content.split(" "):
+                            for s in message.content.split(","):
                                 try:
-                                    entry["wordfilter"]["banned"].remove(s)
+                                    entry["wordfilter"]["banned"].remove(s.strip())
                                 except ValueError:
                                     pass
                             with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
@@ -367,10 +372,10 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
+                                message = await ctx.bot.wait_for("message", timeout=180, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
+                                await m.clear_reactions()
                                 break
-
                             try:
                                 await message.delete()
                             except Exception as e:
@@ -381,9 +386,9 @@ class Automations(commands.Cog):
                                 continue
                             with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
                                 entry = json.load(entry)
-                            for s in message.content.split(" "):
+                            for s in message.content.split(","):
                                 try:
-                                    entry["wordfilter"]["soft"].remove(s)
+                                    entry["wordfilter"]["soft"].remove(s.strip())
                                 except ValueError:
                                     pass
                             with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
@@ -394,6 +399,7 @@ class Automations(commands.Cog):
                             await asyncio.sleep(0.1)
                             break
                 else:
+                    await m.clear_reactions()
                     break
             elif pages[page] == "welcome":
                 role = entry['welcome']['role']
@@ -413,8 +419,9 @@ class Automations(commands.Cog):
                     color=colours["create"]
                 ))
                 try:
-                    reaction = await ctx.bot.wait_for("reaction_add", timeout=60, check=lambda _, user: user == ctx.author)
+                    reaction = await ctx.bot.wait_for("reaction_add", timeout=180, check=lambda _, user: user == ctx.author)
                 except asyncio.TimeoutError:
+                    await m.clear_reactions()
                     break
 
                 try:
@@ -424,6 +431,7 @@ class Automations(commands.Cog):
                     print(e)
 
                 if reaction is None:
+                    await m.clear_reactions()
                     break
                 elif reaction[0].emoji.name == "Right":
                     page += 1
@@ -458,8 +466,9 @@ class Automations(commands.Cog):
                             color=colours["create"]
                         ))
                         try:
-                            reaction = await ctx.bot.wait_for("reaction_add", timeout=60, check=lambda _, user: user == ctx.author)
+                            reaction = await ctx.bot.wait_for("reaction_add", timeout=180, check=lambda _, user: user == ctx.author)
                         except asyncio.TimeoutError:
+                            await m.clear_reactions()
                             break
 
                         try:
@@ -468,6 +477,7 @@ class Automations(commands.Cog):
                             print(e)
 
                         if reaction is None:
+                            await m.clear_reactions()
                             break
                         elif reaction[0].emoji.name == "1_":
                             await m.edit(embed=discord.Embed(
@@ -476,8 +486,9 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
+                                message = await ctx.bot.wait_for("message", timeout=180, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
+                                await m.clear_reactions()
                                 break
 
                             try:
@@ -509,7 +520,7 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
+                                message = await ctx.bot.wait_for("message", timeout=180, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
                                 await m.clear_reactions()
                                 break
@@ -539,7 +550,7 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id)
+                                message = await ctx.bot.wait_for("message", timeout=180, check=lambda message: message.channel.id == ctx.channel.id)
                             except asyncio.TimeoutError:
                                 await m.clear_reactions()
                                 break
@@ -576,6 +587,7 @@ class Automations(commands.Cog):
                             await asyncio.sleep(0.1)
                             break
                 else:
+                    await m.clear_reactions()
                     break
             elif pages[page] == "invite":
                 exclude = ""
@@ -591,8 +603,9 @@ class Automations(commands.Cog):
                     color=colours["create"]
                 ))
                 try:
-                    reaction = await ctx.bot.wait_for("reaction_add", timeout=60, check=lambda _, user: user == ctx.author)
+                    reaction = await ctx.bot.wait_for("reaction_add", timeout=180, check=lambda _, user: user == ctx.author)
                 except asyncio.TimeoutError:
+                    await m.clear_reactions()
                     break
 
                 try:
@@ -602,6 +615,7 @@ class Automations(commands.Cog):
                     print(e)
 
                 if reaction is None:
+                    await m.clear_reactions()
                     break
                 elif reaction[0].emoji.name == "Right":
                     page += 1
@@ -636,8 +650,9 @@ class Automations(commands.Cog):
                             color=colours["create"]
                         ))
                         try:
-                            reaction = await ctx.bot.wait_for("reaction_add", timeout=60, check=lambda _, user: user == ctx.author)
+                            reaction = await ctx.bot.wait_for("reaction_add", timeout=180, check=lambda _, user: user == ctx.author)
                         except asyncio.TimeoutError:
+                            await m.clear_reactions()
                             break
 
                         try:
@@ -646,6 +661,7 @@ class Automations(commands.Cog):
                             print(e)
 
                         if reaction is None:
+                            await m.clear_reactions()
                             break
                         elif reaction[0].emoji.name == "1_":
                             with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
@@ -661,7 +677,7 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
+                                message = await ctx.bot.wait_for("message", timeout=180, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
                                 await m.clear_reactions()
                                 break
@@ -680,9 +696,9 @@ class Automations(commands.Cog):
                             if message.content.lower() == "cancel":
                                 continue
                             members = []
-                            for s in message.content.split(" "):
+                            for s in message.content.split(","):
                                 try:
-                                    r = await commands.MemberConverter().convert(await self.bot.get_context(message), s)
+                                    r = await commands.MemberConverter().convert(await self.bot.get_context(message), s.strip())
                                     members.append(r.id)
                                 except commands.MemberNotFound:
                                     pass
@@ -698,7 +714,7 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
+                                message = await ctx.bot.wait_for("message", timeout=180, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
                                 await m.clear_reactions()
                                 break
@@ -717,9 +733,9 @@ class Automations(commands.Cog):
                             if message.content.lower() == "cancel":
                                 continue
                             channels = []
-                            for s in message.content.split(" "):
+                            for s in message.content.split(","):
                                 try:
-                                    r = await commands.TextChannelConverter().convert(await self.bot.get_context(message), s)
+                                    r = await commands.TextChannelConverter().convert(await self.bot.get_context(message), s.strip())
                                     channels.append(r.id)
                                 except commands.ChannelNotFound:
                                     pass
@@ -735,7 +751,7 @@ class Automations(commands.Cog):
                                 color=colours["create"]
                             ))
                             try:
-                                message = await ctx.bot.wait_for("message", timeout=60, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
+                                message = await ctx.bot.wait_for("message", timeout=180, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
                             except asyncio.TimeoutError:
                                 await m.clear_reactions()
                                 break
@@ -754,9 +770,9 @@ class Automations(commands.Cog):
                             if message.content.lower() == "cancel":
                                 continue
                             roles = []
-                            for s in message.content.split(" "):
+                            for s in message.content.split(","):
                                 try:
-                                    r = await commands.RoleConverter().convert(await self.bot.get_context(message), s)
+                                    r = await commands.RoleConverter().convert(await self.bot.get_context(message), s.strip())
                                     roles.append(r.id)
                                 except commands.RoleNotFound:
                                     pass
@@ -779,8 +795,9 @@ class Automations(commands.Cog):
                     color=colours["create"]
                 ).set_footer(text="No NSFW filter is 100% accurate, however we try our best to ensure only NSFW content triggers our checks", icon_url=""))
                 try:
-                    reaction = await ctx.bot.wait_for("reaction_add", timeout=60, check=lambda _, user: user == ctx.author)
+                    reaction = await ctx.bot.wait_for("reaction_add", timeout=180, check=lambda _, user: user == ctx.author)
                 except asyncio.TimeoutError:
+                    await m.clear_reactions()
                     break
 
                 try:
@@ -790,6 +807,7 @@ class Automations(commands.Cog):
                     print(e)
 
                 if reaction is None:
+                    await m.clear_reactions()
                     break
                 elif reaction[0].emoji.name == "Right":
                     page += 1
@@ -816,8 +834,9 @@ class Automations(commands.Cog):
                             color=colours["create"]
                         ).set_footer(text="No NSFW filter is 100% accurate, however we try our best to ensure only NSFW content triggers our checks", icon_url=""))
                         try:
-                            reaction = await ctx.bot.wait_for("reaction_add", timeout=60, check=lambda _, user: user == ctx.author)
+                            reaction = await ctx.bot.wait_for("reaction_add", timeout=180, check=lambda _, user: user == ctx.author)
                         except asyncio.TimeoutError:
+                            await m.clear_reactions()
                             break
 
                         try:
@@ -826,6 +845,7 @@ class Automations(commands.Cog):
                             print(e)
 
                         if reaction is None:
+                            await m.clear_reactions()
                             break
                         elif reaction[0].emoji.name == "NsfwOn":
                             with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
@@ -849,8 +869,9 @@ class Automations(commands.Cog):
                     color=colours["create"]
                 ))
                 try:
-                    reaction = await ctx.bot.wait_for("reaction_add", timeout=60, check=lambda _, user: user == ctx.author)
+                    reaction = await ctx.bot.wait_for("reaction_add", timeout=180, check=lambda _, user: user == ctx.author)
                 except asyncio.TimeoutError:
+                    await m.clear_reactions()
                     break
 
                 try:
@@ -860,6 +881,7 @@ class Automations(commands.Cog):
                     print(e)
 
                 if reaction is None:
+                    await m.clear_reactions()
                     break
                 elif reaction[0].emoji.name == "Right":
                     page += 1
@@ -884,8 +906,9 @@ class Automations(commands.Cog):
                             color=colours["create"]
                         ))
                         try:
-                            reaction = await ctx.bot.wait_for("reaction_add", timeout=60, check=lambda _, user: user == ctx.author)
+                            reaction = await ctx.bot.wait_for("reaction_add", timeout=180, check=lambda _, user: user == ctx.author)
                         except asyncio.TimeoutError:
+                            await m.clear_reactions()
                             break
 
                         try:
@@ -894,6 +917,7 @@ class Automations(commands.Cog):
                             print(e)
 
                         if reaction is None:
+                            await m.clear_reactions()
                             break
                         elif reaction[0].emoji.name == "1_":
                             with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
