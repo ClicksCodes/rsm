@@ -382,7 +382,7 @@ class Guild(commands.Cog):
         log = self.get_log(invite.guild)
         e = discord.Embed(
             title=emojis["invite_create"] + " Invite Created",
-            description=f"**Max Age:** {((invite.max_age / 3600) + ' hours') if invite.max_age else 'Infinite'}\n"
+            description=f"**Max Age:** {(str(invite.max_age / 3600) + ' hours') if invite.max_age else 'Infinite'}\n"
                         f"**Max Uses:** {humanize.intcomma(invite.max_uses or 'infinite')}\n"
                         f"**Invite:** {invite.url}\n"
                         f"**Temporary:** {emojis['tick'] if invite.temporary else emojis['cross']}\n"
