@@ -125,7 +125,7 @@ class Messages(commands.Cog):
     async def checkWith(self, entry, message):
         if "wordfilter" in entry:
             if "prefix" in entry:
-                if message.content.startswith(entry["prefix"]):
+                if message.content.startswith(entry["prefix"] if isinstance(entry["prefix"], str) else "m!"):
                     return
             if message.author.id not in entry["wordfilter"]["ignore"]["members"] and message.channel.id not in entry["wordfilter"]["ignore"]["channels"]:
                 for role in message.author.roles:

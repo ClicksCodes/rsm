@@ -65,9 +65,6 @@ class Users(commands.Cog):
 
     async def checkWith(self, entry, user, name):
         if "wordfilter" in entry:
-            if "prefix" in entry:
-                if user.startswith(entry["prefix"]):
-                    return
             if user.id not in entry["wordfilter"]["ignore"]["members"]:
                 for role in user.roles:
                     if role.id in entry["wordfilter"]["ignore"]["roles"]:
@@ -75,7 +72,6 @@ class Users(commands.Cog):
                 for word in [x.group().lower() for x in re.finditer( r'[a-zA-Z]+', str(name))]:
                     if word in entry["wordfilter"]["soft"]:
                         return True
-                        break
                 for word in entry["wordfilter"]["banned"]:
                     if word in name:
                         return True
