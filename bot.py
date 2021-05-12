@@ -1,6 +1,7 @@
 import json
 import discord
 import os
+import slashes
 
 from discord.ext import commands
 
@@ -22,7 +23,7 @@ class Context(commands.Context):
         pass
 
 
-class Bot(commands.Bot):
+class Bot(slashes.Bot):
     def __init__(self, **kwargs):
 
         super().__init__(command_prefix=self.get_prefix, help_command=None, **kwargs)

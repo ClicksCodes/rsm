@@ -1,0 +1,5 @@
+/blep letter only_smol int user channel role mentionable
+# Comments!
+
+SEND "hello" + letter
+SEND hello
