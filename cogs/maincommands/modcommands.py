@@ -807,9 +807,8 @@ class Commands(commands.Cog):
         await m.edit(embed=emb)
 
     @commands.command(aliases=["help"])
-    @commands.guild_only()
     async def info(self, ctx, member: typing.Optional[discord.Member], s: typing.Optional[str]):
-        if not member:
+        if not member or isinstance(ctx.channel, discord.channel.DMChannel):
             await self.helpcommand(ctx, member, s)
         else:
             await self.membercommand(ctx, member)
