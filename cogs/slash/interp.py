@@ -1,6 +1,6 @@
 import aiohttp
 import asyncio
-import regex
+import re
 import pineaprint as pp
 from cogs.consts import *
 
@@ -97,6 +97,8 @@ class Command:
 
         self.options = [Option(o) for o in data["data"]["options"]] if "options" in data["data"] else []
         self.bot = bot
+
+        self.vars = {}
         asyncio.create_task(self.create_initial_message())
 
     async def create_initial_message(self):
@@ -118,7 +120,6 @@ class Command:
             await session.close()
 
     async def followup(self, response, hidden=True):
-        print(response)
         async with aiohttp.ClientSession() as session:
             async with session.post(
                 f"https://discord.com/api/v8/webhooks/{self.application_id}/{self.token}",
@@ -130,20 +131,64 @@ class Command:
     async def run(self, instrs):
         if instrs == 404:
             return await self.edit_initial_message(f"{emojis['idle']} Command `{self.name}` not found")
-        try:
-            await self.followup(str(instrs))
-        except Exception as e:
-            print(e)
-            await self.edit_initial_message(f"{emojis['dnd']} An error occurred when running the command")
+        setup = instrs[0]
+        instrs = instrs[1:]
+
+        variables = setup.split(" ")[1:]
+        for variable in variables:
+            self.vars[str(variable)] = None
+        for option in self.options:
+            if option.type == 3:
+                self.vars[str(option.name)] = str(option.value)
+            elif option.type == 3:
+                self.vars[str(option.name)] = int(option.value)
+            elif option.type == 3:
+                self.vars[str(option.name)] = bool(option.value)
+            else:
+                self.vars[str(option.name)] = option.value
+
+        for instr in instrs:
+            instruction = instr.split(" ")[0]
+            params = instr.split(" ")[1:]
+            if instruction == "SEND":
+                await self.bot.get_channel(self.channel_id).send(" ".join(params))
+                await asyncio.sleep(0.1)
+            elif instruction == "REPLY":
+                await self.followup(" ".join(params))
+                await asyncio.sleep(0.1)
+            elif instruction in self.vars:
+                if params[0] == "=":
+                    self.vars[str(instruction)] = self.parse(params[1:])
+                elif params[0] == "+=":
+                    self.vars[str(instruction)] = self.vars[str(instruction)] + self.parse(params[1:])
+                elif params[0] == "-=":
+                    self.vars[str(instruction)] = self.vars[str(instruction)] - self.parse(params[1:])
+                elif params[0] == "*=":
+                    self.vars[str(instruction)] = self.vars[str(instruction)] * self.parse(params[1:])
+                elif params[0] == "/=":
+                    self.vars[str(instruction)] = self.vars[str(instruction)] / self.parse(params[1:])
+            else:
+                return await self.edit_initial_message(f"{emojis['dnd']} Could not decode instruction into a variable or function")
+            print(self.vars)
         await self.edit_initial_message(f"{emojis['online']} Command finished successfully")
+
+    def parse(self, params):
+        parsed = []
+        for param in params:
+            parsed.append([param, 0])
+        for x in range(len(parsed)):
+            if parsed[x].isdigit():
+                parsed[x] = [int(parsed[x][0]), 1]
 
 def fetchFunction(gid, name):
     try:
         with open(f"data/slash/{gid}/{name}.rsm") as f:
             lines = []
             for line in f.readlines():
-                groups = re.search("")
-            return [l.strip() for l in f.readlines() if len(l.strip()) > 0]
+                groups = re.search(r"^(((?![#\\]).)+(\\\\)*(\\#)?)+(?=#)?", line)
+                if groups:
+                    lines.append(groups.group(0))
+            return lines
     except FileNotFoundError:
         return 404
 

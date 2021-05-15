@@ -1,5 +1,10 @@
 /blep letter only_smol int user channel role mentionable
 # Comments!
 
-SEND "hello" + letter
-SEND hello
+# REPLY "comment" # in a line
+# REPLY "hello" + letter
+# SEND "if you see this the test is working"
+# REPLY hello
+letter = 2
+letter += 1
+letter *= 2
