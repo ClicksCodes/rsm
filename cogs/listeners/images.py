@@ -147,7 +147,7 @@ class ImageDetect(commands.Cog):
                         except AttributeError:
                             pass
                         continue
-                    if min(dimensions) < low_thresh:
+                    if min(dimensions) < low_thresh and entry["images"]["toosmall"]:
                         await message.delete()
                         e = discord.Embed(
                             title=emojis["too_small"] + f" Image too small",
