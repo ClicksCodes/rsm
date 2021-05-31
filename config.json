@@ -33,7 +33,8 @@
 
         "cogs.errors",
         "cogs.ping",
-        "cogs.automations"
+        "cogs.automations",
+        "cogs.rolepicker"
     ],
 
     "colour-dev": "Pink",

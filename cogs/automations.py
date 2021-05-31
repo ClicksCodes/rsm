@@ -14,57 +14,6 @@ class Automations(commands.Cog):
         self.bot = bot
         self.loadingEmbed = loadingEmbed
 
-    @commands.Cog.listener()
-    async def on_member_join(self, member):
-        try:
-            with open(f"data/guilds/{member.guild.id}.json") as entry:
-                entry = json.load(entry)
-        except FileNotFoundError:
-            return
-        if "welcome" in entry:
-            w = entry["welcome"]
-            if w["role"]:
-                await member.add_roles(member.guild.get_role(w["role"]))
-            if w["message"]["channel"] and w["message"]["text"]:
-                if w["message"]["channel"] == "dm":
-                    await member.send(w["message"]["text"].replace("[@]", member.mention).replace("[mc]", str(len(member.guild.members))))
-                else:
-                    await member.guild.get_channel(w["message"]["channel"]).send(w["message"]["text"].replace("[@]", member.mention).replace("[mc]", str(len(member.guild.members))))
-
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if message.guild is None:
-            return
-        try:
-            with open(f"data/guilds/{message.guild.id}.json") as entry:
-                entry = json.load(entry)
-        except FileNotFoundError:
-            return
-        if "invite" in entry:
-            if not entry["invite"]["enabled"]:
-                return
-            if message.channel.id in entry["invite"]["whitelist"]["channels"]:
-                return
-            if message.author.id in entry["invite"]["whitelist"]["members"]:
-                return
-            if "roles" in entry["invite"]["whitelist"]:
-                for role in entry["invite"]["whitelist"]["roles"]:
-                    if role in [r.id for r in message.author.roles]:
-                        return
-            if re.search(r"(?:https?:\/\/)?discord(?:app)?\.(?:com\/invite|gg)\/[a-zA-Z0-9]+\/?", message.content, re.MULTILINE):
-                await message.delete()
-                if entry["log_info"]["log_channel"]:
-                    await message.guild.get_channel(entry["log_info"]["log_channel"]).send(embed=discord.Embed(
-                        title=emojis['invite_delete'] + " Invite sent",
-                        description=(
-                            (f"```{message.clean_content[:2042].replace('```', '***')}```\n" if message.content else "") +
-                            f"**Channel:** {message.channel.mention}\n"
-                            f"**Sent By:** {message.author.mention}"
-                        ),
-                        color=colours["delete"],
-                        timestamp=datetime.datetime.utcnow()
-                    ))
-
     @commands.command(aliases=["auto", "automation"])
     @commands.guild_only()
     @commands.has_permissions(manage_guild=True)
