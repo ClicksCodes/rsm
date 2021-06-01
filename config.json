@@ -30,6 +30,7 @@
         "cogs.maincommands.raid",
         "cogs.maincommands.tags",
         "cogs.maincommands.report",
+        "cogs.maincommands.modmail",
 
         "cogs.errors",
         "cogs.ping",
