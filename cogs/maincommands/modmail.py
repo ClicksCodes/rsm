@@ -171,6 +171,8 @@ class Modmail(commands.Cog):
         users = {}
         for channel in ctx.guild.get_channel(entry["modmail"]["cat"]).channels:
             user = channel.topic.split(" ")[0]
+            if channel.topic.split(" ")[1] == "Archived":
+                continue
             if user not in users:
                 users[user] = 1
             else:
