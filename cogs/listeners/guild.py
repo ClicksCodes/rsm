@@ -311,7 +311,7 @@ class Guild(commands.Cog):
                     (f"**Category:** {channel.category.name if channel.category else 'None'}\n" if c_type != "category" else "") +
                     f"**Deleted By:** {audit.user.mention}\n"
                 ),
-                color=events["channel_desc_update"][0],
+                color=events["channel_delete"][0],
                 timestamp=datetime.utcnow()
             )
         await log.send(embed=e)

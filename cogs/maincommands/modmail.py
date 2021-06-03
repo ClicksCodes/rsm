@@ -25,12 +25,12 @@ class Modmail(commands.Cog):
     @commands.has_permissions(manage_guild=True)
     async def modmail(self, ctx):
         m = await ctx.send(embed=loadingEmbed)
-        await m.add_reaction(self.bot.get_emoji(787987508465238026))
-        await m.add_reaction(self.bot.get_emoji(787987508507967488))
-        await m.add_reaction(self.bot.get_emoji(729066924943737033))
-        await m.add_reaction(self.bot.get_emoji(729763053352124529))
+        for r in [787987508465238026, 787987508507967488, 729066924943737033, 729763053352124529, 729064530310594601]:
+            await m.add_reaction(self.bot.get_emoji(r))
+            await asyncio.sleep(0.1)
         while True:
             active = 0
+            archived = 0
             try:
                 with open(f"data/guilds/{ctx.guild.id}.json") as f:
                     entry = json.load(f)
@@ -40,7 +40,8 @@ class Modmail(commands.Cog):
                             json.dump(entry, f, indent=2)
                     try:
                         cname = entry["modmail"]
-                        active = len(ctx.guild.get_channel(cname["cat"]).channels) if cname["cat"] else 0
+                        active = sum([1 if c.topic.split(" ")[1] == "Active" else 0 for c in ctx.guild.get_channel(cname["cat"]).channels]) if cname["cat"] else 0
+                        archived = sum([1 if c.topic.split(" ")[1] == "Archived" else 0 for c in ctx.guild.get_channel(cname["cat"]).channels]) if cname["cat"] else 0
                         maxtickets = "*No limit set*" if not cname["max"] else cname["max"]
                         mention = "*No role*" if not cname["mention"] else f'<@&{cname["mention"]}>'
                         cname = "*No category set*" if not cname["cat"] else self.bot.get_channel(cname["cat"]).name
@@ -53,6 +54,7 @@ class Modmail(commands.Cog):
             await m.edit(embed=discord.Embed(
                 title=f"{emojis['webhook_create']} Modmail Setup",
                 description=f"**Active tickets:** {active}\n"
+                            f"**Archived tickets:** {archived}\n\n"
                             f"**Maximum tickets per user:** {maxtickets}\n"
                             f"**Mention for new tickets:** {mention}\n"
                             f"**Modmail Category:** {cname}\n\n"
@@ -147,11 +149,42 @@ class Modmail(commands.Cog):
                 with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
                     entry["modmail"]["cat"] = None
                     json.dump(entry, f, indent=2)
+            elif reactionname == "Cross":
+                break
         await m.clear_reactions()
+        active = 0
+        try:
+            with open(f"data/guilds/{ctx.guild.id}.json") as f:
+                entry = json.load(f)
+                if "modmail" not in entry:
+                    entry["modmail"] = {"cat": None, "max": 0, "mention": None}
+                    with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                        json.dump(entry, f, indent=2)
+                try:
+                    cname = entry["modmail"]
+                    active = len(ctx.guild.get_channel(cname["cat"]).channels) if cname["cat"] else 0
+                    maxtickets = "*No limit set*" if not cname["max"] else cname["max"]
+                    mention = "*No role*" if not cname["mention"] else f'<@&{cname["mention"]}>'
+                    cname = "*No category set*" if not cname["cat"] else self.bot.get_channel(cname["cat"]).name
+                except KeyError:
+                    cname = "*No category set*"
+                    maxtickets = "*No limit set*"
+        except FileNotFoundError:
+            cname = "*Modmail not enabled*"
+            maxtickets = "*Modmail not enabled*"
+        await m.edit(embed=discord.Embed(
+            title=f"{emojis['webhook_create']} Modmail Setup",
+            description=f"**Active tickets:** {active}\n"
+                        f"**Maximum tickets per user:** {maxtickets}\n"
+                        f"**Mention for new tickets:** {mention}\n"
+                        f"**Modmail Category:** {cname}\n\n"
+                        f"{emojis['catCreate']} Set category | {emojis['catDelete']} Clear channnel | {emojis['channel_create']} Maximum tickets per user | {emojis['mod_changed']} Support mention",
+            color=colours["delete"]
+        ).set_footer(text="If you haven't already, it is recommended that you do not allow anyone permission to your modmail category. RSM will handle that automatically"))
 
     @commands.command(aliases=["ticket", "tickets"])
     @commands.guild_only()
-    async def mail(self, ctx):
+    async def mail(self, ctx, *, message: typing.Optional[str]):
         m = await ctx.send(embed=loadingEmbed)
         try:
             with open(f"data/guilds/{ctx.guild.id}.json") as f:
@@ -193,7 +226,7 @@ class Modmail(commands.Cog):
         await c.set_permissions(ctx.author, view_channel=True, send_messages=True)
         created = await c.send(embed=discord.Embed(
             title=f"{ctx.author.name} created a ticket",
-            description=f">>> Anyone can close this ticket with `{ctx.prefix}close`",
+            description=f"> Anyone can close this ticket with `{ctx.prefix}close`" + (f"\n\n> {message}" if message else ''),
             color=colours["edit"]
         ).set_footer(text=f"Ticket opened at {datetime.datetime.utcnow().strftime('%Y-%m-%d at %H:%M:%S')}"))
         await c.set_permissions(self.bot.get_guild(ctx.guild.id).get_role(entry['modmail']['mention']), view_channel=True, send_messages=True)
