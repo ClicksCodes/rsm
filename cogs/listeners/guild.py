@@ -253,15 +253,24 @@ class Guild(commands.Cog):
                 return
         audit = await get_alog_entry(channel, type=discord.AuditLogAction.channel_create)
         log = self.get_log(channel.guild)
-        em = emojis["voice_create" if c_type == "voice" else "store_create" if c_type == "store" else "catCreate" if c_type == "category" else "channel_create"]
-        e = discord.Embed(
-            title=em + " " + ("Channel" if c_type != "category" else "Category") + " Created",
-            description=f"**Name:** {channel.name}\n" +
-                        (f"**Category:** {channel.category.name if channel.category else 'None'}\n" if c_type != "category" else "") +
-                        f"**Created By:** {audit.user.mention}\n",
-            color=events["channel_create"][0],
+        if audit.user.id == self.bot.user.id:
+            e = discord.Embed(
+            title=emojis["webhook_create"] + " Ticket opened",
+            description=f"**User:** {channel.name}\n" +
+                        f"**ID:** {channel.topic.split(' ')[0]}",
+            color=colours["create"],
             timestamp=datetime.utcnow()
         )
+        else:
+            em = emojis["voice_create" if c_type == "voice" else "store_create" if c_type == "store" else "catCreate" if c_type == "category" else "channel_create"]
+            e = discord.Embed(
+                title=em + " " + ("Channel" if c_type != "category" else "Category") + " Created",
+                description=f"**Name:** {channel.name}\n" +
+                            (f"**Category:** {channel.category.name if channel.category else 'None'}\n" if c_type != "category" else "") +
+                            f"**Created By:** {audit.user.mention}\n",
+                color=events["channel_create"][0],
+                timestamp=datetime.utcnow()
+            )
         await log.send(embed=e)
         return await self.log(
             logType="channelCreate",
@@ -285,17 +294,26 @@ class Guild(commands.Cog):
                 return
         audit = await get_alog_entry(channel, type=discord.AuditLogAction.channel_delete)
         log = self.get_log(channel.guild)
-        em = emojis["voice_delete" if c_type == "voice" else "store_delete" if c_type == "store" else "catDelete" if c_type == "category" else "channel_delete"]
-        e = discord.Embed(
-            title=em + " " + ("Channel" if c_type != "category" else "Category") + " Deleted",
-            description=(
-                (f"**Name:** {channel.name}\n") +
-                (f"**Category:** {channel.category.name if channel.category else 'None'}\n" if c_type != "category" else "") +
-                f"**Deleted By:** {audit.user.mention}\n"
-            ),
-            color=events["channel_delete"][0],
-            timestamp=datetime.utcnow()
-        )
+        if audit.user.id == self.bot.user.id:
+            e = discord.Embed(
+                title=emojis["webhook_delete"] + " Ticket deleted",
+                description=f"**User:** {'-'.join(channel.name.split('-')[:-1])}\n" +
+                            f"**ID:** {channel.topic.split(' ')[0]}",
+                color=colours["delete"],
+                timestamp=datetime.utcnow()
+            )
+        else:
+            em = emojis["voice_delete" if c_type == "voice" else "store_delete" if c_type == "store" else "catDelete" if c_type == "category" else "channel_delete"]
+            e = discord.Embed(
+                title=em + " " + ("Channel" if c_type != "category" else "Category") + " Deleted",
+                description=(
+                    (f"**Name:** {channel.name}\n") +
+                    (f"**Category:** {channel.category.name if channel.category else 'None'}\n" if c_type != "category" else "") +
+                    f"**Deleted By:** {audit.user.mention}\n"
+                ),
+                color=events["channel_desc_update"][0],
+                timestamp=datetime.utcnow()
+            )
         await log.send(embed=e)
         return await self.log(
             logType="channelDelete",
@@ -329,17 +347,26 @@ class Guild(commands.Cog):
                     changes.append("TopicUpdate")
             if len(changes):
                 log = self.get_log(after.guild)
-                e = discord.Embed(
-                    title=emojis[changes[0]] + " Channel updated",
-                    description=(
-                        (f"**Name:** {before.name} > {after.name} ({after.mention})\n" if "TitleUpdate" in changes else f"**Name:** {after.mention}\n") +
-                        (f"**Topic:** {before.topic} > {after.topic}\n" if "TopicUpdate" in changes else "") +
-                        (f"**NSFW:** {'Now NSFW' if 'nsfw_on' in changes else 'No longer NSFW'}\n" if "nsfw_on" in changes or "nsfw_off" in changes else "") +
-                        (f"**Changed by:** {audit.user.mention}")
-                    ),
-                    color=colours["edit"],
-                    timestamp=datetime.utcnow()
-                )
+                if audit.user.id == self.bot.user.id:
+                    e = discord.Embed(
+                        title=emojis["webhook_update"] + " Ticket closed",
+                        description=f"**User:** {before.name}\n" +
+                                    f"**ID:** {after.topic.split(' ')[0]}",
+                        color=colours["edit"],
+                        timestamp=datetime.utcnow()
+                    )
+                else:
+                    e = discord.Embed(
+                        title=emojis[changes[0]] + " Channel updated",
+                        description=(
+                            (f"**Name:** {before.name} > {after.name} ({after.mention})\n" if "TitleUpdate" in changes else f"**Name:** {after.mention}\n") +
+                            (f"**Topic:** {before.topic} > {after.topic}\n" if "TopicUpdate" in changes else "") +
+                            (f"**NSFW:** {'Now NSFW' if 'nsfw_on' in changes else 'No longer NSFW'}\n" if "nsfw_on" in changes or "nsfw_off" in changes else "") +
+                            (f"**Changed by:** {audit.user.mention}")
+                        ),
+                        color=colours["edit"],
+                        timestamp=datetime.utcnow()
+                    )
                 await log.send(embed=e)
                 return await self.log(
                     logType="channelUpdate",
