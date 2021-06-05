@@ -34,7 +34,8 @@
 
         "cogs.errors",
         "cogs.ping",
-        "cogs.automations"
+        "cogs.automations",
+        "cogs.breakdown"
     ],
 
     "colour-dev": "Pink",

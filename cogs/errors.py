@@ -1,10 +1,11 @@
 import asyncio
-import postbin
 import sys
 from hashlib import sha256
 
-from cogs.consts import *
 import bot as customBot
+import postbin
+
+from cogs.consts import *
 
 
 class Errors(commands.Cog):

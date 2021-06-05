@@ -1,21 +1,14 @@
-import copy
-import discord
-import json
-import humanize
-import aiohttp
-import traceback
-import subprocess
-import functools
-import typing
-import time
 import asyncio
-import os
-
 import datetime
-from discord.ext import commands
-from textwrap import shorten
+import functools
+import os
+import subprocess
+import typing
 
+import discord
+import humanize
 from cogs.consts import *
+from discord.ext import commands
 
 
 class InfoCommands(commands.Cog):

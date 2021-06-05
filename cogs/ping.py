@@ -1,10 +1,9 @@
-from quart import Quart
-from discord.ext import commands
-import discord
-import aiohttp
 import asyncio
-import bot as customBot
+
+import discord
 from config import config
+from discord.ext import commands
+from quart import Quart
 
 
 class Ping(commands.Cog):

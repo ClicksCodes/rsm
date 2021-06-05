@@ -1,26 +1,19 @@
-import copy
-import discord
-import json
-import humanize
-import aiohttp
-import traceback
-import typing
-import time
 import asyncio
-import datetime
+import json
 import random
-import mongoengine
-import psutil
 import secrets
+import time
+import typing
 
-from datetime import datetime
-from discord.ext import commands, tasks
-from textwrap import shorten
-from urllib.parse import quote
-
+import aiohttp
 import config
-from cogs.consts import *
+import discord
+import mongoengine
 from config import config
+from discord.ext import commands
+
+from cogs.consts import *
+
 deepAiKey = config.deepAIkey
 
 

@@ -1,11 +1,8 @@
-import copy
 import discord
 import json
 import humanize
 import aiohttp
-import traceback
 import re
-import typing
 import time
 
 from datetime import datetime

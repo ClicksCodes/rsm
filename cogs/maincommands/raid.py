@@ -1,20 +1,15 @@
-import copy
-import discord
-import json
-import humanize
-import aiohttp
-import traceback
-import typing
 import asyncio
-import postbin
+import json
 import re
-
-from datetime import datetime
-from discord.ext import commands
-from textwrap import shorten
 import time as timeimp
+import typing
+from datetime import datetime
 
+import aiohttp
+import discord
+import postbin
 from cogs.consts import *
+from discord.ext import commands
 
 
 class Raid(commands.Cog):

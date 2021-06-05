@@ -1,10 +1,14 @@
-import copy, discord, json, humanize, aiohttp, traceback, typing, time, asyncio, postbin, re
-
+import asyncio
 import datetime
-from discord.ext import commands
-from textwrap import shorten
+import json
+import re
+import typing
 
+import discord
+import humanize
 from cogs.consts import *
+from discord.ext import commands
+
 
 class Commands(commands.Cog):
     def __init__(self, bot):

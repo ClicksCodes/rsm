@@ -1,18 +1,12 @@
-import copy
 import discord
 import json
-import humanize
 import aiohttp
-import traceback
-import typing
 import requests
 import cv2
 import pytesseract
 import os
-import random
 import re
 import time
-import shutil
 
 from datetime import datetime
 from discord.ext import commands

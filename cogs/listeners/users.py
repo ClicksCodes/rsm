@@ -8,7 +8,6 @@ import re
 
 from datetime import datetime
 from discord.ext import commands
-from textwrap import shorten
 
 from cogs.consts import *
 

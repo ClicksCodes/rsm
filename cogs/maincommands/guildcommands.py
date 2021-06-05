@@ -1,23 +1,17 @@
-import copy
-import discord
-import json
-import humanize
-import aiohttp
-import traceback
-import typing
-import time
 import asyncio
-import io
-import math
 import datetime
+import io
+import json
+import math
+import typing
 
-from discord.ext import commands
-from textwrap import shorten
-import matplotlib.pyplot as plt
+import discord
+import humanize
 import matplotlib.dates as mdates
-from re import findall
-
+import matplotlib.pyplot as plt
 from cogs.consts import *
+from discord.ext import commands
+
 
 class GuildCommands(commands.Cog):
     def __init__(self, bot):

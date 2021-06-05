@@ -1,21 +1,7 @@
-import copy
-import discord
-import json
-import humanize
-import aiohttp
-import traceback
-import typing
-import time
-import cv2
-import pytesseract
-import os
-import random
-import re
-import time
-import shutil
-import requests
 import enum
-from discord.ext import commands
+import json
+
+import discord
 
 with open("./data/emojis.json") as rfile:
     emojis = json.load(rfile)

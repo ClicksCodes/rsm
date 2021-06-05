@@ -1,11 +1,11 @@
-import datetime
-
 import asyncio
-import discord
+import datetime
 import typing
+
+import discord
 from discord.ext import commands, tasks
 
-from cogs.consts import emojis, colours, C
+from cogs.consts import C, colours, emojis
 
 
 class Mute(commands.Cog):

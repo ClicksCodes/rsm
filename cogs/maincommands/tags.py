@@ -1,18 +1,9 @@
-import copy
-import discord
-import json
-import humanize
-import aiohttp
-import traceback
-import typing
-import time
 import asyncio
+import json
 
-from datetime import datetime
-from discord.ext import commands, tasks
-from textwrap import shorten
-
+import discord
 from cogs.consts import *
+from discord.ext import commands
 
 
 class Tags(commands.Cog):
