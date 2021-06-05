@@ -4,6 +4,7 @@ from hashlib import sha256
 
 import bot as customBot
 import postbin
+from discord.ext import commands
 
 from cogs.consts import *
 
