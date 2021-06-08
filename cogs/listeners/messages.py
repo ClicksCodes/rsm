@@ -1,5 +1,6 @@
 import discord
 import json
+import os
 import humanize
 import aiohttp
 import re

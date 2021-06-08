@@ -93,11 +93,14 @@ class Automations(commands.Cog):
             if "roles" not in entry["invite"]['whitelist']:
                 write = True
                 entry["invite"]["whitelist"]['roles'] = []
+            if "nameban" not in entry["invite"]:
+                write = True
+                entry["nameban"] = "change"
             if write:
                 with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
                     json.dump(entry, f, indent=2)
         m = await ctx.send(embed=loadingEmbed)
-        pages = ["filter", "nsfw", "welcome", "invite", "images"]
+        pages = ["filter", "nsfw", "nameban", "welcome", "invite", "images"]
         page = 0
         skip = False
         while True:
@@ -588,6 +591,117 @@ class Automations(commands.Cog):
                                     entry["welcome"]["message"]["channel"] = "dm"
                                     with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
                                         json.dump(entry, f, indent=2)
+                        else:
+                            await asyncio.sleep(0.1)
+                            await m.clear_reactions()
+                            await asyncio.sleep(0.1)
+                            break
+                else:
+                    await m.clear_reactions()
+                    break
+            elif pages[page] == "nameban":
+                wf = entry['nameban']
+                await m.edit(embed=discord.Embed(
+                    title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                    description=f"**Action:** {wf.capitalize()}\n",
+                    color=colours["create"]
+                ))
+                try:
+                    reaction = await ctx.bot.wait_for("reaction_add", timeout=180, check=lambda _, user: user == ctx.author)
+                except asyncio.TimeoutError:
+                    break
+
+                try:
+                    await asyncio.sleep(0.1)
+                    await m.remove_reaction(reaction[0].emoji, ctx.author)
+                except Exception as e:
+                    print(e)
+
+                if reaction is None:
+                    break
+                elif reaction[0].emoji.name == "Right":
+                    page += 1
+                    skip = True
+                    await asyncio.sleep(0.1)
+                elif reaction[0].emoji.name == "Left":
+                    page -= 1
+                    skip = True
+                    await asyncio.sleep(0.1)
+                elif reaction[0].emoji.name == "ServerRole":
+                    await asyncio.sleep(0.1)
+                    await m.clear_reactions()
+                    for r in [
+                        729064531107774534, 729763053352124529
+                    ]:
+                        await asyncio.sleep(0.1)
+                        await m.add_reaction(self.bot.get_emoji(r))
+                    while True:
+                        with open(f"data/guilds/{ctx.guild.id}.json", "r") as e:
+                            entry = json.load(e)
+                        wf = entry['nameban']
+                        await m.edit(embed=discord.Embed(
+                            title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                            description=f"**Action:** {wf.capitalize()}\n",
+                            color=colours["create"]
+                        ))
+                        try:
+                            reaction = await ctx.bot.wait_for("reaction_add", timeout=180, check=lambda _, user: user == ctx.author)
+                        except asyncio.TimeoutError:
+                            break
+
+                        try:
+                            await m.remove_reaction(reaction[0].emoji, ctx.author)
+                        except Exception as e:
+                            print(e)
+
+                        if reaction is None:
+                            break
+                        elif reaction[0].emoji.name == "ServerModerationUpdate":
+                            await m.edit(embed=discord.Embed(
+                                title=f"{emojis['webhook_create']} Automations: {pages[page].capitalize()}",
+                                description=f"What should happen to users if their username contains a banned word?\n`1` Nothing\n`2` Change nickname\n`3` Kick\n`4` Ban",
+                                color=colours["create"]
+                            ))
+                            try:
+                                message = await ctx.bot.wait_for("message", timeout=180, check=lambda message: message.channel.id == ctx.channel.id and message.author.id == ctx.author.id)
+                            except asyncio.TimeoutError:
+                                await m.clear_reactions()
+                                break
+                            try:
+                                await message.delete()
+                            except Exception as e:
+                                print(e)
+                            if message.content.lower() == "cancel":
+                                continue
+                            if message.content.lower() == "1":
+                                with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                    entry = json.load(entry)
+                                    entry["nameban"] = "none"
+                                    with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                        json.dump(entry, f, indent=2)
+                            elif message.content.lower() == "2":
+                                with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                    entry = json.load(entry)
+                                    entry["nameban"] = "change"
+                                    with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                        json.dump(entry, f, indent=2)
+                            elif message.content.lower() == "3":
+                                with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                    entry = json.load(entry)
+                                    entry["nameban"] = "kick"
+                                    with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                        json.dump(entry, f, indent=2)
+                            elif message.content.lower() == "4":
+                                with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                    entry = json.load(entry)
+                                    entry["nameban"] = "ban"
+                                    with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                        json.dump(entry, f, indent=2)
+                            with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                                entry = json.load(entry)
+                                entry["wordfilter"]["ignore"]["roles"] = roles
+                                with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                                    json.dump(entry, f, indent=2)
                         else:
                             await asyncio.sleep(0.1)
                             await m.clear_reactions()
