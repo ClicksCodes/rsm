@@ -1,6 +1,7 @@
 import discord
 import json
 import humanize
+import os
 import aiohttp
 import os
 import time
@@ -137,12 +138,20 @@ class Users(commands.Cog):
             with open(f"data/guilds/{member.guild.id}.json") as entry:
                 entry = json.load(entry)
             if await self.checkWith(entry, member, member.display_name):
-                await member.edit(nick="[!] Nickname broke rules")
-                await member.send(embed=discord.Embed(
-                    title="Nickname did not follow rules",
-                    description=f"You joined {member.guild.name}, but your name contained word(s) that aren't allowed. Please contact the moderators for more information",
-                    color=colours["delete"]
-                ))
+                if "nameban" in entry:
+                    if entry["nameban"] == "none":
+                        pass
+                    elif entry["nameban"] == "change":
+                        await member.edit(nick="[!] Nickname broke rules")
+                        await member.send(embed=discord.Embed(
+                            title="Nickname did not follow rules",
+                            description=f"You joined {member.guild.name}, but your name contained word(s) that aren't allowed. Please contact the moderators for more information",
+                            color=colours["delete"]
+                        ))
+                    elif entry["nameban"] == "kick":
+                        await member.kick("Nickname contained banned word")
+                    elif entry["nameban"] == "ban":
+                        await member.ban("Nickname contained banned word")
         except FileNotFoundError:
             pass
         if not self.is_logging(member.guild, member=member, eventname="member_join"):
