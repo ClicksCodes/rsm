@@ -697,11 +697,6 @@ class Automations(commands.Cog):
                                     entry["nameban"] = "ban"
                                     with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
                                         json.dump(entry, f, indent=2)
-                            with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
-                                entry = json.load(entry)
-                                entry["wordfilter"]["ignore"]["roles"] = roles
-                                with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
-                                    json.dump(entry, f, indent=2)
                         else:
                             await asyncio.sleep(0.1)
                             await m.clear_reactions()
