@@ -54,7 +54,7 @@ class Errors(commands.Cog):
                     with open(f"data/guilds/{ctx.guild.id}.json") as f:
                         pass
                 except FileNotFoundError:
-                    return await ctx.channel.send(
+                    await ctx.channel.send(
                         embed=discord.Embed(
                             title="You aren't set up",
                             description=f"You need to run `{ctx.prefix}setup` to get your server set up.",
