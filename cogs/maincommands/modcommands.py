@@ -718,6 +718,7 @@ class Commands(commands.Cog):
                 f"{emojis['webhook_create']} `{prefix}mail          {'' if mob else '|'} ` {n if mob else ''}Creates a modmail ticket if set up."
             ],
             "Moderation": [
+                f"{noLog}",
                 f"{emojis['PunMute']       } `{prefix}prefix            {'' if mob else '|'} ` {n if mob else ''}Shows the bots prefix. Use @ if unknown.",
                 f"{emojis['PunMute']       } `{prefix}setprefix     [T] {'' if mob else '|'} ` {n if mob else ''}Sets the bots prefix. You can always @ the bot.",
                 f"{emojis['PunWarn']       } `{prefix}warn    [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Warns [@] for reason [T].",
@@ -735,12 +736,14 @@ class Commands(commands.Cog):
                 f"{emojis['webhook_create']} `{prefix}modmail           {'' if mob else '|'} ` {n if mob else ''}Shows the setup for the mail command, like category."
             ],
             "Raid": [
+                f"{noLog}",
                 f"{emojis['slowmodeOn']} `{prefix}slowmode [*N] {'' if mob else '|'} ` {n if mob else ''}Sets the channel slowmode to [N]. Toggles if [N] is not provided.",
                 f"{emojis['lock']      } `{prefix}lock     [*T] {'' if mob else '|'} ` {n if mob else ''}Locks the channel. All roles are denied `send_messages` unless they have `manage_messages`. `{prefix}lock off` unlocks the channel.",
                 f"{emojis['lock']      } `{prefix}unlock        {'' if mob else '|'} ` {n if mob else ''}Unlocks the channel. All roles are given `send_messages` if they did before.",
                 f"{emojis['raidlock']  } `{prefix}raid     [*T] {'' if mob else '|'} ` {n if mob else ''}Locks down the entire server. All roles are denied `send_messages` if they do not have `manage_messages`. You can type `{prefix}raid off` to end a raid, and type `{prefix}raid` during a raid to view options like ban members."
             ],
             "Failsafe": [
+                f"{noLog}",
                 f"{emojis['cross']} `{prefix}resetfilter {'' if mob else '|'} ` {n if mob else ''}Reset any words that have been set to be automatically deleted.",
                 f"{emojis['cross']} `{prefix}resetauto   {'' if mob else '|'} ` {n if mob else ''}Reset all of your automation settings (NSFW detection, filters, invite deletion etc.)",
                 f"{emojis['cross']} `{prefix}resetprefix {'' if mob else '|'} ` {n if mob else ''}Sets your prefix back to the default."
