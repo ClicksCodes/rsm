@@ -63,7 +63,7 @@ class Users(commands.Cog):
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
 
-    async def checkWith(self, entry, user, name):
+    def checkWith(self, entry, user, name):
         if "wordfilter" in entry:
             if user.id not in entry["wordfilter"]["ignore"]["members"]:
                 for role in user.roles:
@@ -137,7 +137,9 @@ class Users(commands.Cog):
         try:
             with open(f"data/guilds/{member.guild.id}.json") as entry:
                 entry = json.load(entry)
-            if await self.checkWith(entry, member, member.display_name):
+            print("checking...")
+            if self.checkWith(entry, member, member.display_name):
+                print("calculating action")
                 if "nameban" in entry:
                     if entry["nameban"] == "none":
                         pass
@@ -149,9 +151,19 @@ class Users(commands.Cog):
                             color=colours["delete"]
                         ))
                     elif entry["nameban"] == "kick":
-                        await member.kick("Nickname contained banned word")
+                        await member.send(embed=discord.Embed(
+                            title="Nickname did not follow rules",
+                            description=f"You joined {member.guild.name}, but your name contained word(s) that aren't allowed. You have been automatically kicked",
+                            color=colours["delete"]
+                        ))
+                        await member.kick(reason="Nickname contained banned word")
                     elif entry["nameban"] == "ban":
-                        await member.ban("Nickname contained banned word")
+                        await member.send(embed=discord.Embed(
+                            title="Nickname did not follow rules",
+                            description=f"You joined {member.guild.name}, but your name contained word(s) that aren't allowed. You have been automatically banned",
+                            color=colours["delete"]
+                        ))
+                        await member.ban(reason="Nickname contained banned word")
         except FileNotFoundError:
             pass
         if not self.is_logging(member.guild, member=member, eventname="member_join"):
@@ -184,9 +196,12 @@ class Users(commands.Cog):
     async def on_member_remove(self, member: discord.Member):
         if not self.is_logging(member.guild, member=member, eventname="member_leave"):
             return
-        audit = await get_alog_entry(member, type=discord.AuditLogAction.ban)
-        if audit.target.id == member.id:
-            return
+        audit = await get_alog_entry(member.guild.roles[0], type=discord.AuditLogAction.ban)
+        try:
+            if not audit.user.id == member.id:
+                return
+        except AttributeError:
+            pass
         e = discord.Embed(
             title=(emojis["bot_leave"] if member.bot else emojis["leave"]) + f" Member Left",
             description=f"**Name:** {member.name}\n"

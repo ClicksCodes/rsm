@@ -697,15 +697,21 @@ class Core(commands.Cog):
     @commands.guild_only()
     @commands.has_permissions(manage_guild=True)
     async def resetprefix(self, ctx):
-        with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
-            entry = json.load(entry)
-            del entry["prefix"]
-        with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
-            json.dump(entry, f, indent=2)
-        return await ctx.send(embed=discord.Embed(
-            title="Your prefix has been reset - It is now m!",
-            color=colours["edit"]
-        ))
+        try:
+            with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
+                entry = json.load(entry)
+                del entry["prefix"]
+            with open(f"data/guilds/{ctx.guild.id}.json", "w") as f:
+                json.dump(entry, f, indent=2)
+            return await ctx.send(embed=discord.Embed(
+                title="Your prefix has been reset - It is now `m!`",
+                color=colours["edit"]
+            ))
+        except KeyError:
+            return await ctx.send(embed=discord.Embed(
+                title="You did not have a custom prefix - It's still `m!`",
+                color=colours["edit"]
+            ))
 
     @commands.command()
     @commands.guild_only()

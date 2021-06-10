@@ -120,6 +120,7 @@ class Commands(commands.Cog):
             )
 
         if reason != None:
+            reason = reason.strip()
             try: await member.send(embed=createEmbed(f"{emojis['PunWarn']} Warning", f"You were warned in {ctx.guild.name} {('for ' + reason) if reason else 'with no reason provided'}.", colours["edit"]))
             except: return
             await m.edit(embed=createEmbed(f"{emojis['PunWarn']} Warning", f"User {member.mention} was successfully warned for {reason if reason else 'No reason provided'}.", colours["create"]))
@@ -161,6 +162,7 @@ class Commands(commands.Cog):
                 ctx
             )
         if reason != None:
+            reason = reason.strip()
             try:
                 try:
                     if reason is not False: await member.send(embed=createEmbed(f"{emojis['PunKick']} Kicked", f"You were kicked from {ctx.guild.name} for {reason}.", colours["delete"]))
@@ -210,6 +212,7 @@ class Commands(commands.Cog):
                 )
             except: pass
         if reason != None:
+            reason = reason.strip()
             try:
                 if member.id in [m.id for m in ctx.guild.members]:
                     if ctx.guild.me.top_role.position <= member.top_role.position or ctx.author.top_role.position <= member.top_role.position:
@@ -264,6 +267,7 @@ class Commands(commands.Cog):
                 ctx
             )
         if reason != None:
+            reason = reason.strip()
             try:
                 try:
                     if reason is not False: await member.send(embed=createEmbed(f"{emojis['PunBan']} Banned", f"You were banned from {ctx.guild.name} for {reason}.", colours["delete"]))
@@ -334,8 +338,7 @@ class Commands(commands.Cog):
                 await ctx.guild.get_channel(entry["log_info"]["log_channel"]).send(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(self.emojiids['PunHistory'][0])} Member History Cleared",
                     description=f"**Member history cleared:** {member.mention}\n"
-                                f"**Cleared by:** {ctx.author.mention}\n"
-                                f"**Reason:**\n> {reason}",
+                                f"**Cleared by:** {ctx.author.mention}",
                     color=colours["edit"]
                 ))
 
@@ -817,6 +820,33 @@ class Commands(commands.Cog):
             await self.helpcommand(ctx, member, s)
         else:
             await self.membercommand(ctx, member)
+
+    @commands.command()
+    async def unban(self, ctx, member: typing.Optional[discord.User]):
+        m = await ctx.send(embed=loadingEmbed)
+        tooMany = discord.Embed(
+            title=f'{events["nsfw_update"][2]} You mentioned too many people there',
+            description="You can only punish one person at a time.",
+            color=colours["delete"]
+        )
+        noPing = discord.Embed(
+            title=f"Who do you want to punish?",
+            description="Please mention the user you'd like to punish.",
+            color=colours["create"]
+        )
+        if not member:
+            m = await ctx.send(embed=noPing)
+            msg = await ctx.bot.wait_for('message', timeout=60, check=lambda message : message.author == ctx.author)
+            await msg.delete()
+            if len(msg.mentions) != 1: return await ctx.send(embed=tooMany)
+            else: member = msg.mentions[0]
+        user = await self.bot.fetch_user(member.id)
+        await ctx.guild.unban(user)
+        await m.edit(embed=discord.Embed(
+            title=f"Unbanned",
+            description=f"{user.mention} has been unbanned",
+            color=colours["create"]
+        ))
 
 
     @commands.command(aliases=["user", "whois"])
