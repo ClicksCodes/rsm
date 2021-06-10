@@ -714,7 +714,8 @@ class Commands(commands.Cog):
                 f"{emojis['role_create']   } `{prefix}role      [@] {'' if mob else '|'} ` {n if mob else ''}With `Mention`: Lets you edit or view a users roles.",
                 f"{emojis['channel_create']} `{prefix}viewas    [@] {'' if mob else '|'} ` {n if mob else ''}Shows the channels that [@] can see.",
                 f"{emojis['join']          } `{prefix}verify    [@] {'' if mob else '|'} ` {n if mob else ''}Lets users verify in your server.",
-                f"{emojis['join']          } `{prefix}setverify [R] {'' if mob else '|'} ` {n if mob else ''}Sets the role given when you `{prefix}verify`. Name or ID."
+                f"{emojis['join']          } `{prefix}setverify [R] {'' if mob else '|'} ` {n if mob else ''}Sets the role given when you `{prefix}verify`. Name or ID.",
+                f"{emojis['webhook_create']} `{prefix}mail          {'' if mob else '|'} ` {n if mob else ''}Creates a modmail ticket if set up."
             ],
             "Moderation": [
                 f"{emojis['PunMute']       } `{prefix}prefix            {'' if mob else '|'} ` {n if mob else ''}Shows the bots prefix. Use @ if unknown.",
@@ -729,8 +730,9 @@ class Commands(commands.Cog):
                 f"{emojis['role_edit']     } `{prefix}setlog       [ C] {'' if mob else '|'} ` {n if mob else ''}Sets the servers log channel to [C].",
                 f"{emojis['ignore']        } `{prefix}ignore     [*CR@] {'' if mob else '|'} ` {n if mob else ''}Stops logging users, roles and channels privided.",
                 f"{emojis['ignore']        } `{prefix}ignored           {'' if mob else '|'} ` {n if mob else ''}Shows the ignored users, roles and channels.",
-                f"{emojis['rgeneral']      } `{prefix}stafflog     [*C] {'' if mob else '|'} ` {n if mob else ''}Sets the staff log channel for reports and messages."
-                f"{emojis['webhook_create']} `{prefix}automation        {'' if mob else '|'} ` {n if mob else ''}(AKA `auto`) Lets you edit your server automations."
+                f"{emojis['rgeneral']      } `{prefix}stafflog     [*C] {'' if mob else '|'} ` {n if mob else ''}Sets the staff log channel for reports and messages.",
+                f"{emojis['webhook_create']} `{prefix}auto              {'' if mob else '|'} ` {n if mob else ''}Lets you edit your server automations.",
+                f"{emojis['webhook_create']} `{prefix}modmail           {'' if mob else '|'} ` {n if mob else ''}Shows the setup for the mail command, like category."
             ],
             "Raid": [
                 f"{emojis['slowmodeOn']} `{prefix}slowmode [*N] {'' if mob else '|'} ` {n if mob else ''}Sets the channel slowmode to [N]. Toggles if [N] is not provided.",
