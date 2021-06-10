@@ -24,6 +24,7 @@ class Modmail(commands.Cog):
             active = 0
             archived = 0
             try:
+                write = False
                 with open(f"data/guilds/{ctx.guild.id}.json") as f:
                     entry = json.load(f)
                     if "modmail" not in entry:
@@ -40,6 +41,17 @@ class Modmail(commands.Cog):
                     except KeyError:
                         cname = "*No category set*"
                         maxtickets = "*No limit set*"
+                    except AttributeError:
+                        write = True
+                if write:
+                    with open(f"data/guilds/{ctx.guild.id}.json", "w") as write:
+                        entry["modmail"] = {"cat": None, "max": 0, "mention": None}
+                        json.dump(entry, write, indent=2)
+                        return await m.edit(embed=discord.Embed(
+                            title=f"{emojis['webhook_create']} Modmail Setup",
+                            description=f"Modmail encountered an error - it is likely that the category was deleted. Please run the command again to change your settings",
+                            color=colours["create"]
+                        ))
             except FileNotFoundError:
                 cname = "*Modmail not enabled*"
                 maxtickets = "*Modmail not enabled*"
@@ -223,12 +235,14 @@ class Modmail(commands.Cog):
         ).set_footer(text=f"Ticket opened at {datetime.datetime.utcnow().strftime('%Y-%m-%d at %H:%M:%S')}"))
         await c.set_permissions(self.bot.get_guild(ctx.guild.id).get_role(entry['modmail']['mention']), view_channel=True, send_messages=True)
         await c.send(f"<@{ctx.author.id}>" + (f" • <@&{entry['modmail']['mention']}>" if entry['modmail']['mention'] else ''))
-
+        await ctx.message.delete()
         await m.edit(embed=discord.Embed(
             title="Ticket created",
             description=f"You can jump to the channel [here]({created.jump_url})",
             color=colours["create"]
         ))
+        await asyncio.sleep(10)
+        await m.delete()
 
     @commands.command()
     @commands.guild_only()
