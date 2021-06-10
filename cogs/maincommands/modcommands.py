@@ -733,7 +733,7 @@ class Commands(commands.Cog):
                 f"{emojis['ignore']        } `{prefix}ignored           {'' if mob else '|'} ` {n if mob else ''}Shows the ignored users, roles and channels.",
                 f"{emojis['rgeneral']      } `{prefix}stafflog     [*C] {'' if mob else '|'} ` {n if mob else ''}Sets the staff log channel for reports and messages.",
                 f"{emojis['webhook_create']} `{prefix}auto              {'' if mob else '|'} ` {n if mob else ''}Lets you edit your server automations.",
-                f"{emojis['webhook_create']} `{prefix}modmail           {'' if mob else '|'} ` {n if mob else ''}Shows the setup for the mail command, like category."
+                f"{emojis['webhook_create']} `{prefix}modmail           {'' if mob else '|'} ` {n if mob else ''}Shows the setup for the mail command."
             ],
             "Raid": [
                 f"{noLog}",
