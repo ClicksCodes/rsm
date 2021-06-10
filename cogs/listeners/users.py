@@ -137,9 +137,7 @@ class Users(commands.Cog):
         try:
             with open(f"data/guilds/{member.guild.id}.json") as entry:
                 entry = json.load(entry)
-            print("checking...")
             if self.checkWith(entry, member, member.display_name):
-                print("calculating action")
                 if "nameban" in entry:
                     if entry["nameban"] == "none":
                         pass
@@ -407,7 +405,7 @@ class Users(commands.Cog):
             if not self.is_logging(after.channel.guild, eventname="server_undeafen"):
                 return
             e = discord.Embed(
-                title=emojis["Deafen"] + f" Server undeafen",
+                title=emojis["Undeafen"] + f" Server undeafen",
                 description=f"**User:** {m.mention}\n"
                             f"**Channel:** {before.channel.name}",
                 color=events["server_undeafen"][0],

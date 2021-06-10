@@ -452,8 +452,8 @@ class Messages(commands.Cog):
             message = await channel.fetch_message(audit.extra.message_id)
         e = discord.Embed(
             title=(emojis["pinned"] + f" Message {'un' if not message.pinned else ''}pinned"),
-            description=(f"**Message:**```{shorten(message.clean_content, 2042).replace('```', '***')}```\n" if message.content else "")
-                        (f"**Message by:** {message.author.mention}\n")
+            description=(f"**Message:**```{shorten(message.clean_content, 2042).replace('```', '***')}```\n" if message.content else "") +
+                        (f"**Message by:** {message.author.mention}\n") +
                         (f"**In:** {message.channel.mention}"),
             color=events["channel_pins_update"][0],
             timestamp=datetime.utcnow()

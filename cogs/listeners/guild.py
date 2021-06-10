@@ -504,9 +504,9 @@ class Guild(commands.Cog):
             e = discord.Embed(
                 title=emojis["role_edit"] + f" Role Edited",
                 description=f"**ID:** `{after.id}`\n" +
-                            (f"**Name:** {before.name} > {after.name}\n" if before.name != after.name else f"**Name:** {after.name}\n")
-                            (f"**Position:** {before.position} > {after.position}\n" if before.position != after.position else "")
-                            (f"**Colour:** #{self.tohex(before.colour.value)} > #{self.tohex(after.colour.value)}\n" if before.colour.value != after.colour.value else "")
+                            (f"**Name:** {before.name} > {after.name}\n" if before.name != after.name else f"**Name:** {after.name}\n") +
+                            (f"**Position:** {before.position} > {after.position}\n" if before.position != after.position else "") +
+                            (f"**Colour:** #{self.tohex(before.colour.value)} > #{self.tohex(after.colour.value)}\n" if before.colour.value != after.colour.value else "") +
                             (f"**Edited by:** {audit.user.mention}"),
                 color=events["roles"][0],
                 timestamp=datetime.utcnow()
