@@ -759,7 +759,7 @@ class Commands(commands.Cog):
             thispaginated = []
             for x in range(len(descriptions[key])):
                 thisitt += descriptions[key][x] + "\n"
-                if len(thisitt) > 1750:
+                if len(thisitt) > 1550:
                     thispaginated.append(thisitt)
                     thisitt = "\n"
                     continue
