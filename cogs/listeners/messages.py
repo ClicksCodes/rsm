@@ -81,8 +81,7 @@ class Logs(commands.Cog):
                 "Sent": self.handlers.betterDelta(message.created_at),
                 "Edited": self.handlers.betterDelta(message.edited_at),
                 "Deleted": self.handlers.strf(datetime.datetime.utcnow())
-            },
-            jump_url=message.jump_url
+            }
         )
 
     @commands.Cog.listener()
