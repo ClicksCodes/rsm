@@ -5,7 +5,7 @@ import os
 from discord.ext import commands
 
 from config import config
-from cogs.consts import C
+from cogs.consts import Colours
 
 
 class Context(commands.Context):
@@ -14,7 +14,7 @@ class Context(commands.Context):
         try:
             return self.bot.sync_get_prefix(self)[2]
         except Exception as e:
-            print(f"{C.RedDark}[C] {C.Red}FATAL:\n{C.c}\n{e}, please message Minion3665")
+            print(f"{Colours.RedDark}[C] {Colours.Red}FATAL:\n{Colours.c}\n{e}, please message Minion3665")
             return "@RSM "  # This should **never** trigger
 
     @prefix.setter
@@ -39,24 +39,25 @@ class Bot(commands.Bot):
         for cog in config.cogs:
             x += 1
             try:
-                start = f"{C.YellowDark.value}[S] {C.Yellow.value}Loading cog {cog}"
-                end = f"{C.Yellow.value}[{C.Red.value}{'='*(len(failed))}{C.Green.value}{'='*(x-len(failed)-1)}>{' '*(m-x)}{C.Yellow.value}] [{' '*(len(str(m))-len(str(x)))}{x}/{m}]"
-                print(f"{start}{' '*(width-len(start)-len(end)+(len(C.Yellow.value*4)))}{end}", end="\r")
+                start = f"{Colours.YellowDark}[S] {Colours.Yellow}Loading cog {cog}"
+                end = f"{Colours.Yellow}[{Colours.Red}{'='*(len(failed))}{Colours.Green}{'='*(x-len(failed)-1)}>{' '*(m-x)}{Colours.Yellow}] " + \
+                    f"[{' '*(len(str(m))-len(str(x)))}{x}/{m}]"
+                print(f"{start}{' '*(width-len(start)-len(end)+(len(Colours.Yellow*4)))}{end}", end="\r")
                 self.load_extension(cog)
-                start = f"{C.GreenDark.value}[S] {C.Green.value}Loaded cog {cog}"
+                start = f"{Colours.GreenDark}[S] {Colours.Green}Loaded cog {cog}"
                 end = f"[{' '*(len(str(m))-len(str(x)))}{x}/{m}]"
                 print(f"{start}{' '*(width-len(start)-len(end))}{end}")
             except Exception as exc:
                 failed.append(exc)
-                start = f"{C.RedDark.value}[S] {C.Red.value}Failed to load cog {cog}"
+                start = f"{Colours.RedDark}[S] {Colours.Red}Failed to load cog {cog}"
                 end = f"[{' '*(len(str(m))-len(str(x)))}{x}/{m}]"
                 print(f"{start}{' '*(width-len(start)-len(end))}{end}")
         x = 0
         for error in failed:
             x += 1
-            print(f"{C.RedDark.value}[{x}/{len(failed)}] {C.Red.value}{error.__class__.__name__}: {C.RedDark.value}{error}{C.c.value}")
+            print(f"{Colours.RedDark}[{x}/{len(failed)}] {Colours.Red}{error.__class__.__name__}: {Colours.RedDark}{error}{Colours.c}")
         lc = (len(failed), m)
-        print(f"{C[config.colour].value}[S] {C[str(config.colour) + 'Dark'].value}Starting with ({lc[1]-lc[0]}/{lc[1]}) cogs loaded")
+        print(f"{getattr(Colours, config.colour)}[S] {getattr(Colours, str(config.colour) + 'Dark')}Starting with ({lc[1]-lc[0]}/{lc[1]}) cogs loaded")
 
     async def get_context(self, message, *, cls=Context):
         return await super().get_context(message, cls=cls)
@@ -69,7 +70,10 @@ class Bot(commands.Bot):
             with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
                 entry = json.load(entry)
                 if "prefix" in entry and entry["prefix"]:
-                    prefixes = (entry["prefix"],)
+                    if isinstance(entry["prefix"], str):
+                        prefixes = (entry["prefix"],)
+                    elif isinstance(entry["prefix"], list):
+                        prefixes = entry["prefix"]
                 else:
                     prefixes = config.prefixes.copy()
         except (FileNotFoundError, AttributeError):
@@ -79,11 +83,4 @@ class Bot(commands.Bot):
         return commands.when_mentioned_or(*prefixes)(self, ctx)
 
     async def on_ready(self):
-        await self.change_presence(
-            activity=discord.Activity(
-                type=discord.ActivityType.watching,
-                name="over your servers."
-            ),
-            status=discord.Status.idle,
-        )
-        print(f"{C[config.colour].value}[S] {C[str(config.colour) + 'Dark'].value}Logged on as {self.user} [ID: {self.user.id}]{C.c.value}")
+        print(f"{getattr(Colours, config.colour)}[S] {getattr(Colours, str(config.colour) + 'Dark')}Logged on as {self.user} [ID: {self.user.id}]{Colours.c}")

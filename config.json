@@ -16,31 +16,26 @@
     "mongoCollection": "rsmv-tokens",
 
     "cogs": [
-        "cogs.core",
         "jishaku",
-
-        "cogs.listeners.guild",
-        "cogs.listeners.messages",
-        "cogs.listeners.users",
-        "cogs.listeners.images",
-
-        "cogs.maincommands.modcommands",
-        "cogs.maincommands.info",
-        "cogs.maincommands.guildcommands",
-        "cogs.maincommands.raid",
-        "cogs.maincommands.tags",
-        "cogs.maincommands.report",
-        "cogs.maincommands.modmail",
-
         "cogs.errors",
-        "cogs.ping",
-        "cogs.automations",
-        "cogs.breakdown"
+
+        "cogs.moderation.punish",
+        "cogs.moderation.modmail",
+        "cogs.moderation.misc",
+
+        "cogs.listeners.messages",
+        "cogs.listeners.guild",
+        "cogs.listeners.users",
+        "cogs.listeners.voice",
+
+        "cogs.rsm.rsm",
+
+        "cogs.internal.loops"
     ],
 
     "colour-dev": "Pink",
     "colour": "Cyan",
 
-    "prefixes": ["m!", "m1"],
-    "prefixes-dev": ["t!", "t1"]
+    "prefixes": ["m!", "m1", "M!", "M1"],
+    "prefixes-dev": ["t!", "t1", "T!", "T1"]
 }

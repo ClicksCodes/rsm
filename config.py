@@ -1,5 +1,4 @@
 import os
-from cogs.consts import C
 import json
 import enum
 

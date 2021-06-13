@@ -1,0 +1,95 @@
+{
+  "guild_info": {
+    "id": null,
+    "joined_at": null
+  },
+  "log_info": {
+    "log_channel": null,
+    "to_log": [
+      "message_delete",
+      "message_edit",
+      "bulk_message_delete",
+      "channel_pins_update",
+      "reaction_clear",
+      "everyone_here",
+      "mass_mention",
+      "roles",
+      "channel_create",
+      "channel_delete",
+      "nsfw_update",
+      "channel_title_update",
+      "channel_desc_update",
+      "member_join",
+      "member_leave",
+      "member_kick",
+      "member_ban",
+      "member_unban",
+      "nickname_change",
+      "guild_role_create",
+      "guild_role_delete",
+      "guild_emojis_update",
+      "invite_create",
+      "invite_delete",
+      "icon_update",
+      "mod_changed",
+      "name_changed",
+      "webhook_create",
+      "connect",
+      "disconnect",
+      "mute",
+      "deafen",
+      "unmute",
+      "undeafen",
+      "server_mute",
+      "server_deafen",
+      "server_unmute",
+      "server_undeafen",
+      "move"
+    ]
+  },
+  "ignore_info": {
+    "bots": true,
+    "members": [],
+    "roles": [],
+    "channels": []
+  },
+  "enabled": true,
+  "verify_role": null,
+  "welcome": {
+    "message": {
+      "channel": null,
+      "text": null
+    },
+    "role": null
+  },
+  "invite": {
+    "enabled": false,
+    "whitelist": {
+      "servers": [],
+      "members": [],
+      "roles": [],
+      "channels": []
+    }
+  },
+  "images": {
+    "toosmall": false
+  },
+  "wordfilter": {
+    "ignore": {
+      "roles": [],
+      "channels": [],
+      "members": [],
+      "delta": null
+    },
+    "banned": [],
+    "soft": []
+  },
+  "nsfw": true,
+  "modmail": {
+    "cat": null,
+    "max": 3,
+    "mention": null
+  },
+  "prefix": null,
+  "nameban": "change"
+}
