@@ -2,6 +2,7 @@ import asyncio
 import typing
 import aiohttp
 import datetime
+from aiohttp.typedefs import DEFAULT_JSON_DECODER
 import discord
 from discord.ext import commands
 from collections import OrderedDict
@@ -75,7 +76,7 @@ class Mod(commands.Cog):
     async def unban(self, ctx, member: typing.Optional[discord.User]):
         m = await ctx.send(embed=loading_embed)
         if isinstance(await self.handlers.checkPerms(ctx, m, "ban_members", self.emojis().member.unban, "unban someone"), Failed):
-            returngreen
+            return
 
         if not member:
             member = await self.handlers.memberHandler(
@@ -233,6 +234,44 @@ class Mod(commands.Cog):
             title=f"{self.emojis().channel.category.create} {name} ({page + 1}/{len(visible)})",
             description="\n".join([f"{c[0]} {c[1]}" for c in description]),
             colour=self.colours.red
+        ))
+
+    @commands.command()
+    @commands.guild_only()
+    async def setlog(self, ctx, channel: typing.Optional[discord.TextChannel]):
+        m = await ctx.send(embed=loading_embed)
+        if isinstance(await self.handlers.checkPerms(
+            ctx,
+            m,
+            permission="manage_guild",
+            action="change the log channel",
+            emoji=self.emojis().channel.text.create,
+            me=False
+        ), Failed):
+            return
+
+        if not channel:
+            channel = await self.handlers.channelHandler(
+                ctx,
+                m,
+                emoji=self.emojis().channel.text.create,
+                title="Setlog",
+                description="Where should logs be sent",
+                optional=True, accepted=["text"]
+            )
+            if isinstance(channel, Failed):
+                return
+
+        data = self.handlers.fileManager(ctx.guild)
+        if not channel:
+            data["log_info"]["log_channel"] = None
+        else:
+            data["log_info"]["log_channel"] = channel.id
+        self.handlers.fileManager(ctx.guild, action="w", data=data)
+        await m.edit(embed=discord.Embed(
+            title=f"{self.emojis().channel.text.create} Setlog",
+            description=f"Your log channel has been set to {channel.mention if channel else 'None'}",
+            colour=self.colours.green
         ))
 
 

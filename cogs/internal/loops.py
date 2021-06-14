@@ -63,5 +63,6 @@ class Loops(commands.Cog):
         else:
             self.bot.expectedPresence = ("dnd", True)
 
+
 def setup(bot):
     bot.add_cog(Loops(bot))

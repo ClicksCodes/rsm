@@ -156,73 +156,90 @@ class Handlers:
             ).set_footer(text="The request was cancelled"))
             return Failed()
 
-    async def channelHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None, accepted=["text", "voice", "announcement", "store", "news"]):
-        pass
-        # if default:
-        #     optional = True
-        # skip = f"Default: {default}" if default else "Skip"
-        # description = f"{description}\nYou can send the channel name, ID or mention.\n{self.emojis().control.cross} Cancel" + \
-        #     (f"\n{self.emojis().control.tick} {skip}" if optional else "")
-        # await m.edit(embed=discord.Embed(
-        #     title=f"{emoji} {title}",
-        #     description=description,
-        #     colour=self.colours.green
-        # ).set_footer(text="Listening for your next message | Expected: Channel"))
-        # await m.add_reaction(self.bot.get_emoji(self.emojis(idOnly=True).control.cross))
-        # if optional:
-        #     await m.add_reaction(self.bot.get_emoji(self.emojis(idOnly=True).control.tick))
-        # try:
-        #     done, pending = await asyncio.wait(
-        #         [
-        #             ctx.bot.wait_for(
-        #                 "message",
-        #                 timeout=180,
-        #                 check=lambda message: message.author == ctx.author and message.channel.id == ctx.channel.id
-        #             ),
-        #             ctx.bot.wait_for(
-        #                 "reaction_add",
-        #                 timeout=180,
-        #                 check=lambda reaction, user: user.id == ctx.author.id and reaction.message.id == m.id
-        #             ),
-        #         ],
-        #         return_when=asyncio.FIRST_COMPLETED,
-        #     )
-        # except (asyncio.exceptions.TimeoutError, TimeoutError):
-        #     await m.edit(embed=discord.Embed(
-        #         title=f"{emoji} {title}",
-        #         description=description,
-        #         colour=self.colours.red
-        #     ).set_footer(text="The request timed out"))
-        #     return Failed()
+    async def channelHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None, accepted=["text", "voice", "announcement", "news"]):
+        if default:
+            optional = True
+        skip = f"Default: {default}" if default else "Skip"
+        description = f"{description}\nYou can send the channel name, ID or mention.\n{self.emojis().control.cross} Cancel" + \
+            (f"\n{self.emojis().control.tick} {skip}" if optional else "")
+        await m.edit(embed=discord.Embed(
+            title=f"{emoji} {title}",
+            description=description,
+            colour=self.colours.green
+        ).set_footer(text="Listening for your next message | Expected: Channel"))
+        await m.add_reaction(self.bot.get_emoji(self.emojis(idOnly=True).control.cross))
+        if optional:
+            await m.add_reaction(self.bot.get_emoji(self.emojis(idOnly=True).control.tick))
+        try:
+            done, pending = await asyncio.wait(
+                [
+                    ctx.bot.wait_for(
+                        "message",
+                        timeout=180,
+                        check=lambda message: message.author == ctx.author and message.channel.id == ctx.channel.id
+                    ),
+                    ctx.bot.wait_for(
+                        "reaction_add",
+                        timeout=180,
+                        check=lambda reaction, user: user.id == ctx.author.id and reaction.message.id == m.id
+                    ),
+                ],
+                return_when=asyncio.FIRST_COMPLETED,
+            )
+        except (asyncio.exceptions.TimeoutError, TimeoutError):
+            await m.edit(embed=discord.Embed(
+                title=f"{emoji} {title}",
+                description=description,
+                colour=self.colours.red
+            ).set_footer(text="The request timed out"))
+            return Failed()
 
-        # for future in done:
-        #     future.exception()
-        # for future in pending:
-        #     future.cancel()
+        for future in done:
+            future.exception()
+        for future in pending:
+            future.cancel()
 
-        # await m.clear_reactions()
-        # response = done.pop().result()
-        # if isinstance(response, discord.message.Message):
-        #     await response.delete()
-        #     try:
-        #         member = await commands.MemberConverter().convert(await self.bot.get_context(response), response.content)
-        #         return member
-        #     except commands.MemberNotFound:
-        #         await m.edit(embed=discord.Embed(
-        #             title=f"{emoji} {title}",
-        #             description=description,
-        #             colour=self.colours.red
-        #         ).set_footer(text="Member could not be found"))
-        #         return Failed()
-        # else:
-        #     if response[0].emoji.name == "Tick" and optional:
-        #         return default
-        #     await m.edit(embed=discord.Embed(
-        #         title=f"{emoji} {title}",
-        #         description=description,
-        #         colour=self.colours.red
-        #     ).set_footer(text="The request was cancelled"))
-        #     return Failed()
+        await m.clear_reactions()
+        response = done.pop().result()
+        if isinstance(response, discord.message.Message):
+            await response.delete()
+            channel = None
+            if "text" in accepted or "announcement" in accepted:
+                try:
+                    channel = await commands.TextChannelConverter().convert(await self.bot.get_context(response), response.content)
+                    if "announcement" not in accepted and channel.is_news():
+                        channel = None
+                    elif "text" not in accepted and not channel.is_news():
+                        channel = None
+                except commands.ChannelNotFound:
+                    pass
+            if "voice" in accepted:
+                try:
+                    channel = await commands.VoiceChannelConverter().convert(await self.bot.get_context(response), response.content)
+                except commands.ChannelNotFound:
+                    pass
+            if "stage" in accepted:
+                try:
+                    channel = await commands.StageChannelConverter().convert(await self.bot.get_context(response), response.content)
+                except commands.ChannelNotFound:
+                    pass
+            if not channel:
+                await m.edit(embed=discord.Embed(
+                    title=f"{emoji} {title}",
+                    description=description,
+                    colour=self.colours.red
+                ).set_footer(text="Channel could not be found"))
+                return Failed()
+            return channel
+        else:
+            if response[0].emoji.name == "Tick" and optional:
+                return default
+            await m.edit(embed=discord.Embed(
+                title=f"{emoji} {title}",
+                description=description,
+                colour=self.colours.red
+            ).set_footer(text="The request was cancelled"))
+            return Failed()
 
     async def categoryHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None, returnNoneType=False):
         if default:

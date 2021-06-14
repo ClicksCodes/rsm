@@ -115,7 +115,6 @@ class Logs(commands.Cog):
             }
         )
 
-
     @commands.Cog.listener()
     async def on_guild_channel_update(self, before, after):
         audit = await self.handlers.getAuditLogEntry(after.guild, type=discord.AuditLogAction.channel_update)
@@ -151,7 +150,7 @@ class Logs(commands.Cog):
                 icon = self.emojis().channel.topic_update
                 t = "Topic"
                 changes.append(f"> **Topic:** ```{self.handlers.cleanMessageContent(before.topic, max_length=100)}```↓"
-                    f"```{self.handlers.cleanMessageContent(after.topic, max_length=100)}```")
+                               f"```{self.handlers.cleanMessageContent(after.topic, max_length=100)}```")
             if before.category != after.category:
                 t = "Category"
                 changes.append(f"> **Category:** {before.category} -> {after.category}")
@@ -194,7 +193,7 @@ class Logs(commands.Cog):
             if before.rtc_region != after.rtc_region:
                 t = "Region"
                 changes.append(f"> **Region:** {'Auto' if not before.rtc_region else before.rtc_region.name} -> "
-                    f"{'Auto' if not after.rtc_region else after.rtc_region.name}")
+                               f"{'Auto' if not after.rtc_region else after.rtc_region.name}")
             if before.user_limit != after.user_limit:
                 t = "User limit"
                 changes.append(f"> **User limit:** {before.user_limit} -> {after.user_limit}")
@@ -224,14 +223,14 @@ class Logs(commands.Cog):
             if before.topic != after.topic:
                 t = "Topic"
                 changes.append(f"> **Topic:** ```{self.handlers.cleanMessageContent(before.topic, max_length=100)}```↓"
-                    f"```{self.handlers.cleanMessageContent(after.topic, max_length=100)}```")
+                               f"```{self.handlers.cleanMessageContent(after.topic, max_length=100)}```")
             if before.bitrate != after.bitrate:
                 t = "Bitrate"
                 changes.append(f"> **Bitrate:** {before.bitrate/1000}kbps -> {after.bitrate/1000}kbps")
             if before.rtc_region != after.rtc_region:
                 t = "Region"
                 changes.append(f"> **Region:** {'Auto' if not before.rtc_region else before.rtc_region.name} -> "
-                    f"{'Auto' if not after.rtc_region else after.rtc_region.name}")
+                               f"{'Auto' if not after.rtc_region else after.rtc_region.name}")
             if before.user_limit != after.user_limit:
                 t = "User limit"
                 changes.append(f"> **User limit:** {before.user_limit} -> {after.user_limit}")
@@ -313,6 +312,7 @@ class Logs(commands.Cog):
     @commands.Cog.listener()
     async def on_webhooks_update(self, channel):
         pass
+
 
 def setup(bot):
     bot.add_cog(Logs(bot))

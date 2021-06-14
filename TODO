@@ -13,7 +13,6 @@ m!breakdown
 
 m!prefix
 m!setprefix
-m!setlog
 m!ignore
 m!ignored
 m!stafflog
@@ -37,6 +36,5 @@ GUILD
 "guild_role_update",
 "webhook_create/delete/update",
 "guild_emojis_update",
-
 
 all automated stuff
