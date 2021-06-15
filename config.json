@@ -22,6 +22,7 @@
         "cogs.moderation.punish",
         "cogs.moderation.modmail",
         "cogs.moderation.misc",
+        "cogs.moderation.public",
 
         "cogs.listeners.messages",
         "cogs.listeners.guild",
@@ -29,6 +30,7 @@
         "cogs.listeners.voice",
 
         "cogs.rsm.rsm",
+        "cogs.rsm.info",
 
         "cogs.internal.loops"
     ],

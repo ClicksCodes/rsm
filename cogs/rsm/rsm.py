@@ -1,3 +1,4 @@
+import asyncio
 import discord
 import typing
 from discord.ext import commands
@@ -27,12 +28,12 @@ class RSM(commands.Cog):
             description=suggestion,
             colour=self.colours.yellow
         ))
-        await self.handlers.reactionCollector(
+        asyncio.create_task(self.handlers.reactionCollector(
             ctx,
             s,
             reactions=["control.tick", "control.cross"],
             collect=False
-        )
+        ))
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().icon.add} Suggestion",
             description="Your suggestion has been sent to the develoeprs",
@@ -57,11 +58,11 @@ class RSM(commands.Cog):
                             description=embed.description,
                             colour=self.colours.green
                         ))
-                        await self.handlers.reactionCollector(
+                        asyncio.create_task(self.handlers.reactionCollector(
                             m=s,
                             reactions=["control.tick", "control.cross"],
                             collect=False
-                        )
+                        ))
                     case "Cross":
                         embed = message.embeds[0]
                         embed.colour = self.colours.red

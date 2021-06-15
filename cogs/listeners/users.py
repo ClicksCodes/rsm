@@ -112,8 +112,8 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
-        audit = await self.handlers.getAuditLogEntry(after.guild, type=discord.AuditLogAction.member_update)
         if before.nick != after.nick:
+            audit = await self.handlers.getAuditLogEntry(after.guild, type=discord.AuditLogAction.member_update)
             await self.handlers.sendLog(
                 emoji=self.emojis().member.nickname_change,
                 type=f"Nickname changed",
@@ -129,6 +129,7 @@ class Logs(commands.Cog):
                 }
             )
         if before.roles != after.roles:
+            audit = await self.handlers.getAuditLogEntry(after.guild, type=discord.AuditLogAction.member_role_update)
             added = []
             removed = []
             for role in before.roles:

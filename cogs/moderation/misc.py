@@ -2,7 +2,6 @@ import asyncio
 import typing
 import aiohttp
 import datetime
-from aiohttp.typedefs import DEFAULT_JSON_DECODER
 import discord
 from discord.ext import commands
 from collections import OrderedDict
@@ -137,19 +136,6 @@ class Mod(commands.Cog):
                 case 0: await self.setSlowmode(ctx, m, 10)
                 case _: await self.setSlowmode(ctx, m, 0)
 
-    @commands.command()
-    @commands.guild_only()
-    async def avatar(self, ctx, member: typing.Optional[discord.Member]):
-        m = await ctx.send(embed=loading_embed)
-        if not member:
-            member = ctx.author
-        await m.edit(embed=discord.Embed(
-            title=f"{self.emojis().member.join} Avatar",
-            description=f"**URL:** [[Open]]({member.avatar_url})\n"
-                        f"**Member:** {member.mention}",
-            colour=self.colours.green
-        ).set_image(url=member.avatar_url))
-
     @commands.command(aliases=["viewfrom", "serveras", "serverfrom"])
     @commands.guild_only()
     async def viewas(self, ctx, target: typing.Union[discord.Member, discord.Role, None]):
@@ -187,7 +173,7 @@ class Mod(commands.Cog):
                 description=f"*No visible channels*",
                 colour=self.colours.yellow
             ))
-        await self.handlers.reactionCollector(
+        task = asyncio.create_task(self.handlers.reactionCollector(
             ctx,
             m,
             reactions=[
@@ -196,7 +182,7 @@ class Mod(commands.Cog):
                 "control.right"
             ],
             collect=False
-        )
+        ))
         ordered = OrderedDict(sorted(visible.items(), key=lambda x: (x[0].position if hasattr(x[0], "position") else -1) if isinstance(x, tuple) else -1))
         visible = {k: ordered[k] for k in ordered}
         for k in visible.keys():
@@ -229,6 +215,7 @@ class Mod(commands.Cog):
                 case "Right": page += 1
                 case _: break
         await asyncio.sleep(0.1)
+        await asyncio.wait_for(task, timeout=10)
         await m.clear_reactions()
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().channel.category.create} {name} ({page + 1}/{len(visible)})",
@@ -271,6 +258,44 @@ class Mod(commands.Cog):
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().channel.text.create} Setlog",
             description=f"Your log channel has been set to {channel.mention if channel else 'None'}",
+            colour=self.colours.green
+        ))
+
+    @commands.command()
+    @commands.guild_only()
+    async def stafflog(self, ctx, channel: typing.Optional[discord.TextChannel]):
+        m = await ctx.send(embed=loading_embed)
+        if isinstance(await self.handlers.checkPerms(
+            ctx,
+            m,
+            permission="manage_guild",
+            action="change the staff log channel",
+            emoji=self.emojis().channel.text.create,
+            me=False
+        ), Failed):
+            return
+
+        if not channel:
+            channel = await self.handlers.channelHandler(
+                ctx,
+                m,
+                emoji=self.emojis().channel.text.create,
+                title="Stafflog",
+                description="Where should logs be sent",
+                optional=True, accepted=["text"]
+            )
+            if isinstance(channel, Failed):
+                return
+
+        data = self.handlers.fileManager(ctx.guild)
+        if not channel:
+            data["log_info"]["staff"] = None
+        else:
+            data["log_info"]["staff"] = channel.id
+        self.handlers.fileManager(ctx.guild, action="w", data=data)
+        await m.edit(embed=discord.Embed(
+            title=f"{self.emojis().channel.text.create} Stafflog",
+            description=f"Your staff log channel has been set to {channel.mention if channel else 'None'}",
             colour=self.colours.green
         ))
 

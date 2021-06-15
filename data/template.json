@@ -45,7 +45,8 @@
       "server_unmute",
       "server_undeafen",
       "move"
-    ]
+    ],
+    "staff": null
   },
   "ignore_info": {
     "bots": true,

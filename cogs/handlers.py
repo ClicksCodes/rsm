@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+from typing import DefaultDict
 
 import discord
 import humanize
@@ -434,7 +435,7 @@ class Handlers:
             ).set_footer(text="The request was cancelled"))
             return Failed()
 
-    async def reactionCollector(self, ctx=None, m=None, reactions=[], collect=True):
+    async def reactionCollector(self, ctx=None, m=None, reactions=[], collect=True, task=None):
         for r in reactions:
             await asyncio.sleep(0.1)
             await m.add_reaction(self.bot.get_emoji(self.emojis(idOnly=True)(r)))
@@ -466,7 +467,13 @@ class Handlers:
         for future in pending:
             future.cancel()
 
-        reaction = done.pop().result()[0]
+        if task:
+            await asyncio.wait_for(task, timeout=10)
+            await asyncio.sleep(0.1)
+        try:
+            reaction = done.pop().result()[0]
+        except asyncio.TimeoutError:
+            return Failed()
         await m.remove_reaction(reaction, ctx.author)
         return reaction
 
@@ -502,9 +509,7 @@ class Handlers:
                     with open(f"data/guilds/{guild}.json", "r") as f:
                         entry = json.load(f)
 
-                    for key in template.keys():
-                        if key not in entry:
-                            entry[key] = template[key]
+                    entry = self.defaultDict(entry, template)
                     return entry
 
                 except FileNotFoundError:
@@ -518,6 +523,15 @@ class Handlers:
 
             case _:
                 return None
+
+    def defaultDict(self, data, ref):
+        for key in ref.keys():
+            if key not in data:
+                data[key] = ref[key]
+        for k, v in data.items():
+            if isinstance(v, dict) and k in ref:
+                data[k] = self.defaultDict(data[k], ref[k])
+        return data
 
     def cleanMessageContent(self, content, max_length=1000):
         if content:

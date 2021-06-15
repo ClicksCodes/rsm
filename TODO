@@ -1,6 +1,5 @@
 m!info
 m!settings
-m!user
 m!roleall
 m!report
 m!server
@@ -15,12 +14,12 @@ m!prefix
 m!setprefix
 m!ignore
 m!ignored
-m!stafflog
 m!auto
 
 m!lock
 m!unlock
 m!raid
+
 m!resetfilter
 m!resetauto
 m!resetprefix
