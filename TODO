@@ -1,13 +1,13 @@
 m!info
 m!roleall
 m!report
-m!server
 m!tag
-m!role
-m!role
+m!role user
+m!role role
 m!verify
 m!setverify
 m!breakdown
+m!git
 
 m!ignore
 m!ignored
@@ -16,10 +16,6 @@ m!auto
 m!lock
 m!unlock
 m!raid
-
-m!resetfilter
-m!resetauto
-m!resetprefix
 
 API
 

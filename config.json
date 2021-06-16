@@ -31,6 +31,7 @@
 
         "cogs.rsm.rsm",
         "cogs.rsm.info",
+        "cogs.rsm.reset",
 
         "cogs.internal.loops"
     ],

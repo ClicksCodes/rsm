@@ -1,7 +1,6 @@
 import asyncio
 import datetime
-from os import replace
-from typing import DefaultDict
+import os
 
 import discord
 import humanize
@@ -450,12 +449,12 @@ class Handlers:
                     ctx.bot.wait_for(
                         "reaction_add",
                         timeout=180,
-                        check=lambda reaction, user: user.id == ctx.author.id and reaction.message.id == m.id
+                        check=lambda reaction, user: user.id == ctx.author.id and reaction.message.id == m.id and isinstance(reaction.emoji, discord.Emoji)
                     ),
                     ctx.bot.wait_for(
                         "reaction_remove",
                         timeout=180,
-                        check=lambda reaction, user: user.id == ctx.author.id and reaction.message.id == m.id
+                        check=lambda reaction, user: user.id == ctx.author.id and reaction.message.id == m.id and isinstance(reaction.emoji, discord.Emoji)
                     ),
                 ],
                 return_when=asyncio.FIRST_COMPLETED,
@@ -524,6 +523,10 @@ class Handlers:
                     with open(f"data/guilds/{guild}.json", "x") as f:
                         json.dump(t, f, indent=2)
                     return t
+
+            case "RESET":
+                if os.path.exists(f"data/guilds/{guild}.json"):
+                    os.remove(f"data/guilds/{guild}.json")
 
             case _:
                 return None

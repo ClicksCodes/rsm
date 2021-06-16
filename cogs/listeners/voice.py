@@ -22,7 +22,7 @@ class Logs(commands.Cog):
                 server=member.guild.id,
                 colour=self.colours.green,
                 data={
-                    "Member": member.mention,
+                    "Member": f"{member.name} ({member.mention}",
                     "Channel": after.channel.name
                 }
             )
@@ -33,7 +33,7 @@ class Logs(commands.Cog):
                 server=member.guild.id,
                 colour=self.colours.red,
                 data={
-                    "Member": member.mention,
+                    "Member": f"{member.name} ({member.mention}",
                     "Channel": before.channel.name
                 }
             )
@@ -44,7 +44,7 @@ class Logs(commands.Cog):
                 server=member.guild.id,
                 colour=self.colours.yellow,
                 data={
-                    "Member": member.mention,
+                    "Member": f"{member.name} ({member.mention}",
                     "From": before.channel.name,
                     "To": after.channel.name
                 }
@@ -56,7 +56,7 @@ class Logs(commands.Cog):
                 server=member.guild.id,
                 colour=self.colours.red,
                 data={
-                    "Member": member.mention
+                    "Member": f"{member.name} ({member.mention}"
                 }
             )
         elif before.self_deaf and not after.self_deaf:  # Undeafen
@@ -66,7 +66,7 @@ class Logs(commands.Cog):
                 server=member.guild.id,
                 colour=self.colours.green,
                 data={
-                    "Member": member.mention
+                    "Member": f"{member.name} ({member.mention}"
                 }
             )
         elif not before.self_mute and after.self_mute:  # Mute
@@ -76,7 +76,7 @@ class Logs(commands.Cog):
                 server=member.guild.id,
                 colour=self.colours.red,
                 data={
-                    "Member": member.mention
+                    "Member": f"{member.name} ({member.mention}"
                 }
             )
         elif before.self_mute and not after.self_mute:  # Unmute
@@ -86,7 +86,7 @@ class Logs(commands.Cog):
                 server=member.guild.id,
                 colour=self.colours.green,
                 data={
-                    "Member": member.mention
+                    "Member": f"{member.name} ({member.mention}"
                 }
             )
         elif not before.deaf and after.deaf:  # Server Deafen
@@ -96,7 +96,7 @@ class Logs(commands.Cog):
                 server=member.guild.id,
                 colour=self.colours.red,
                 data={
-                    "Member": member.mention
+                    "Member": f"{member.name} ({member.mention}"
                 }
             )
         elif before.deaf and not after.deaf:  # Server Undeafen
@@ -106,7 +106,7 @@ class Logs(commands.Cog):
                 server=member.guild.id,
                 colour=self.colours.green,
                 data={
-                    "Member": member.mention
+                    "Member": f"{member.name} ({member.mention}"
                 }
             )
         elif not before.mute and after.mute:  # Server Mute
@@ -116,7 +116,7 @@ class Logs(commands.Cog):
                 server=member.guild.id,
                 colour=self.colours.red,
                 data={
-                    "Member": member.mention
+                    "Member": f"{member.name} ({member.mention}"
                 }
             )
         elif before.mute and not after.mute:  # Server Unmute
@@ -126,7 +126,7 @@ class Logs(commands.Cog):
                 server=member.guild.id,
                 colour=self.colours.green,
                 data={
-                    "Member": member.mention
+                    "Member": f"{member.name} ({member.mention}"
                 }
             )
         elif not before.self_stream and after.self_stream:  # Started streaming
@@ -136,7 +136,7 @@ class Logs(commands.Cog):
                 server=member.guild.id,
                 colour=self.colours.green,
                 data={
-                    "Member": member.mention,
+                    "Member": f"{member.name} ({member.mention}",
                     "Channel": after.channel.name
                 }
             )
@@ -147,7 +147,7 @@ class Logs(commands.Cog):
                 server=member.guild.id,
                 colour=self.colours.red,
                 data={
-                    "Member": member.mention,
+                    "Member": f"{member.name} ({member.mention}",
                     "Channel": after.channel.name
                 }
             )
@@ -158,7 +158,7 @@ class Logs(commands.Cog):
                 server=member.guild.id,
                 colour=self.colours.green,
                 data={
-                    "Member": member.mention,
+                    "Member": f"{member.name} ({member.mention}",
                     "Channel": after.channel.name
                 }
             )
@@ -169,7 +169,7 @@ class Logs(commands.Cog):
                 server=member.guild.id,
                 colour=self.colours.red,
                 data={
-                    "Member": member.mention,
+                    "Member": f"{member.name} ({member.mention}",
                     "Channel": after.channel.name
                 }
             )
