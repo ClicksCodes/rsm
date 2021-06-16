@@ -1,4 +1,5 @@
 {
+  "version": 2,
   "guild_info": {
     "id": null,
     "joined_at": null
@@ -13,7 +14,7 @@
       "reaction_clear",
       "everyone_here",
       "mass_mention",
-      "roles",
+      "role_mention",
       "channel_create",
       "channel_delete",
       "nsfw_update",
@@ -27,13 +28,15 @@
       "nickname_change",
       "guild_role_create",
       "guild_role_delete",
+      "guild_role_edit",
+      "user_role_update",
       "guild_emojis_update",
       "invite_create",
       "invite_delete",
       "icon_update",
       "mod_changed",
       "name_changed",
-      "webhook_create",
+      "webhook_updated",
       "connect",
       "disconnect",
       "mute",
@@ -46,13 +49,13 @@
       "server_undeafen",
       "move"
     ],
-    "staff": null
-  },
-  "ignore_info": {
-    "bots": true,
-    "members": [],
-    "roles": [],
-    "channels": []
+    "staff": null,
+    "ignore": {
+      "bots": true,
+      "members": [],
+      "roles": [],
+      "channels": []
+    }
   },
   "enabled": true,
   "verify_role": null,
@@ -73,7 +76,8 @@
     }
   },
   "images": {
-    "toosmall": false
+    "toosmall": false,
+    "nsfw": true
   },
   "wordfilter": {
     "ignore": {
@@ -82,10 +86,9 @@
       "members": [],
       "delta": null
     },
-    "banned": [],
+    "strict": [],
     "soft": []
   },
-  "nsfw": true,
   "modmail": {
     "cat": null,
     "max": 3,

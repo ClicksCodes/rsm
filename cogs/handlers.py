@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+from os import replace
 from typing import DefaultDict
 
 import discord
@@ -508,7 +509,10 @@ class Handlers:
                 try:
                     with open(f"data/guilds/{guild}.json", "r") as f:
                         entry = json.load(f)
-
+                    if "version" not in entry:
+                        entry["version"] = 1
+                    if entry["version"] != 2:
+                        self._update(entry)
                     entry = self.defaultDict(entry, template)
                     return entry
 
@@ -523,6 +527,22 @@ class Handlers:
 
             case _:
                 return None
+
+    def _update(self, data):
+        if data["version"] == 2:
+            return data
+        if data["version"] == 1:
+            data["version"] = 2
+            data["log_info"]["ignore"] = data["ignore_info"]
+            del data["ignore_info"]
+            replacements = {"roles": "role_mention", "webhook_create": "webhook_update"}
+            data["log_info"]["to_log"] = [(replacements[p] if p in replacements else p) for p in data["log_info"]["to_log"]]
+            data["log_info"]["to_log"] += ["guild_role_edit", "user_role_update"]
+            data["images"]["nsfw"] = data["nsfw"]
+            del data["nsfw"]
+            data["wordfilter"]["strict"] = data["wordfilter"]["banned"]
+            del data["wordfilter"]["banned"]
+            return data
 
     def defaultDict(self, data, ref):
         for key in ref.keys():

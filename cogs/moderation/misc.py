@@ -299,6 +299,79 @@ class Mod(commands.Cog):
             colour=self.colours.green
         ))
 
+    @commands.command()
+    @commands.guild_only()
+    async def settings(self, ctx):
+        m = await ctx.send(embed=loading_embed)
+        if await self.handlers.checkPerms(ctx, m, "manage_guild", self.emojis().guild.settings, "view server log settings", me=False):
+            return
+        page = 0
+        data = self.handlers.fileManager(ctx.guild)
+        emojis = ["control.left", "control.right", "role.messages", "channel.text.create", "guild.settings", "member.join", "voice.connect"]
+        task = asyncio.create_task(self.handlers.reactionCollector(ctx, m, reactions=emojis, collect=False))
+        emojis = emojis[2:]
+        while True:
+            pages = [
+                {
+                    "name": "Messages", "logs": [
+                        ("message_delete", "Message deleted"), ("message_edit", "Message edited"), ("bulk_message_delete", "Messages purged"),
+                        ("channel_pins_update", "Message pinned"), ("reaction_clear", "Reactions cleared"), ("everyone_here", "@everyone or @here mentioned"),
+                        ("mass_mention", "5+ mentions"), ("role_mention", "Role mentioned")
+                    ]
+                },
+                {
+                    "name": "Channels", "logs": [
+                        ("channel_create", "Channel created"), ("channel_delete", "Channel deleted"), ("nsfw_update", "Channel NSFW changed"),
+                        ("channel_title_update", "Channel title changed"), ("channel_desc_update", "Channel description changed"),
+                        ("webhook_updated", "Webhooks updated")
+                    ]
+                },
+                {
+                    "name": "Server", "logs": [
+                        ("guild_role_create", "Role created"), ("guild_role_delete", "Role deleted"), ("guild_emojis_update", "Emojis updated"),
+                        ("invite_create", "Invite created"), ("invite_delete", "Invite deleted"), ("icon_update", "Server icon changed"),
+                        ("mod_changed", "Server mod level changed"), ("name_changed", "Server name changed")
+                    ]
+                },
+                {
+                    "name": "Members", "logs": [
+                        ("member_join", "Member joins"), ("member_leave", "Member leaves"), ("member_kick", "Member kicked"), ("member_ban", "Member banned"),
+                        ("member_unban", "Member unbanned"), ("nickname_change", "Nickname changed"), ("user_role_update", "Nickname changed")
+                    ]
+                },
+                {
+                    "name": "Voice", "logs": [
+                        ("connect", "Joined voice channel"), ("disconnect", "Left voice channel"), ("mute", "Member muted"), ("deafen", "Member deafened"),
+                        ("unmute", "Member unmuted"), ("undeafen", "Member undeafened"), ("server_mute", "Member server muted"),
+                        ("server_deafen", "Member server deafened"), ("server_unmute", "Member server unmuted"), ("server_undeafen", "Member server undeafened"),
+                        ("move", "Member moved VC")
+                    ]
+                }
+            ]
+            desc = "\n".join([f"{(self.emojis().control.tick if p[0] in data['log_info']['to_log'] else self.emojis().control.cross)} {p[1]}" for p in pages[page]['logs']])
+            await m.edit(embed=discord.Embed(
+                title=f"{self.emojis().guild.settings} Settings",
+                description=f"{self.bot.get_emoji(self.emojis(idOnly=True)(emojis[page]))} **{pages[page]['name']}**\n\n" + desc,
+                colour=self.colours.green
+            ))
+            reaction = await self.handlers.reactionCollector(ctx, m, [], task=task)
+            if isinstance(reaction, Failed):
+                break
+            match reaction.emoji.name:
+                case "Left": page -= 1
+                case "Right": page += 1
+                case "MessagesRole": page = 0
+                case "ChannelCreate": page = 1
+                case "ServerRole": page = 2
+                case "MemberJoin": page = 3
+                case "Connect": page = 4
+                case _: break
+            page = max(0, min(page, 4))
+        embed = m.embeds[0]
+        embed.colour = self.colours.red
+        await m.clear_reactions()
+        await m.edit(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Mod(bot))

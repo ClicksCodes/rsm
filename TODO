@@ -1,5 +1,4 @@
 m!info
-m!settings
 m!roleall
 m!report
 m!server
@@ -10,8 +9,6 @@ m!verify
 m!setverify
 m!breakdown
 
-m!prefix
-m!setprefix
 m!ignore
 m!ignored
 m!auto

@@ -1,11 +1,9 @@
-from discord.channel import CategoryChannel
-import humanize
 import discord
 import datetime
 from discord.ext import commands
 
 from cogs.consts import *
-from cogs.handlers import Handlers, Failed
+from cogs.handlers import Handlers
 
 
 class Logs(commands.Cog):

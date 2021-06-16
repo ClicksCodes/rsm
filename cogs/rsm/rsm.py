@@ -15,8 +15,8 @@ class RSM(commands.Cog):
         self.handlers = Handlers(self.bot)
 
     @commands.command()
-    @commands.cooldown(1, 30, commands.BucketType.user)
     @commands.guild_only()
+    @commands.cooldown(1, 30, commands.BucketType.user)
     async def suggest(self, ctx, *, suggestion: typing.Optional[str]):
         m = await ctx.send(embed=loading_embed)
         if not suggestion:
@@ -87,6 +87,62 @@ class RSM(commands.Cog):
             description=f"**Servers:** {len(self.bot.guilds)}\n"
                         f"**Ping**: {self.bot.latency * 1000}ms",
             colour=self.colours.green
+        ))
+
+    @commands.command()
+    @commands.guild_only()
+    async def prefix(self, ctx):
+        m = await ctx.send(embed=loading_embed)
+        data = self.handlers.fileManager(ctx.guild)
+        one = True
+        prefix = f"`{ctx.prefix}`"
+        if data["prefix"]:
+            if isinstance(data["prefix"], list):
+                prefix = ", ".join(f"`{p}`" for p in data["prefix"])
+                one = False
+            else:
+                prefix = f'`{data["prefix"]}`'
+        await m.edit(embed=discord.Embed(
+            title=f"{self.emojis().punish.mute} Prefix",
+            description=f"Your server prefix{' is' if one else 'es are'}: {prefix}",
+            colour=self.colours.green
+        ))
+
+    @commands.command()
+    @commands.guild_only()
+    async def setprefix(self, ctx, *, prefixes: typing.Optional[str]):
+        m = await ctx.send(embed=loading_embed)
+        if isinstance(await self.handlers.checkPerms(ctx, m, "manage_guild", emoji=self.emojis().punish.mute, action="change the server prefix", me=False), Failed):
+            return
+        if not prefixes:
+            prefixes = await self.handlers.strHandler(
+                ctx,
+                m,
+                emoji=self.emojis().punish.mute,
+                title="Prefix",
+                description="What should the server prefix be?\nFor multiple, separate each with a space",
+                optional=True,
+                default="None"
+            )
+            if isinstance(prefixes, Failed):
+                return
+        if prefixes != "None":
+            prefixes = prefixes.split(" ")
+            if len(prefixes) == 1:
+                prefixes = prefixes[0]
+        else:
+            prefixes = None
+        await m.edit(embed=discord.Embed(
+            title=f"{self.emojis().punish.mute} Prefix", description="Setting your prefix", colour=self.colours.green
+        ).set_footer(text="Reading"))
+        data = self.handlers.fileManager(ctx.guild)
+        await m.edit(embed=discord.Embed(
+            title=f"{self.emojis().punish.mute} Prefix", description="Setting your prefix", colour=self.colours.green
+        ).set_footer(text="Writing"))
+        data["prefix"] = prefixes
+        self.handlers.fileManager(ctx.guild, "w", data=data)
+        await m.edit(embed=discord.Embed(
+            title=f"{self.emojis().punish.mute} Prefix", description="Prefix successfully set", colour=self.colours.green
         ))
 
 
