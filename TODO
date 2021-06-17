@@ -4,22 +4,13 @@ m!report
 m!tag
 m!role user
 m!role role
-m!verify
-m!setverify
 m!breakdown
-m!git
-
 m!ignore
 m!ignored
 m!auto
-
 m!lock
 m!unlock
 m!raid
-
-API
-
-GUILD
 "icon_update",
 "mod_changed",
 "name_changed",
@@ -28,5 +19,5 @@ GUILD
 "guild_role_update",
 "webhook_create/delete/update",
 "guild_emojis_update",
-
+API
 all automated stuff

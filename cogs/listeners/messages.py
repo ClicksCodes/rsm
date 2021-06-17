@@ -29,7 +29,8 @@ class Logs(commands.Cog):
                     "Mentions": len(message.mentions),
                     "Sent by": message.author.mention,
                     "Sent in": message.channel.mention,
-                    "Sent": self.handlers.betterDelta(message.created_at)
+                    "Sent": self.handlers.betterDelta(message.created_at),
+                    "Attachments": len(message.attachments)
                 },
                 jump_url=message.jump_url
             )
@@ -44,7 +45,8 @@ class Logs(commands.Cog):
                     "Mentions": len(message.mentions),
                     "Sent by": message.author.mention,
                     "Sent in": message.channel.mention,
-                    "Sent": self.handlers.betterDelta(message.created_at)
+                    "Sent": self.handlers.betterDelta(message.created_at),
+                    "Attachments": len(message.attachments)
                 },
                 jump_url=message.jump_url
             )
@@ -59,7 +61,8 @@ class Logs(commands.Cog):
                     "Mentions": len(message.mentions),
                     "Sent by": message.author.mention,
                     "Sent in": message.channel.mention,
-                    "Sent": self.handlers.betterDelta(message.created_at)
+                    "Sent": self.handlers.betterDelta(message.created_at),
+                    "Attachments": len(message.attachments)
                 },
                 jump_url=message.jump_url
             )
@@ -80,7 +83,8 @@ class Logs(commands.Cog):
                 "Sent in": message.channel.mention,
                 "Sent": self.handlers.betterDelta(message.created_at),
                 "Edited": self.handlers.betterDelta(message.edited_at),
-                "Deleted": self.handlers.strf(datetime.datetime.utcnow())
+                "Deleted": self.handlers.strf(datetime.datetime.utcnow()),
+                "Attachments": len(message.attachments)
             }
         )
 
@@ -91,6 +95,7 @@ class Logs(commands.Cog):
         if before.content == after.content:
             return
         change = len(after.mentions)-len(before.mentions)
+        achange = len(after.attachments)-len(before.attachments)
         await self.handlers.sendLog(
             emoji=self.emojis().message.edit,
             type="Message edited",
@@ -100,6 +105,7 @@ class Logs(commands.Cog):
                 "Before": "```\n" + self.handlers.cleanMessageContent(before.content, max_length=500) + "```",
                 "After": "```\n" + self.handlers.cleanMessageContent(after.content, max_length=500) + "```",
                 "Mentions": f"{len(before.mentions)} -> {len(after.mentions)} ({'+' if change >= 0 else ''}{change})",
+                "Attachments": f"{len(before.attachments)} -> {len(after.attachments)} ({'+' if achange >= 0 else ''}{achange})",
                 "Sent by": after.author.mention,
                 "Sent in": after.channel.mention,
                 "Sent": self.handlers.betterDelta(before.created_at),
@@ -147,6 +153,7 @@ class Logs(commands.Cog):
                 "Sent by": message.author.mention,
                 "Pinned by": f"{audit.user.name} ({audit.user.mention})",
                 "Sent in": message.channel.mention,
+                "Attachments": len(message.attachments),
                 ("Pinned" if message.pinned else 'Unpinned'): self.handlers.strf(datetime.datetime.utcnow())
             },
             jump_url=message.jump_url
@@ -166,6 +173,7 @@ class Logs(commands.Cog):
                 "Sent by": message.author.mention,
                 "Sent in": message.channel.mention,
                 "Cleared": self.handlers.strf(datetime.datetime.utcnow()),
+                "Attachments": len(message.attachments),
                 "Reactions": " ".join([f"<{'a' if emoji.emoji.animated else ''}:a:{emoji.emoji.id}>" for emoji in reactions])
             },
             jump_url=message.jump_url

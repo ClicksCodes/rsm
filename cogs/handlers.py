@@ -1,12 +1,16 @@
 import asyncio
 import datetime
 import os
+import aiohttp
 
 import discord
 import humanize
 from discord.ext import commands
 
 from cogs.consts import *
+from config import config
+import io
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 
 class Failed:
@@ -22,6 +26,10 @@ class Handlers:
         self.colours = Cols()
         self.emojis = Emojis
         self.bot = bot
+
+    def hex_to_rgba(self, value, alpha=255):
+        lv = len(value)
+        return tuple(int(value[i: i + lv // 3], 16) for i in range(0, lv, lv // 3)) + (alpha,)
 
     async def memberHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None):
         if default:
@@ -230,6 +238,13 @@ class Handlers:
                     description=description,
                     colour=self.colours.red
                 ).set_footer(text="Channel could not be found"))
+                return Failed()
+            if channel.guild.id != ctx.guild.id:
+                await m.edit(embed=discord.Embed(
+                    title=f"{emoji} {title}",
+                    description=description,
+                    colour=self.colours.red
+                ).set_footer(text="Channel was not in this server"))
                 return Failed()
             return channel
         else:
@@ -628,3 +643,46 @@ class Handlers:
             colour=colour,
             timestamp=datetime.datetime.utcnow()
         ).set_footer(text="All times are in UTC"))
+
+    async def is_pfp_nsfw(self, image_url):
+        confidence = "80"
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                "https://api.deepai.org/api/nsfw-detector",
+                data={"image": image_url},
+                headers={"api-key": config.deepAIkey},
+            ) as r:
+                nsfw = False
+                try:
+                    resp = await r.json()
+                    score = resp['output']['nsfw_score'] * 100
+                    if len([1 for x in resp['output']['detections'] if float(x['confidence']) > 0.75]):
+                        nsfw = True
+                    if int(score) > int(confidence):
+                        nsfw = True
+                except Exception as e:
+                    print(e)
+                    return (False, {}, 100, None)
+        image = None
+        if nsfw:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(image_url) as r:
+                    buf = io.BytesIO(await r.read())
+                    buf.seek(0)
+            image = Image.open(buf)
+            h, w = image.size
+            scalex, scaley = round(1000/h), round(1000/w)
+            image = image.resize((h * scalex, w * scaley))
+            draw = ImageDraw.Draw(image)
+            font = ImageFont.truetype("data/fonts/roboto/Roboto-Regular.ttf", 20)
+            for detection in resp["output"]["detections"]:
+                if float(detection["confidence"]) > 0.75:
+                    bbox = detection["bounding_box"]
+                    for i in range(len(bbox)):
+                        bbox[i] = bbox[i] * (scaley if i % 2 else scalex)
+                    detection["name"] = detection["name"].split(" - ")[0]
+                    draw.rectangle([(bbox[0], bbox[1]), (bbox[2], bbox[3])], outline=(242, 120, 120, 255), width=10)
+                    w, _ = font.getsize(detection["name"])
+                    draw.rectangle([(bbox[0], bbox[1] - 40), (bbox[0] + w + 20, bbox[1])], fill=(242, 120, 120, 255))
+                    draw.text((bbox[0] + 10, bbox[1] - 30), detection["name"], fill=(255, 255, 255, 255), font=font)
+        return nsfw, resp['output']['detections'], score, image

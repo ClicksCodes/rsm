@@ -29,9 +29,10 @@
         "cogs.listeners.users",
         "cogs.listeners.voice",
 
-        "cogs.rsm.rsm",
-        "cogs.rsm.info",
-        "cogs.rsm.reset",
+        "cogs.commands.rsm",
+        "cogs.commands.info",
+        "cogs.commands.reset",
+        "cogs.commands.verify",
 
         "cogs.internal.loops"
     ],
