@@ -584,12 +584,12 @@ class Handlers:
     def betterDelta(self, o):
         if not o:
             return "Never"
-        return f"{humanize.naturaltime(datetime.datetime.utcnow()-o)} ({o.strftime('%Y-%M-%d at %H:%m:%S')})"
+        return f"{humanize.naturaltime(datetime.datetime.utcnow()-o)} ({o.strftime('%Y-%m-%d at %H:%M:%S')})"
 
     def strf(self, o):
         if not o:
             return "Never"
-        return o.strftime('%Y-%M-%d at %H:%m:%S')
+        return o.strftime('%Y-%m-%d at %H:%M:%S')
 
     def getLogChannel(self, server):
         data = self.fileManager(server)

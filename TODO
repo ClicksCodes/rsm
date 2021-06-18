@@ -4,20 +4,15 @@ m!report
 m!tag
 m!role user
 m!role role
-m!breakdown
 m!ignore
 m!ignored
 m!auto
 m!lock
 m!unlock
 m!raid
-"icon_update",
-"mod_changed",
-"name_changed",
-"guild_role_create",
-"guild_role_delete",
-"guild_role_update",
-"webhook_create/delete/update",
-"guild_emojis_update",
+
 API
 all automated stuff
+
+SOONTM
+m!breakdown
