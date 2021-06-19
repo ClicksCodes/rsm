@@ -95,5 +95,6 @@
     "mention": null
   },
   "prefix": null,
-  "nameban": "change"
+  "nameban": "change",
+  "tags": {}
 }

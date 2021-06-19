@@ -447,5 +447,6 @@ class Logs(commands.Cog):
             data=data
         )
 
+
 def setup(bot):
     bot.add_cog(Logs(bot))

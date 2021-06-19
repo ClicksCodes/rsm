@@ -1,13 +1,14 @@
 import asyncio
-import typing
-import aiohttp
 import datetime
-import discord
-from discord.ext import commands
+import typing
+import humanize
 from collections import OrderedDict
 
+import aiohttp
+import discord
 from cogs.consts import *
-from cogs.handlers import Handlers, Failed
+from cogs.handlers import Failed, Handlers
+from discord.ext import commands
 
 
 class Mod(commands.Cog):
@@ -210,6 +211,8 @@ class Mod(commands.Cog):
                 colour=self.colours.green
             ))
             reaction = await self.handlers.reactionCollector(ctx, m, [])
+            if isinstance(reaction, Failed):
+                break
             match reaction.emoji.name:
                 case "Left": page -= 1
                 case "Right": page += 1
@@ -303,7 +306,7 @@ class Mod(commands.Cog):
     @commands.guild_only()
     async def settings(self, ctx):
         m = await ctx.send(embed=loading_embed)
-        if await self.handlers.checkPerms(ctx, m, "manage_guild", self.emojis().guild.settings, "view server log settings", me=False):
+        if isinstance(await self.handlers.checkPerms(ctx, m, "manage_guild", self.emojis().guild.settings, "view server log settings", me=False), Failed):
             return
         page = 0
         data = self.handlers.fileManager(ctx.guild)
@@ -371,6 +374,387 @@ class Mod(commands.Cog):
         embed.colour = self.colours.red
         await m.clear_reactions()
         await m.edit(embed=embed)
+
+    @commands.command()
+    @commands.guild_only()
+    async def roleall(self, ctx, role: typing.Optional[discord.Role]):
+        m = await ctx.send(embed=loading_embed)
+        if isinstance(await self.handlers.checkPerms(ctx, m, "manage_roles", emoji=self.emojis().role.edit, action="role everyone"), Failed):
+            return
+        if not role:
+            role = await self.handlers.roleHandler(ctx, m, emoji=self.emojis().role.edit, title="Roleall", description="What role should be given?")
+            if isinstance(role, Failed):
+                return
+        bots = False
+        members = False
+        add = True
+        tick = self.emojis().control.tick
+        cross = self.emojis().control.cross
+        task = asyncio.create_task(self.handlers.reactionCollector(
+            ctx,
+            m,
+            reactions=["member.bot.join", "member.join", "icon.add", "control.cross", "control.tick"],
+            collect=False
+        ))
+        apply = False
+        while True:
+            await m.edit(embed=discord.Embed(
+                title=f"{self.emojis().role.edit} Roleall",
+                description=f"Who should be affected?\n"
+                            f"{self.emojis().member.bot.join} {tick if bots else cross} Bots\n"
+                            f"{self.emojis().member.join} {tick if members else cross} Humans\n"
+                            f"{self.emojis().icon.add} Members will {'be given' if add else f'lose'} the {role.mention} role",
+                colour=self.colours.green
+            ))
+            reaction = await self.handlers.reactionCollector(ctx, m, [], collect=True, task=task)
+            if isinstance(reaction, Failed):
+                break
+            match reaction.emoji.name:
+                case "MemberJoin":
+                    members = not members
+                case "BotJoin":
+                    bots = not bots
+                case "add":
+                    add = not add
+                case "Cross":
+                    break
+                case "Tick":
+                    apply = True
+                    break
+        if not apply:
+            embed = m.embeds[0]
+            embed.colour = self.colours.red
+            await asyncio.sleep(0.1)
+            await m.clear_reactions()
+            return await m.edit(embed=embed)
+        await m.edit(embed=discord.Embed(
+            title=f"{self.emojis().icon.loading} Roleall",
+            description=f"Updating roles\n\n0/{len(ctx.guild.members)} processed\nCalculating remaining time",
+            colour=self.colours.green
+        ))
+        await m.clear_reactions()
+        count = 0
+        success = 0
+        failed = 0
+        t = datetime.datetime.utcnow()
+        for member in ctx.guild.members:
+            await asyncio.sleep(0.05)
+            if not ((member.bot and not bots) or (not member.bot and not members)):
+                if add and role.id not in [r.id for r in member.roles]:
+                    try:
+                        await asyncio.sleep(0.05)
+                        await member.add_roles(role, reason="RSM Roleall")
+                        success += 1
+                    except discord.Forbidden:
+                        failed += 1
+                elif not add and role.id in [r.id for r in member.roles]:
+                    try:
+                        await asyncio.sleep(0.05)
+                        await member.remove_roles(role, reason="RSM Roleall")
+                        success += 1
+                    except discord.Forbidden:
+                        failed += 1
+            if count % 10 == 9:
+                av = int((datetime.datetime.utcnow() - t).total_seconds()) / count
+                await m.edit(embed=discord.Embed(
+                    title=f"{self.emojis().icon.loading} Roleall",
+                    description=f"Updating roles\n\n{count+1}/{len(ctx.guild.members)} processed\n"
+                                f"Estimated time remaining: {humanize.naturaldelta(datetime.datetime.now() + datetime.timedelta(seconds=len(ctx.guild.members) - count) * av)}",
+                    colour=self.colours.green
+                ))
+            count += 1
+        await m.edit(embed=discord.Embed(
+            title=f"{self.emojis().role.edit} Roleall",
+            description=f"Finished updating roles\n{success} roles updated\n{failed} roles failed",
+            colour=self.colours.green
+        ))
+
+    @commands.command()
+    @commands.guild_only()
+    async def ignore(self, ctx):
+        m = await ctx.send(embed=loading_embed)
+        if isinstance(await self.handlers.checkPerms(ctx, m, "manage_guild", emoji=self.emojis().role.edit, action="change ignored settings"), Failed):
+            return
+        while True:
+            data = self.handlers.fileManager(ctx.guild)
+            await m.clear_reactions()
+            await m.edit(embed=discord.Embed(
+                title=f"{self.emojis().channel.text.create} Ignore",
+                description=f"You are ignoring the following things:\n\n"
+                            f"{self.emojis().channel.text.create} **Channels:**\n> {' '.join([self.bot.get_channel(c).mention for c in data['log_info']['ignore']['channels']])}\n"
+                            f"{self.emojis().role.create} **Roles:**\n> {' '.join([ctx.guild.get_role(r).mention for r in data['log_info']['ignore']['roles']])}\n"
+                            f"{self.emojis().member.join} **Members:**\n> {' '.join([self.bot.get_user(m).mention for m in data['log_info']['ignore']['members']])}\n"
+                            f"*Type all you wish to ignore when choosing*",
+                colour=self.colours.green
+            ))
+            reaction = await self.handlers.reactionCollector(ctx, m, reactions=["channel.text.create", "role.create", "member.join", "control.cross"])
+            if isinstance(reaction, Failed):
+                break
+            await asyncio.sleep(0.1)
+            await m.clear_reactions()
+            match reaction.emoji.name:
+                case "Cross": break
+                case "ChannelCreate":
+                    channels = await self.handlers.channelHandler(
+                        ctx,
+                        m,
+                        emoji=self.emojis().channel.text.create,
+                        title="Ignore",
+                        description="What channels should be ignored?",
+                        optional=True,
+                        accepted=["text", "annnouncement"],
+                        multiple=True
+                    )
+                    if isinstance(channels, Failed):
+                        continue
+                    if channels:
+                        channels = [c.id for c in channels]
+                    else:
+                        channels = []
+                    data["log_info"]["ignore"]["channels"] = channels
+                    self.handlers.fileManager(ctx.guild, "w", data=data)
+                case "RoleCreate":
+                    roles = await self.handlers.roleHandler(
+                        ctx,
+                        m,
+                        emoji=self.emojis().role.create,
+                        title="Ignore",
+                        description="What roles should be ignored?",
+                        optional=True,
+                        multiple=True
+                    )
+                    if isinstance(roles, Failed):
+                        continue
+                    if roles:
+                        roles = [r.id for r in roles]
+                    else:
+                        roles = []
+                    data["log_info"]["ignore"]["roles"] = roles
+                    self.handlers.fileManager(ctx.guild, "w", data=data)
+                case "MemberJoin":
+                    members = await self.handlers.memberHandler(
+                        ctx,
+                        m,
+                        emoji=self.emojis().member.join,
+                        title="Ignore",
+                        description="What members should be ignored?",
+                        optional=True,
+                        multiple=True
+                    )
+                    if isinstance(members, Failed):
+                        continue
+                    if members:
+                        members = [r.id for r in members]
+                    else:
+                        members = []
+                    data["log_info"]["ignore"]["members"] = members
+                    self.handlers.fileManager(ctx.guild, "w", data=data)
+        embed = m.embeds[0]
+        embed.colour = self.colours.red
+        await m.edit(embed=embed)
+
+    @commands.command()
+    @commands.guild_only()
+    async def ignored(self, ctx):
+        m = await ctx.send(embed=loading_embed)
+        if isinstance(await self.handlers.checkPerms(ctx, m, "manage_guild", emoji=self.emojis().role.edit, action="view ignored settings"), Failed):
+            return
+        data = self.handlers.fileManager(ctx.guild)
+        await m.edit(embed=discord.Embed(
+            title=f"{self.emojis().channel.text.create} Ignored",
+            description=f"You are ignoring the following things:\n\n"
+                        f"{self.emojis().channel.text.create} **Channels:**\n> {' '.join([self.bot.get_channel(c).mention for c in data['log_info']['ignore']['channels']])}\n"
+                        f"{self.emojis().role.create} **Roles:**\n> {' '.join([ctx.guild.get_role(r).mention for r in data['log_info']['ignore']['roles']])}\n"
+                        f"{self.emojis().member.join} **Members:**\n> {' '.join([self.bot.get_user(m).mention for m in data['log_info']['ignore']['members']])}\n"
+                        f"_ _",
+            colour=self.colours.green
+        ))
+
+    @commands.command(aliases=["roles"])
+    @commands.guild_only()
+    async def role(self, ctx, target: typing.Union[discord.Role, discord.Member, None]):
+        m = await ctx.send(embed=loading_embed)
+        if not target:
+            target = ctx.author
+        if isinstance(target, discord.Member):
+            guildRoles = [r.id for r in ctx.guild.roles]
+            page = 0
+            cut = [[]]
+            for role in reversed(guildRoles[1:]):
+                if len(cut[-1]) >= 10:
+                    cut.append([])
+                cut[-1].append(role)
+            extra = []
+            if not isinstance(await self.handlers.checkPerms(ctx, m, "manage_roles", "", "", edit=False), Failed):
+                extra = [f"numbers.{n}.normal" for n in range(0, 10)]
+            task = await self.handlers.reactionCollector(ctx, m, ["control.cross", "control.left", "control.right"] + extra, collect=False)
+            targetRoles = {r: [ctx.guild.get_role(r), ctx.guild.get_role(r) in target.roles] for r in guildRoles}
+            while True:
+                d = []
+                count = 0
+                for role in cut[page]:
+                    e = self.emojis().control.pill.tick if targetRoles[role][1] else self.emojis().control.pill.cross
+                    n = self.emojis()(f"numbers.{count}.{'green' if targetRoles[role][1] else 'red'}")
+                    d.append(f"{e}{n} {ctx.guild.get_role(role).name} ({ctx.guild.get_role(role).mention})")
+                    count += 1
+                await m.edit(embed=discord.Embed(
+                    title=f"{self.emojis().role.create} Roles",
+                    description=f"Page {page + 1} of {len(cut)}\n" +
+                                ("\n".join(d)),
+                    colour=self.colours.green
+                ))
+                reaction = await self.handlers.reactionCollector(ctx, m, task=task)
+                if isinstance(reaction, Failed):
+                    break
+                match reaction.emoji.name:
+                    case "Cross": break
+                    case "Left": page -= 1
+                    case "Right": page += 1
+                    case _:
+                        if len(reaction.emoji.name) == 2 and reaction.emoji.name[-1] == "_" and reaction.emoji.name[0].isdigit():
+                            if isinstance(await self.handlers.checkPerms(ctx, m, "manage_roles", self.emojis().role.create, "edit someones roles"), Failed):
+                                break
+                            try:
+                                toChange = cut[page][int(reaction.emoji.name[0])]
+                            except IndexError:
+                                continue
+                            if ctx.guild.get_role(toChange).position >= ctx.me.top_role.position:
+                                continue
+                            try:
+                                if not targetRoles[toChange][1]:
+                                    await target.add_roles(ctx.guild.get_role(toChange), reason="RSM Role")
+                                    targetRoles[role][1] = True
+                                else:
+                                    await target.remove_roles(ctx.guild.get_role(toChange), reason="RSM Role")
+                                    targetRoles[role][1] = False
+                            except discord.Forbidden:
+                                continue
+            await asyncio.sleep(0.1)
+            await m.clear_reactions()
+            embed = m.embeds[0]
+            embed.colour = self.colours.red
+            await m.edit(embed=embed)
+
+        elif isinstance(target, discord.Role):
+            task = asyncio.create_task(self.handlers.reactionCollector(
+                ctx,
+                m,
+                reactions=[
+                    "control.cross", "control.left", "control.right",
+                    "role.create", "member.join", "guild.settings",
+                    "role.messages", "member.bot.join", "channel.voice.create"
+                ],
+                collect=False
+            ))
+            page = 0
+            while True:
+                permList = dict(target.permissions)
+                page = max(0, min(page, 5))
+                match page:
+                    case 0:
+                        await m.edit(embed=discord.Embed(
+                            title=f"{self.emojis().role.create} Role info",
+                            description=f"**Role:** {target.name} ({target.mention})\n"
+                                        f"**Permissions:** [[View here]](https://discordapi.com/permissions.html#{target.permissions.value})\n"
+                                        f"**Colour:** #{str(hex(target.colour.value))[2:]}\n"
+                                        f"**Position:** {target.position}\n"
+                                        f"**Show in member list:** {'Yes' if target.hoist else 'No'}\n"
+                                        f"**Mentionable by anyone:** {'Yes' if target.mentionable else 'No'}\n"
+                                        f"**Members who have this role:** {len(target.members)}\n"
+                                        f"**ID:** `{target.id}`\n"
+                                        f"**Created:** {self.handlers.betterDelta(target.created_at)}",
+                            colour=self.colours.green
+                        ))
+                    case 1:
+                        count = 0
+                        d = f"**Role:** {target.name} ({target.mention})\n" + f"**Members with this role:** ({len(target.members)})\n> "
+                        for member in target.members:
+                            count += 1
+                            if len(d) + len(member.mention) > 1500:
+                                break
+                            d += member.mention + ", "
+                        if len(target.members):
+                            d = d[:-2]
+                        d += f" and {len(target.members) - count} more" if len(target.members) > count else ""
+                        await m.edit(embed=discord.Embed(
+                            title=f"{self.emojis().role.create} Role info",
+                            description=d,
+                            colour=self.colours.green
+                        ))
+                    case 2:
+                        perms = [
+                            "view_audit_log", ("view_guild_insights", "View server insights"), ("manage_guild", "Manage server"),
+                            "manage_roles", "manage_channels", "manage_webhooks",
+                            "manage_emojis", ("create_instant_invite", "Create invite")
+                        ]
+                        await m.edit(embed=discord.Embed(
+                            title=f"{self.emojis().member.join} User info",
+                            description=f"**Role:** {target.name} ({target.mention})\n"
+                                        f"**Server**\n"
+                                        f"{self.handlers.genPerms(perms, permList)}",
+                            colour=self.colours.green
+                        ))
+                    case 3:
+                        perms = [
+                            "read_messages", "send_messages", ("send_tts_messages", "Send TTS messages"),
+                            "manage_messages", "embed_links", "attach_files",
+                            "read_message_history", ("mention_everyone", "Mention @everyone, @here and @roles"), ("external_emojis", "Use nitro emojis"),
+                            "add_reactions"
+                        ]
+                        await m.edit(embed=discord.Embed(
+                            title=f"{self.emojis().member.join} User info",
+                            description=f"**Role:** {target.name} ({target.mention})\n"
+                                        f"**Messages**\n"
+                                        f"{self.handlers.genPerms(perms, permList)}",
+                            colour=self.colours.green
+                        ))
+                    case 4:
+                        perms = [
+                            "kick_members", "ban_members",
+                            "change_nickname", ("manage_nicknames", "Change other people's nicknames")
+                        ]
+                        await m.edit(embed=discord.Embed(
+                            title=f"{self.emojis().member.join} User info",
+                            description=f"**Role:** {target.name} ({target.mention})\n"
+                                        f"**Members**\n"
+                                        f"{self.handlers.genPerms(perms, permList)}",
+                            colour=self.colours.green
+                        ))
+                    case 5:
+                        perms = [
+                            ("connect", "Join voice chats"), ("speak", "Talk in voice chats"), ("stream", "Stream in voice chats"),
+                            ("mute_members", "Server mute members"), ("deafen_members", "Server deafen members"),
+                            "move_members", ("use_voice_activation", "Use voice activity"), "priority_speaker"
+                        ]
+                        await m.edit(embed=discord.Embed(
+                            title=f"{self.emojis().member.join} User info",
+                            description=f"**Role:** {target.name} ({target.mention})\n"
+                                        f"**Voice**\n"
+                                        f"{self.handlers.genPerms(perms, permList)}",
+                            colour=self.colours.green
+                        ))
+                reaction = await self.handlers.reactionCollector(
+                    ctx,
+                    m,
+                    task=task
+                )
+                if isinstance(reaction, Failed):
+                    break
+                match reaction.emoji.name:
+                    case "Left": page -= 1
+                    case "Right": page += 1
+                    case "RoleCreate": page = 0
+                    case "MemberJoin": page = 1
+                    case "ServerRole": page = 2
+                    case "MessagesRole": page = 3
+                    case "BotJoin": page = 4
+                    case "VoiceCreate": page = 5
+                    case _: break
+            await asyncio.sleep(0.1)
+            await m.clear_reactions()
+            embed = m.embeds[0]
+            embed.colour = self.colours.red
+            await m.edit(embed=embed)
 
 
 def setup(bot):

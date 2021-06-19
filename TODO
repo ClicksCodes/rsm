@@ -1,18 +1,7 @@
 m!info
-m!roleall
-m!report
-m!tag
-m!role user
-m!role role
-m!ignore
-m!ignored
 m!auto
-m!lock
-m!unlock
-m!raid
-
-API
 all automated stuff
 
 SOONTM
 m!breakdown
+m!raid

@@ -15,9 +15,10 @@ class Public(commands.Cog):
         self.handlers = Handlers(self.bot)
 
     @commands.command()
+    @commands.guild_only()
     async def reset(self, ctx):
         m = await ctx.send(embed=loading_embed)
-        if self.handlers.checkPerms(ctx, m, "manage_guild", self.emojis().punish.warn, "reset settings", me=False):
+        if isinstance(await self.handlers.checkPerms(ctx, m, "manage_guild", self.emojis().punish.warn, "reset settings", me=False), Failed):
             return
         await m.edit(embed=discord.Embed(
             title="Are you sure",

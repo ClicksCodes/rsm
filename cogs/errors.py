@@ -85,7 +85,7 @@ class Errors(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def error(self, ctx):
-        return f"{notexistslol}"
+        return f"{myhopesanddreams}"
 
 
 def setup(bot):

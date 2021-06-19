@@ -1,3 +1,5 @@
+import asyncio
+import sys
 import json
 import discord
 import os
@@ -24,7 +26,13 @@ class Context(commands.Context):
 
 class Bot(commands.Bot):
     def __init__(self, **kwargs):
-
+        if sys.version_info >= (3, 10):
+            # need to manually start a new loop
+            try:
+                _loop = asyncio.get_running_loop()
+            except RuntimeError:
+                _loop = asyncio.new_event_loop()
+            kwargs.setdefault("loop", _loop)
         super().__init__(command_prefix=self.get_prefix, help_command=None, **kwargs)
 
         self.errors = 0
@@ -84,3 +92,6 @@ class Bot(commands.Bot):
 
     async def on_ready(self):
         print(f"{getattr(Colours, config.colour)}[S] {getattr(Colours, str(config.colour) + 'Dark')}Logged on as {self.user} [ID: {self.user.id}]{Colours.c}")
+
+
+print(f"{Colours.Cyan}[S] {Colours.CyanDark}Launching {config.stage.name} mode")

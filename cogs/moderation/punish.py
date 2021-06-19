@@ -80,6 +80,8 @@ class Mod(commands.Cog):
             "control.cross"
         ])
         await m.clear_reactions()
+        if isinstance(reaction, Failed):
+            return
 
         match reaction.emoji.name:
             case "PunishWarn": await self._warn(ctx, m, member, reason)

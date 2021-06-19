@@ -130,6 +130,8 @@ class Logs(commands.Cog):
             )
         if before.roles != after.roles:
             audit = await self.handlers.getAuditLogEntry(after.guild, type=discord.AuditLogAction.member_role_update)
+            if audit.user.bot:
+                return
             added = []
             removed = []
             for role in before.roles:

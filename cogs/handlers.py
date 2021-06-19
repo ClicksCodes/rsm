@@ -31,12 +31,13 @@ class Handlers:
         lv = len(value)
         return tuple(int(value[i: i + lv // 3], 16) for i in range(0, lv, lv // 3)) + (alpha,)
 
-    async def memberHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None):
+    async def memberHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None, multiple=True):
         if default:
             optional = True
         skip = f"Default: {default}" if default else "Skip"
         description = f"{description}\nYou can send the members name, ID or mention.\n{self.emojis().control.cross} Cancel" + \
-            (f"\n{self.emojis().control.tick} {skip}" if optional else "")
+            (f"\n{self.emojis().control.tick} {skip}" if optional else "") + \
+            (f"\nYou can select more than one member at a time" if multiple else "")
         await m.edit(embed=discord.Embed(
             title=f"{emoji} {title}",
             description=description,
@@ -78,16 +79,26 @@ class Handlers:
         response = done.pop().result()
         if isinstance(response, discord.message.Message):
             await response.delete()
-            try:
-                member = await commands.MemberConverter().convert(await self.bot.get_context(response), response.content)
-                return member
-            except commands.MemberNotFound:
-                await m.edit(embed=discord.Embed(
-                    title=f"{emoji} {title}",
-                    description=description,
-                    colour=self.colours.red
-                ).set_footer(text="Member could not be found"))
-                return Failed()
+            if not multiple:
+                try:
+                    member = await commands.MemberConverter().convert(await self.bot.get_context(response), response.content)
+                    return member
+                except commands.MemberNotFound:
+                    await m.edit(embed=discord.Embed(
+                        title=f"{emoji} {title}",
+                        description=description,
+                        colour=self.colours.red
+                    ).set_footer(text="Member could not be found"))
+                    return Failed()
+            else:
+                members = []
+                for member in response.content.split(" "):
+                    try:
+                        member = await commands.MemberConverter().convert(await self.bot.get_context(response), member)
+                        members.append(member)
+                    except commands.MemberNotFound:
+                        continue
+                return members
         else:
             if response[0].emoji.name == "Tick" and optional:
                 return default
@@ -98,12 +109,13 @@ class Handlers:
             ).set_footer(text="The request was cancelled"))
             return Failed()
 
-    async def roleHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None):
+    async def roleHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None, multiple=True):
         if default:
             optional = True
         skip = f"Default: {default}" if default else "Skip"
         description = f"{description}\nYou can send the roles name, ID or mention.\n{self.emojis().control.cross} Cancel" + \
-            (f"\n{self.emojis().control.tick} {skip}" if optional else "")
+            (f"\n{self.emojis().control.tick} {skip}" if optional else "") + \
+            (f"\nYou can enter more than one role at a time" if multiple else "")
         await m.edit(embed=discord.Embed(
             title=f"{emoji} {title}",
             description=description,
@@ -145,16 +157,26 @@ class Handlers:
         response = done.pop().result()
         if isinstance(response, discord.message.Message):
             await response.delete()
-            try:
-                role = await commands.RoleConverter().convert(await self.bot.get_context(response), response.content)
-                return role
-            except commands.RoleNotFound:
-                await m.edit(embed=discord.Embed(
-                    title=f"{emoji} {title}",
-                    description=description,
-                    colour=self.colours.red
-                ).set_footer(text="Role could not be found"))
-                return Failed()
+            if not multiple:
+                try:
+                    role = await commands.RoleConverter().convert(await self.bot.get_context(response), response.content)
+                    return role
+                except commands.RoleNotFound:
+                    await m.edit(embed=discord.Embed(
+                        title=f"{emoji} {title}",
+                        description=description,
+                        colour=self.colours.red
+                    ).set_footer(text="Role could not be found"))
+                    return Failed()
+            else:
+                roles = []
+                for role in response.content.split(" "):
+                    try:
+                        role = await commands.RoleConverter().convert(await self.bot.get_context(response), role)
+                        roles.append(role)
+                    except commands.RoleNotFound:
+                        continue
+                return roles
         else:
             if response[0].emoji.name == "Tick" and optional:
                 return default
@@ -165,12 +187,13 @@ class Handlers:
             ).set_footer(text="The request was cancelled"))
             return Failed()
 
-    async def channelHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None, accepted=["text", "voice", "announcement", "news"]):
+    async def channelHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None, accepted=["text", "voice", "announcement", "stage"], multiple=False):
         if default:
             optional = True
         skip = f"Default: {default}" if default else "Skip"
         description = f"{description}\nYou can send the channel name, ID or mention.\n{self.emojis().control.cross} Cancel" + \
-            (f"\n{self.emojis().control.tick} {skip}" if optional else "")
+            (f"\n{self.emojis().control.tick} {skip}" if optional else "") + \
+            (f"\nYou can enter more than one channel at a time" if multiple else "")
         await m.edit(embed=discord.Embed(
             title=f"{emoji} {title}",
             description=description,
@@ -212,41 +235,70 @@ class Handlers:
         response = done.pop().result()
         if isinstance(response, discord.message.Message):
             await response.delete()
-            channel = None
-            if "text" in accepted or "announcement" in accepted:
-                try:
-                    channel = await commands.TextChannelConverter().convert(await self.bot.get_context(response), response.content)
-                    if "announcement" not in accepted and channel.is_news():
-                        channel = None
-                    elif "text" not in accepted and not channel.is_news():
-                        channel = None
-                except commands.ChannelNotFound:
-                    pass
-            if "voice" in accepted:
-                try:
-                    channel = await commands.VoiceChannelConverter().convert(await self.bot.get_context(response), response.content)
-                except commands.ChannelNotFound:
-                    pass
-            if "stage" in accepted:
-                try:
-                    channel = await commands.StageChannelConverter().convert(await self.bot.get_context(response), response.content)
-                except commands.ChannelNotFound:
-                    pass
-            if not channel:
-                await m.edit(embed=discord.Embed(
-                    title=f"{emoji} {title}",
-                    description=description,
-                    colour=self.colours.red
-                ).set_footer(text="Channel could not be found"))
-                return Failed()
-            if channel.guild.id != ctx.guild.id:
-                await m.edit(embed=discord.Embed(
-                    title=f"{emoji} {title}",
-                    description=description,
-                    colour=self.colours.red
-                ).set_footer(text="Channel was not in this server"))
-                return Failed()
-            return channel
+            if not multiple:
+                channel = None
+                if "text" in accepted or "announcement" in accepted:
+                    try:
+                        channel = await commands.TextChannelConverter().convert(await self.bot.get_context(response), response.content)
+                        if "announcement" not in accepted and channel.is_news():
+                            channel = None
+                        elif "text" not in accepted and not channel.is_news():
+                            channel = None
+                    except commands.ChannelNotFound:
+                        pass
+                if "voice" in accepted:
+                    try:
+                        channel = await commands.VoiceChannelConverter().convert(await self.bot.get_context(response), response.content)
+                    except commands.ChannelNotFound:
+                        pass
+                if "stage" in accepted:
+                    try:
+                        channel = await commands.StageChannelConverter().convert(await self.bot.get_context(response), response.content)
+                    except commands.ChannelNotFound:
+                        pass
+                if not channel:
+                    await m.edit(embed=discord.Embed(
+                        title=f"{emoji} {title}",
+                        description=description,
+                        colour=self.colours.red
+                    ).set_footer(text="Channel could not be found"))
+                    return Failed()
+                if channel.guild.id != ctx.guild.id:
+                    await m.edit(embed=discord.Embed(
+                        title=f"{emoji} {title}",
+                        description=description,
+                        colour=self.colours.red
+                    ).set_footer(text="Channel was not in this server"))
+                    return Failed()
+                return channel
+            else:
+                channels = []
+                for channel in response.content.split(" "):
+                    if "text" in accepted or "announcement" in accepted:
+                        try:
+                            channel = await commands.TextChannelConverter().convert(await self.bot.get_context(response), channel)
+                            if "announcement" not in accepted and channel.is_news():
+                                channel = None
+                            elif "text" not in accepted and not channel.is_news():
+                                channel = None
+                        except commands.ChannelNotFound:
+                            pass
+                    if "voice" in accepted:
+                        try:
+                            channel = await commands.VoiceChannelConverter().convert(await self.bot.get_context(response), channel)
+                        except commands.ChannelNotFound:
+                            pass
+                    if "stage" in accepted:
+                        try:
+                            channel = await commands.StageChannelConverter().convert(await self.bot.get_context(response), channel)
+                        except commands.ChannelNotFound:
+                            pass
+                    if not channel:
+                        continue
+                    if channel.guild.id != ctx.guild.id:
+                        continue
+                    channels.append(channel)
+                return channels
         else:
             if response[0].emoji.name == "Tick" and optional:
                 return default
@@ -492,20 +544,22 @@ class Handlers:
         await m.remove_reaction(reaction, ctx.author)
         return reaction
 
-    async def checkPerms(self, ctx, m, permission, emoji, action, user=True, me=True):
+    async def checkPerms(self, ctx, m, permission, emoji, action, user=True, me=True, edit=True):
         if not getattr(ctx.author.guild_permissions, permission) and user:
-            await m.edit(embed=discord.Embed(
-                title=f"{emoji} Missing permissions",
-                description=f"You need the `{permission}` permission to {action}.",
-                colour=self.colours.red
-            ))
+            if edit:
+                await m.edit(embed=discord.Embed(
+                    title=f"{emoji} Missing permissions",
+                    description=f"You need the `{permission}` permission to {action}.",
+                    colour=self.colours.red
+                ))
             return Failed()
         if not getattr(ctx.guild.me.guild_permissions, permission) and me:
-            await m.edit(embed=discord.Embed(
-                title=f"{emoji} Missing permissions",
-                description=f"I need the `{permission}` permission to {action}.",
-                colour=self.colours.red
-            ))
+            if edit:
+                await m.edit(embed=discord.Embed(
+                    title=f"{emoji} Missing permissions",
+                    description=f"I need the `{permission}` permission to {action}.",
+                    colour=self.colours.red
+                ))
             return Failed()
         return
 
@@ -686,3 +740,42 @@ class Handlers:
                     draw.rectangle([(bbox[0], bbox[1] - 40), (bbox[0] + w + 20, bbox[1])], fill=(242, 120, 120, 255))
                     draw.text((bbox[0] + 10, bbox[1] - 30), detection["name"], fill=(255, 255, 255, 255), font=font)
         return nsfw, resp['output']['detections'], score, image
+
+    def is_channel_locked(self, snowflake):
+        symbol = ""
+        if isinstance(snowflake, discord.TextChannel):
+            symbol = "c"
+        elif isinstance(snowflake, discord.Guild):
+            symbol = "g"
+        if os.path.exists(f"data/locks/{symbol}{snowflake.id}"):
+            return True
+        return False
+
+    def lock_channel(self, snowflake, lock, info=""):
+        symbol = ""
+        if isinstance(snowflake, discord.TextChannel):
+            symbol = "c"
+        elif isinstance(snowflake, discord.Guild):
+            symbol = "g"
+        if lock:
+            with open(f"data/locks/{symbol}{snowflake.id}", "x") as f:
+                f.write(info)
+        else:
+            with open(f"data/locks/{symbol}{snowflake.id}", "r") as f:
+                data = f.read()
+            if os.path.exists(f"data/locks/{symbol}{snowflake.id}"):
+                os.remove(f"data/locks/{symbol}{snowflake.id}")
+            return data
+
+    def genPerms(self, perms, permList):
+        string = ""
+        for perm in perms:
+            name = ""
+            if isinstance(perm, str):
+                name = perm.replace('_', ' ').capitalize()
+            else:
+                name = perm[1]
+                perm = perm[0]
+            hasPerm = self.emojis().control.tick if permList[perm] else self.emojis().control.cross
+            string += f"{hasPerm} {name}\n"
+        return string

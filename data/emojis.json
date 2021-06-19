@@ -66,10 +66,6 @@
     "message.everyone_ping": 729064531073957909,
     "message.role_ping": 729263536915742770,
 
-    "role.create": 729064530763579413,
-    "role.edit": 776109664793919489,
-    "role.delete": 729064530885476392,
-
     "punish.warn": 729764054897524768,
     "punish.kick": 729764053794422896,
     "punish.ban": 729764053861400637,
@@ -125,6 +121,9 @@
     "guild.modmail.archive": 853580122636025856,
     "guild.modmail.close": 853580122506133505,
 
+    "role.create": 729064530763579413,
+    "role.edit": 776109664793919489,
+    "role.delete": 729064530885476392,
     "role.general": 752570111256297496,
     "role.members": 752570111281594509,
     "role.messages": 752570111373606942,

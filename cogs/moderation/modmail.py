@@ -58,6 +58,8 @@ class Modmail(commands.Cog):
                     "control.cross"
                 ]
             )
+            if isinstance(reaction, Failed):
+                break
             await asyncio.sleep(0.1)
             await m.clear_reactions()
             match reaction.emoji.name:

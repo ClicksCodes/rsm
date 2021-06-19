@@ -14,19 +14,6 @@ class Public(commands.Cog):
         self.colours = Cols()
         self.handlers = Handlers(self.bot)
 
-    def genPerms(self, perms, permList):
-        string = ""
-        for perm in perms:
-            name = ""
-            if isinstance(perm, str):
-                name = perm.replace('_', ' ').capitalize()
-            else:
-                name = perm[1]
-                perm = perm[0]
-            hasPerm = self.emojis().control.tick if permList[perm] else self.emojis().control.cross
-            string += f"{hasPerm} {name}\n"
-        return string
-
     async def _userinfo(self, ctx, m, user):
         task = asyncio.create_task(self.handlers.reactionCollector(
             ctx,
@@ -140,7 +127,7 @@ class Public(commands.Cog):
                         description=f"**Name:** {user.name}#{user.discriminator}\n"
                                     f"**Mention:** {user.mention}\n"
                                     f"**Server**\n"
-                                    f"{self.genPerms(perms, permList)}",
+                                    f"{self.handlers.genPerms(perms, permList)}",
                         colour=self.colours.green
                     ).set_thumbnail(url=user.avatar_url))
                 case 3:
@@ -155,7 +142,7 @@ class Public(commands.Cog):
                         description=f"**Name:** {user.name}#{user.discriminator}\n"
                                     f"**Mention:** {user.mention}\n"
                                     f"**Messages**\n"
-                                    f"{self.genPerms(perms, permList)}",
+                                    f"{self.handlers.genPerms(perms, permList)}",
                         colour=self.colours.green
                     ).set_thumbnail(url=user.avatar_url))
                 case 4:
@@ -168,7 +155,7 @@ class Public(commands.Cog):
                         description=f"**Name:** {user.name}#{user.discriminator}\n"
                                     f"**Mention:** {user.mention}\n"
                                     f"**Members**\n"
-                                    f"{self.genPerms(perms, permList)}",
+                                    f"{self.handlers.genPerms(perms, permList)}",
                         colour=self.colours.green
                     ).set_thumbnail(url=user.avatar_url))
                 case 5:
@@ -181,8 +168,8 @@ class Public(commands.Cog):
                         title=f"{self.emojis().member.join} User info",
                         description=f"**Name:** {user.name}#{user.discriminator}\n"
                                     f"**Mention:** {user.mention}\n"
-                                    f"**Members**\n"
-                                    f"{self.genPerms(perms, permList)}",
+                                    f"**Voice**\n"
+                                    f"{self.handlers.genPerms(perms, permList)}",
                         colour=self.colours.green
                     ).set_thumbnail(url=user.avatar_url))
             reaction = await self.handlers.reactionCollector(

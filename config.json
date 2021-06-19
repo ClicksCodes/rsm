@@ -23,18 +23,23 @@
         "cogs.moderation.modmail",
         "cogs.moderation.misc",
         "cogs.moderation.public",
+        "cogs.moderation.emergency",
 
         "cogs.listeners.messages",
         "cogs.listeners.guild",
         "cogs.listeners.users",
         "cogs.listeners.voice",
+        "cogs.listeners.listeners",
 
         "cogs.commands.rsm",
+        "cogs.commands.tags",
         "cogs.commands.info",
         "cogs.commands.reset",
         "cogs.commands.verify",
 
-        "cogs.internal.loops"
+        "cogs.internal.loops",
+        "cogs.internal.git",
+        "cogs.internal.api"
     ],
 
     "colour-dev": "Pink",

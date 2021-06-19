@@ -3,3 +3,5 @@ humanize
 jishaku
 postbin
 aiohttp
+fastapi
+uvicorn
