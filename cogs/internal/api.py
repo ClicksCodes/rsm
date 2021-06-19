@@ -15,21 +15,16 @@ colours = Cols()
 emojis = Emojis
 
 
-# class API(commands.Cog):
-#     def __init__(self, bot):
-#         self.bot = bot
-#         self.emojis = Emojis
-#         self.colours = Cols()
-#         self.handlers = Handlers(self.bot)
-
 @app.get("/")
 def root():
     from global_vars import bot
     return PlainTextResponse(str(bot.latency))
 
+
 @app.get("/stage")
 async def root():
     return PlainTextResponse(str(config.stage.name))
+
 
 @app.get("/role/gid/{guild}/rid/{role}/user/{user}/secret/{secret}/code/{code}")
 async def role(guild: int, role: int, user: int, secret: str, code):
@@ -57,7 +52,7 @@ def setup(bot):
 
 
 def start(bot):
-    config = uvicorn.Config(app, host="0.0.0.0", port=10000, lifespan="on", access_log=False)
+    config = uvicorn.Config(app, host="0.0.0.0", port=10000, lifespan="on", access_log=False, log_level="critical")
     server = uvicorn.Server(config)
     server.config.setup_event_loop()
     if not hasattr(bot, "loop"):

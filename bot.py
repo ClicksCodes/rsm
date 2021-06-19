@@ -74,18 +74,39 @@ class Bot(commands.Bot):
         return self.sync_get_prefix(ctx)
 
     def sync_get_prefix(self, ctx):
-        try:
-            with open(f"data/guilds/{ctx.guild.id}.json", "r") as entry:
-                entry = json.load(entry)
-                if "prefix" in entry and entry["prefix"]:
-                    if isinstance(entry["prefix"], str):
-                        prefixes = (entry["prefix"],)
-                    elif isinstance(entry["prefix"], list):
-                        prefixes = entry["prefix"]
-                else:
-                    prefixes = config.prefixes.copy()
-        except (FileNotFoundError, AttributeError):
-            prefixes = config.prefixes.copy()
+        if ctx.guild.id in self.mem:
+            data = self.mem[ctx.guild.id]
+            if data["prefix"]:
+                if isinstance(data["prefix"], str):
+                    prefixes = (data["prefix"],)
+                elif isinstance(data["prefix"], list):
+                    prefixes = data["prefix"]
+            else:
+                prefixes = config.prefixes.copy()
+        else:
+            try:
+                with open(f"data/guilds/{ctx.guild.id}.json") as f:
+                    entry = json.load(f)
+                    self.mem[ctx.guild.id] = {
+                        "filter": entry["wordfilter"],
+                        "invite": entry["invite"],
+                        "images": entry["images"],
+                        "prefix": entry["prefix"]
+                    }
+                    if "prefix" in entry:
+                        if entry["prefix"]:
+                            if isinstance(entry["prefix"], str):
+                                prefixes = (entry["prefix"],)
+                            elif isinstance(entry["prefix"], list):
+                                prefixes = entry["prefix"]
+                            else:
+                                prefixes = config.prefixes.copy()
+                        else:
+                            prefixes = config.prefixes.copy()
+                    else:
+                        prefixes = config.prefixes.copy()
+            except FileNotFoundError:
+                prefixes = config.prefixes.copy()
         if not ctx.guild:
             prefixes += ("",)
         return commands.when_mentioned_or(*prefixes)(self, ctx)

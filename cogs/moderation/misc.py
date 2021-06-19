@@ -629,6 +629,7 @@ class Mod(commands.Cog):
                                     targetRoles[role][1] = False
                             except discord.Forbidden:
                                 continue
+                page = max(0, min(page, len(cut) - 1))
             await asyncio.sleep(0.1)
             await m.clear_reactions()
             embed = m.embeds[0]

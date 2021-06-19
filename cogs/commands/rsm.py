@@ -141,6 +141,7 @@ class RSM(commands.Cog):
         ).set_footer(text="Writing"))
         data["prefix"] = prefixes
         self.handlers.fileManager(ctx.guild, "w", data=data)
+        self.handlers.setMem(ctx.guild.id, data)
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().punish.mute} Prefix", description="Prefix successfully set", colour=self.colours.green
         ))

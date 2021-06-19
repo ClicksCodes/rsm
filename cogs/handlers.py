@@ -31,7 +31,7 @@ class Handlers:
         lv = len(value)
         return tuple(int(value[i: i + lv // 3], 16) for i in range(0, lv, lv // 3)) + (alpha,)
 
-    async def memberHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None, multiple=True):
+    async def memberHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None, multiple=False):
         if default:
             optional = True
         skip = f"Default: {default}" if default else "Skip"
@@ -109,7 +109,7 @@ class Handlers:
             ).set_footer(text="The request was cancelled"))
             return Failed()
 
-    async def roleHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None, multiple=True):
+    async def roleHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None, multiple=False):
         if default:
             optional = True
         skip = f"Default: {default}" if default else "Skip"
@@ -614,6 +614,7 @@ class Handlers:
             del data["nsfw"]
             data["wordfilter"]["strict"] = data["wordfilter"]["banned"]
             del data["wordfilter"]["banned"]
+            data["wordfilter"]["punishment"] = data["nameban"]
             return data
 
     def defaultDict(self, data, ref):
@@ -779,3 +780,18 @@ class Handlers:
             hasPerm = self.emojis().control.tick if permList[perm] else self.emojis().control.cross
             string += f"{hasPerm} {name}\n"
         return string
+
+    def checkGuild(self, guild):
+        if not isinstance(guild, int):
+            guild = guild.id
+        if guild in self.bot.mem:
+            return self.bot.mem[guild]
+        data = self.fileManager(guild)
+        self.bot.mem[guild] = {"filter": data["wordfilter"], "invite": data["invite"], "images": data["images"], "prefix": data["prefix"]}
+        return self.bot.mem[guild]
+
+    def setMem(self, guild, data):
+        if not isinstance(guild, int):
+            guild = guild.id
+        data = {"filter": data["wordfilter"], "invite": data["invite"], "images": data["images"], "prefix": data["prefix"]}
+        self.bot.mem[guild] = data

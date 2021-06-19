@@ -1,6 +1,8 @@
 import asyncio
+from os import XATTR_CREATE
 import typing
 import discord
+from discord import reaction
 from discord.ext import commands
 
 from cogs.consts import *
@@ -195,8 +197,98 @@ class Public(commands.Cog):
         embed.colour = self.colours.red
         await m.edit(embed=embed)
 
-    async def _help(self, ctx, m, mobile):
-        pass
+    async def _help(self, ctx, m, mob):
+        task = asyncio.create_task(self.handlers.reactionCollector(
+            ctx,
+            m,
+            reactions=[
+                "control.cross", "control.left", "control.right"
+            ],
+            collect=False
+        ))
+        n = "\n"
+        p = ctx.prefix
+        descriptions = [
+            [
+                f"{self.emojis().rsm.help               } `{p}info     [*T] {'' if mob else '|'} ` {n if mob else ''}Shows all commands and info. Give [T] for mobile.",
+                f"{self.emojis().guild.graphs           } `{p}stats         {'' if mob else '|'} ` {n if mob else ''}Shows the bot statistics",
+                f"{self.emojis().guild.settings         } `{p}settings      {'' if mob else '|'} ` {n if mob else ''}Shows your servers log settings.",
+                f"{self.emojis().member.join            } `{p}user     [*@] {'' if mob else '|'} ` {n if mob else ''}Shows information about a user.",
+                f"{self.emojis().mod.images.too_big     } `{p}avatar   [*@] {'' if mob else '|'} ` {n if mob else ''}Shows a users avatar.",
+                f"{self.emojis().role.edit              } `{p}roleall  [*T] {'' if mob else '|'} ` {n if mob else ''}Role all humans or bots in the server. [T] to search",
+                f"{self.emojis().guild.modmail.open     } `{p}suggest   [T] {'' if mob else '|'} ` {n if mob else ''}Sends [T] to the staff to add to the bot for voting.",
+                f"{self.emojis().slowmode.on            } `{p}ping          {'' if mob else '|'} ` {n if mob else ''}Checks the bots ping time.",
+                f"{self.emojis().guild.moderation_update} `{p}server        {'' if mob else '|'} ` {n if mob else ''}Shows all information about your server.",
+                f"{self.emojis().channel.store.create   } `{p}tag      [*T] {'' if mob else '|'} ` {n if mob else ''}`{p}tag create/delete` `title text`, or `{p}tag title`",
+                f"{self.emojis().role.create            } `{p}role      [R] {'' if mob else '|'} ` {n if mob else ''}With `Role`: Shows information about a role.",
+                f"{self.emojis().role.edit              } `{p}role      [@] {'' if mob else '|'} ` {n if mob else ''}With `Mention`: Lets you edit or view a users roles.",
+                f"{self.emojis().channel.text.create    } `{p}viewas    [@] {'' if mob else '|'} ` {n if mob else ''}Shows the channels that [@] can see.",
+                f"{self.emojis().member.bot.join        } `{p}verify    [@] {'' if mob else '|'} ` {n if mob else ''}Lets users verify in your server.",
+                f"{self.emojis().member.bot.join        } `{p}setverify [R] {'' if mob else '|'} ` {n if mob else ''}Sets the role given when you `{p}verify`. Name or ID.",
+                f"{self.emojis().guild.modmail.archive  } `{p}mail          {'' if mob else '|'} ` {n if mob else ''}Creates a modmail ticket if set up."
+            ],
+            [
+                f"{self.emojis().punish.mute         } `{p}prefix            {'' if mob else '|'} ` {n if mob else ''}Shows the bots prefix. Use @ if unknown.",
+                f"{self.emojis().punish.mute         } `{p}setprefix     [T] {'' if mob else '|'} ` {n if mob else ''}Sets the bots prefix. You can always @ the bot.",
+                f"{self.emojis().punish.warn         } `{p}warn    [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Warns [@] for reason [T].",
+                f"{self.emojis().punish.clear_history} `{p}clear   [*@] [*N] {'' if mob else '|'} ` {n if mob else ''}Clears [N] messages from [@].",
+                f"{self.emojis().punish.kick         } `{p}kick    [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Kicks [@] for reason [T].",
+                f"{self.emojis().punish.soft_ban     } `{p}softban [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Soft bans [@] for reason [T].",
+                f"{self.emojis().punish.ban          } `{p}ban     [*@] [*T] {'' if mob else '|'} ` {n if mob else ''}Bans [@] for reason [T].",
+                f"{self.emojis().member.unban        } `{p}unban        [*@] {'' if mob else '|'} ` {n if mob else ''}Unbans [@].",
+                f"{self.emojis().channel.purge       } `{p}purge        [*N] {'' if mob else '|'} ` {n if mob else ''}Deletes [N] messages in the channel.",
+                f"{self.emojis().punish.soft_ban     } `{p}punish       [*@] {'' if mob else '|'} ` {n if mob else ''}Punishes a user.",
+                f"{self.emojis().channel.text.create } `{p}setlog       [ C] {'' if mob else '|'} ` {n if mob else ''}Sets the servers log channel to [C].",
+                f"{self.emojis().commands.ignore     } `{p}ignore     [*CR@] {'' if mob else '|'} ` {n if mob else ''}Stops logging users, roles and channels privided.",
+                f"{self.emojis().commands.ignore     } `{p}ignored           {'' if mob else '|'} ` {n if mob else ''}Shows the ignored users, roles and channels.",
+                f"{self.emojis().channel.text.delete } `{p}stafflog     [*C] {'' if mob else '|'} ` {n if mob else ''}Sets the staff log channel for reports and messages.",
+                f"{self.emojis().webhook.create      } `{p}auto              {'' if mob else '|'} ` {n if mob else ''}Lets you edit your server automations.",
+                f"{self.emojis().guild.modmail.close } `{p}modmail           {'' if mob else '|'} ` {n if mob else ''}Shows the setup for the mail command."
+            ],
+            [
+                f"{self.emojis().slowmode.on  } `{p}slowmode [*N] {'' if mob else '|'} ` {n if mob else ''}Sets the channel slowmode to [N]. Toggles if [N] is not provided.",
+                f"{self.emojis().commands.lock} `{p}lock     [*T] {'' if mob else '|'} ` {n if mob else ''}Locks the channel. Applies slowmode and stops messages being sent.",
+                f"{self.emojis().commands.lock} `{p}unlock        {'' if mob else '|'} ` {n if mob else ''}Unlocks the channel. Slowmode is removed and messages can be sent.",
+            ],
+            [
+                f"{self.emojis().control.cross} `{p}reset {'' if mob else '|'} ` {n if mob else ''}Reset any words that have been set to be automatically deleted.",
+            ]
+        ]
+        page = 0
+        x = 0
+        headings = [
+            f"{self.emojis().rsm.commands} Commands\n",
+            f"{self.emojis().rsm.support} Moderation\n",
+            f"{self.emojis().commands.lock} Emergency\n",
+            f"{self.emojis().punish.warn} Failsafes\n"
+        ]
+        split = [[headings[x]]]
+        for desc in descriptions:
+            for command in desc:
+                if len("\n".join([split[-1][-1]])) + len(command) > 2000:
+                    split.append([headings[x]])
+                split[-1].append(command)
+            x += 1
+            if x == len(headings):
+                break
+            split.append([headings[x]])
+        while True:
+            await m.edit(embed=discord.Embed(
+                title=f"{self.emojis().rsm.help} Help",
+                description="\n".join([desc for desc in split[page]]),
+                colour=self.colours.green
+            ))
+            reaction = await self.handlers.reactionCollector(ctx, m, task=task)
+            if isinstance(reaction, Failed):
+                break
+            match reaction.emoji.name:
+                case "Left": page -= 1
+                case "Right": page += 1
+                case _: break
+            page = max(0, min(page, len(split)))
+        embed = m.embedds[0]
+        embed.colour = self.colours.red
+        await m.edit(embed=embed)
 
     @commands.command(aliases=["userinfo", "whois"])
     @commands.guild_only()
