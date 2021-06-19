@@ -5,3 +5,6 @@ postbin
 aiohttp
 fastapi
 uvicorn
+mongoengine
+opencv-python
+pytesseract

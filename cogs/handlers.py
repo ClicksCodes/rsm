@@ -1,6 +1,7 @@
 import asyncio
 import datetime
 import os
+import re
 import aiohttp
 
 import discord
@@ -741,6 +742,25 @@ class Handlers:
                     draw.rectangle([(bbox[0], bbox[1] - 40), (bbox[0] + w + 20, bbox[1])], fill=(242, 120, 120, 255))
                     draw.text((bbox[0] + 10, bbox[1] - 30), detection["name"], fill=(255, 255, 255, 255), font=font)
         return nsfw, resp['output']['detections'], score, image
+
+    def is_text_banned(self, text, guild, member=None, channel=None):
+        data = self.checkGuild(guild)["filter"]
+        if member:
+            if member.id in data["ignore"]["members"]:
+                return False
+            for role in member.roles:
+                if role.id in data["ignore"]["roles"]:
+                    return False
+        if channel:
+            if channel.id in data["ignore"]["channels"]:
+                return False
+        for word in data["strict"]:
+            if word in text:
+                return True
+        for word in [x.group().lower() for x in re.finditer(r'[a-zA-Z]+', text)]:
+            if word.lower() in data["soft"]:
+                return True
+        return False
 
     def is_channel_locked(self, snowflake):
         symbol = ""
