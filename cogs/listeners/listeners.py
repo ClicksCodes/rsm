@@ -25,6 +25,24 @@ class Listeners(commands.Cog):
                     return await message.delete()
         if self.handlers.is_text_banned(message.content, message.guild, message.author, message.channel):
             return await message.delete()
+        if message.channel.nsfw:
+            for attachment in message.attachments:
+                nsfw, detections, score, image = await self.handlers.is_pfp_nsfw(attachment.proxy_url)
+                image.show()
+                if nsfw:
+                    data = self.handlers.fileManager(message.guild)
+                    if data["log_info"]["staff"]:
+                        buf = io.BytesIO()
+                        image.save(buf, format="png")
+                        buf.seek(0)
+                        await self.bot.get_channel(data["log_info"]["staff"]).send(embed=discord.Embed(
+                            title=f"{self.emojis().punish.warn} NSFW image sent",
+                            description=f"**User:** {message.author.name} ({message.author.mention})\n**Confidence:** "
+                                        f"{round(score, 2)}%\n[[View here]]({str(message.author.avatar_url_as(format='png'))})",
+                            color=self.colours.red
+                        ))
+                        # ), file=discord.File(buf, filename="image.png", spoiler=True))
+                    return await message.delete()
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -79,7 +97,7 @@ class Listeners(commands.Cog):
                     except discord.Forbidden:
                         pass
                     return await member.ban(reason="RSM - Username broke rules")
-        nsfw, _, score, _ = await self.handlers.is_pfp_nsfw(str(member.avatar_url_as(format="png")))
+        nsfw, _, score, image = await self.handlers.is_pfp_nsfw(str(member.avatar_url_as(format="png")))
         if nsfw:
             try:
                 await member.send(embed=discord.Embed(
@@ -91,15 +109,14 @@ class Listeners(commands.Cog):
                 pass
             data = self.handlers.fileManager(member.guild.id)
             if data["log_info"]["staff"]:
-                # buf = io.BytesIO()
-                # image.save(buf, format="png")
-                # buf.seek(0)
+                buf = io.BytesIO()
+                image.save(buf, format="png")
+                buf.seek(0)
                 await self.bot.get_channel(data["log_info"]["staff"]).send(embed=discord.Embed(
                     title=f"{self.emojis().control.cross} Profile picture flagged",
                     description=f"**User:** {member.name} ({member.mention})\n**Confidence:** {round(score, 2)}%\n[[View here]]({str(member.avatar_url_as(format='png'))})",
                     color=self.colours.red
-                ))
-                # ), file=discord.File(buf, filename="image.png", spoiler=True))
+                ), file=discord.File(buf, filename="image.png", spoiler=True))
 
     @commands.Cog.listener()
     async def on_member_update(self, before, after):

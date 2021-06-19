@@ -727,8 +727,8 @@ class Handlers:
                     buf.seek(0)
             image = Image.open(buf)
             h, w = image.size
-            scalex, scaley = round(1000/h), round(1000/w)
-            image = image.resize((h * scalex, w * scaley))
+            scalex, scaley = round(1000/w), round(1000/h)
+            image = image.resize((w * scalex, h * scaley))
             draw = ImageDraw.Draw(image)
             font = ImageFont.truetype("data/fonts/roboto/Roboto-Regular.ttf", 20)
             for detection in resp["output"]["detections"]:
