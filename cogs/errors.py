@@ -6,7 +6,7 @@ import discord
 from discord.ext import commands
 import traceback
 
-from cogs.consts import *
+from cogs import consts
 from cogs.dmCommands import DMs
 
 
@@ -17,6 +17,7 @@ class Errors(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+        Colours = consts.Colours
         try:
             # Normal Green
             # Warning Yellow
@@ -46,7 +47,7 @@ class Errors(commands.Cog):
                     embed=discord.Embed(
                         title=f"{emojis['cross']} Missing permissions",
                         description=str(error),
-                        colour=Colours.red,
+                        colour=self.colours.red,
                     )
                 )
             else:

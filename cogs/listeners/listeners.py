@@ -43,7 +43,6 @@ class Listeners(commands.Cog):
         if not message.channel.nsfw:
             for attachment in message.attachments:
                 nsfw, _, score, image = await self.handlers.is_pfp_nsfw(attachment.proxy_url)
-                image.show()
                 if nsfw:
                     data = self.handlers.fileManager(message.guild)
                     if data["log_info"]["staff"]:
