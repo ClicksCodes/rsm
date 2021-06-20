@@ -138,7 +138,7 @@ class Listeners(commands.Cog):
         if before.nick != after.nick:
             if self.handlers.is_text_banned(after.display_name, after.guild, after):
                 audit = await self.handlers.getAuditLogEntry(after.guild, type=discord.AuditLogAction.member_update)
-                if not audit.user.bot:
+                if audit and not audit.user.bot:
                     await after.edit(nick="[!] Username broke rules")
 
 

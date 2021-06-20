@@ -117,7 +117,7 @@ class Logs(commands.Cog):
     @commands.Cog.listener()
     async def on_bulk_message_delete(self, messages):
         audit = await self.handlers.getAuditLogEntry(messages[0].guild, type=discord.AuditLogAction.message_bulk_delete)
-        if audit.user.bot:
+        if not audit or audit.user.bot:
             return
         mlist = "\n\n".join([self.handlers.convertMessage(message) for message in messages])
         async with aiohttp.ClientSession() as session:
@@ -140,7 +140,7 @@ class Logs(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_channel_pins_update(self, channel, _):
         audit = await self.handlers.getAuditLogEntry(channel.guild, type=discord.AuditLogAction.message_pin, check=lambda l: l.extra.channel.id == channel.id)
-        if not audit:
+        if not audit or audit.user.bot:
             return
         message = await channel.fetch_message(audit.extra.message_id)
         await self.handlers.sendLog(

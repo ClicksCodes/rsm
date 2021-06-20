@@ -34,6 +34,8 @@ class Logs(commands.Cog):
     async def on_member_remove(self, member):
         kick = await self.handlers.getAuditLogEntry(member.guild, type=discord.AuditLogAction.kick)
         ban = await self.handlers.getAuditLogEntry(member.guild, type=discord.AuditLogAction.ban)
+        if not kick or not ban:
+            return
         if datetime.datetime.utcnow() - datetime.timedelta(seconds=5) < kick.created_at < datetime.datetime.utcnow() + datetime.timedelta(seconds=5):
             await self.handlers.sendLog(
                 emoji=self.emojis().member.kick,
@@ -92,6 +94,8 @@ class Logs(commands.Cog):
     @commands.Cog.listener()
     async def on_member_unban(self, guild, user):
         audit = await self.handlers.getAuditLogEntry(guild, type=discord.AuditLogAction.unban)
+        if not audit:
+            return
         if audit.reason:
             if audit.reason.startswith("RSM Softban"):
                 return
@@ -114,6 +118,8 @@ class Logs(commands.Cog):
     async def on_member_update(self, before, after):
         if before.nick != after.nick:
             audit = await self.handlers.getAuditLogEntry(after.guild, type=discord.AuditLogAction.member_update)
+            if not audit:
+                return
             await self.handlers.sendLog(
                 emoji=self.emojis().member.nickname_change,
                 type=f"Nickname changed",
@@ -130,7 +136,7 @@ class Logs(commands.Cog):
             )
         if before.roles != after.roles:
             audit = await self.handlers.getAuditLogEntry(after.guild, type=discord.AuditLogAction.member_role_update)
-            if audit.user.bot:
+            if not audit or audit.user.bot:
                 return
             added = []
             removed = []

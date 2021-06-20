@@ -16,7 +16,7 @@ class Logs(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_channel_create(self, channel):
         audit = await self.handlers.getAuditLogEntry(channel.guild, type=discord.AuditLogAction.channel_create)
-        if audit.user.bot:
+        if not audit or audit.user.bot:
             return
         if isinstance(channel, discord.CategoryChannel):
             return await self.handlers.sendLog(
@@ -66,7 +66,7 @@ class Logs(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, channel):
         audit = await self.handlers.getAuditLogEntry(channel.guild, type=discord.AuditLogAction.channel_delete)
-        if audit.user.bot:
+        if not audit or audit.user.bot:
             return
         if isinstance(channel, discord.CategoryChannel):
             return await self.handlers.sendLog(
@@ -116,7 +116,7 @@ class Logs(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_channel_update(self, before, after):
         audit = await self.handlers.getAuditLogEntry(after.guild, type=discord.AuditLogAction.channel_update)
-        if audit.user.bot:
+        if not audit or audit.user.bot:
             return
         if isinstance(after, discord.CategoryChannel):
             changes = []
@@ -253,7 +253,7 @@ class Logs(commands.Cog):
     @commands.Cog.listener()
     async def on_invite_create(self, invite):
         audit = await self.handlers.getAuditLogEntry(invite.guild, type=discord.AuditLogAction.invite_create)
-        if audit.user.bot:
+        if not audit or audit.user.bot:
             return
         return await self.handlers.sendLog(
             emoji=self.emojis().invite.create,
@@ -273,7 +273,7 @@ class Logs(commands.Cog):
     @commands.Cog.listener()
     async def on_invite_delete(self, invite):
         audit = await self.handlers.getAuditLogEntry(invite.guild, type=discord.AuditLogAction.invite_delete)
-        if audit.user.bot:
+        if not audit or audit.user.bot:
             return
         return await self.handlers.sendLog(
             emoji=self.emojis().invite.delete,
@@ -294,7 +294,7 @@ class Logs(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_update(self, before, after):
         audit = await self.handlers.getAuditLogEntry(after, type=discord.AuditLogAction.guild_update)
-        if audit.user.bot:
+        if not audit or audit.user.bot:
             return
         changes = []
         t = None
@@ -325,7 +325,7 @@ class Logs(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_role_create(self, role):
         audit = await self.handlers.getAuditLogEntry(role.guild, type=discord.AuditLogAction.role_create)
-        if audit.user.bot:
+        if not audit or audit.user.bot:
             return
         return await self.handlers.sendLog(
             emoji=self.emojis().role.create,
@@ -343,7 +343,7 @@ class Logs(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_role_delete(self, role):
         audit = await self.handlers.getAuditLogEntry(role.guild, type=discord.AuditLogAction.role_delete)
-        if audit.user.bot:
+        if not audit or audit.user.bot:
             return
         return await self.handlers.sendLog(
             emoji=self.emojis().role.delete,
@@ -368,7 +368,7 @@ class Logs(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_role_update(self, before, after):
         audit = await self.handlers.getAuditLogEntry(after.guild, type=discord.AuditLogAction.role_update)
-        if audit.user.bot:
+        if not audit or audit.user.bot:
             return
         changes = []
         dontShow = True
@@ -413,7 +413,7 @@ class Logs(commands.Cog):
         else:
             return
         audit = await self.handlers.getAuditLogEntry(g, type=discord.AuditLogAction.guild_update)
-        if audit.user.bot:
+        if not audit or audit.user.bot:
             return
         added = []
         removed = []
