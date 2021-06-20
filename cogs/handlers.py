@@ -730,8 +730,7 @@ class Handlers:
                         nsfw = True
                     if int(score) > int(confidence):
                         nsfw = True
-                except Exception as e:
-                    print(e)
+                except KeyError:
                     return (False, {}, 100, None)
         image = None
         if nsfw:

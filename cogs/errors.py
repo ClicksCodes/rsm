@@ -18,6 +18,7 @@ class Errors(commands.Cog):
     async def _on_error(self, ctx, error):
         Colours = consts.Colours
         try:
+            print(type(error))
             # Normal Green
             # Warning Yellow
             # Critical Red
