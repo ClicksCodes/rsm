@@ -85,7 +85,7 @@ class RSM(commands.Cog):
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().guild.graphs} Stats",
             description=f"**Servers:** {len(self.bot.guilds)}\n"
-                        f"**Ping**: {self.bot.latency * 1000}ms",
+                        f"**Ping**: {round(self.bot.latency * 1000)}ms",
             colour=self.colours.green
         ))
 
