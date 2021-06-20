@@ -75,7 +75,7 @@ class Logs(commands.Cog):
         else:
             await self.handlers.sendLog(
                 emoji=self.emojis().member.leave,
-                type=f"Memebr left",
+                type=f"Member left",
                 server=member.guild.id,
                 colour=self.colours.red,
                 data={

@@ -306,7 +306,7 @@ class Public(commands.Cog):
     @commands.command()
     async def info(self, ctx, arg: typing.Union[discord.Member, str, None]):
         m = await ctx.send(embed=loading_embed)
-        if isinstance(arg, discord.Memebr) and ctx.guild:
+        if isinstance(arg, discord.Member) and ctx.guild:
             await self._userinfo(ctx, m, arg)
         else:
             await self._help(ctx, m, bool(arg))
