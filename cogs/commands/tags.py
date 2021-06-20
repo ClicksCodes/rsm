@@ -133,10 +133,10 @@ class Tags(commands.Cog):
             colour=self.colours.green
         ))
 
-    @tag.command(name="edit", aliases=["update"])
-    @commands.guild_only()
-    async def edit(self, ctx):
-        raise SystemExit(69)
+    # @tag.command(name="edit", aliases=["update"])
+    # @commands.guild_only()
+    # async def edit(self, ctx):
+    #     raise SystemExit(69)
 
 
 def setup(bot):

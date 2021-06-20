@@ -689,7 +689,7 @@ class Handlers:
 
     async def getAuditLogEntry(self, guild, type: discord.AuditLogAction, check=None):
         if not guild.me.guild_permissions.view_audit_log:
-            raise commands.BotMissingPermissions(["view_audit_log"])
+            return None
         async for log in guild.audit_logs(action=type):
             if check:
                 if check(log):
