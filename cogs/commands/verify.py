@@ -42,20 +42,22 @@ class Verify(commands.Cog):
         data = self.handlers.fileManager(ctx.guild)
         roleid = data["verify_role"]
         if not roleid:
-            return await ctx.send(
+            return await m.edit(
                 embed=discord.Embed(
                     title=f"{self.emojis().control.cross} Verify",
                     description=f"This server does not have a verify role set. You can `{ctx.prefix}setverify` to set this role.",
                     colour=self.colours.red
-                )
+                ),
+                delete_after=10
             )
         if roleid in [r.id for r in ctx.author.roles]:
-            return await ctx.send(
+            return await m.edit(
                 embed=discord.Embed(
                     title=f"{self.emojis().control.cross} Verify",
                     description=f"You are already verified (You already have the {ctx.guild.get_role(roleid).mention} role)",
                     colour=self.colours.red,
-                )
+                ),
+                delete_after=10
             )
         if not data["images"]["nsfw"]:
             await m.edit(embed=discord.Embed(
