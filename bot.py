@@ -81,7 +81,7 @@ class Bot(commands.Bot):
         return self.sync_get_prefix(ctx)
 
     def sync_get_prefix(self, ctx):
-        if ctx.guild.id in self.mem:
+        if ctx.guild and ctx.guild.id in self.mem:
             data = self.mem[ctx.guild.id]
             if data["prefix"]:
                 if isinstance(data["prefix"], str):
@@ -90,7 +90,7 @@ class Bot(commands.Bot):
                     prefixes = data["prefix"]
             else:
                 prefixes = config.prefixes.copy()
-        else:
+        elif ctx.guild:
             try:
                 with open(f"data/guilds/{ctx.guild.id}.json") as f:
                     entry = json.load(f)
@@ -114,8 +114,8 @@ class Bot(commands.Bot):
                         prefixes = config.prefixes.copy()
             except FileNotFoundError:
                 prefixes = config.prefixes.copy()
-        if not ctx.guild:
-            prefixes += ("",)
+        else:
+            prefixes = config.prefixes.copy() + [""]
         return commands.when_mentioned_or(*prefixes)(self, ctx)
 
     async def on_ready(self):

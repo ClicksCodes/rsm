@@ -286,7 +286,7 @@ class Public(commands.Cog):
                 case "Right": page += 1
                 case _: break
             page = max(0, min(page, len(split)))
-        embed = m.embedds[0]
+        embed = m.embeds[0]
         embed.colour = self.colours.red
         await m.edit(embed=embed)
 

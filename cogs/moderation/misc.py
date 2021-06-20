@@ -114,11 +114,9 @@ class Mod(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def slowmode(self, ctx, speed: typing.Optional[str]):
-        if not speed:
-            speed = ""
+    async def slowmode(self, ctx, speed: typing.Optional[str] = ""):
         m = await ctx.send(embed=loading_embed)
-        if isinstance(await self.handlers.checkPerms(ctx, m, "manage_messages", self.emojis().slowmode.on, "change slowmode"), Failed):
+        if isinstance(await self.handlers.checkPerms(ctx, m, "manage_channels", self.emojis().slowmode.on, "change slowmode"), Failed):
             return
         if speed.isdigit():
             await self.setSlowmode(ctx, m, int(speed))
@@ -141,7 +139,7 @@ class Mod(commands.Cog):
     @commands.guild_only()
     async def viewas(self, ctx, target: typing.Union[discord.Member, discord.Role, None]):
         m = await ctx.send(embed=loading_embed)
-        if isinstance(await self.handlers.checkPerms(ctx, m, "manage_guild", self.emojis().channel.text.create, "view as someone else", me=False), Failed):
+        if isinstance(await self.handlers.checkPerms(ctx, m, "manage_permissions", self.emojis().channel.text.create, "view as someone else", me=False), Failed):
             return
         if not target:
             target = await self.handlers.memberHandler(ctx, m, emoji=self.emojis().channel.text.create, title="View as", description="Who would you like to view the server as?")

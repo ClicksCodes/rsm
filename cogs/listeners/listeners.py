@@ -1,5 +1,6 @@
 import discord
 import io
+import re
 from discord.ext import commands
 
 from cogs.consts import *
@@ -17,17 +18,31 @@ class Listeners(commands.Cog):
     async def on_message(self, message):
         if message.author.bot:
             return
-        if message.guild:
-            if message.channel.slowmode_delay:
-                if self.handlers.is_channel_locked(message.channel) and not message.author.permissions_in(message.channel).manage_messages:
-                    if message.channel.permissions_for(message.channel.guild.me).manage_messages:
-                        return await message.delete()
+        if not message.guild:
+            return
+        if message.channel.slowmode_delay:
+            if self.handlers.is_channel_locked(message.channel) and not message.author.permissions_in(message.channel).manage_messages:
+                if message.channel.permissions_for(message.channel.guild.me).manage_messages:
+                    return await message.delete()
+        if re.search(r"(?:https?:\/\/)?discord(?:app)?\.(?:com\/invite|gg)\/[a-zA-Z0-9]+\/?", message.content, re.MULTILINE):
+            data = self.handlers.checkGuild(message.guild)
+            if data["invite"]["enabled"]:
+                if not message.author.id in data["invite"]["whitelist"]["members"]:
+                    if not message.channel.id in data["invite"]["whitelist"]["channels"]:
+                        for role in message.author.roles:
+                            if role.id in data["invite"]["whitelist"]["roles"]:
+                                break
+                        else:
+                            if message.channel.permissions_for(message.channel.guild.me).manage_messages:
+                                return await message.delete()
+
         if self.handlers.is_text_banned(message.content, message.guild, message.author, message.channel):
             if message.channel.permissions_for(message.channel.guild.me).manage_messages:
                 return await message.delete()
+
         if not message.channel.nsfw:
             for attachment in message.attachments:
-                nsfw, detections, score, image = await self.handlers.is_pfp_nsfw(attachment.proxy_url)
+                nsfw, _, score, image = await self.handlers.is_pfp_nsfw(attachment.proxy_url)
                 image.show()
                 if nsfw:
                     data = self.handlers.fileManager(message.guild)

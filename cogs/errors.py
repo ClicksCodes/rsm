@@ -59,7 +59,6 @@ class Errors(commands.Cog):
                 ])
                 print(f"{Colours.RedDark}[C] {Colours.Red}FATAL:\n{tb}{Colours.c}\n{code}")
                 # url = await postbin.postAsync(tb)
-                # if int(self.bot.user.id) == 715989276382462053:
                 #     await self.bot.get_channel(776418051003777034).send(
                 #         embed=discord.Embed(
                 #             title="Error",
@@ -67,15 +66,16 @@ class Errors(commands.Cog):
                 #             colour=colours["delete"],
                 #         )
                 #     )
-                #     return await ctx.channel.send(
-                #         embed=discord.Embed(
-                #             title="It looks like I messed up",
-                #             description=f"It looks like there was an error. Just send the [developers](https://discord.gg/bPaNnxe) code `{code}`",
-                #             colour=colours["delete"],
-                #         )
-                #     )
-                # else:
-                #     return
+                if int(self.bot.user.id) == 715989276382462053:
+                    return await ctx.channel.send(
+                        embed=discord.Embed(
+                            title="It looks like I messed up",
+                            description=f"It looks like there was an error. Just send the [developers](https://discord.gg/bPaNnxe) code `{code}`",
+                            colour=colours["delete"],
+                        )
+                    )
+                else:
+                    return
         except Exception as e:
             print(e)
 

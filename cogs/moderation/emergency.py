@@ -17,7 +17,7 @@ class Emergency(commands.Cog):
     @commands.guild_only()
     async def lock(self, ctx):
         m = await ctx.send(embed=loading_embed)
-        if isinstance(await self.handlers.checkPerms(ctx, m, "manage_messages", self.emojis().commands.lock, "lock a channel"), Failed):
+        if isinstance(await self.handlers.checkPerms(ctx, m, "manage_channels", self.emojis().commands.lock, "lock a channel"), Failed):
             return
         if self.handlers.is_channel_locked(ctx.channel):
             return await m.edit(embed=discord.Embed(
@@ -37,7 +37,7 @@ class Emergency(commands.Cog):
     @commands.guild_only()
     async def unlock(self, ctx):
         m = await ctx.send(embed=loading_embed)
-        if isinstance(await self.handlers.checkPerms(ctx, m, "manage_messages", self.emojis().commands.lock, "unlock a channel"), Failed):
+        if isinstance(await self.handlers.checkPerms(ctx, m, "manage_channels", self.emojis().commands.lock, "unlock a channel"), Failed):
             return
         if not self.handlers.is_channel_locked(ctx.channel):
             return await m.edit(embed=discord.Embed(

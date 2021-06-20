@@ -285,7 +285,7 @@ class Mod(commands.Cog):
             ).set_footer(text="403 Forbidden"))
 
     async def _softban(self, ctx, m, member=None, reason=None):
-        if isinstance(await self.handlers.checkPerms(ctx, m, "ban_members", self.emojis().punish.soft_ban, "softban someone"), Failed):
+        if isinstance(await self.handlers.checkPerms(ctx, m, "kick_members", self.emojis().punish.soft_ban, "softban someone"), Failed):
             return
 
         if not member:
