@@ -134,6 +134,7 @@ class Verify(commands.Cog):
                     colour=self.colours.red,
                 ), delete_after=10
             )
+        await m.delete()
 
     @commands.command()
     @commands.guild_only()
