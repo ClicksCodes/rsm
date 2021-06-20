@@ -627,6 +627,8 @@ class Handlers:
                 data["wordfilter"]["strict"] = data.get("wordfilter", {"banned": []})["banned"]
             if "wordfilter" in data and "banned" in data["wordfilter"]:
                 del data["wordfilter"]["banned"]
+            if "wordfilter" not in data:
+                data["wordfilter"] = {"ignore": {"roles": [], "channels": [], "members": [], "delta": None}, "strict": [], "soft": []}
             data["wordfilter"]["punishment"] = data.get("nameban", "change")
             return data
 
