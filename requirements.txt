@@ -4,7 +4,6 @@ jishaku
 postbin
 aiohttp
 fastapi
-uvicorn
+uvicorn[standard]
 mongoengine
-opencv-python
-pytesseract
+pillow
