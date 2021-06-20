@@ -31,7 +31,7 @@ class Errors(commands.Cog):
 
             if isinstance(error, commands.errors.NoPrivateMessage):
                 return print(f"{Colours.GreenDark}[N] {Colours.Green}{str(error)}{Colours.c}")
-            elif isinstance(error, commands.errors.BotMissingPermissions) or isinstance(error, commands.BotMissingPermissions):
+            elif isinstance(error, commands.errors.BotMissingPermissions) or isinstance(error, discord.ext.commands.errors.BotMissingPermissions):
                 return print(f"{Colours.GreenDark}[N] {Colours.Green}{str(error)}{Colours.c}")
             elif isinstance(error, commands.errors.CommandNotFound):
                 if not ctx.guild:
@@ -72,7 +72,7 @@ class Errors(commands.Cog):
                         embed=discord.Embed(
                             title="It looks like I messed up",
                             description=f"It looks like there was an error. Just send the [developers](https://discord.gg/bPaNnxe) code `{code}`",
-                            colour=colours["delete"],
+                            colour=self.colours.red,
                         )
                     )
                 else:
