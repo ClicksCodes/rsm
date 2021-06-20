@@ -618,6 +618,7 @@ class Handlers:
             replacements = {"roles": "role_mention", "webhook_create": "webhook_update"}
             data["log_info"]["to_log"] = [(replacements[p] if p in replacements else p) for p in data["log_info"]["to_log"]]
             data["log_info"]["to_log"] += ["guild_role_edit", "user_role_update"]
+            data["images"] = {}
             data["images"]["nsfw"] = data.get("nsfw", True)
             del data["nsfw"]
             data["wordfilter"]["strict"] = data.get("wordfilter", {"banned": []})["banned"]

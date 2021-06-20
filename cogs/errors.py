@@ -15,19 +15,21 @@ class Errors(commands.Cog):
         self.bot = bot
         self.dms = DMs()
 
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
+    async def _on_error(self, ctx, error):
         Colours = consts.Colours
         try:
             # Normal Green
             # Warning Yellow
             # Critical Red
             # Status Blue
-            try:
-                code = str(sha256(str.encode(str(ctx.message.id))).hexdigest())[20:]
-            except Exception as e:
-                print(e)
-                code = ctx.message.id
+            if ctx:
+                try:
+                    code = str(sha256(str.encode(str(ctx.message.id))).hexdigest())[20:]
+                except Exception as e:
+                    print(e)
+                    code = ctx.message.id
+            else:
+                code = str(sha256(str.encode(random.randint(0, 10000000))).hexdigest())[20:]
 
             if isinstance(error, commands.errors.NoPrivateMessage):
                 return print(f"{Colours.GreenDark}[N] {Colours.Green}{str(error)}{Colours.c}")
@@ -42,7 +44,7 @@ class Errors(commands.Cog):
                 return print(f"{Colours.GreenDark}[N] {Colours.Green}{str(error)}{Colours.c}")
             elif isinstance(error, commands.errors.TooManyArguments):
                 return print(f"{Colours.GreenDark}[N] {Colours.Green}{str(error)}{Colours.c}")
-            elif isinstance(error, commands.errors.MissingPermissions):
+            elif isinstance(error, commands.errors.MissingPermissions) and ctx:
                 return await ctx.send(
                     embed=discord.Embed(
                         title=f"{emojis['cross']} Missing permissions",
@@ -55,7 +57,8 @@ class Errors(commands.Cog):
                 tb = "".join(traceback.format_exception(type(error), error, error.__traceback__))
                 tb = "\n".join([
                     f"{Colours.RedDark}[C] {Colours.Red}" + line for line in (
-                        f"Command ran: {ctx.message.content}\nUser id:{ctx.author.id}\nGuild id:{ctx.guild.id if ctx.guild else 'N/A'}\n\n{tb}".split("\n")
+                        f"Command ran: {ctx.message.content if ctx else ''}\nUser id:{ctx.author.id if ctx else ''}\n"
+                        f"Guild id:{(ctx.guild.id if ctx.guild else 'N/A') if ctx else ''}\n\n{tb}".split("\n")
                     )
                 ])
                 print(f"{Colours.RedDark}[C] {Colours.Red}FATAL:\n{tb}{Colours.c}\n{code}")
@@ -67,7 +70,7 @@ class Errors(commands.Cog):
                 #             colour=colours["delete"],
                 #         )
                 #     )
-                if int(self.bot.user.id) == 715989276382462053:
+                if int(self.bot.user.id) == 715989276382462053 and ctx:
                     return await ctx.channel.send(
                         embed=discord.Embed(
                             title="It looks like I messed up",
@@ -79,6 +82,14 @@ class Errors(commands.Cog):
                     return
         except Exception as e:
             print(e)
+
+    @commands.Cog.listener()
+    async def on_error(self, error):
+        await self._on_error(_, error)
+
+    @commands.Cog.listener()
+    async def on_error(self, ctx, error):
+        await self._on_error(ctx, error)
 
     #  pyright: reportUndefinedVariable=false
     @commands.command()
