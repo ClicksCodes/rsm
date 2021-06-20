@@ -17,9 +17,10 @@ class Modmail(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    @commands.has_permissions(manage_guild=True)
     async def modmail(self, ctx):
         m = await ctx.send(embed=loading_embed)
+        if isinstance(self.handlers.checkPerms(ctx, m, "manage_guild", self.emojis().guild.modmail.open, "manage modmail", me=False)):
+            return
         while True:
             catName = "*No category set*"
             maxTickets = "*No limit set*"
