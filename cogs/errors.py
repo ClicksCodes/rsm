@@ -31,7 +31,7 @@ class Errors(commands.Cog):
 
             if isinstance(error, commands.errors.NoPrivateMessage):
                 return print(f"{Colours.GreenDark}[N] {Colours.Green}{str(error)}{Colours.c}")
-            elif isinstance(error, commands.errors.BotMissingPermissions):
+            elif isinstance(error, commands.errors.BotMissingPermissions) or isinstance(error, commands.BotMissingPermissions):
                 return print(f"{Colours.GreenDark}[N] {Colours.Green}{str(error)}{Colours.c}")
             elif isinstance(error, commands.errors.CommandNotFound):
                 if not ctx.guild:
