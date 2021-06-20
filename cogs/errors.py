@@ -88,7 +88,7 @@ class Errors(commands.Cog):
         await self._on_error(_, error)
 
     @commands.Cog.listener()
-    async def on_error(self, ctx, error):
+    async def on_command_error(self, ctx, error):
         await self._on_error(ctx, error)
 
     #  pyright: reportUndefinedVariable=false
