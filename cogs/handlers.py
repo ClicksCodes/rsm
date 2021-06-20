@@ -584,11 +584,10 @@ class Handlers:
                 try:
                     with open(f"data/guilds/{guild}.json", "r") as f:
                         entry = json.load(f)
-                    if "version" not in entry:
-                        entry["version"] = 1
-                    if entry["version"] != 2:
-                        self._update(entry)
-                    entry = self.defaultDict(entry, template)
+                    updated = self._update(entry.copy())
+                    if updated != entry:
+                        self.fileManager(guild, action="w", data=updated)
+                    entry = self.defaultDict(updated, template)
                     return entry
 
                 except FileNotFoundError:
@@ -608,6 +607,8 @@ class Handlers:
                 return None
 
     def _update(self, data):
+        if "version" not in data:
+            data["version"] = 1
         if data["version"] == 2:
             return data
         if data["version"] == 1:

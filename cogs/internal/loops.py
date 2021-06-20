@@ -63,6 +63,11 @@ class Loops(commands.Cog):
         else:
             self.bot.expectedPresence = ("dnd", True)
 
+    @commands.command()
+    @commands.is_owner()
+    async def mem(self, ctx):
+        await ctx.send(str(self.bot.mem)[:2000])
+
 
 def setup(bot):
     bot.add_cog(Loops(bot))

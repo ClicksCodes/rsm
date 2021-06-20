@@ -8,6 +8,7 @@ from discord.ext import commands
 
 from config import config
 from cogs.consts import Colours
+from cogs.handlers import Handlers, Failed
 
 
 class Context(commands.Context):
@@ -41,6 +42,7 @@ class Bot(commands.Bot):
                 _loop = asyncio.new_event_loop()
             kwargs.setdefault("loop", _loop)
         super().__init__(command_prefix=self.get_prefix, help_command=None, **kwargs)
+        self.handlers = Handlers(self)
 
         self.errors = 0
         x = 0
@@ -81,38 +83,40 @@ class Bot(commands.Bot):
         return self.sync_get_prefix(ctx)
 
     def sync_get_prefix(self, ctx):
-        if ctx.guild and ctx.guild.id in self.mem:
-            data = self.mem[ctx.guild.id]
-            if data["prefix"]:
-                if isinstance(data["prefix"], str):
-                    prefixes = (data["prefix"],)
-                elif isinstance(data["prefix"], list):
-                    prefixes = data["prefix"]
+        # if ctx.guild and ctx.guild.id in self.mem:
+        #     data = self.mem[ctx.guild.id]
+        #     if data["prefix"]:
+        #         if isinstance(data["prefix"], str):
+        #             prefixes = (data["prefix"],)
+        #         elif isinstance(data["prefix"], list):
+        #             prefixes = data["prefix"]
+        #     else:
+        #         prefixes = config.prefixes.copy()
+        # elif ctx.guild:
+        #     try:
+        #         with open(f"data/guilds/{ctx.guild.id}.json") as f:
+        #             entry = json.load(f)
+        #             if "prefix" in entry:
+        #                 if entry["prefix"]:
+        #                     if isinstance(entry["prefix"], str):
+        #                         prefixes = (entry["prefix"],)
+        #                     elif isinstance(entry["prefix"], list):
+        #                         prefixes = entry["prefix"]
+        #                     else:
+        #                         prefixes = config.prefixes.copy()
+        #                 else:
+        #                     prefixes = config.prefixes.copy()
+        #             else:
+        #                 prefixes = config.prefixes.copy()
+        #     except FileNotFoundError:
+        #         prefixes = config.prefixes.copy()
+        if ctx.guild:
+            data = self.handlers.checkGuild(ctx.guild)
+            if isinstance(data["prefix"], str):
+                prefixes = [data["prefix"]]
+            elif isinstance(data["prefix"], list):
+                prefixes = data["prefix"]
             else:
-                prefixes = config.prefixes.copy()
-        elif ctx.guild:
-            try:
-                with open(f"data/guilds/{ctx.guild.id}.json") as f:
-                    entry = json.load(f)
-                    self.mem[ctx.guild.id] = {
-                        "filter": entry["wordfilter"],
-                        "invite": entry["invite"],
-                        "images": entry["images"],
-                        "prefix": entry["prefix"]
-                    }
-                    if "prefix" in entry:
-                        if entry["prefix"]:
-                            if isinstance(entry["prefix"], str):
-                                prefixes = (entry["prefix"],)
-                            elif isinstance(entry["prefix"], list):
-                                prefixes = entry["prefix"]
-                            else:
-                                prefixes = config.prefixes.copy()
-                        else:
-                            prefixes = config.prefixes.copy()
-                    else:
-                        prefixes = config.prefixes.copy()
-            except FileNotFoundError:
                 prefixes = config.prefixes.copy()
         else:
             prefixes = config.prefixes.copy() + [""]

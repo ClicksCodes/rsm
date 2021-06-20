@@ -36,7 +36,7 @@ class Listeners(commands.Cog):
                             if message.channel.permissions_for(message.channel.guild.me).manage_messages:
                                 return await message.delete()
 
-        if self.handlers.is_text_banned(message.content, message.guild, message.author, message.channel):
+        if message.guild and self.handlers.is_text_banned(message.content, message.guild, message.author, message.channel):
             if message.channel.permissions_for(message.channel.guild.me).manage_messages:
                 return await message.delete()
 
