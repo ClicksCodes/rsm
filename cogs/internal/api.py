@@ -1,13 +1,10 @@
 import discord
 import uvicorn
 from cogs.consts import *
-from cogs.handlers import Handlers
 from config import config
-from discord.ext import commands
 
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
-from uvicorn import Config, Server
 
 
 app = FastAPI()
