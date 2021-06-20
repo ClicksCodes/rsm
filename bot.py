@@ -19,6 +19,13 @@ class Context(commands.Context):
             print(f"{Colours.RedDark}[C] {Colours.Red}FATAL:\n{Colours.c}\n{e}, please message Minion3665")
             return "@RSM "  # This should **never** trigger
 
+    async def delete(self):
+        if isinstance(self.channel, discord.channel.DMChannel):
+            return
+        if not self.channel.permissions_for(self.me).manage_messages:
+            return
+        return await self.message.delete()
+
     @prefix.setter
     def prefix(self, _):
         pass

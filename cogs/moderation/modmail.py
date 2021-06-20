@@ -166,7 +166,7 @@ class Modmail(commands.Cog):
         if data["modmail"]["mention"] is not None:
             await c.set_permissions(self.bot.get_guild(ctx.guild.id).get_role(data['modmail']['mention']), view_channel=True, send_messages=True)
         await c.send(f"<@{ctx.author.id}>" + (f" • <@&{data['modmail']['mention']}>" if data['modmail']['mention'] else ''))
-        await ctx.message.delete()
+        await ctx.delete()
         await self.handlers.sendLog(
             emoji=self.emojis().guild.modmail.open,
             type=f"Ticket opened",

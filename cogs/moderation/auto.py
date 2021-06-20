@@ -1,6 +1,5 @@
 import asyncio
 import discord
-from discord import reaction
 from discord.ext import commands
 
 from cogs.consts import *

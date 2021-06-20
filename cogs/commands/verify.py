@@ -38,7 +38,7 @@ class Verify(commands.Cog):
     @commands.guild_only()
     async def verify(self, ctx):
         m = await ctx.send(embed=loading_embed)
-        await ctx.message.delete()
+        await ctx.delete()
         data = self.handlers.fileManager(ctx.guild)
         roleid = data["verify_role"]
         if not roleid:

@@ -149,8 +149,8 @@ class Git(commands.Cog):
 
                 try:
                     await message.delete()
-                except Exception as e:
-                    print(e)
+                except discord.Forbidden:
+                    pass
                 await m.edit(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",
                     description=f"{self.bot.get_emoji(gc['commit'])} Commit\n\n>>> Committing",

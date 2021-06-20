@@ -11,7 +11,7 @@ from discord.ext import commands
 from cogs.consts import *
 from config import config
 import io
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageDraw, ImageFont
 
 
 class Failed:
@@ -79,7 +79,8 @@ class Handlers:
         await m.clear_reactions()
         response = done.pop().result()
         if isinstance(response, discord.message.Message):
-            await response.delete()
+            if response.channel.permissions_for(response.channel.guild.me).manage_messages:
+                await response.delete()
             if not multiple:
                 try:
                     member = await commands.MemberConverter().convert(await self.bot.get_context(response), response.content)
@@ -157,7 +158,8 @@ class Handlers:
         await m.clear_reactions()
         response = done.pop().result()
         if isinstance(response, discord.message.Message):
-            await response.delete()
+            if response.channel.permissions_for(response.channel.guild.me).manage_messages:
+                await response.delete()
             if not multiple:
                 try:
                     role = await commands.RoleConverter().convert(await self.bot.get_context(response), response.content)
@@ -235,7 +237,8 @@ class Handlers:
         await m.clear_reactions()
         response = done.pop().result()
         if isinstance(response, discord.message.Message):
-            await response.delete()
+            if response.channel.permissions_for(response.channel.guild.me).manage_messages:
+                await response.delete()
             if not multiple:
                 channel = None
                 if "text" in accepted or "announcement" in accepted:
@@ -356,7 +359,8 @@ class Handlers:
         await m.clear_reactions()
         response = done.pop().result()
         if isinstance(response, discord.message.Message):
-            await response.delete()
+            if response.channel.permissions_for(response.channel.guild.me).manage_messages:
+                await response.delete()
             try:
                 category = await commands.CategoryChannelConverter().convert(await self.bot.get_context(response), response.content)
                 return category
@@ -425,7 +429,8 @@ class Handlers:
         await m.clear_reactions()
         response = done.pop().result()
         if isinstance(response, discord.message.Message):
-            await response.delete()
+            if response.channel.permissions_for(response.channel.guild.me).manage_messages:
+                await response.delete()
             try:
                 return int(response.content)
             except ValueError:
@@ -491,7 +496,8 @@ class Handlers:
         await m.clear_reactions()
         response = done.pop().result()
         if isinstance(response, discord.message.Message):
-            await response.delete()
+            if response.channel.permissions_for(response.channel.guild.me).manage_messages:
+                await response.delete()
             return str(response.content)
         else:
             if response[0].emoji.name == "Tick" and optional:
@@ -744,7 +750,10 @@ class Handlers:
         return nsfw, resp['output']['detections'], score, image
 
     def is_text_banned(self, text, guild, member=None, channel=None):
-        data = self.checkGuild(guild)["filter"]
+        data = self.checkGuild(guild)
+        if isinstance(data, Failed):
+            return False
+        data = data["filter"]
         if member:
             if member.id in data["ignore"]["members"]:
                 return False
@@ -802,6 +811,8 @@ class Handlers:
         return string
 
     def checkGuild(self, guild):
+        if not guild:
+            return Failed()
         if not isinstance(guild, int):
             guild = guild.id
         if guild in self.bot.mem:

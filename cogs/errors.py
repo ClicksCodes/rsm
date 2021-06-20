@@ -1,9 +1,7 @@
 import asyncio
-import sys
 from hashlib import sha256
 
 import bot as customBot
-import postbin
 import discord
 from discord.ext import commands
 import traceback

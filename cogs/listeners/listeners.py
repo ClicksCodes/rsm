@@ -1,6 +1,4 @@
-import aiohttp
 import discord
-import datetime
 import io
 from discord.ext import commands
 
@@ -22,10 +20,12 @@ class Listeners(commands.Cog):
         if message.guild:
             if message.channel.slowmode_delay:
                 if self.handlers.is_channel_locked(message.channel) and not message.author.permissions_in(message.channel).manage_messages:
-                    return await message.delete()
+                    if message.channel.permissions_for(message.channel.guild.me).manage_messages:
+                        return await message.delete()
         if self.handlers.is_text_banned(message.content, message.guild, message.author, message.channel):
-            return await message.delete()
-        if message.channel.nsfw:
+            if message.channel.permissions_for(message.channel.guild.me).manage_messages:
+                return await message.delete()
+        if not message.channel.nsfw:
             for attachment in message.attachments:
                 nsfw, detections, score, image = await self.handlers.is_pfp_nsfw(attachment.proxy_url)
                 image.show()
@@ -42,7 +42,8 @@ class Listeners(commands.Cog):
                             color=self.colours.red
                         ))
                         # ), file=discord.File(buf, filename="image.png", spoiler=True))
-                    return await message.delete()
+                    if message.channel.permissions_for(message.channel.guild.me).manage_messages:
+                        return await message.delete()
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
