@@ -623,7 +623,8 @@ class Handlers:
             data["images"]["nsfw"] = data.get("nsfw", True)
             if "nsfw" in data:
                 del data["nsfw"]
-            data["wordfilter"]["strict"] = data.get("wordfilter", {"banned": []})["banned"]
+            if "wordfilter" in data:
+                data["wordfilter"]["strict"] = data.get("wordfilter", {"banned": []})["banned"]
             if "wordfilter" in data and "banned" in data["wordfilter"]:
                 del data["wordfilter"]["banned"]
             data["wordfilter"]["punishment"] = data.get("nameban", "change")
