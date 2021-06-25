@@ -1,8 +1,6 @@
 import asyncio
-from os import XATTR_CREATE
 import typing
 import discord
-from discord import reaction
 from discord.ext import commands
 
 from cogs.consts import *
@@ -239,7 +237,7 @@ class Public(commands.Cog):
                 f"{self.emojis().channel.purge       } `{p}purge        [*N] {'' if mob else '|'} ` {n if mob else ''}Deletes [N] messages in the channel.",
                 f"{self.emojis().punish.soft_ban     } `{p}punish       [*@] {'' if mob else '|'} ` {n if mob else ''}Punishes a user.",
                 f"{self.emojis().channel.text.create } `{p}setlog       [ C] {'' if mob else '|'} ` {n if mob else ''}Sets the servers log channel to [C].",
-                f"{self.emojis().commands.ignore     } `{p}ignore     [*CR@] {'' if mob else '|'} ` {n if mob else ''}Stops logging users, roles and channels privided.",
+                f"{self.emojis().commands.ignore     } `{p}ignore     [*CR@] {'' if mob else '|'} ` {n if mob else ''}Stops logging users, roles and channels provided.",
                 f"{self.emojis().commands.ignore     } `{p}ignored           {'' if mob else '|'} ` {n if mob else ''}Shows the ignored users, roles and channels.",
                 f"{self.emojis().channel.text.delete } `{p}stafflog     [*C] {'' if mob else '|'} ` {n if mob else ''}Sets the staff log channel for reports and messages.",
                 f"{self.emojis().webhook.create      } `{p}auto              {'' if mob else '|'} ` {n if mob else ''}Lets you edit your server automations.",

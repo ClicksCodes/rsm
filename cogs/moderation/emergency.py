@@ -3,7 +3,6 @@ from discord.ext import commands
 
 from cogs.consts import *
 from cogs.handlers import Handlers, Failed
-import io
 
 
 class Emergency(commands.Cog):

@@ -36,7 +36,7 @@ class RSM(commands.Cog):
         ))
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().icon.add} Suggestion",
-            description="Your suggestion has been sent to the develoeprs",
+            description="Your suggestion has been sent to the developers",
             colour=self.colours.green
         ))
 

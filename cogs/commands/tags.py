@@ -1,4 +1,3 @@
-import asyncio
 import typing
 import discord
 from discord.ext import commands

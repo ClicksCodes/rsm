@@ -2,7 +2,7 @@ import typing
 from discord.ext import commands, tasks
 
 from cogs.consts import *
-from cogs.handlers import Handlers, Failed
+from cogs.handlers import Handlers
 
 
 class Loops(commands.Cog):

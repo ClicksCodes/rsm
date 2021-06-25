@@ -41,7 +41,7 @@ class Auto(commands.Cog):
                         title=f"{self.emojis().webhook.create} NSFW",
                         description=f"**You are{' not' if data['images']['nsfw'] else ''} currently moderating NSFW content like profile pictures and images in chat**\n"
                                     f"When a user verifies, joins etc. their profile picture will be checked\n"
-                                    f"You will recieve a message in your stafflog channel if a user has a NSFW profile picture\n",
+                                    f"You will receive a message in your stafflog channel if a user has a NSFW profile picture\n",
                         colour=self.colours.green
                     ).set_footer(text="No NSFW filter is 100% accurate, however we try our best to ensure only NSFW content triggers our checks"))
                 case 2:
@@ -305,7 +305,7 @@ class Auto(commands.Cog):
                 title=f"{self.emojis().webhook.create} NSFW",
                 description=f"**You are{' not' if data['images']['nsfw'] else ''} currently moderating NSFW content like profile pictures and images in chat**\n"
                             f"When a user verifies, joins etc. their profile picture will be checked\n"
-                            f"You will recieve a message in your stafflog channel if a user has a NSFW profile picture\n",
+                            f"You will receive a message in your stafflog channel if a user has a NSFW profile picture\n",
                 colour=self.colours.green
             ).set_footer(text="No NSFW filter is 100% accurate, however we try our best to ensure only NSFW content triggers our checks"))
             reaction = await self.handlers.reactionCollector(ctx, m, [], task=task)
@@ -385,7 +385,7 @@ class Auto(commands.Cog):
                         m,
                         emoji=self.emojis().webhook.create,
                         title="Welcome",
-                        description="What message should be sent?\nUse [@] to mention the user and [mc] for tthe server member count",
+                        description="What message should be sent?\nUse [@] to mention the user and [mc] for the server member count",
                         optional=True
                     )
                     if isinstance(message, Failed):

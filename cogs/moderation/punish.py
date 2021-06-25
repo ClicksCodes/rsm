@@ -163,7 +163,7 @@ class Mod(commands.Cog):
             ).set_footer(text="403 Forbidden"))
 
     async def _clear(self, ctx, m, member=None, count=None):
-        if isinstance(await self.handlers.checkPerms(ctx, m, "manage_messages", self.emojis().punish.chear_history, "clear someones history"), Failed):
+        if isinstance(await self.handlers.checkPerms(ctx, m, "manage_messages", self.emojis().punish.clear_history, "clear someones history"), Failed):
             return
 
         if not member:
