@@ -152,7 +152,7 @@ class Mod(commands.Cog):
             )
             return await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().punish.warn} Warn",
-                description=f"{member.mention} warn successfully warned" + (f" for:\n> {reason}" if reason else ""),
+                description=f"{member.mention} was successfully warned" + (f" for:\n> {reason}" if reason else ""),
                 colour=self.colours.green
             ))
         except discord.errors.Forbidden:

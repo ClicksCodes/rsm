@@ -32,12 +32,13 @@ class Errors(commands.Cog):
                 code = str(sha256(str.encode(random.randint(0, 10000000))).hexdigest())[20:]
 
             if isinstance(error, commands.errors.NoPrivateMessage):
-                return print(f"{Colours.GreenDark}[N] {Colours.Green}{str(error)}{Colours.c}")
+                if not ctx.guild:
+                    return await ctx.send(await self.dms.genResponse(ctx.message.content))
             elif isinstance(error, commands.errors.BotMissingPermissions) or isinstance(error, discord.ext.commands.errors.BotMissingPermissions):
                 return print(f"{Colours.GreenDark}[N] {Colours.Green}{str(error)}{Colours.c}")
             elif isinstance(error, commands.errors.CommandNotFound):
                 if not ctx.guild:
-                    await ctx.send(await self.dms.genResponse(ctx.message.content))
+                    return await ctx.send(await self.dms.genResponse(ctx.message.content))
             elif isinstance(error, asyncio.TimeoutError):
                 return print(f"{Colours.GreenDark}[N] {Colours.Green}{str(error)}{Colours.c}")
             elif isinstance(error, commands.errors.NotOwner):

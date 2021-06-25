@@ -548,7 +548,11 @@ class Handlers:
             reaction = done.pop().result()[0]
         except asyncio.TimeoutError:
             return Failed()
-        await m.remove_reaction(reaction, ctx.author)
+        if ctx.guild:
+            try:
+                await m.remove_reaction(reaction, ctx.author)
+            except discord.Forbidden:
+                pass
         return reaction
 
     async def checkPerms(self, ctx, m, permission, emoji, action, user=True, me=True, edit=True):
