@@ -37,7 +37,8 @@ class Git(commands.Cog):
                         f"**Branch:** `{self.branch}`\n"
                         f"**HEAD:** `{self.head}`\n"
                         f"**Commit:** `{self.commit}`\n"
-                        f"**Server size:** `{humanize.naturalsize(os.path.getsize(f'./data/guilds/{ctx.guild.id}.json'))}` • `{humanize.naturalsize(total_size)}`\n"
+                        f"**Server size:** `{humanize.naturalsize(os.path.getsize(f'./data/guilds/{ctx.guild.id}.json')) if ctx.guild else 0}`"
+                        f" • `{humanize.naturalsize(total_size)}`\n"
                         f"**Uptime:** `{str(datetime.datetime.now()-self.bot.uptime).split('.')[0]}`",
             colour=self.colours.red,
             url="https://discord.gg/bPaNnxe"

@@ -76,6 +76,9 @@ class Listeners(commands.Cog):
                         else:
                             if after.channel.permissions_for(after.channel.guild.me).manage_messages:
                                 return await after.delete()
+        if after.guild and self.handlers.is_text_banned(after.content, after.guild, after.author, after.channel):
+            if after.channel.permissions_for(after.channel.guild.me).manage_messages:
+                return await after.delete()
 
     @commands.Cog.listener()
     async def on_member_join(self, member):

@@ -14,6 +14,7 @@ class Errors(commands.Cog):
     def __init__(self, bot: customBot.Bot):
         self.bot = bot
         self.dms = DMs()
+        self.colours = Cols()
 
     async def _on_error(self, ctx, error):
         Colours = consts.Colours
