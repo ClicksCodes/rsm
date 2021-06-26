@@ -60,6 +60,24 @@ class Listeners(commands.Cog):
                         return await message.delete()
 
     @commands.Cog.listener()
+    async def on_message_edit(self, _, after):
+        if after.author.bot:
+            return
+        if not after.guild:
+            return
+        if re.search(r"(?:https?:\/\/)?discord(?:app)?\.(?:com\/invite|gg)\/[a-zA-Z0-9]+\/?", after.content, re.MULTILINE):
+            data = self.handlers.checkGuild(after.guild)
+            if data["invite"]["enabled"]:
+                if not after.author.id in data["invite"]["whitelist"]["members"]:
+                    if not after.channel.id in data["invite"]["whitelist"]["channels"]:
+                        for role in after.author.roles:
+                            if role.id in data["invite"]["whitelist"]["roles"]:
+                                break
+                        else:
+                            if after.channel.permissions_for(after.channel.guild.me).manage_messages:
+                                return await after.delete()
+
+    @commands.Cog.listener()
     async def on_member_join(self, member):
         if member.bot:
             return
