@@ -13,8 +13,9 @@ from cogs.dmCommands import DMs
 class Errors(commands.Cog):
     def __init__(self, bot: customBot.Bot):
         self.bot = bot
+        self.emojis = consts.Emojis
         self.dms = DMs()
-        self.colours = Cols()
+        self.colours = consts.Cols()
 
     async def _on_error(self, ctx, error):
         Colours = consts.Colours
@@ -49,7 +50,7 @@ class Errors(commands.Cog):
             elif isinstance(error, commands.errors.MissingPermissions) and ctx:
                 return await ctx.send(
                     embed=discord.Embed(
-                        title=f"{emojis['cross']} Missing permissions",
+                        title=f"{self.emojis().control.cross} Missing permissions",
                         description=str(error),
                         colour=self.colours.red,
                     )
@@ -75,7 +76,7 @@ class Errors(commands.Cog):
                 if int(self.bot.user.id) == 715989276382462053 and ctx:
                     return await ctx.channel.send(
                         embed=discord.Embed(
-                            title="It looks like I messed up",
+                            title=f"{self.emojis().control.cross} It looks like I messed up",
                             description=f"It looks like there was an error. Just send the [developers](https://discord.gg/bPaNnxe) code `{code}`",
                             colour=self.colours.red,
                         )
