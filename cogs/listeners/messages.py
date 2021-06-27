@@ -174,7 +174,7 @@ class Logs(commands.Cog):
                 "Sent in": message.channel.mention,
                 "Cleared": self.handlers.strf(datetime.datetime.utcnow()),
                 "Attachments": len(message.attachments),
-                "Reactions": " ".join([f"<{'a' if emoji.animated else ''}:a:{emoji.emoji.id}>" for emoji in reactions])
+                "Reactions": " ".join([f"<{'a' if emoji.emoji.animated else ''}:a:{emoji.emoji.id}>" for emoji in reactions])
             },
             jump_url=message.jump_url
         )
