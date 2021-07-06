@@ -36,6 +36,12 @@ class Errors(commands.Cog):
             if isinstance(error, commands.errors.NoPrivateMessage):
                 if not ctx.guild:
                     return await ctx.send(await self.dms.genResponse(ctx.message.content))
+            elif isinstance(error, commands.errors.CommandOnCooldown):
+                return await ctx.send(embed=discord.Embed(
+                    title="You're on cooldown",
+                    description="Please try again in a few seconds",
+                    color=self.colors.red
+                ))
             elif isinstance(error, commands.errors.BotMissingPermissions) or isinstance(error, discord.ext.commands.errors.BotMissingPermissions):
                 return print(f"{Colours.GreenDark}[N] {Colours.Green}{str(error)}{Colours.c}")
             elif isinstance(error, commands.errors.CommandNotFound):

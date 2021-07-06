@@ -263,7 +263,7 @@ class Public(commands.Cog):
         split = [[headings[x]]]
         for desc in descriptions:
             for command in desc:
-                if len("\n".join([split[-1][-1]])) + len(command) > 2000:
+                if len("\n".join([split[-1][-1]])) + len(command) > 2000 - 78:
                     split.append([headings[x]])
                 split[-1].append(command)
             split[-1].append("[[Invite]](https://bit.do/rsmInvite) | [[Support]](https://discord.gg/bPaNnxe)")
