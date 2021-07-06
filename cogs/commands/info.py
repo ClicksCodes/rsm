@@ -266,6 +266,7 @@ class Public(commands.Cog):
                 if len("\n".join([split[-1][-1]])) + len(command) > 2000:
                     split.append([headings[x]])
                 split[-1].append(command)
+            split[-1].append("[[Invite]](https://bit.do/rsmInvite) | [[Support]](https://discord.gg/bPaNnxe)")
             x += 1
             if x == len(headings):
                 break
@@ -284,7 +285,8 @@ class Public(commands.Cog):
                 case "Right": page += 1
                 case _: break
             page = max(0, min(page, len(split)))
-        await m.clear_reactions()
+        if ctx.channel.guild:
+            await m.clear_reactions()
         embed = m.embeds[0]
         embed.colour = self.colours.red
         await m.edit(embed=embed)

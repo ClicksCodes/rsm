@@ -40,7 +40,10 @@ class Errors(commands.Cog):
                 return print(f"{Colours.GreenDark}[N] {Colours.Green}{str(error)}{Colours.c}")
             elif isinstance(error, commands.errors.CommandNotFound):
                 if not ctx.guild:
-                    return await ctx.send(await self.dms.genResponse(ctx.message.content))
+                    return await ctx.send(
+                        (await self.dms.genResponse(ctx.message.content))
+                        .replace("{mention}", ctx.author.mention)
+                    )
             elif isinstance(error, asyncio.TimeoutError):
                 return print(f"{Colours.GreenDark}[N] {Colours.Green}{str(error)}{Colours.c}")
             elif isinstance(error, commands.errors.NotOwner):
