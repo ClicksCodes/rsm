@@ -285,7 +285,7 @@ class Public(commands.Cog):
                 case "Right": page += 1
                 case _: break
             page = max(0, min(page, len(split)))
-        if ctx.channel.guild:
+        if ctx.guild:
             await m.clear_reactions()
         embed = m.embeds[0]
         embed.colour = self.colours.red
