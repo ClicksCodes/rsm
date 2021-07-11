@@ -1,6 +1,6 @@
-/data/guilds/*
+/data/guilds/*.json
+/data/backup/*.json
 /tmp/*.png
-/data/stats.json
 __pycache__
 .idea
 venv

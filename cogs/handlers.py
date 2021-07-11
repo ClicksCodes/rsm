@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+from json.decoder import JSONDecodeError
 import os
 import re
 import aiohttp
@@ -582,6 +583,12 @@ class Handlers:
             case "w":
                 with open(f"data/guilds/{guild}.json", "w") as f:
                     json.dump(kwargs["data"], f, indent=2)
+                try:
+                    with open(f"data/backup/{guild}.json", "w") as f:
+                        json.dump(kwargs["data"], f, indent=2)
+                except FileNotFoundError:
+                    with open(f"data/backup/{guild}.json", "x") as f:
+                        json.dump(kwargs["data"], f, indent=2)
                 return kwargs["data"]
 
             case "r":
@@ -603,9 +610,25 @@ class Handlers:
                         json.dump(t, f, indent=2)
                     return t
 
+                except json.decoder.JSONDecodeError:
+                    if os.path.exists(f"data/backup/{guild}.json"):
+                        with open(f"data/backup/{guild}.json", "r") as f:
+                            entry = json.load(f)
+                        updated = self._update(entry.copy())
+                        if updated != entry:
+                            self.fileManager(guild, action="w", data=updated)
+                        entry = self.defaultDict(updated, template)
+                        self.fileManager(guild, "w", data=entry)
+                        return entry
+                    else:
+                        self.fileManager(guild, action="RESET")
+                        return self.fileManager(guild)
+
             case "RESET":
                 if os.path.exists(f"data/guilds/{guild}.json"):
                     os.remove(f"data/guilds/{guild}.json")
+                if os.path.exists(f"data/backup/{guild}.json"):
+                    os.remove(f"data/backup/{guild}.json")
 
             case _:
                 return None
