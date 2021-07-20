@@ -1,6 +1,7 @@
 import humanize
 import discord
 import datetime
+import asyncio
 from discord.ext import commands
 
 from cogs.consts import *
@@ -16,6 +17,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
+        await asyncio.sleep(1)
         await self.handlers.sendLog(
             emoji=self.emojis().member.bot.join if member.bot else self.emojis().member.join,
             type=f"{'Bot' if member.bot else 'Member'} joined",
@@ -32,6 +34,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
+        await asyncio.sleep(1)
         kick = await self.handlers.getAuditLogEntry(member.guild, type=discord.AuditLogAction.kick)
         ban = await self.handlers.getAuditLogEntry(member.guild, type=discord.AuditLogAction.ban)
         if not kick or not ban:
@@ -93,6 +96,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_unban(self, guild, user):
+        await asyncio.sleep(1)
         audit = await self.handlers.getAuditLogEntry(guild, type=discord.AuditLogAction.unban)
         if not audit:
             return
@@ -116,6 +120,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
+        await asyncio.sleep(1)
         if before.nick != after.nick:
             audit = await self.handlers.getAuditLogEntry(after.guild, type=discord.AuditLogAction.member_update)
             if not audit:

@@ -1,6 +1,7 @@
 import discord
 import io
 import re
+import asyncio
 from discord.ext import commands
 
 from cogs.consts import *
@@ -16,6 +17,7 @@ class Listeners(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        await asyncio.sleep(1)
         if message.author.bot:
             return
         if not message.guild:
@@ -61,6 +63,7 @@ class Listeners(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, _, after):
+        await asyncio.sleep(1)
         if after.author.bot:
             return
         if not after.guild:
@@ -82,6 +85,7 @@ class Listeners(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
+        await asyncio.sleep(1)
         if member.bot:
             return
         data = self.handlers.fileManager(member.guild)
@@ -156,6 +160,7 @@ class Listeners(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
+        await asyncio.sleep(1)
         if before.nick != after.nick:
             if self.handlers.is_text_banned(after.display_name, after.guild, after):
                 audit = await self.handlers.getAuditLogEntry(after.guild, type=discord.AuditLogAction.member_update)

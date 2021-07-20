@@ -1,6 +1,7 @@
 import aiohttp
 import discord
 import datetime
+import asyncio
 from discord.ext import commands
 
 from cogs.consts import *
@@ -16,6 +17,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        await asyncio.sleep(1)
         if message.author.bot:
             return
         if len(message.mentions) >= 5:
@@ -69,6 +71,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
+        await asyncio.sleep(1)
         if message.author.bot:
             return
         await self.handlers.sendLog(
@@ -79,7 +82,7 @@ class Logs(commands.Cog):
             data={
                 "Content": "```\n" + self.handlers.cleanMessageContent(message.content, max_length=1000) + "```",
                 "Mentions": len(message.mentions),
-                "Sent by": message.author.mention,
+                "Sent by": f"{message.author.name} ({message.author.mention})",
                 "Sent in": message.channel.mention,
                 "Sent": self.handlers.betterDelta(message.created_at),
                 "Edited": self.handlers.betterDelta(message.edited_at),
@@ -90,6 +93,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
+        await asyncio.sleep(1)
         if after.author.bot:
             return
         if before.content == after.content:
@@ -116,6 +120,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_bulk_message_delete(self, messages):
+        await asyncio.sleep(1)
         audit = await self.handlers.getAuditLogEntry(messages[0].guild, type=discord.AuditLogAction.message_bulk_delete)
         if not audit or audit.user.bot:
             return
@@ -139,6 +144,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_channel_pins_update(self, channel, _):
+        await asyncio.sleep(1)
         audit = await self.handlers.getAuditLogEntry(channel.guild, type=discord.AuditLogAction.message_pin, check=lambda l: l.extra.channel.id == channel.id)
         if not audit or audit.user.bot:
             return
@@ -161,6 +167,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_reaction_clear(self, message, reactions):
+        await asyncio.sleep(1)
         if message.author.bot:
             return
         await self.handlers.sendLog(

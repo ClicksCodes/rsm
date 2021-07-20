@@ -1,5 +1,6 @@
 import discord
 import datetime
+import asyncio
 from discord.ext import commands
 
 from cogs.consts import *
@@ -15,6 +16,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_channel_create(self, channel):
+        await asyncio.sleep(1)
         audit = await self.handlers.getAuditLogEntry(channel.guild, type=discord.AuditLogAction.channel_create)
         if not audit or audit.user.bot:
             return
@@ -65,6 +67,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, channel):
+        await asyncio.sleep(1)
         audit = await self.handlers.getAuditLogEntry(channel.guild, type=discord.AuditLogAction.channel_delete)
         if not audit or audit.user.bot:
             return
@@ -115,6 +118,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_channel_update(self, before, after):
+        await asyncio.sleep(1)
         audit = await self.handlers.getAuditLogEntry(after.guild, type=discord.AuditLogAction.channel_update)
         if not audit or audit.user.bot:
             return
@@ -252,6 +256,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_invite_create(self, invite):
+        await asyncio.sleep(1)
         audit = await self.handlers.getAuditLogEntry(invite.guild, type=discord.AuditLogAction.invite_create)
         if not audit or audit.user.bot:
             return
@@ -272,6 +277,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_invite_delete(self, invite):
+        await asyncio.sleep(1)
         audit = await self.handlers.getAuditLogEntry(invite.guild, type=discord.AuditLogAction.invite_delete)
         if not audit or audit.user.bot:
             return
@@ -293,6 +299,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_update(self, before, after):
+        await asyncio.sleep(1)
         audit = await self.handlers.getAuditLogEntry(after, type=discord.AuditLogAction.guild_update)
         if not audit or audit.user.bot:
             return
@@ -324,6 +331,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_role_create(self, role):
+        await asyncio.sleep(1)
         audit = await self.handlers.getAuditLogEntry(role.guild, type=discord.AuditLogAction.role_create)
         if not audit or audit.user.bot:
             return
@@ -342,6 +350,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_role_delete(self, role):
+        await asyncio.sleep(1)
         audit = await self.handlers.getAuditLogEntry(role.guild, type=discord.AuditLogAction.role_delete)
         if not audit or audit.user.bot:
             return
@@ -367,6 +376,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_role_update(self, before, after):
+        await asyncio.sleep(1)
         audit = await self.handlers.getAuditLogEntry(after.guild, type=discord.AuditLogAction.role_update)
         if not audit or audit.user.bot:
             return
@@ -406,6 +416,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_emojis_update(self, guild, before, after):
+        await asyncio.sleep(1)
         if len(after):
             g = after[0].guild
         elif len(before):
@@ -435,7 +446,8 @@ class Logs(commands.Cog):
             data["Updated"] = "\n" + ("\n".join([f"> <{'a' if e[0].animated else ''}:a:{e[0].id}> `:{e[0].name}:` -> `:{e[1].name}:`" for e in changed]))
         if len(removed):
             data["Removed"] = " ".join([f"`:{e.name}:`" for e in removed])
-
+        if not len(added) and not len(changed) and not len(removed):
+            return
         data["Changed"] = self.handlers.betterDelta(datetime.datetime.utcnow())
         data["Changed by"] = f"{audit.user.name} ({audit.user.mention})"
 

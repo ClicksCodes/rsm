@@ -1,3 +1,5 @@
+import asyncio
+
 from discord.ext import commands
 
 from cogs.consts import *
@@ -13,6 +15,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
+        await asyncio.sleep(1)
         if member.bot:
             return
         if before.channel is None and after.channel is not None:  # Join
