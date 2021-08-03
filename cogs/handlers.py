@@ -741,7 +741,7 @@ class Handlers:
             description="\n".join([f"**{k}:** {v}" for k, v in data.items()]) + jump_url,
             colour=colour,
             timestamp=datetime.datetime.utcnow()
-        ).set_footer(text="All times are in UTC"))
+        ).set_footer(text="All times are in your timezone • Updates on channel refresh"))
 
     async def is_pfp_nsfw(self, image_url):
         confidence = "80"
