@@ -162,7 +162,7 @@ class Modmail(commands.Cog):
             title=f"{self.emojis().guild.modmail.open} {ctx.author.name} created a ticket",
             description=f"> Anyone can close this ticket with `{ctx.prefix}close`" + (f"\n\n> {message}" if message else ''),
             colour=self.colours.green
-        ).set_footer(text=f"Ticket opened at {datetime.datetime.utcnow().strftime('%Y-%m-%d at %H:%M:%S')}"))
+        ).set_footer(text=f"Ticket opened at {self.handlers.strf(datetime.datetime.utcnow())}"))
         if data["modmail"]["mention"] is not None:
             await c.set_permissions(self.bot.get_guild(ctx.guild.id).get_role(data['modmail']['mention']), view_channel=True, send_messages=True)
         await c.send(f"<@{ctx.author.id}>" + (f" • <@&{data['modmail']['mention']}>" if data['modmail']['mention'] else ''))
