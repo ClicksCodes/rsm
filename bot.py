@@ -1,6 +1,5 @@
 import asyncio
 import sys
-import json
 import discord
 import os
 
@@ -8,7 +7,7 @@ from discord.ext import commands
 
 from config import config
 from cogs.consts import Colours
-from cogs.handlers import Handlers, Failed
+from cogs.handlers import Handlers
 
 
 class Context(commands.Context):
@@ -17,7 +16,7 @@ class Context(commands.Context):
         try:
             return self.bot.sync_get_prefix(self)[2]
         except Exception as e:
-            print(f"{Colours.RedDark}[C] {Colours.Red}FATAL:\n{Colours.c}\n{e}, please message Minion3665")
+            print(f"{Colours.RedDark}[C] {Colours.Red}FATAL:\n{Colours.c}\n{e}, please message PineappleFan#9955")
             return "@RSM "  # This should **never** trigger
 
     async def delete(self):
@@ -83,33 +82,6 @@ class Bot(commands.Bot):
         return self.sync_get_prefix(ctx)
 
     def sync_get_prefix(self, ctx):
-        # if ctx.guild and ctx.guild.id in self.mem:
-        #     data = self.mem[ctx.guild.id]
-        #     if data["prefix"]:
-        #         if isinstance(data["prefix"], str):
-        #             prefixes = (data["prefix"],)
-        #         elif isinstance(data["prefix"], list):
-        #             prefixes = data["prefix"]
-        #     else:
-        #         prefixes = config.prefixes.copy()
-        # elif ctx.guild:
-        #     try:
-        #         with open(f"data/guilds/{ctx.guild.id}.json") as f:
-        #             entry = json.load(f)
-        #             if "prefix" in entry:
-        #                 if entry["prefix"]:
-        #                     if isinstance(entry["prefix"], str):
-        #                         prefixes = (entry["prefix"],)
-        #                     elif isinstance(entry["prefix"], list):
-        #                         prefixes = entry["prefix"]
-        #                     else:
-        #                         prefixes = config.prefixes.copy()
-        #                 else:
-        #                     prefixes = config.prefixes.copy()
-        #             else:
-        #                 prefixes = config.prefixes.copy()
-        #     except FileNotFoundError:
-        #         prefixes = config.prefixes.copy()
         if ctx.guild:
             data = self.handlers.checkGuild(ctx.guild)
             if isinstance(data["prefix"], str):
@@ -123,6 +95,7 @@ class Bot(commands.Bot):
         return commands.when_mentioned_or(*prefixes)(self, ctx)
 
     async def on_ready(self):
+        await self.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.playing, name="m! | V2.1 out now!"))
         print(f"{getattr(Colours, config.colour)}[S] {getattr(Colours, str(config.colour) + 'Dark')}Logged on as {self.user} [ID: {self.user.id}]{Colours.c}")
 
 

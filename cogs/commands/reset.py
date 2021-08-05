@@ -5,7 +5,7 @@ from cogs.consts import *
 from cogs.handlers import Handlers, Failed
 
 
-class Public(commands.Cog):
+class Reset(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.emojis = Emojis
@@ -46,4 +46,4 @@ class Public(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Public(bot))
+    bot.add_cog(Reset(bot))

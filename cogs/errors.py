@@ -1,5 +1,5 @@
 import asyncio
-from hashlib import sha256
+import random
 
 import bot as customBot
 import discord
@@ -24,15 +24,6 @@ class Errors(commands.Cog):
             # Warning Yellow
             # Critical Red
             # Status Blue
-            if ctx:
-                try:
-                    code = str(sha256(str.encode(str(ctx.message.id))).hexdigest())[20:]
-                except Exception as e:
-                    print(e)
-                    code = ctx.message.id
-            else:
-                code = str(sha256(str.encode(random.randint(0, 10000000))).hexdigest())[20:]
-
             if isinstance(error, commands.errors.NoPrivateMessage):
                 if not ctx.guild:
                     return await ctx.send(await self.dms.genResponse(ctx.message.content))
@@ -67,26 +58,37 @@ class Errors(commands.Cog):
             else:
                 self.bot.errors += 1
                 tb = "".join(traceback.format_exception(type(error), error, error.__traceback__))
-                tb = "\n".join([
+                tb2 = "\n".join([
                     f"{Colours.RedDark}[C] {Colours.Red}" + line for line in (
                         f"Command ran: {ctx.message.content if ctx else ''}\nUser id:{ctx.author.id if ctx else ''}\n"
                         f"Guild id:{(ctx.guild.id if ctx.guild else 'N/A') if ctx else ''}\n\n{tb}".split("\n")
                     )
                 ])
-                print(f"{Colours.RedDark}[C] {Colours.Red}FATAL:\n{tb}{Colours.c}\n{code}")
-                # url = await postbin.postAsync(tb)
-                #     await self.bot.get_channel(776418051003777034).send(
-                #         embed=discord.Embed(
-                #             title="Error",
-                #             description=f"`{code}`: " + url,
-                #             colour=colours["delete"],
-                #         )
-                #     )
-                if int(self.bot.user.id) == 715989276382462053 and ctx:
-                    return await ctx.channel.send(
+                with open("./words.txt") as f:
+                    words = f.read().split("\n")
+                code = "-".join([random.choice(words) for _ in range(3)])
+                s = f"`{code}`: ```\n```"
+                cut = 1900 - len(s)
+                print(f"{Colours.RedDark}[C] {Colours.Red}FATAL:\n{tb2}{Colours.c}")
+                await self.bot.get_channel(776418051003777034).send(
+                    embed=discord.Embed(
+                        title="Error",
+                        description=f"`{code}`: ```\n" + tb[:cut] + "```",
+                        colour=self.colours.red,
+                    )
+                )
+                if ctx:
+                    await ctx.channel.send(
                         embed=discord.Embed(
                             title=f"{self.emojis().control.cross} It looks like I messed up",
                             description=f"It looks like there was an error. Just send the [developers](https://discord.gg/bPaNnxe) code `{code}`",
+                            colour=self.colours.red,
+                        )
+                    )
+                    return await self.bot.get_user(438733159748599813).send(
+                        embed=discord.Embed(
+                            title=f"{self.emojis().control.cross} It looks wike you did a fucky wucky >w<",
+                            description=f"You did a shit job programming and someone just got the error code `{code}` you fucking donkey\n\n`Line 1 Brain.py: raise IncompetenceError`",
                             colour=self.colours.red,
                         )
                     )
@@ -108,6 +110,11 @@ class Errors(commands.Cog):
     @commands.is_owner()
     async def error(self, ctx):
         return f"{myhopesanddreams}"
+
+    @commands.command()
+    @commands.is_owner()
+    async def raiseerror(self, ctx):
+        raise ModuleNotFoundError("My hopes and dreams")
 
 
 def setup(bot):

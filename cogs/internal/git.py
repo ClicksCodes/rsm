@@ -45,7 +45,7 @@ class Git(commands.Cog):
         ).set_footer(
             text=f"You probably don't know what most of this means - "
                  f"If you do know what this means, you can become a programmer of {self.bot.user.name} and other bots at https://discord.gg/bPaNnxe",
-            icon_url=self.bot.user.avatar_url
+            icon_url=self.bot.user.avatar.url
         ))
 
     @commands.command()
@@ -150,7 +150,7 @@ class Git(commands.Cog):
 
                 try:
                     await message.delete()
-                except discord.Forbidden:
+                except discord.HTTPException:
                     pass
                 await m.edit(embed=discord.Embed(
                     title=f"{self.bot.get_emoji(gc['fork'])} Git Controls",

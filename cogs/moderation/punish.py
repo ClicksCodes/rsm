@@ -8,7 +8,7 @@ from cogs.consts import *
 from cogs.handlers import Handlers, Failed
 
 
-class Mod(commands.Cog):
+class Punish(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.emojis = Emojis
@@ -413,7 +413,7 @@ class Mod(commands.Cog):
                     description=f"You have been banned from {ctx.guild.name}" + (f" for:\n> {reason}" if reason else ""),
                     colour=self.colours.red
                 ))
-            except discord.errors.Forbidden:
+            except discord.HTTPException:
                 pass
             await ctx.guild.ban(member, reason=(reason if reason else "No reason provided"))
             return await m.edit(embed=discord.Embed(
@@ -421,7 +421,7 @@ class Mod(commands.Cog):
                 description=f"{member.mention} was successfully banned" + (f" for:\n> {reason}" if reason else ""),
                 colour=self.colours.green
             ))
-        except discord.errors.Forbidden:
+        except discord.HTTPException:
             return await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().punish.ban} Ban",
                 description=f"An error occurred while banning {member.mention}",
@@ -430,4 +430,4 @@ class Mod(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Mod(bot))
+    bot.add_cog(Punish(bot))

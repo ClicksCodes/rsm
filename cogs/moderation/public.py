@@ -21,10 +21,10 @@ class Public(commands.Cog):
             member = ctx.author
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().member.join} Avatar",
-            description=f"**URL:** [[Open]]({member.avatar_url})\n"
+            description=f"**URL:** [[Open]]({member.avatar.url})\n"
                         f"**Member:** {member.mention}",
             colour=self.colours.green
-        ).set_image(url=member.avatar_url))
+        ).set_image(url=member.avatar.url))
 
     @commands.command(aliases=["server", "serverinfo", "guildinfo"])
     @commands.guild_only()
@@ -65,7 +65,7 @@ class Public(commands.Cog):
                         f"**Created:** {self.handlers.betterDelta(g.created_at)}\n"
                         f"**Region:** {region}\n"
                         f"**Emojis:** {len(g.emojis)}\n> {' '.join([str(e) for e in g.emojis][:25])}{'...' if len(g.emojis) > 25 else ''}\n"
-                        f"**Icon:** [[discord.com]]({g.icon_url})\n"
+                        f"**Icon:** [[discord.com]]({g.icon.url})\n"
                         f"**ID:** `{g.id}`\n"
                         f"**Owner:** {g.owner.name} ({g.owner.mention})\n"
                         f"**2FA required:** {self.emojis().control.tick if g.mfa_level else self.emojis().control.cross}\n"
@@ -78,7 +78,7 @@ class Public(commands.Cog):
                         f"**Roles:** {len(g.roles)}\n"
                         f"**Members:** {len(g.members)}\n",
             colour=self.colours.green
-        ).set_thumbnail(url=g.icon_url).set_image(url=g.banner_url))
+        ).set_thumbnail(url=g.icon.url).set_image(url=(g.banner.url if g.banner else "")))
 
 
 def setup(bot):

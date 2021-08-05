@@ -7,7 +7,7 @@ from cogs.consts import *
 from cogs.handlers import Handlers
 
 
-class Logs(commands.Cog):
+class Guild(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.emojis = Emojis
@@ -291,7 +291,6 @@ class Logs(commands.Cog):
                 "Link": f"{invite.url}",
                 "Max uses": invite.max_uses if invite.max_uses else "No limit",
                 "Uses": invite.uses,
-                "Created by": f"{invite.inviter.name} ({invite.inviter.mention})",
                 "Deleted": self.handlers.strf(datetime.datetime.now()),
                 "Deleted by": f"{audit.user.name} ({audit.user.mention})"
             }
@@ -309,10 +308,10 @@ class Logs(commands.Cog):
             if not t:
                 t = ("Server name changed", "guild.moderation_update")
             changes.append(f"**Name:** {before.name} -> {after.name}")
-        if before.icon_url != after.icon_url:
+        if before.icon.url != after.icon.url:
             if not t:
                 t = ("Server image changed", "guild.icon_change")
-            changes.append(f"**Icon:** [[Before]]({before.icon_url}) -> [[After]]({after.icon_url})")
+            changes.append(f"**Icon:** [[Before]]({before.icon.url}) -> [[After]]({after.icon.url})")
         if before.verification_level != after.verification_level:
             if not t:
                 t = ("Verification level changed", "guild.moderation_update")
@@ -461,4 +460,4 @@ class Logs(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Logs(bot))
+    bot.add_cog(Guild(bot))

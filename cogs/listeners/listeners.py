@@ -23,7 +23,7 @@ class Listeners(commands.Cog):
         if not message.guild:
             return
         if message.channel.slowmode_delay:
-            if self.handlers.is_channel_locked(message.channel) and not message.author.permissions_in(message.channel).manage_messages:
+            if self.handlers.is_channel_locked(message.channel) and not message.channel.permissions_for(message.author).manage_messages:
                 if message.channel.permissions_for(message.channel.guild.me).manage_messages:
                     return await message.delete()
         if re.search(r"(?:https?:\/\/)?discord(?:app)?\.(?:com\/invite|gg)\/[a-zA-Z0-9]+\/?", message.content, re.MULTILINE):
@@ -54,7 +54,7 @@ class Listeners(commands.Cog):
                         await self.bot.get_channel(data["log_info"]["staff"]).send(embed=discord.Embed(
                             title=f"{self.emojis().punish.warn} NSFW image sent",
                             description=f"**User:** {message.author.name} ({message.author.mention})\n**Confidence:** "
-                                        f"{round(score, 2)}%\n[[View here]]({str(message.author.avatar_url_as(format='png'))})",
+                                        f"{round(score, 2)}%\n[[View here]]({str(message.author.avatar.url_as(format='png'))})",
                             color=self.colours.red
                         ))
                         # ), file=discord.File(buf, filename="image.png", spoiler=True))
@@ -124,7 +124,7 @@ class Listeners(commands.Cog):
                             description=f"You joined {member.guild.name}, but your name contained word(s) that aren't allowed. You have been automatically kicked",
                             color=self.colours.red
                         ))
-                    except discord.Forbidden:
+                    except discord.HTTPException:
                         pass
                     return await member.kick(reason="RSM - Username broke rules")
                 case "ban":
@@ -134,10 +134,10 @@ class Listeners(commands.Cog):
                             description=f"You joined {member.guild.name}, but your name contained word(s) that aren't allowed. You have been automatically banned",
                             color=self.colours.red
                         ))
-                    except discord.Forbidden:
+                    except discord.HTTPException:
                         pass
                     return await member.ban(reason="RSM - Username broke rules")
-        nsfw, _, score, image = await self.handlers.is_pfp_nsfw(str(member.avatar_url_as(format="png")))
+        nsfw, _, score, image = await self.handlers.is_pfp_nsfw(str(member.avatar.url_as(format="png")))
         if nsfw:
             try:
                 await member.send(embed=discord.Embed(
@@ -145,7 +145,7 @@ class Listeners(commands.Cog):
                     description=f"You joined {member.guild.name}, but your profile was flagged as NSFW. Please contact the moderators if you believe this is a mistake",
                     color=self.colours.red
                 ))
-            except discord.Forbidden:
+            except discord.HTTPException:
                 pass
             data = self.handlers.fileManager(member.guild.id)
             if data["log_info"]["staff"]:
@@ -154,7 +154,7 @@ class Listeners(commands.Cog):
                 buf.seek(0)
                 await self.bot.get_channel(data["log_info"]["staff"]).send(embed=discord.Embed(
                     title=f"{self.emojis().control.cross} Profile picture flagged",
-                    description=f"**User:** {member.name} ({member.mention})\n**Confidence:** {round(score, 2)}%\n[[View here]]({str(member.avatar_url_as(format='png'))})",
+                    description=f"**User:** {member.name} ({member.mention})\n**Confidence:** {round(score, 2)}%\n[[View here]]({str(member.avatar.url_as(format='png'))})",
                     color=self.colours.red
                 ), file=discord.File(buf, filename="image.png", spoiler=True))
 

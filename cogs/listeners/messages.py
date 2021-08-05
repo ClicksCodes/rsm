@@ -8,7 +8,7 @@ from cogs.consts import *
 from cogs.handlers import Handlers
 
 
-class Logs(commands.Cog):
+class Messages(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.emojis = Emojis
@@ -188,4 +188,4 @@ class Logs(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Logs(bot))
+    bot.add_cog(Messages(bot))

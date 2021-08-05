@@ -65,7 +65,7 @@ class Verify(commands.Cog):
                 description="We are just checking that your profile picture is safe for work",
                 colour=self.colours.yellow
             ).set_footer(text="Requesting"))
-            nsfw, _, score, image = await self.handlers.is_pfp_nsfw(str(ctx.author.avatar_url_as(format="png")))
+            nsfw, _, score, image = await self.handlers.is_pfp_nsfw(str(ctx.author.avatar.url_as(format="png")))
             if nsfw or image:
                 buf = io.BytesIO()
                 image.save(buf, format="png")
@@ -106,7 +106,7 @@ class Verify(commands.Cog):
                 role_name=str(ctx.guild.get_role(roleid).name),
                 guild=str(ctx.guild.id),
                 guild_name=str(ctx.guild.name),
-                guild_icon_url=str(ctx.guild.icon_url),
+                guild_icon_url=str(ctx.guild.icon.url),
                 guild_size=str(len(ctx.guild.members))
             ).save()
         except (TypeError, pymongo.errors.ServerSelectionTimeoutError):
@@ -126,7 +126,7 @@ class Verify(commands.Cog):
                     colour=self.colours.green,
                 )
             )
-        except discord.Forbidden:
+        except discord.HTTPException:
             await m.edit(
                 embed=discord.Embed(
                     title=f"{self.emojis().control.cross} Verify",

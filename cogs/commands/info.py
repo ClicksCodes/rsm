@@ -7,7 +7,7 @@ from cogs.consts import *
 from cogs.handlers import Handlers, Failed
 
 
-class Public(commands.Cog):
+class Info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.emojis = Emojis
@@ -106,7 +106,7 @@ class Public(commands.Cog):
                                     f"**Joined this server:** {self.handlers.betterDelta(user.joined_at)}\n"
                                     f"**Join position:** {sum(m.joined_at < user.joined_at for m in ctx.guild.members if m.joined_at is not None)}\n",
                         colour=self.colours.green
-                    ).set_thumbnail(url=user.avatar_url).set_footer(text="Bots cannot detect if a user has Nitro"))
+                    ).set_thumbnail(url=user.avatar.url).set_footer(text="Bots cannot detect if a user has Nitro"))
                 case 1:
                     await m.edit(embed=discord.Embed(
                         title=f"{self.emojis().member.join} User info",
@@ -115,7 +115,7 @@ class Public(commands.Cog):
                                     f"**Roles:** {len(user.roles)-1}\n" +
                                     ", ".join([r.mention for r in reversed(user.roles[1:])]),
                         colour=self.colours.green
-                    ).set_thumbnail(url=user.avatar_url))
+                    ).set_thumbnail(url=user.avatar.url))
                 case 2:
                     perms = [
                         "view_audit_log", ("view_guild_insights", "View server insights"), ("manage_guild", "Manage server"),
@@ -129,7 +129,7 @@ class Public(commands.Cog):
                                     f"**Server**\n"
                                     f"{self.handlers.genPerms(perms, permList)}",
                         colour=self.colours.green
-                    ).set_thumbnail(url=user.avatar_url))
+                    ).set_thumbnail(url=user.avatar.url))
                 case 3:
                     perms = [
                         "read_messages", "send_messages", ("send_tts_messages", "Send TTS messages"),
@@ -144,7 +144,7 @@ class Public(commands.Cog):
                                     f"**Messages**\n"
                                     f"{self.handlers.genPerms(perms, permList)}",
                         colour=self.colours.green
-                    ).set_thumbnail(url=user.avatar_url))
+                    ).set_thumbnail(url=user.avatar.url))
                 case 4:
                     perms = [
                         "kick_members", "ban_members",
@@ -157,7 +157,7 @@ class Public(commands.Cog):
                                     f"**Members**\n"
                                     f"{self.handlers.genPerms(perms, permList)}",
                         colour=self.colours.green
-                    ).set_thumbnail(url=user.avatar_url))
+                    ).set_thumbnail(url=user.avatar.url))
                 case 5:
                     perms = [
                         ("connect", "Join voice chats"), ("speak", "Talk in voice chats"), ("stream", "Stream in voice chats"),
@@ -171,7 +171,7 @@ class Public(commands.Cog):
                                     f"**Voice**\n"
                                     f"{self.handlers.genPerms(perms, permList)}",
                         colour=self.colours.green
-                    ).set_thumbnail(url=user.avatar_url))
+                    ).set_thumbnail(url=user.avatar.url))
             reaction = await self.handlers.reactionCollector(
                 ctx,
                 m,
@@ -314,4 +314,4 @@ class Public(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Public(bot))
+    bot.add_cog(Info(bot))

@@ -11,7 +11,7 @@ from cogs.handlers import Failed, Handlers
 from discord.ext import commands
 
 
-class Mod(commands.Cog):
+class Misc(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.emojis = Emojis
@@ -149,8 +149,8 @@ class Mod(commands.Cog):
         if isinstance(target, discord.Member):
             for channel in ctx.guild.channels:
                 if (
-                    (channel.type in [discord.ChannelType.text, discord.ChannelType.store, discord.ChannelType.news] and target.permissions_in(channel).read_messages) or
-                    (channel.type in [discord.ChannelType.voice, discord.ChannelType.stage_voice] and target.permissions_in(channel).connect)
+                    (channel.type in [discord.ChannelType.text, discord.ChannelType.store, discord.ChannelType.news] and channel.permissions_for(target).read_messages) or
+                    (channel.type in [discord.ChannelType.voice, discord.ChannelType.stage_voice] and channel.permissions_for(target).connect)
                 ) and (channel.type is not discord.ChannelType.category):
                     if channel.category not in visible:
                         visible[channel.category] = []
@@ -437,20 +437,20 @@ class Mod(commands.Cog):
         t = datetime.datetime.utcnow()
         for member in ctx.guild.members:
             await asyncio.sleep(0.05)
-            if not ((member.bot and not bots) or (not member.bot and not members)):
+            if not ((member.bot and not bots) or (not member.bot and not members)) and member in ctx.guild.members:
                 if add and role.id not in [r.id for r in member.roles]:
                     try:
                         await asyncio.sleep(0.05)
                         await member.add_roles(role, reason="RSM Roleall")
                         success += 1
-                    except discord.Forbidden:
+                    except discord.HTTPException:
                         failed += 1
                 elif not add and role.id in [r.id for r in member.roles]:
                     try:
                         await asyncio.sleep(0.05)
                         await member.remove_roles(role, reason="RSM Roleall")
                         success += 1
-                    except discord.Forbidden:
+                    except discord.HTTPException:
                         failed += 1
             if count % 10 == 9:
                 av = int((datetime.datetime.utcnow() - t).total_seconds()) / count
@@ -625,7 +625,7 @@ class Mod(commands.Cog):
                                 else:
                                     await target.remove_roles(ctx.guild.get_role(toChange), reason="RSM Role")
                                     targetRoles[role][1] = False
-                            except discord.Forbidden:
+                            except discord.HTTPException:
                                 continue
                 page = max(0, min(page, len(cut) - 1))
             await asyncio.sleep(0.1)
@@ -757,4 +757,4 @@ class Mod(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Mod(bot))
+    bot.add_cog(Misc(bot))

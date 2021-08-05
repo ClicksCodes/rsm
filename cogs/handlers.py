@@ -552,7 +552,7 @@ class Handlers:
         if ctx.guild:
             try:
                 await m.remove_reaction(reaction, ctx.author)
-            except discord.Forbidden:
+            except discord.HTTPException:
                 pass
         return reaction
 
