@@ -65,7 +65,7 @@ class Verify(commands.Cog):
                 description="We are just checking that your profile picture is safe for work",
                 colour=self.colours.yellow
             ).set_footer(text="Requesting"))
-            nsfw, _, score, image = await self.handlers.is_pfp_nsfw(str(ctx.author.avatar.url_as(format="png")))
+            nsfw, _, score, image = await self.handlers.is_pfp_nsfw(str(ctx.author.avatar.url))
             if nsfw or image:
                 buf = io.BytesIO()
                 image.save(buf, format="png")
