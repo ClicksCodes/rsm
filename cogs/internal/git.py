@@ -5,6 +5,7 @@ import subprocess
 
 import discord
 import humanize
+import psutil
 from cogs.consts import *
 from cogs.handlers import Handlers
 from discord.ext import commands
@@ -197,6 +198,36 @@ class Git(commands.Cog):
                     colour=self.colours.green
                 ))
                 return
+
+    @commands.command()
+    async def usage(self, ctx):
+        m = await ctx.send(embed=loading_embed)
+        cpu = psutil.getloadavg()
+        cpu = round(sum(cpu) / len(cpu) * 100, 2)
+        mem = round((psutil.virtual_memory().used/psutil.virtual_memory().total)*100, 2)
+        temp, count = 0, 0
+        try:
+            sensors = psutil.sensors_temperatures()
+        except AttributeError:
+            sensors = []
+        for sensor in sensors:
+            for each in sensors[sensor]:
+                temp += each.current
+                count += 1
+        tempav = round(temp/count, 2)
+        swap = round(psutil.swap_memory().percent, 2)
+        disk = psutil.disk_usage('/').percent
+
+        await m.edit(embed=discord.Embed(
+            title="Usage statistics",
+            description=f"**Server time:** {self.handlers.strf(datetime.datetime.now())}\n"
+                        f"**CPU:** {cpu}%\n"
+                        f"**Memory:** {mem}%\n"
+                        f"**Swap:** {swap}%\n"
+                        f"**Disk:** {disk}%\n"
+                        f"**Temperature:** {tempav}°c",
+            color=self.colours.green
+        ))
 
 
 def setup(bot):
