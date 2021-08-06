@@ -203,7 +203,7 @@ class Git(commands.Cog):
     async def usage(self, ctx):
         m = await ctx.send(embed=loading_embed)
         cpu = psutil.getloadavg()
-        cpu = round(sum(cpu) / len(cpu) * 100, 2)
+        cpu = round(sum(cpu) / len(cpu) / psutil.cpu_count(), 2)
         mem = round((psutil.virtual_memory().used/psutil.virtual_memory().total)*100, 2)
         temp, count = 0, 0
         try:
