@@ -26,6 +26,13 @@ class Context(commands.Context):
             return
         return await self.message.delete()
 
+    async def clear_reactions(self):
+        if isinstance(self.channel, discord.channel.DMChannel):
+            return
+        if not self.channel.permissions_for(self.me).manage_messages:
+            return
+        return await self.message.clear_reactions()
+
     @prefix.setter
     def prefix(self, _):
         pass
