@@ -96,5 +96,36 @@
     "mention": null
   },
   "prefix": null,
-  "tags": {}
+  "tags": {},
+  "automod": {
+    "caps": {
+      "Delete": false,
+      "Punishment": null
+    },
+    "duplicate": {
+      "Delete": false,
+      "Punishment": null
+    },
+    "spam": {
+      "Delete": false,
+      "Punishment": null,
+      "mps": 3
+    },
+    "swear": {
+      "Delete": false,
+      "Punishment": null
+    },
+    "invite": {
+      "Delete": false,
+      "Punishment": null
+    },
+    "link": {
+      "Delete": false,
+      "Punishment": null
+    },
+    "zlago": {
+      "Delete": false,
+      "Punishment": null
+    }
+  }
 }

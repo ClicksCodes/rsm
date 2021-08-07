@@ -636,8 +636,6 @@ class Handlers:
     def _update(self, data):
         if "version" not in data:
             data["version"] = 1
-        if data["version"] == 2:
-            return data
         if data["version"] == 1:
             data["version"] = 2
             data["log_info"]["ignore"] = data.get("ignore_info", {"bots": True, "members": [], "roles": [], "channels": []})
@@ -657,7 +655,18 @@ class Handlers:
             if "wordfilter" not in data:
                 data["wordfilter"] = {"ignore": {"roles": [], "channels": [], "members": [], "delta": None}, "strict": [], "soft": []}
             data["wordfilter"]["punishment"] = data.get("nameban", "change")
-            return data
+        if data["version"] == 2:
+            data["version"] = 3
+            data["automod"] = {
+                "caps": {"Delete": False, "Punishment": None},
+                "duplicate": {"Delete": False, "Punishment": None},
+                "spam": {"Delete": False, "Punishment": None, "mps": 3},
+                "swear": {"Delete": False, "Punishment": None},
+                "invite": {"Delete": False, "Punishment": None},
+                "link": {"Delete": False, "Punishment": None},
+                "zlago": {"Delete": False, "Punishment": None}
+            }
+        return data
 
     def defaultDict(self, data, ref):
         for key in ref.keys():
@@ -854,11 +863,11 @@ class Handlers:
         if guild in self.bot.mem:
             return self.bot.mem[guild]
         data = self.fileManager(guild)
-        self.bot.mem[guild] = {"filter": data["wordfilter"], "invite": data["invite"], "images": data["images"], "prefix": data["prefix"]}
+        self.bot.mem[guild] = {"filter": data["wordfilter"], "invite": data["invite"], "images": data["images"], "prefix": data["prefix"], "automod": data["automod"]}
         return self.bot.mem[guild]
 
     def setMem(self, guild, data):
         if not isinstance(guild, int):
             guild = guild.id
-        data = {"filter": data["wordfilter"], "invite": data["invite"], "images": data["images"], "prefix": data["prefix"]}
+        data = {"filter": data["wordfilter"], "invite": data["invite"], "images": data["images"], "prefix": data["prefix"], "automod": data["automod"]}
         self.bot.mem[guild] = data

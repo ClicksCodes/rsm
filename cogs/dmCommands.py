@@ -1,5 +1,6 @@
 import random
 
+
 class DMs:
     def __init__(self):
         pass

@@ -88,7 +88,8 @@ class Errors(commands.Cog):
                     return await self.bot.get_user(438733159748599813).send(
                         embed=discord.Embed(
                             title=f"{self.emojis().control.cross} It looks wike you did a fucky wucky >w<",
-                            description=f"You did a shit job programming and someone just got the error code `{code}` you fucking donkey\n\n`Line 1 Brain.py: raise IncompetenceError`",
+                            description=f"You did a shit job programming and someone just got the error code `{code}` "
+                                        f"you fucking donkey\n\n`Line 1 Brain.py: raise IncompetenceError`",
                             colour=self.colours.red,
                         )
                     )

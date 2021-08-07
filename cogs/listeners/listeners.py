@@ -29,8 +29,8 @@ class Listeners(commands.Cog):
         if re.search(r"(?:https?:\/\/)?discord(?:app)?\.(?:com\/invite|gg)\/[a-zA-Z0-9]+\/?", message.content, re.MULTILINE):
             data = self.handlers.checkGuild(message.guild)
             if data["invite"]["enabled"]:
-                if not message.author.id in data["invite"]["whitelist"]["members"]:
-                    if not message.channel.id in data["invite"]["whitelist"]["channels"]:
+                if message.author.id not in data["invite"]["whitelist"]["members"]:
+                    if message.channel.id not in data["invite"]["whitelist"]["channels"]:
                         for role in message.author.roles:
                             if role.id in data["invite"]["whitelist"]["roles"]:
                                 break
@@ -71,8 +71,8 @@ class Listeners(commands.Cog):
         if re.search(r"(?:https?:\/\/)?discord(?:app)?\.(?:com\/invite|gg)\/[a-zA-Z0-9]+\/?", after.content, re.MULTILINE):
             data = self.handlers.checkGuild(after.guild)
             if data["invite"]["enabled"]:
-                if not after.author.id in data["invite"]["whitelist"]["members"]:
-                    if not after.channel.id in data["invite"]["whitelist"]["channels"]:
+                if after.author.id not in data["invite"]["whitelist"]["members"]:
+                    if after.channel.id not in data["invite"]["whitelist"]["channels"]:
                         for role in after.author.roles:
                             if role.id in data["invite"]["whitelist"]["roles"]:
                                 break

@@ -25,6 +25,7 @@
         "cogs.moderation.public",
         "cogs.moderation.emergency",
         "cogs.moderation.auto",
+        "cogs.moderation.automod",
 
         "cogs.listeners.messages",
         "cogs.listeners.guild",

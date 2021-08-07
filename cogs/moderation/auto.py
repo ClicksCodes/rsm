@@ -38,13 +38,24 @@ class Auto(commands.Cog):
                     ))
                 case 1:
                     await m.edit(embed=discord.Embed(
+                        title=f"{self.emojis().webhook.create} Automod",
+                        description=f"**Caps:** {'Punishment - ' + data['automod']['caps']['Punishment'] if data['automod']['caps']['Delete'] else 'Not moderated'}\n"
+                                    f"**Exempt roles:**\n> {' '.join([ctx.guild.get_role(r).mention for r in data['wordfilter']['ignore']['roles']])}\n"
+                                    f"**Exempt Channels:**\n> {' '.join([ctx.guild.get_channel(c).mention for c in data['wordfilter']['ignore']['channels']])}\n"
+                                    f"**Banned words: (Strict)**\n> {', '.join([f'||{w}||' for w in data['wordfilter']['strict']])}\n"
+                                    f"**Banned words: (Soft)**\n> {', '.join([f'||{w}||' for w in data['wordfilter']['soft']])}\n\n"
+                                    f"**Punishments:**\n> Nickname contained banned words: {punName[data['wordfilter']['punishment']]}",
+                        colour=self.colours.green
+                    ))
+                case 2:
+                    await m.edit(embed=discord.Embed(
                         title=f"{self.emojis().webhook.create} NSFW",
                         description=f"**You are{' not' if data['images']['nsfw'] else ''} currently moderating NSFW content like profile pictures and images in chat**\n"
                                     f"When a user verifies, joins etc. their profile picture will be checked\n"
                                     f"You will receive a message in your stafflog channel if a user has a NSFW profile picture\n",
                         colour=self.colours.green
                     ).set_footer(text="No NSFW filter is 100% accurate, however we try our best to ensure only NSFW content triggers our checks"))
-                case 2:
+                case 3:
                     if data['welcome']['role']:
                         r = f"{ctx.guild.get_role(data['welcome']['role']).name} ({ctx.guild.get_role(data['welcome']['role']).mention})"
                     else:
@@ -66,7 +77,7 @@ class Auto(commands.Cog):
                                     f"**Sent:** {c}\n",
                         colour=self.colours.green
                     ))
-                case 3:
+                case 4:
                     await m.edit(embed=discord.Embed(
                         title=f"{self.emojis().webhook.create} Invites",
                         description=f"**Invite deletion:** {'Enabled' if data['invite']['enabled'] else 'Disabled'}\n"
