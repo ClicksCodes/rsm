@@ -49,7 +49,7 @@ class Misc(commands.Cog):
             await self.handlers.sendLog(
                 emoji=self.emojis().channel.purge,
                 type="Messages purged",
-                server=deleted[0].guild.id,
+                server=ctx.guild.id,
                 colour=self.colours.red,
                 data={
                     "Amount": len(deleted),

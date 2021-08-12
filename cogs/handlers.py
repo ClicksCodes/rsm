@@ -583,12 +583,14 @@ class Handlers:
             case "w":
                 with open(f"data/guilds/{guild}.json", "w") as f:
                     json.dump(kwargs["data"], f, indent=2)
-                try:
-                    with open(f"data/backup/{guild}.json", "w") as f:
-                        json.dump(kwargs["data"], f, indent=2)
-                except FileNotFoundError:
-                    with open(f"data/backup/{guild}.json", "x") as f:
-                        json.dump(kwargs["data"], f, indent=2)
+                with open(f"data/guilds/{guild}.json", "r") as f:
+                    entry = json.load(f)
+                    try:
+                        with open(f"data/backup/{guild}.json", "w") as f:
+                            json.dump(entry, f, indent=2)
+                    except FileNotFoundError:
+                        with open(f"data/backup/{guild}.json", "x") as f:
+                            json.dump(entry, f, indent=2)
                 return kwargs["data"]
 
             case "r":
@@ -610,7 +612,7 @@ class Handlers:
                         json.dump(t, f, indent=2)
                     return t
 
-                except json.decoder.JSONDecodeError:
+                except (json.decoder.JSONDecodeError, AttributeError):
                     if os.path.exists(f"data/backup/{guild}.json"):
                         with open(f"data/backup/{guild}.json", "r") as f:
                             entry = json.load(f)

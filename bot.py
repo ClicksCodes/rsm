@@ -102,7 +102,7 @@ class Bot(commands.Bot):
         return commands.when_mentioned_or(*prefixes)(self, ctx)
 
     async def on_ready(self):
-        await self.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.playing, name="m! | V2.1 out now!"))
+        await self.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.playing, name=f"m! | {self.version}"))
         print(f"{getattr(Colours, config.colour)}[S] {getattr(Colours, str(config.colour) + 'Dark')}Logged on as {self.user} [ID: {self.user.id}]{Colours.c}")
 
 
