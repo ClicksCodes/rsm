@@ -1,5 +1,9 @@
 import asyncio
 import random
+from typing import final
+
+from discord.errors import Forbidden
+from discord.ext.commands.errors import CommandInvokeError
 
 import bot as customBot
 import discord
@@ -17,6 +21,24 @@ class Errors(commands.Cog):
         self.dms = DMs()
         self.colours = consts.Cols()
 
+    async def send_error(self, ctx, message):
+        try:
+            return await ctx.author.send(embed=discord.Embed(
+                title=f"{self.emojis().control.cross} I don't have permission",
+                description=message,
+                colour=self.colours.red,
+            ))
+        except discord.Forbidden:
+            pass
+        try:
+            return await ctx.message.add_reaction(self.emojis().control.cross)
+        except discord.Forbidden:
+            pass
+        try:
+            return await ctx.message.add_reaction("❌")
+        except discord.Forbidden:
+            pass
+
     async def _on_error(self, ctx, error):
         Colours = consts.Colours
         try:
@@ -24,6 +46,15 @@ class Errors(commands.Cog):
             # Warning Yellow
             # Critical Red
             # Status Blue
+            if not ctx.channel.permissions_for(ctx.me).send_messages:
+                return await self.send_error(ctx, "I tried to send a message, but I didn't have permission to send it. Make sure I have `send_messages`")
+            elif not ctx.channel.permissions_for(ctx.me).embed_links:
+                if ctx.channel.permissions_for(ctx.me).read_message_history:
+                    return await ctx.reply("I don't have permission to send an embed. Make sure I have `embed_links`")
+                return await ctx.send("I don't have permission to send an embed. Make sure I have `embed_links` and `read_message_history`")
+            elif not ctx.channel.permissions_for(ctx.me).external_emojis:
+                return await ctx.send(ctx, "I tried to use a nitro emoji, but didn't have permission. Make sure I have `use_external_emojis`")
+
             if isinstance(error, commands.errors.NoPrivateMessage):
                 if not ctx.guild:
                     return await ctx.send(await self.dms.genResponse(ctx.message.content))
@@ -34,7 +65,13 @@ class Errors(commands.Cog):
                     color=self.colours.red
                 ))
             elif isinstance(error, commands.errors.BotMissingPermissions) or isinstance(error, discord.ext.commands.errors.BotMissingPermissions):
-                return print(f"{Colours.GreenDark}[N] {Colours.Green}{str(error)}{Colours.c}")
+                return await ctx.send(
+                    embed=discord.Embed(
+                        title=f"{self.emojis().control.cross} Missing permissions",
+                        description=str(error),
+                        colour=self.colours.red,
+                    )
+                )
             elif isinstance(error, commands.errors.CommandNotFound):
                 if not ctx.guild:
                     return await ctx.send(

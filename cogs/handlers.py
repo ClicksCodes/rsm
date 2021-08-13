@@ -557,7 +557,7 @@ class Handlers:
         return reaction
 
     async def checkPerms(self, ctx, m, permission, emoji, action, user=True, me=True, edit=True):
-        if not getattr(ctx.author.guild_permissions, permission) and user:
+        if not getattr(ctx.channel.permissions_for(ctx.author), permission) and user:
             if edit:
                 await m.edit(embed=discord.Embed(
                     title=f"{emoji} Missing permissions",
@@ -565,7 +565,7 @@ class Handlers:
                     colour=self.colours.red
                 ))
             return Failed()
-        if not getattr(ctx.guild.me.guild_permissions, permission) and me:
+        if not getattr(ctx.channel.permissions_for(ctx.me), permission) and me:
             if edit:
                 await m.edit(embed=discord.Embed(
                     title=f"{emoji} Missing permissions",
