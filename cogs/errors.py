@@ -54,6 +54,8 @@ class Errors(commands.Cog):
                 return await ctx.send("I don't have permission to send an embed. Make sure I have `embed_links` and `read_message_history`")
             elif not ctx.channel.permissions_for(ctx.me).external_emojis:
                 return await ctx.send(ctx, "I tried to use a nitro emoji, but didn't have permission. Make sure I have `use_external_emojis`")
+            elif not ctx.channel.permissions_for(ctx.me).add_reactions:
+                return await ctx.send(ctx, "I tried to add a reaction, but didn't have permission. Make sure I have `add_reactions`")
 
             if isinstance(error, commands.errors.NoPrivateMessage):
                 if not ctx.guild:

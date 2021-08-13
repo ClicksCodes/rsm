@@ -285,7 +285,7 @@ class Info(commands.Cog):
                 case "Right": page += 1
                 case _: break
             page = max(0, min(page, len(split)))
-        if not isinstance(self.channel, discord.channel.DMChannel) and not self.channel.permissions_for(self.me).manage_messages:
+        if not isinstance(ctx.channel, discord.channel.DMChannel) and not ctx.channel.permissions_for(self.me).manage_messages:
             await m.clear_reactions()
         embed = m.embeds[0]
         embed.colour = self.colours.red
