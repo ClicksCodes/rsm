@@ -638,8 +638,6 @@ class Handlers:
     def _update(self, data):
         if "version" not in data:
             data["version"] = 1
-        if data["version"] == 2:
-            return data
         if data["version"] == 1:
             data["version"] = 2
             data["log_info"]["ignore"] = data.get("ignore_info", {"bots": True, "members": [], "roles": [], "channels": []})
@@ -659,7 +657,9 @@ class Handlers:
             if "wordfilter" not in data:
                 data["wordfilter"] = {"ignore": {"roles": [], "channels": [], "members": [], "delta": None}, "strict": [], "soft": []}
             data["wordfilter"]["punishment"] = data.get("nameban", "change")
-            return data
+        if data["version"] == 2:
+            pass
+        return data
 
     def defaultDict(self, data, ref):
         for key in ref.keys():
