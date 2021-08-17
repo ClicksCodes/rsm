@@ -755,6 +755,52 @@ class Misc(commands.Cog):
             embed.colour = self.colours.red
             await m.edit(embed=embed)
 
+    @commands.command()
+    @commands.guild_only()
+    async def nameban(self, ctx, *, name: str = None):
+        m = await ctx.send(embed=loading_embed)
+        if isinstance(await self.handlers.checkPerms(ctx, m, "ban_members", emoji=self.emojis().role.edit, action="nameban members"), Failed):
+            return
+        if not name:
+            name = await self.handlers.strHandler(
+                ctx=ctx,
+                m=m,
+                emoji=str(self.emojis().member.ban),
+                title="Nameban",
+                description="What name should the user have to be banned?"
+            )
+            if isinstance(name, Failed):
+                return
+        await m.edit(embed=discord.Embed(
+            title=f"{self.emojis().member.ban} Nameban",
+            description=f"By clicking the tick, {len([mem.name for mem in ctx.guild.members if mem.name == name])} members will be banned. Are you sure?",
+            color=self.colours.yellow
+        ))
+        reaction = await self.handlers.reactionCollector(ctx, m, reactions=[
+            "control.tick",
+            "control.cross"
+        ])
+        if isinstance(reaction, Failed):
+            return
+        if reaction.emoji.name == "Cross":
+            return
+        count = 0
+        failed = 0
+        for member in ctx.guild.members:
+            if name == member.name:
+                try:
+                    await member.ban(reason="nameban", delete_message_days=7)
+                    count += 1
+                    await asyncio.sleep(0.1)
+                except:
+                    failed += 1
+        await m.edit(embed=discord.Embed(
+            title=f"{self.emojis().member.ban} Nameban",
+            description=f"{count} members have been banned ({failed} failed)",
+            colour=self.colours.green
+        ))
+        await m.clear_reactions()
+
 
 def setup(bot):
     bot.add_cog(Misc(bot))

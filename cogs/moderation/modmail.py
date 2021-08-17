@@ -160,7 +160,7 @@ class Modmail(commands.Cog):
         await c.set_permissions(ctx.author, view_channel=True, send_messages=True)
         created = await c.send(embed=discord.Embed(
             title=f"{self.emojis().guild.modmail.open} {ctx.author.name} created a ticket",
-            description=f"> Anyone can close this ticket with `{ctx.prefix}close`" + (f"\n\n> {message}" if message else '') + 
+            description=f"> Anyone can close this ticket with `{ctx.prefix}close`" + (f"\n\n> {message}" if message else '') +
                         f"\n\nTicket opened at {self.handlers.strf(datetime.datetime.utcnow())}",
             colour=self.colours.green
         ))
