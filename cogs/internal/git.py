@@ -188,7 +188,7 @@ class Git(commands.Cog):
                     colour=self.colours.green
                 ))
                 try:
-                    out = subprocess.run(["pm2", "reload", "3"], stdout=subprocess.PIPE).returncode
+                    out = subprocess.run(["pm2", "reload", "0"], stdout=subprocess.PIPE).returncode
                 except FileNotFoundError:
                     out = 1
                 await m.edit(embed=discord.Embed(

@@ -6,6 +6,7 @@ import typing
 
 from cogs.consts import *
 from cogs.handlers import Handlers, Failed
+from cogs import interactions
 
 
 class Modmail(commands.Cog):
@@ -14,6 +15,7 @@ class Modmail(commands.Cog):
         self.emojis = Emojis
         self.colours = Cols()
         self.handlers = Handlers(self.bot)
+        self.interactions = interactions
 
     @commands.command()
     @commands.guild_only()
@@ -38,6 +40,12 @@ class Modmail(commands.Cog):
             maxTickets = f["max"]
             if f["mention"]:
                 supportMention = ctx.guild.get_role(f["mention"])
+            v = self.interactions.createUI(ctx, [
+                self.interactions.Button(self.bot, emojis=self.emojis, id="cr", emoji="control.cross"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="cc", title="Category", emoji="channel.category.create"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="tc", title="Max tickets", emoji="channel.text.create"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="ep", title="Mention", emoji="message.everyone_ping"),
+            ])
             await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().guild.modmail.open} Modmail",
                 description=f"**Active tickets:** {active}\n"
@@ -47,24 +55,10 @@ class Modmail(commands.Cog):
                             f"{self.emojis().message.everyone_ping} **Support mention:** "
                             f"{supportMention.mention if isinstance(supportMention, discord.Role) else supportMention}\n",
                 colour=self.colours.green
-            ))
-            await m.clear_reactions()
-            reaction = await self.handlers.reactionCollector(
-                ctx,
-                m,
-                reactions=[
-                    "channel.category.create",
-                    "channel.text.create",
-                    "message.everyone_ping",
-                    "control.cross"
-                ]
-            )
-            if isinstance(reaction, Failed):
-                break
-            await asyncio.sleep(0.1)
-            await m.clear_reactions()
-            match reaction.emoji.name:
-                case "CatCreate":
+            ), view=v)
+            await v.wait()
+            match v.selected:
+                case "cc":
                     category = await self.handlers.categoryHandler(
                         ctx,
                         m,
@@ -83,7 +77,7 @@ class Modmail(commands.Cog):
                         embed = m.embeds[0]
                         await m.edit(embed=embed.set_footer(text="Writing"))
                         self.handlers.fileManager(ctx.guild, "w", data=data)
-                case "ChannelCreate":
+                case "tc":
                     amount = await self.handlers.intHandler(
                         ctx,
                         m,
@@ -100,7 +94,7 @@ class Modmail(commands.Cog):
                         embed = m.embeds[0]
                         await m.edit(embed=embed.set_footer(text="Writing"))
                         self.handlers.fileManager(ctx.guild, "w", data=data)
-                case "EveryonePing":
+                case "ep":
                     role = await self.handlers.roleHandler(
                         ctx,
                         m,
@@ -112,17 +106,16 @@ class Modmail(commands.Cog):
                     )
                     if not isinstance(role, Failed):
                         embed = m.embeds[0]
-                        await m.edit(embed=embed.set_footer(text="Reading"))
+                        await m.edit(embed=embed.set_footer(text="Reading"), view=None)
                         data = self.handlers.fileManager(ctx.guild)
                         data["modmail"]["mention"] = role.id
                         embed = m.embeds[0]
                         await m.edit(embed=embed.set_footer(text="Writing"))
                         self.handlers.fileManager(ctx.guild, "w", data=data)
-                case _:
-                    break
+                case _: break
         embed = m.embeds[0]
         embed.colour = self.colours.red
-        await m.edit(embed=embed)
+        await m.edit(embed=embed, view=None)
 
     @commands.command(aliases=["ticket", "tickets"])
     @commands.guild_only()

@@ -4,6 +4,7 @@ from discord.ext import commands
 
 from cogs.consts import *
 from cogs.handlers import Handlers, Failed
+from cogs import interactions
 
 
 class Auto(commands.Cog):
@@ -12,6 +13,7 @@ class Auto(commands.Cog):
         self.emojis = Emojis
         self.colours = Cols()
         self.handlers = Handlers(self.bot)
+        self.interactions = interactions
 
     @commands.command()
     @commands.guild_only()
@@ -20,9 +22,14 @@ class Auto(commands.Cog):
         if isinstance(await self.handlers.checkPerms(ctx, m, "manage_guild", self.emojis().webhook.create, "change server automations", me=False), Failed):
             return
         page = 0
-        noAdd = False
         while True:
             data = self.handlers.fileManager(ctx.guild)
+            v = self.interactions.createUI(ctx, [
+                self.interactions.Button(self.bot, emojis=self.emojis, id="cr", emoji="control.cross"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="le", emoji="control.left"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="ri", emoji="control.right"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="gs", emoji="guild.settings", title="Edit settings"),
+            ])
             match page:
                 case 0:
                     punName = {'none': 'No action', 'change': 'Change nickname', 'kick': 'Kick member', 'ban': 'Ban member'}
@@ -35,7 +42,7 @@ class Auto(commands.Cog):
                                     f"**Banned words: (Soft)**\n> {', '.join([f'||{w}||' for w in data['wordfilter']['soft']])}\n\n"
                                     f"**Punishments:**\n> Nickname contained banned words: {punName[data['wordfilter']['punishment']]}",
                         colour=self.colours.green
-                    ))
+                    ), view=v)
                 case 1:
                     await m.edit(embed=discord.Embed(
                         title=f"{self.emojis().webhook.create} NSFW",
@@ -43,7 +50,7 @@ class Auto(commands.Cog):
                                     f"When a user verifies, joins etc. their profile picture will be checked\n"
                                     f"You will receive a message in your stafflog channel if a user has a NSFW profile picture\n",
                         colour=self.colours.green
-                    ).set_footer(text="No NSFW filter is 100% accurate, however we try our best to ensure only NSFW content triggers our checks"))
+                    ).set_footer(text="No NSFW filter is 100% accurate, however we try our best to ensure only NSFW content triggers our checks"), view=v)
                 case 2:
                     if data['welcome']['role']:
                         r = f"{ctx.guild.get_role(data['welcome']['role']).name} ({ctx.guild.get_role(data['welcome']['role']).mention})"
@@ -65,7 +72,7 @@ class Auto(commands.Cog):
                                     f"**Welcome message:**\n> {t}\n"
                                     f"**Sent:** {c}\n",
                         colour=self.colours.green
-                    ))
+                    ), view=v)
                 case 3:
                     await m.edit(embed=discord.Embed(
                         title=f"{self.emojis().webhook.create} Invites",
@@ -74,54 +81,46 @@ class Auto(commands.Cog):
                                     f"**Exempt roles:**\n> {' '.join([ctx.guild.get_role(r).mention for r in data['invite']['whitelist']['roles']])}\n"
                                     f"**Exempt Channels:**\n> {' '.join([ctx.guild.get_channel(c).mention for c in data['invite']['whitelist']['channels']])}\n_ _",
                         colour=self.colours.green
-                    ))
-            r = ["control.cross", "control.left", "control.right", "guild.settings"]
-            if noAdd:
-                r = []
-            reaction = await self.handlers.reactionCollector(ctx, m, reactions=r)
-            if isinstance(reaction, Failed):
-                break
-            await asyncio.sleep(0.1)
-            match reaction.emoji.name:
-                case "Cross": break
-                case "Left":
+                    ), view=v)
+            await v.wait()
+            match v.selected:
+                case "cr":
+                    break
+                case "le":
                     page -= 1
-                    noAdd = True
-                case "Right":
+                case "ri":
                     page += 1
-                    noAdd = True
-                case "ServerRole":
+                case "gs":
                     match page:
                         case 0:
-                            await m.clear_reactions()
                             await self.filters(ctx, m)
-                            noAdd = False
-                            await m.clear_reactions()
                         case 1:
-                            await m.clear_reactions()
                             await self.nsfw(ctx, m)
-                            noAdd = False
-                            await m.clear_reactions()
                         case 2:
-                            await m.clear_reactions()
                             await self.welcome(ctx, m)
-                            noAdd = False
-                            await m.clear_reactions()
                         case 3:
-                            await m.clear_reactions()
                             await self.invite(ctx, m)
-                            noAdd = False
-                            await m.clear_reactions()
             page = max(0, min(page, 3))
-        await asyncio.sleep(0.1)
+        embed = m.embeds[0]
+        embed.color = self.colours.red
+        await m.edit(embed=embed, view=None)
 
     async def filters(self, ctx, m):
-        await asyncio.sleep(0.1)
         while True:
-            await asyncio.sleep(0.1)
             data = self.handlers.fileManager(ctx.guild.id)
             self.handlers.setMem(ctx.guild.id, data)
             punName = {'none': 'No action', 'change': 'Change nickname', 'kick': 'Kick member', 'ban': 'Ban member'}
+            v = self.interactions.createUI(ctx, [
+                self.interactions.Button(self.bot, emojis=self.emojis, id="cr", emoji="control.left", style="danger"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="1n", emoji="numbers.1.normal", title="Users"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="2n", emoji="numbers.2.normal", title="Roles"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="3n", emoji="numbers.3.normal", title="Channels"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="at", emoji="icon.opp.add", title="Words (Strict)"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="rt", emoji="icon.remove", title="Words (Strict)"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="ao", emoji="icon.add", title="Words (Soft)"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="ro", emoji="icon.opp.remove", title="Words (Soft)"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="4n", emoji="numbers.3.normal", title="Punishments"),
+            ])
             await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().webhook.create} Filters",
                 description=f"{self.emojis()('numbers.1.normal')} **Exempt users:**\n> "
@@ -133,23 +132,11 @@ class Auto(commands.Cog):
                             f"{self.emojis()('icon.add')} **Banned words: (Soft)**\n> {', '.join([f'||{w}||' for w in data['wordfilter']['soft']])}\n\n"
                             f"{self.emojis()('numbers.4.normal')} **Punishments:**\n> Nickname contained banned words: {punName[data['wordfilter']['punishment']]}",
                 colour=self.colours.green
-            ))
-            reaction = await self.handlers.reactionCollector(ctx, m, [
-                "control.cross",
-                "numbers.1.normal",
-                "numbers.2.normal",
-                "numbers.3.normal",
-                "icon.opp.add",
-                "icon.remove",
-                "icon.add",
-                "icon.opp.remove",
-                "numbers.4.normal"
-            ])
-            if isinstance(reaction, Failed):
-                return
-            await m.clear_reactions()
-            match reaction.emoji.name:
-                case "1_":
+            ), view=v)
+
+            await v.wait()
+            match v.selected:
+                case "1n":
                     members = await self.handlers.memberHandler(
                         ctx,
                         m,
@@ -162,13 +149,13 @@ class Auto(commands.Cog):
                     if isinstance(members, Failed):
                         continue
                     embed = m.embeds[0].set_footer(text="Reading")
-                    await m.edit(embed=embed)
+                    await m.edit(embed=embed, view=None)
                     data = self.handlers.fileManager(ctx.guild.id)
                     embed = embed.set_footer(text="Writing")
-                    await m.edit(embed=embed)
+                    await m.edit(embed=embed, view=None)
                     data["wordfilter"]["ignore"]["members"] = [m.id for m in members]
                     data = self.handlers.fileManager(ctx.guild.id, action="w", data=data)
-                case "2_":
+                case "2n":
                     roles = await self.handlers.roleHandler(
                         ctx,
                         m,
@@ -181,13 +168,13 @@ class Auto(commands.Cog):
                     if isinstance(roles, Failed):
                         continue
                     embed = m.embeds[0].set_footer(text="Reading")
-                    await m.edit(embed=embed)
+                    await m.edit(embed=embed, view=None)
                     data = self.handlers.fileManager(ctx.guild.id)
                     embed = embed.set_footer(text="Writing")
-                    await m.edit(embed=embed)
+                    await m.edit(embed=embed, view=None)
                     data["wordfilter"]["ignore"]["roles"] = [r.id for r in roles]
                     data = self.handlers.fileManager(ctx.guild.id, action="w", data=data)
-                case "3_":
+                case "3n":
                     channels = await self.handlers.channelHandler(
                         ctx,
                         m,
@@ -200,13 +187,13 @@ class Auto(commands.Cog):
                     if isinstance(channels, Failed):
                         continue
                     embed = m.embeds[0].set_footer(text="Reading")
-                    await m.edit(embed=embed)
+                    await m.edit(embed=embed, view=None)
                     data = self.handlers.fileManager(ctx.guild.id)
                     embed = embed.set_footer(text="Writing")
                     await m.edit(embed=embed)
                     data["wordfilter"]["ignore"]["channels"] = [c.id for c in channels]
                     data = self.handlers.fileManager(ctx.guild.id, action="w", data=data)
-                case "addopp":
+                case "at":
                     words = await self.handlers.strHandler(
                         ctx,
                         m,
@@ -222,7 +209,7 @@ class Auto(commands.Cog):
                         if word.lower() not in data["wordfilter"]["strict"]:
                             data["wordfilter"]["strict"].append(word.lower())
                     self.handlers.fileManager(ctx.guild.id, action="w", data=data)
-                case "remove":
+                case "rt":
                     words = await self.handlers.strHandler(
                         ctx,
                         m,
@@ -240,7 +227,7 @@ class Auto(commands.Cog):
                             w.append(word.lower())
                     data["wordfilter"]["strict"] = w
                     self.handlers.fileManager(ctx.guild.id, action="w", data=data)
-                case "add":
+                case "ao":
                     words = await self.handlers.strHandler(
                         ctx,
                         m,
@@ -256,7 +243,7 @@ class Auto(commands.Cog):
                         if word.lower() not in data["wordfilter"]["soft"]:
                             data["wordfilter"]["soft"].append(word.lower())
                     self.handlers.fileManager(ctx.guild.id, action="w", data=data)
-                case "removeopp":
+                case "ro":
                     words = await self.handlers.strHandler(
                         ctx,
                         m,
@@ -274,7 +261,7 @@ class Auto(commands.Cog):
                             w.append(word.lower())
                     data["wordfilter"]["soft"] = w
                     self.handlers.fileManager(ctx.guild.id, action="w", data=data)
-                case "4_":
+                case "4n":
                     val = await self.handlers.intHandler(
                         ctx,
                         m,
@@ -295,10 +282,11 @@ class Auto(commands.Cog):
                 case _: break
 
     async def nsfw(self, ctx, m):
-        await asyncio.sleep(0.1)
-        task = asyncio.create_task(self.handlers.reactionCollector(ctx, m, ["control.cross", "numbers.1.normal"], collect=False))
         while True:
-            await asyncio.sleep(0.1)
+            v = self.interactions.createUI(ctx, [
+                self.interactions.Button(self.bot, emojis=self.emojis, id="cr", emoji="control.left", style="danger"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="ns", emoji="control.tick", title="Toggle NSFW"),
+            ])
             data = self.handlers.fileManager(ctx.guild.id)
             self.handlers.setMem(ctx.guild.id, data)
             await m.edit(embed=discord.Embed(
@@ -307,23 +295,18 @@ class Auto(commands.Cog):
                             f"When a user verifies, joins etc. their profile picture will be checked\n"
                             f"You will receive a message in your stafflog channel if a user has a NSFW profile picture\n",
                 colour=self.colours.green
-            ).set_footer(text="No NSFW filter is 100% accurate, however we try our best to ensure only NSFW content triggers our checks"))
-            reaction = await self.handlers.reactionCollector(ctx, m, [], task=task)
-            if isinstance(reaction, Failed):
-                break
-            match reaction.emoji.name:
-                case "Cross": break
-                case "1_":
+            ).set_footer(text="No NSFW filter is 100% accurate, however we try our best to ensure only NSFW content triggers our checks"), view=v)
+            await v.wait()
+            match v.selected:
+                case "cr": break
+                case "ns":
                     data = self.handlers.fileManager(ctx.guild.id)
                     data["images"]["nsfw"] = not data["images"]["nsfw"]
                     self.handlers.fileManager(ctx.guild.id, action="w", data=data)
                 case _: break
-        await asyncio.sleep(0.1)
 
     async def welcome(self, ctx, m):
-        await asyncio.sleep(0.1)
         while True:
-            await asyncio.sleep(0.1)
             data = self.handlers.fileManager(ctx.guild.id)
             if data['welcome']['role']:
                 r = f"{ctx.guild.get_role(data['welcome']['role']).name} ({ctx.guild.get_role(data['welcome']['role']).mention})"
@@ -339,25 +322,22 @@ class Auto(commands.Cog):
                 c = self.bot.get_channel(int(data['welcome']['message']['channel'])).mention
             else:
                 c = "None"
+            v = self.interactions.createUI(ctx, [
+                self.interactions.Button(self.bot, emojis=self.emojis, id="cr", emoji="control.left", style="danger"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="1n", emoji="numbers.1.normal", title="Role"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="2n", emoji="numbers.2.normal", title="Message"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="3n", emoji="numbers.3.normal", title="Sent"),
+            ])
             await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().webhook.create} Welcome",
                 description=f"{self.emojis()('numbers.1.normal')} **Welcome role:** {r}\n"
                             f"{self.emojis()('numbers.2.normal')} **Welcome message:**\n> {t}\n"
                             f"{self.emojis()('numbers.3.normal')} **Sent:** {c}\n",
                 colour=self.colours.green
-            ))
-            reaction = await self.handlers.reactionCollector(ctx, m, [
-                "control.cross",
-                "numbers.1.normal",
-                "numbers.2.normal",
-                "numbers.3.normal",
-            ])
-            if isinstance(reaction, Failed):
-                return
-            await asyncio.sleep(0.1)
-            await m.clear_reactions()
-            match reaction.emoji.name:
-                case "1_":
+            ), view=v)
+            await v.wait()
+            match v.selected:
+                case "1n":
                     role = await self.handlers.roleHandler(
                         ctx,
                         m,
@@ -379,7 +359,7 @@ class Auto(commands.Cog):
                     await m.edit(embed=embed)
                     data["welcome"]["role"] = role
                     data = self.handlers.fileManager(ctx.guild.id, action="w", data=data)
-                case "2_":
+                case "2n":
                     message = await self.handlers.strHandler(
                         ctx,
                         m,
@@ -397,7 +377,7 @@ class Auto(commands.Cog):
                     await m.edit(embed=embed)
                     data["welcome"]["message"]["text"] = message
                     data = self.handlers.fileManager(ctx.guild.id, action="w", data=data)
-                case "3_":
+                case "3n":
                     channel = await self.handlers.channelHandler(
                         ctx,
                         m,
@@ -426,11 +406,16 @@ class Auto(commands.Cog):
                 case _: break
 
     async def invite(self, ctx, m):
-        await asyncio.sleep(0.1)
         while True:
-            await asyncio.sleep(0.1)
             data = self.handlers.fileManager(ctx.guild.id)
             self.handlers.setMem(ctx.guild.id, data)
+            v = self.interactions.createUI(ctx, [
+                self.interactions.Button(self.bot, emojis=self.emojis, id="cr", emoji="control.left", style="danger"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="1n", emoji="numbers.1.normal", title=('Disable' if data['invite']['enabled'] else 'Enable')),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="2n", emoji="numbers.2.normal", title="Users"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="3n", emoji="numbers.3.normal", title="Roles"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="4n", emoji="numbers.4.normal", title="Channels"),
+            ])
             await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().webhook.create} Invites",
                 description=f"{self.emojis()('numbers.1.normal')} **Invite deletion:** {'Enabled' if data['invite']['enabled'] else 'Disabled'}\n"
@@ -440,21 +425,10 @@ class Auto(commands.Cog):
                             f"{self.emojis()('numbers.4.normal')} **Exempt Channels:**\n> "
                             f"{' '.join([ctx.guild.get_channel(c).mention for c in data['invite']['whitelist']['channels']])}\n_ _",
                 colour=self.colours.green
-            ))
-            reaction = await self.handlers.reactionCollector(ctx, m, [
-                "control.cross",
-                "numbers.1.normal",
-                "numbers.2.normal",
-                "numbers.3.normal",
-                "numbers.4.normal"
-            ])
-            if isinstance(reaction, Failed):
-                return
-            await asyncio.sleep(0.1)
-            await m.clear_reactions()
-            await asyncio.sleep(0.1)
-            match reaction.emoji.name:
-                case "1_":
+            ), view=v)
+            await v.wait()
+            match v.selected:
+                case "1n":
                     embed = m.embeds[0].set_footer(text="Reading")
                     await m.edit(embed=embed)
                     data = self.handlers.fileManager(ctx.guild.id)
@@ -462,7 +436,7 @@ class Auto(commands.Cog):
                     await m.edit(embed=embed)
                     data["invite"]["enabled"] = not data["invite"]["enabled"]
                     data = self.handlers.fileManager(ctx.guild.id, action="w", data=data)
-                case "2_":
+                case "2n":
                     members = await self.handlers.memberHandler(
                         ctx,
                         m,
@@ -481,7 +455,7 @@ class Auto(commands.Cog):
                     await m.edit(embed=embed)
                     data["invite"]["whitelist"]["members"] = [r.id for r in members]
                     data = self.handlers.fileManager(ctx.guild.id, action="w", data=data)
-                case "3_":
+                case "3n":
                     roles = await self.handlers.roleHandler(
                         ctx,
                         m,
@@ -500,7 +474,7 @@ class Auto(commands.Cog):
                     await m.edit(embed=embed)
                     data["invite"]["whitelist"]["roles"] = [r.id for r in roles]
                     data = self.handlers.fileManager(ctx.guild.id, action="w", data=data)
-                case "4_":
+                case "4n":
                     channels = await self.handlers.channelHandler(
                         ctx,
                         m,

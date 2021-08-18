@@ -3,6 +3,7 @@ from discord.ext import commands
 
 from cogs.consts import *
 from cogs.handlers import Handlers, Failed
+from cogs import interactions
 
 
 class Reset(commands.Cog):
@@ -11,6 +12,7 @@ class Reset(commands.Cog):
         self.emojis = Emojis
         self.colours = Cols()
         self.handlers = Handlers(self.bot)
+        self.interactions = interactions
 
     @commands.command()
     @commands.guild_only()
@@ -18,31 +20,28 @@ class Reset(commands.Cog):
         m = await ctx.send(embed=loading_embed)
         if isinstance(await self.handlers.checkPerms(ctx, m, "manage_guild", self.emojis().punish.warn, "reset settings", me=False), Failed):
             return
+        v = self.interactions.createUI(ctx, [
+            self.interactions.Button(self.bot, emojis=self.emojis, id="ye", title="Yes", style="success"),
+            self.interactions.Button(self.bot, emojis=self.emojis, id="no", title="No", style="danger"),
+        ])
         await m.edit(embed=discord.Embed(
             title="Are you sure",
-            description=f"By clicking {self.emojis().control.tick}, all of your server settings will be reset. This cannot be reversed.",
+            description=f"By clicking Yes, all of your server settings will be reset. This cannot be reversed.",
             colour=self.colours.red
-        ))
-        emoji = await self.handlers.reactionCollector(ctx, m, ["control.cross", "control.tick"])
-        await m.clear_reactions()
-        if isinstance(emoji, Failed):
-            await m.edit(embed=discord.Embed(
-                title="Reset",
-                description=f"Cancelled",
-                colour=self.colours.green
-            ))
-        if emoji.emoji.name == "Tick":
+        ), view=v)
+        await v.wait()
+        if v.selected == "ye":
             self.handlers.fileManager(ctx.guild, action="RESET")
             return await m.edit(embed=discord.Embed(
                 title="Reset",
                 description=f"All settings reset successfully",
                 colour=self.colours.green
-            ))
+            ), view=None)
         await m.edit(embed=discord.Embed(
             title="Reset",
             description=f"Cancelled",
             colour=self.colours.green
-        ))
+        ), view=None)
 
 
 def setup(bot):
