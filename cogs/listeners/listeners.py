@@ -54,7 +54,7 @@ class Listeners(commands.Cog):
                         await self.bot.get_channel(data["log_info"]["staff"]).send(embed=discord.Embed(
                             title=f"{self.emojis().punish.warn} NSFW image sent",
                             description=f"**User:** {message.author.name} ({message.author.mention})\n**Confidence:** "
-                                        f"{round(score, 2)}%\n[[View here]]({str(message.author.avatar.url_as(format='png'))})",
+                                        f"{round(score, 2)}%\n[[View here]]({str(message.author.avatar.with_format('png'))})",
                             color=self.colours.red
                         ))
                         # ), file=discord.File(buf, filename="image.png", spoiler=True))
@@ -137,7 +137,7 @@ class Listeners(commands.Cog):
                     except discord.HTTPException:
                         pass
                     return await member.ban(reason="RSM - Username broke rules")
-        nsfw, _, score, image = await self.handlers.is_pfp_nsfw(str(member.avatar.url_as(format="png")))
+        nsfw, _, score, image = await self.handlers.is_pfp_nsfw(str(member.avatar.with_format("png")))
         if nsfw:
             try:
                 await member.send(embed=discord.Embed(
@@ -154,7 +154,7 @@ class Listeners(commands.Cog):
                 buf.seek(0)
                 await self.bot.get_channel(data["log_info"]["staff"]).send(embed=discord.Embed(
                     title=f"{self.emojis().control.cross} Profile picture flagged",
-                    description=f"**User:** {member.name} ({member.mention})\n**Confidence:** {round(score, 2)}%\n[[View here]]({str(member.avatar.url_as(format='png'))})",
+                    description=f"**User:** {member.name} ({member.mention})\n**Confidence:** {round(score, 2)}%\n[[View here]]({str(member.avatar.with_format('png'))})",
                     color=self.colours.red
                 ), file=discord.File(buf, filename="image.png", spoiler=True))
 

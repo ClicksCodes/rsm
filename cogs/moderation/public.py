@@ -1,7 +1,9 @@
 import typing
 import discord
 from discord import interactions
+import datetime
 from discord.ext import commands
+from discord.ext.commands.converter import T
 
 from cogs.consts import *
 from cogs.handlers import Handlers
@@ -20,14 +22,41 @@ class Public(commands.Cog):
     async def on_interaction(self, interaction):
         if "type" not in interaction.data:
             return
-        if interaction.data["type"] == 2 and interaction.guild:
-            if interaction.data["name"] == "Punish":
-                pass
-        elif interaction.data["type"] == 3 and interaction.guild:
+        if interaction.data["type"] == 2:
+            if interaction.data["name"] == "Flag for moderators":
+                data = self.handlers.fileManager(interaction.guild)
+                if data["log_info"]["staff"]:
+                    await interaction.guild.get_channel(data["log_info"]["channel"]).send(embed=discord.Embed(
+                        title=f"Member flagged",
+                        description=f"**Flagged by:** {interaction.user.mention}\n"
+                                    f"**Member flagged:** {interaction.guild.get_member(interaction.data['target_id']).mention}\n"
+                                    f"**Flagged at:** {self.handlers.strf(datetime.datetime.now())}\n",
+                        colour=self.colours.red
+                    ))
+                    await interaction.response.send_message(embed=discord.Embed(
+                        title=f"Member flagged",
+                        description=f"Member flagged successfully",
+                        colour=self.colours.green
+                    ), ephemeral=True)
+                else:
+                    await interaction.response.send_message(embed=discord.Embed(
+                        title=f"Not accepting flags",
+                        description=f"This server is not accepting member flags",
+                        colour=self.colours.red
+                    ), ephemeral=True)
+        elif interaction.data["type"] == 3:
             if interaction.data["name"] == "Show message data":
                 await interaction.response.send_message(embed=loading_embed, ephemeral=True)
                 m = await interaction.original_message()
                 await self._showdata(m, interaction.data, interaction.channel)
+            elif interaction.data["name"] == "Flag for moderators":
+                await interaction.response.send_message(embed=loading_embed, ephemeral=True)
+                m = await interaction.original_message()
+                return await m.edit(embed=discord.Embed(
+                    title=f"Coming soon",
+                    description=f"Sadly, this feature is not yet added. It is, however, being actively developed",
+                    colour=self.colours.red
+                ))
         elif interaction.type.name == "application_command" and interaction.guild:
             pass
             # if interaction.data["name"] == "apply":

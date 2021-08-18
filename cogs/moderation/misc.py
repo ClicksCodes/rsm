@@ -66,7 +66,7 @@ class Misc(commands.Cog):
                 description=f"Successfully purged {len(deleted)-2-extra} messages",
                 colour=self.colours.green
             ), delete_after=10, view=None)
-        except discord.errors.Forbidden:
+        except discord.errors.HTTPException:
             return await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().channel.purge} Purge",
                 description=f"An error occurred while purging {ctx.channel.mention}",
@@ -98,7 +98,7 @@ class Misc(commands.Cog):
                 description=f"{member.mention} was successfully unbanned",
                 colour=self.colours.green
             ), view=None)
-        except discord.errors.Forbidden:
+        except discord.errors.HTTPException:
             return await m.edit(embed=discord.Embedgreen(
                 title=f"{self.emojis().member.unban} Unban",
                 description=f"An error occurred while unbanning {member.mention}",

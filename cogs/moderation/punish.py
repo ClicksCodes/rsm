@@ -150,14 +150,11 @@ class Punish(commands.Cog):
                 return
 
         try:
-            try:
-                await member.send(embed=discord.Embed(
-                    title=f"{self.emojis().punish.warn} Warn",
-                    description=f"You have been warned in {ctx.guild.name}" + (f" for:\n> {reason}" if reason else ""),
-                    colour=self.colours.yellow
-                ))
-            except discord.errors.Forbidden:
-                pass
+            await member.send(embed=discord.Embed(
+                title=f"{self.emojis().punish.warn} Warn",
+                description=f"You have been warned in {ctx.guild.name}" + (f" for:\n> {reason}" if reason else ""),
+                colour=self.colours.yellow
+            ))
             await self.handlers.sendLog(
                 emoji=self.emojis().punish.warn,
                 type="Member warned",
@@ -174,8 +171,8 @@ class Punish(commands.Cog):
                 title=f"{self.emojis().punish.warn} Warn",
                 description=f"{member.mention} was successfully warned" + (f" for:\n> {reason}" if reason else ""),
                 colour=self.colours.green
-            , view=None))
-        except discord.errors.Forbidden:
+            ), view=None)
+        except discord.errors.HTTPException:
             return await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().punish.warn} Warn",
                 description=f"An error occurred while warning {member.mention}",
@@ -234,7 +231,7 @@ class Punish(commands.Cog):
                 description=f"Successfully cleared {len(deleted)} messages by {member.mention}",
                 colour=self.colours.green
             ), view=None)
-        except discord.errors.Forbidden:
+        except discord.errors.HTTPException:
             return await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().punish.clear_history} Clear",
                 description=f"An error occurred while clearing {member.mention}",
@@ -289,7 +286,7 @@ class Punish(commands.Cog):
                     description=f"You have been kicked from {ctx.guild.name}" + (f" for:\n> {reason}" if reason else ""),
                     colour=self.colours.red
                 ))
-            except discord.errors.Forbidden:
+            except discord.errors.HTTPException:
                 pass
             await ctx.guild.kick(member, reason=(reason if reason else "No reason provided"))
             return await m.edit(embed=discord.Embed(
@@ -297,7 +294,7 @@ class Punish(commands.Cog):
                 description=f"{member.mention} was successfully kicked" + (f" for:\n> {reason}" if reason else ""),
                 colour=self.colours.green
             ), view=None)
-        except discord.errors.Forbidden:
+        except discord.errors.HTTPException:
             return await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().punish.kick} Kick",
                 description=f"An error occurred while kicking {member.mention}",
@@ -352,7 +349,7 @@ class Punish(commands.Cog):
                     description=f"You have been softbanned from {ctx.guild.name}" + (f" for:\n> {reason}" if reason else ""),
                     colour=self.colours.yellow
                 ))
-            except discord.errors.Forbidden:
+            except discord.errors.HTTPException:
                 pass
             await ctx.guild.ban(member, reason=(("RSM Softban | " + reason) if reason else "RSM Softban | No reason provided"), delete_message_days=7)
             await ctx.guild.unban(member, reason=(reason if reason else "RSM Softban"))
@@ -378,7 +375,7 @@ class Punish(commands.Cog):
                 description=f"{member.mention} was successfully softbanned" + (f" for:\n> {reason}" if reason else ""),
                 colour=self.colours.green
             ), view=None)
-        except discord.errors.Forbidden:
+        except discord.errors.HTTPException:
             return await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().punish.soft_ban} Softban",
                 description=f"An error occurred while softbanning {member.mention}",
