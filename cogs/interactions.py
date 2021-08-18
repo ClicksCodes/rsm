@@ -85,6 +85,7 @@ class CustomCTX:
         self.channel = channel
         self.interaction = interaction
         self.m = m
+        self.me = guild.me
 
     async def delete(self):
         if self.message:
