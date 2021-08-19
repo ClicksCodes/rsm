@@ -255,7 +255,8 @@ class Info(commands.Cog):
                 split[-1].append(command)
             split[-1].append(
                 "[[Invite]](https://discord.com/api/oauth2/authorize?client_id=715989276382462053&permissions=121295465718&scope=bot%20applications.commands)"
-                " | [[Support]](https://discord.gg/bPaNnxe)"
+                " | [[Support]](https://discord.gg/bPaNnxe) | We've also released an application bot, designed for integration with RSM"
+                "[[Invite]](https://discord.com/api/oauth2/authorize?client_id=805392054678192169&permissions=268823552&scope=bot%20applications.commands)"
             )
             x += 1
             if x == len(headings):
