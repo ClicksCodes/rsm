@@ -3,6 +3,7 @@ import datetime
 import typing
 import humanize
 from collections import OrderedDict
+from cogs import interactions
 
 import aiohttp
 import discord
@@ -17,6 +18,7 @@ class Misc(commands.Cog):
         self.emojis = Emojis
         self.colours = Cols()
         self.handlers = Handlers(self.bot)
+        self.interactions = interactions
 
     @commands.command()
     @commands.guild_only()
@@ -63,13 +65,13 @@ class Misc(commands.Cog):
                 title=f"{self.emojis().channel.purge} Purge",
                 description=f"Successfully purged {len(deleted)-2-extra} messages",
                 colour=self.colours.green
-            ), delete_after=10)
-        except discord.errors.Forbidden:
+            ), delete_after=10, view=None)
+        except discord.errors.HTTPException:
             return await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().channel.purge} Purge",
                 description=f"An error occurred while purging {ctx.channel.mention}",
                 colour=self.colours.red
-            ).set_footer(text="403 Forbidden"))
+            ).set_footer(text="403 Forbidden"), view=None)
 
     @commands.command()
     @commands.guild_only()
@@ -95,13 +97,13 @@ class Misc(commands.Cog):
                 title=f"{self.emojis().member.unban} Unban",
                 description=f"{member.mention} was successfully unbanned",
                 colour=self.colours.green
-            ))
-        except discord.errors.Forbidden:
+            ), view=None)
+        except discord.errors.HTTPException:
             return await m.edit(embed=discord.Embedgreen(
                 title=f"{self.emojis().member.unban} Unban",
                 description=f"An error occurred while unbanning {member.mention}",
                 colour=self.colours.red
-            ).set_footer(text="403 Forbidden"))
+            ).set_footer(text="403 Forbidden"), view=None)
 
     async def setSlowmode(self, ctx, m, speed):
         speed = max(0, min(speed, 21600))
@@ -172,21 +174,16 @@ class Misc(commands.Cog):
                 description=f"*No visible channels*",
                 colour=self.colours.yellow
             ))
-        task = asyncio.create_task(self.handlers.reactionCollector(
-            ctx,
-            m,
-            reactions=[
-                "control.cross",
-                "control.left",
-                "control.right"
-            ],
-            collect=False
-        ))
         ordered = OrderedDict(sorted(visible.items(), key=lambda x: (x[0].position if hasattr(x[0], "position") else -1) if isinstance(x, tuple) else -1))
         visible = {k: ordered[k] for k in ordered}
         for k in visible.keys():
             visible[k] = sorted(visible[k], key=lambda x: x.position if x.type.name == "text" else x.position + 50)
         while True:
+            v = self.interactions.createUI(ctx, [
+                self.interactions.Button(self.bot, emojis=self.emojis, id="cr", emoji="control.cross"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="le", emoji="control.left"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="ri", emoji="control.right"),
+            ])
             page = max(0, min(page, len(visible)-1))
             description = []
             if list(visible.keys())[page] is None:
@@ -207,22 +204,17 @@ class Misc(commands.Cog):
                 title=f"{self.emojis().channel.category.create} {name} ({page + 1}/{len(visible)})",
                 description="\n".join([f"{c[0]} {c[1]}" for c in description]),
                 colour=self.colours.green
-            ))
-            reaction = await self.handlers.reactionCollector(ctx, m, [])
-            if isinstance(reaction, Failed):
-                break
-            match reaction.emoji.name:
-                case "Left": page -= 1
-                case "Right": page += 1
+            ), view=v)
+            await v.wait()
+            match v.selected:
+                case "le": page -= 1
+                case "ri": page += 1
                 case _: break
-        await asyncio.sleep(0.1)
-        await asyncio.wait_for(task, timeout=10)
-        await m.clear_reactions()
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().channel.category.create} {name} ({page + 1}/{len(visible)})",
             description="\n".join([f"{c[0]} {c[1]}" for c in description]),
             colour=self.colours.red
-        ))
+        ), view=None)
 
     @commands.command()
     @commands.guild_only()
@@ -260,7 +252,7 @@ class Misc(commands.Cog):
             title=f"{self.emojis().channel.text.create} Setlog",
             description=f"Your log channel has been set to {channel.mention if channel else 'None'}",
             colour=self.colours.green
-        ))
+        ), view=None)
 
     @commands.command()
     @commands.guild_only()
@@ -298,7 +290,7 @@ class Misc(commands.Cog):
             title=f"{self.emojis().channel.text.create} Stafflog",
             description=f"Your staff log channel has been set to {channel.mention if channel else 'None'}",
             colour=self.colours.green
-        ))
+        ), view=None)
 
     @commands.command()
     @commands.guild_only()
@@ -308,9 +300,6 @@ class Misc(commands.Cog):
             return
         page = 0
         data = self.handlers.fileManager(ctx.guild)
-        emojis = ["control.left", "control.right", "role.messages", "channel.text.create", "guild.settings", "member.join", "voice.connect"]
-        task = asyncio.create_task(self.handlers.reactionCollector(ctx, m, reactions=emojis, collect=False))
-        emojis = emojis[2:]
         while True:
             pages = [
                 {
@@ -350,28 +339,36 @@ class Misc(commands.Cog):
                 }
             ]
             desc = "\n".join([f"{(self.emojis().control.tick if p[0] in data['log_info']['to_log'] else self.emojis().control.cross)} {p[1]}" for p in pages[page]['logs']])
+            v = self.interactions.createUI(ctx, [
+                self.interactions.Button(self.bot, emojis=self.emojis, id="cr", emoji="control.cross"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="le", emoji="control.left"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="ri", emoji="control.right"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="rm", emoji="role.messages"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="cc", emoji="channel.text.create"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="gs", emoji="guild.settings"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="mj", emoji="member.join"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="vc", emoji="voice.connect"),
+            ])
             await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().guild.settings} Settings",
                 description=f"{self.bot.get_emoji(self.emojis(idOnly=True)(emojis[page]))} **{pages[page]['name']}**\n\n" + desc,
                 colour=self.colours.green
-            ))
-            reaction = await self.handlers.reactionCollector(ctx, m, [], task=task)
-            if isinstance(reaction, Failed):
-                break
-            match reaction.emoji.name:
-                case "Left": page -= 1
-                case "Right": page += 1
-                case "MessagesRole": page = 0
-                case "ChannelCreate": page = 1
-                case "ServerRole": page = 2
-                case "MemberJoin": page = 3
-                case "Connect": page = 4
+            ), view=v)
+            await v.wait()
+            match v.selected:
+                case "cr": break
+                case "le": page -= 1
+                case "ri": page += 1
+                case "rm": page = 0
+                case "cc": page = 1
+                case "gs": page = 2
+                case "mj": page = 3
+                case "vc": page = 4
                 case _: break
             page = max(0, min(page, 4))
         embed = m.embeds[0]
         embed.colour = self.colours.red
-        await m.clear_reactions()
-        await m.edit(embed=embed)
+        await m.edit(embed=embed, view=None)
 
     @commands.command()
     @commands.guild_only()
@@ -387,15 +384,15 @@ class Misc(commands.Cog):
         members = False
         add = True
         tick = self.emojis().control.tick
-        cross = self.emojis().control.cross
-        task = asyncio.create_task(self.handlers.reactionCollector(
-            ctx,
-            m,
-            reactions=["member.bot.join", "member.join", "icon.add", "control.cross", "control.tick"],
-            collect=False
-        ))
-        apply = False
+        cross = self.emojis().control.crossllect=False
         while True:
+            v = self.interactions.createUI(ctx, [
+                self.interactions.Button(self.bot, emojis=self.emojis, id="cr", emoji="control.cross"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="ti", emoji="control.tick"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="mj", emoji="member.join"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="bo", emoji="member.bot.join"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="ad", emoji="icon.add"),
+            ])
             await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().role.edit} Roleall",
                 description=f"Who should be affected?\n"
@@ -403,34 +400,24 @@ class Misc(commands.Cog):
                             f"{self.emojis().member.join} {tick if members else cross} Humans\n"
                             f"{self.emojis().icon.add} Members will {'be given' if add else f'lose'} the {role.mention} role",
                 colour=self.colours.green
-            ))
-            reaction = await self.handlers.reactionCollector(ctx, m, [], collect=True, task=task)
-            if isinstance(reaction, Failed):
-                break
-            match reaction.emoji.name:
-                case "MemberJoin":
-                    members = not members
-                case "BotJoin":
-                    bots = not bots
-                case "add":
-                    add = not add
-                case "Cross":
-                    break
-                case "Tick":
+            ), view=v)
+            match v.selected:
+                case "cr": break
+                case "ti":
                     apply = True
                     break
+                case "me": members = not members
+                case "bo": bots = not bots
+                case "ad": add = not add
         if not apply:
             embed = m.embeds[0]
             embed.colour = self.colours.red
-            await asyncio.sleep(0.1)
-            await m.clear_reactions()
-            return await m.edit(embed=embed)
+            return await m.edit(embed=embed, view=v)
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().icon.loading} Roleall",
             description=f"Updating roles\n\n0/{len(ctx.guild.members)} processed\nCalculating remaining time",
             colour=self.colours.green
-        ))
-        await m.clear_reactions()
+        ), view=None)
         count = 0
         success = 0
         failed = 0
@@ -465,7 +452,7 @@ class Misc(commands.Cog):
             title=f"{self.emojis().role.edit} Roleall",
             description=f"Finished updating roles\n{success} roles updated\n{failed} roles failed",
             colour=self.colours.green
-        ))
+        ), view=None)
 
     @commands.command()
     @commands.guild_only()
@@ -475,7 +462,12 @@ class Misc(commands.Cog):
             return
         while True:
             data = self.handlers.fileManager(ctx.guild)
-            await m.clear_reactions()
+            v = self.interactions.createUI(ctx, [
+                self.interactions.Button(self.bot, emojis=self.emojis, id="cr", emoji="control.cross"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="tc", emoji="channel.text.create"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="rc", emoji="role.create"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="mj", emoji="member.join"),
+            ])
             await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().channel.text.create} Ignore",
                 description=f"You are ignoring the following things:\n\n"
@@ -484,15 +476,10 @@ class Misc(commands.Cog):
                             f"{self.emojis().member.join} **Members:**\n> {' '.join([self.bot.get_user(m).mention for m in data['log_info']['ignore']['members']])}\n"
                             f"*Type all you wish to ignore when choosing*",
                 colour=self.colours.green
-            ))
-            reaction = await self.handlers.reactionCollector(ctx, m, reactions=["channel.text.create", "role.create", "member.join", "control.cross"])
-            if isinstance(reaction, Failed):
-                break
-            await asyncio.sleep(0.1)
-            await m.clear_reactions()
-            match reaction.emoji.name:
-                case "Cross": break
-                case "ChannelCreate":
+            ), view=v)
+            match v.selected:
+                case "cr": break
+                case "tc":
                     channels = await self.handlers.channelHandler(
                         ctx,
                         m,
@@ -511,7 +498,7 @@ class Misc(commands.Cog):
                         channels = []
                     data["log_info"]["ignore"]["channels"] = channels
                     self.handlers.fileManager(ctx.guild, "w", data=data)
-                case "RoleCreate":
+                case "rc":
                     roles = await self.handlers.roleHandler(
                         ctx,
                         m,
@@ -529,7 +516,7 @@ class Misc(commands.Cog):
                         roles = []
                     data["log_info"]["ignore"]["roles"] = roles
                     self.handlers.fileManager(ctx.guild, "w", data=data)
-                case "MemberJoin":
+                case "mj":
                     members = await self.handlers.memberHandler(
                         ctx,
                         m,
@@ -549,7 +536,7 @@ class Misc(commands.Cog):
                     self.handlers.fileManager(ctx.guild, "w", data=data)
         embed = m.embeds[0]
         embed.colour = self.colours.red
-        await m.edit(embed=embed)
+        await m.edit(embed=embed, view=None)
 
     @commands.command()
     @commands.guild_only()
@@ -583,9 +570,11 @@ class Misc(commands.Cog):
                     cut.append([])
                 cut[-1].append(role)
             extra = []
+            o = []
             if not isinstance(await self.handlers.checkPerms(ctx, m, "manage_roles", "", "", edit=False), Failed):
-                extra = [f"numbers.{n}.normal" for n in range(0, 10)]
-            task = await self.handlers.reactionCollector(ctx, m, ["control.cross", "control.left", "control.right"] + extra, collect=False)
+                o = [(f"numbers.{n}.normal", str(n)) for n in range(0, 10)]
+            o = [("control.cross", "cr"), ("control.left", "le"), ("control.right", "ri")] + extra
+            o = [self.interactions.Button(self.bot, emojis=self.emojis, id=t[1], emoji=t[0]) for t in o]
             targetRoles = {r: [ctx.guild.get_role(r), ctx.guild.get_role(r) in target.roles] for r in guildRoles}
             while True:
                 d = []
@@ -595,25 +584,24 @@ class Misc(commands.Cog):
                     n = self.emojis()(f"numbers.{count}.{'green' if targetRoles[role][1] else 'red'}")
                     d.append(f"{e}{n} {ctx.guild.get_role(role).name} ({ctx.guild.get_role(role).mention})")
                     count += 1
+                v = self.interactions.createUI(ctx, o)
                 await m.edit(embed=discord.Embed(
                     title=f"{self.emojis().role.create} Roles",
                     description=f"Page {page + 1} of {len(cut)}\n" +
                                 ("\n".join(d)),
                     colour=self.colours.green
-                ))
-                reaction = await self.handlers.reactionCollector(ctx, m, task=task)
-                if isinstance(reaction, Failed):
-                    break
-                match reaction.emoji.name:
-                    case "Cross": break
-                    case "Left": page -= 1
-                    case "Right": page += 1
+                ), view=v)
+                await v.wait()
+                match v.selected:
+                    case "cr": break
+                    case "le": page -= 1
+                    case "ri": page += 1
                     case _:
-                        if len(reaction.emoji.name) == 2 and reaction.emoji.name[-1] == "_" and reaction.emoji.name[0].isdigit():
+                        if len(v.selected) == "2":
                             if isinstance(await self.handlers.checkPerms(ctx, m, "manage_roles", self.emojis().role.create, "edit someones roles"), Failed):
                                 break
                             try:
-                                toChange = cut[page][int(reaction.emoji.name[0])]
+                                toChange = cut[page][int(v.selected)]
                             except IndexError:
                                 continue
                             if ctx.guild.get_role(toChange).position >= ctx.me.top_role.position:
@@ -628,27 +616,25 @@ class Misc(commands.Cog):
                             except discord.HTTPException:
                                 continue
                 page = max(0, min(page, len(cut) - 1))
-            await asyncio.sleep(0.1)
-            await m.clear_reactions()
             embed = m.embeds[0]
             embed.colour = self.colours.red
-            await m.edit(embed=embed)
-
+            await m.edit(embed=embed, view=None)
         elif isinstance(target, discord.Role):
-            task = asyncio.create_task(self.handlers.reactionCollector(
-                ctx,
-                m,
-                reactions=[
-                    "control.cross", "control.left", "control.right",
-                    "role.create", "member.join", "guild.settings",
-                    "role.messages", "member.bot.join", "channel.voice.create"
-                ],
-                collect=False
-            ))
             page = 0
             while True:
                 permList = dict(target.permissions)
                 page = max(0, min(page, 5))
+                v = self.interactions.createUI(ctx, [
+                    self.interactions.Button(self.bot, emojis=self.emojis, id="cr", emoji="control.cross"),
+                    self.interactions.Button(self.bot, emojis=self.emojis, id="le", emoji="control.left"),
+                    self.interactions.Button(self.bot, emojis=self.emojis, id="ri", emoji="control.right"),
+                    self.interactions.Button(self.bot, emojis=self.emojis, id="rc", emoji="role.create", title="Role info"),
+                    self.interactions.Button(self.bot, emojis=self.emojis, id="mj", emoji="member.join", title="Members"),
+                    self.interactions.Button(self.bot, emojis=self.emojis, id="gs", emoji="guild.settings", title="Server"),
+                    self.interactions.Button(self.bot, emojis=self.emojis, id="rm", emoji="role.messages", title="Messages"),
+                    self.interactions.Button(self.bot, emojis=self.emojis, id="bj", emoji="member.bot.join", title="Members"),
+                    self.interactions.Button(self.bot, emojis=self.emojis, id="vc", emoji="channel.voice.create", title="Voice"),
+                ])
                 match page:
                     case 0:
                         await m.edit(embed=discord.Embed(
@@ -663,7 +649,7 @@ class Misc(commands.Cog):
                                         f"**ID:** `{target.id}`\n"
                                         f"**Created:** {self.handlers.betterDelta(target.created_at)}",
                             colour=self.colours.green
-                        ))
+                        ), view=v)
                     case 1:
                         count = 0
                         d = f"**Role:** {target.name} ({target.mention})\n" + f"**Members with this role:** ({len(target.members)})\n> "
@@ -679,7 +665,7 @@ class Misc(commands.Cog):
                             title=f"{self.emojis().role.create} Role info",
                             description=d,
                             colour=self.colours.green
-                        ))
+                        ), view=v)
                     case 2:
                         perms = [
                             "view_audit_log", ("view_guild_insights", "View server insights"), ("manage_guild", "Manage server"),
@@ -692,7 +678,7 @@ class Misc(commands.Cog):
                                         f"**Server**\n"
                                         f"{self.handlers.genPerms(perms, permList)}",
                             colour=self.colours.green
-                        ))
+                        ), view=v)
                     case 3:
                         perms = [
                             "read_messages", "send_messages", ("send_tts_messages", "Send TTS messages"),
@@ -706,7 +692,7 @@ class Misc(commands.Cog):
                                         f"**Messages**\n"
                                         f"{self.handlers.genPerms(perms, permList)}",
                             colour=self.colours.green
-                        ))
+                        ), view=v)
                     case 4:
                         perms = [
                             "kick_members", "ban_members",
@@ -718,7 +704,7 @@ class Misc(commands.Cog):
                                         f"**Members**\n"
                                         f"{self.handlers.genPerms(perms, permList)}",
                             colour=self.colours.green
-                        ))
+                        ), view=v)
                     case 5:
                         perms = [
                             ("connect", "Join voice chats"), ("speak", "Talk in voice chats"), ("stream", "Stream in voice chats"),
@@ -731,29 +717,21 @@ class Misc(commands.Cog):
                                         f"**Voice**\n"
                                         f"{self.handlers.genPerms(perms, permList)}",
                             colour=self.colours.green
-                        ))
-                reaction = await self.handlers.reactionCollector(
-                    ctx,
-                    m,
-                    task=task
-                )
-                if isinstance(reaction, Failed):
-                    break
-                match reaction.emoji.name:
-                    case "Left": page -= 1
-                    case "Right": page += 1
-                    case "RoleCreate": page = 0
-                    case "MemberJoin": page = 1
-                    case "ServerRole": page = 2
-                    case "MessagesRole": page = 3
-                    case "BotJoin": page = 4
-                    case "VoiceCreate": page = 5
+                        ), view=v)
+                await v.wait()
+                match v.selected:
+                    case "le": page -= 1
+                    case "ri": page += 1
+                    case "rc": page = 0
+                    case "mj": page = 1
+                    case "gs": page = 2
+                    case "rm": page = 3
+                    case "bj": page = 4
+                    case "vc": page = 5
                     case _: break
-            await asyncio.sleep(0.1)
-            await m.clear_reactions()
             embed = m.embeds[0]
             embed.colour = self.colours.red
-            await m.edit(embed=embed)
+            await m.edit(embed=embed, v=None)
 
     @commands.command()
     @commands.guild_only()
@@ -771,18 +749,16 @@ class Misc(commands.Cog):
             )
             if isinstance(name, Failed):
                 return
+        v = self.interactions.createUI(ctx, [
+            self.interactions.Button(self.bot, emojis=self.emojis, id="ye", title="Yes", style="success"),
+            self.interactions.Button(self.bot, emojis=self.emojis, id="no", title="No", style="danger"),
+        ])
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().member.ban} Nameban",
             description=f"By clicking the tick, {len([mem.name for mem in ctx.guild.members if mem.name == name])} members will be banned. Are you sure?",
             color=self.colours.yellow
-        ))
-        reaction = await self.handlers.reactionCollector(ctx, m, reactions=[
-            "control.tick",
-            "control.cross"
-        ])
-        if isinstance(reaction, Failed):
-            return
-        if reaction.emoji.name == "Cross":
+        ), view=v)
+        if v.selected != "yes":
             return
         count = 0
         failed = 0
@@ -798,8 +774,7 @@ class Misc(commands.Cog):
             title=f"{self.emojis().member.ban} Nameban",
             description=f"{count} members have been banned ({failed} failed)",
             colour=self.colours.green
-        ))
-        await m.clear_reactions()
+        ), view=None)
 
 
 def setup(bot):

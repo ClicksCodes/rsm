@@ -64,13 +64,13 @@ class Tags(commands.Cog):
                     title=f"{self.emojis().channel.store.create} Tag",
                     description="This tag already exists",
                     colour=self.colours.red
-                ))
+                ), view=None)
             if name in reserved:
                 return await m.edit(embed=discord.Embed(
                     title=f"{self.emojis().channel.store.create} Tag",
                     description="This tag contains a reserved phrase",
                     colour=self.colours.red
-                ))
+                ), view=None)
         if len(name) > 100:
             desc = desc[:100]
         if not desc:
@@ -83,20 +83,20 @@ class Tags(commands.Cog):
             title=f"{self.emojis().channel.store.create} Tag",
             description="Saving tag",
             colour=self.colours.green
-        ).set_footer(text="Reading"))
+        ).set_footer(text="Reading"), view=None)
         data = self.handlers.fileManager(ctx.guild)
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().channel.store.create} Tag",
             description="Saving tag",
             colour=self.colours.green
-        ).set_footer(text="Writing"))
+        ).set_footer(text="Writing"), view=None)
         data["tags"][name.lower()] = desc
         data = self.handlers.fileManager(ctx.guild, action="w", data=data)
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().channel.store.create} Tag",
             description="Tag created successfully",
             colour=self.colours.green
-        ))
+        ), view=None)
 
     @tag.command(name="remove", aliases=["delete"])
     @commands.guild_only()
@@ -112,25 +112,25 @@ class Tags(commands.Cog):
                 title=f"{self.emojis().channel.store.create} Tag",
                 description="Tag could not be found",
                 colour=self.colours.red
-            ))
+            ), view=None)
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().channel.store.create} Tag",
             description="Deleting tag",
             colour=self.colours.green
-        ).set_footer(text="Reading"))
+        ).set_footer(text="Reading"), view=None)
         data = self.handlers.fileManager(ctx.guild)
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().channel.store.create} Tag",
             description="Deleting tag",
             colour=self.colours.green
-        ).set_footer(text="Writing"))
+        ).set_footer(text="Writing"), view=None)
         del data["tags"][name]
         data = self.handlers.fileManager(ctx.guild, action="w", data=data)
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().channel.store.create} Tag",
             description="Tag deleted successfully",
             colour=self.colours.green
-        ))
+        ), view=None)
 
     # @tag.command(name="edit", aliases=["update"])
     # @commands.guild_only()

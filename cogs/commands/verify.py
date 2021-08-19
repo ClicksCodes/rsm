@@ -159,7 +159,7 @@ class Verify(commands.Cog):
                 title=f"{self.emojis().control.tick} Setverify",
                 description=f"Setting role.",
                 colour=self.colours.green,
-            ).set_footer(text="Reading")
+            ).set_footer(text="Reading"), view=None
         )
         data = self.handlers.fileManager(ctx.guild)
         data["verify_role"] = role.id if role else None
@@ -168,7 +168,7 @@ class Verify(commands.Cog):
                 title=f"{self.emojis().control.tick} Setverify",
                 description=f"Setting role.",
                 colour=self.colours.green,
-            ).set_footer(text="Writing")
+            ).set_footer(text="Writing"), view=None
         )
         self.handlers.fileManager(ctx.guild, action="w", data=data)
         await m.edit(
@@ -176,7 +176,7 @@ class Verify(commands.Cog):
                 title=f"{self.emojis().control.tick} Setverify",
                 description=f"Set verify role successfully to {role.mention if role else 'None'}.",
                 colour=self.colours.green,
-            )
+            ), view=None
         )
 
 

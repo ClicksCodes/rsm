@@ -38,7 +38,7 @@ class RSM(commands.Cog):
             title=f"{self.emojis().icon.add} Suggestion",
             description="Your suggestion has been sent to the developers",
             colour=self.colours.green
-        ))
+        ), view=None)
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
@@ -133,17 +133,17 @@ class RSM(commands.Cog):
         else:
             prefixes = None
         await m.edit(embed=discord.Embed(
-            title=f"{self.emojis().punish.mute} Prefix", description="Setting your prefix", colour=self.colours.green
+            title=f"{self.emojis().punish.mute} Prefix", description="Setting your prefix", colour=self.colours.green, view=None
         ).set_footer(text="Reading"))
         data = self.handlers.fileManager(ctx.guild)
         await m.edit(embed=discord.Embed(
-            title=f"{self.emojis().punish.mute} Prefix", description="Setting your prefix", colour=self.colours.green
+            title=f"{self.emojis().punish.mute} Prefix", description="Setting your prefix", colour=self.colours.green, view=None
         ).set_footer(text="Writing"))
         data["prefix"] = prefixes
         self.handlers.fileManager(ctx.guild, "w", data=data)
         self.handlers.setMem(ctx.guild.id, data)
         await m.edit(embed=discord.Embed(
-            title=f"{self.emojis().punish.mute} Prefix", description="Prefix successfully set", colour=self.colours.green
+            title=f"{self.emojis().punish.mute} Prefix", description="Prefix successfully set", colour=self.colours.green, view=None
         ))
 
 

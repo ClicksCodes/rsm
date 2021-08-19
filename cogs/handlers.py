@@ -6,7 +6,7 @@ import re
 import aiohttp
 
 import discord
-import humanize
+from cogs import interactions
 from discord.ext import commands
 
 from cogs.consts import *
@@ -28,6 +28,7 @@ class Handlers:
         self.colours = Cols()
         self.emojis = Emojis
         self.bot = bot
+        self.interactions = interactions
 
     def hex_to_rgba(self, value, alpha=255):
         lv = len(value)
@@ -38,16 +39,16 @@ class Handlers:
             optional = True
         skip = f"Default: {default}" if default else "Skip"
         description = f"{description}\nYou can send the members name, ID or mention.\n{self.emojis().control.cross} Cancel" + \
-            (f"\n{self.emojis().control.tick} {skip}" if optional else "") + \
+            (f"\n{self.emojis().control.right} {skip}" if optional else "") + \
             (f"\nYou can select more than one member at a time" if multiple else "")
+        v = self.interactions.createUI(ctx, [
+            self.interactions.Button(self.bot, emojis=self.emojis, id="ca", emoji="control.cross", title="Cancel")
+        ] + [self.interactions.Button(self.bot, emojis=self.emojis, id="sk", emoji="control.right", title="Skip", disabled=not optional)])
         await m.edit(embed=discord.Embed(
             title=f"{emoji} {title}",
             description=description,
             colour=self.colours.green
-        ).set_footer(text="Listening for your next message | Expected: Member"))
-        await m.add_reaction(self.bot.get_emoji(self.emojis(idOnly=True).control.cross))
-        if optional:
-            await m.add_reaction(self.bot.get_emoji(self.emojis(idOnly=True).control.tick))
+        ).set_footer(text="Listening for your next message | Expected: Member"), view=v)
         try:
             done, pending = await asyncio.wait(
                 [
@@ -56,11 +57,7 @@ class Handlers:
                         timeout=180,
                         check=lambda message: message.author == ctx.author and message.channel.id == ctx.channel.id
                     ),
-                    ctx.bot.wait_for(
-                        "reaction_add",
-                        timeout=180,
-                        check=lambda reaction, user: user.id == ctx.author.id and reaction.message.id == m.id
-                    ),
+                    v.wait()
                 ],
                 return_when=asyncio.FIRST_COMPLETED,
             )
@@ -69,17 +66,24 @@ class Handlers:
                 title=f"{emoji} {title}",
                 description=description,
                 colour=self.colours.red
-            ).set_footer(text="The request timed out"))
+            ).set_footer(text="The request timed out"), view=None)
             return Failed()
 
         for future in done:
             future.exception()
         for future in pending:
             future.cancel()
-
-        await m.clear_reactions()
-        response = done.pop().result()
-        if isinstance(response, discord.message.Message):
+        if v.selected:
+            if v.selected == "sk" and optional:
+                return default
+            await m.edit(embed=discord.Embed(
+                title=f"{emoji} {title}",
+                description=description,
+                colour=self.colours.red
+            ).set_footer(text="The request was cancelled"), view=None)
+            return Failed()
+        else:
+            response = done.pop().result()
             if response.channel.permissions_for(response.channel.guild.me).manage_messages:
                 await response.delete()
             if not multiple:
@@ -91,26 +95,8 @@ class Handlers:
                         title=f"{emoji} {title}",
                         description=description,
                         colour=self.colours.red
-                    ).set_footer(text="Member could not be found"))
+                    ).set_footer(text="Member could not be found"), view=None)
                     return Failed()
-            else:
-                members = []
-                for member in response.content.split(" "):
-                    try:
-                        member = await commands.MemberConverter().convert(await self.bot.get_context(response), member)
-                        members.append(member)
-                    except commands.MemberNotFound:
-                        continue
-                return members
-        else:
-            if response[0].emoji.name == "Tick" and optional:
-                return default
-            await m.edit(embed=discord.Embed(
-                title=f"{emoji} {title}",
-                description=description,
-                colour=self.colours.red
-            ).set_footer(text="The request was cancelled"))
-            return Failed()
 
     async def roleHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None, multiple=False):
         if default:
@@ -119,14 +105,14 @@ class Handlers:
         description = f"{description}\nYou can send the roles name, ID or mention.\n{self.emojis().control.cross} Cancel" + \
             (f"\n{self.emojis().control.tick} {skip}" if optional else "") + \
             (f"\nYou can enter more than one role at a time" if multiple else "")
+        v = self.interactions.createUI(ctx, [
+            self.interactions.Button(self.bot, emojis=self.emojis, id="ca", emoji="control.cross", title="Cancel")
+        ] + [self.interactions.Button(self.bot, emojis=self.emojis, id="sk", emoji="control.right", title="Skip", disabled=not optional)])
         await m.edit(embed=discord.Embed(
             title=f"{emoji} {title}",
             description=description,
             colour=self.colours.green
-        ).set_footer(text="Listening for your next message | Expected: Role"))
-        await m.add_reaction(self.bot.get_emoji(self.emojis(idOnly=True).control.cross))
-        if optional:
-            await m.add_reaction(self.bot.get_emoji(self.emojis(idOnly=True).control.tick))
+        ).set_footer(text="Listening for your next message | Expected: Role"), view=v)
         try:
             done, pending = await asyncio.wait(
                 [
@@ -135,11 +121,7 @@ class Handlers:
                         timeout=180,
                         check=lambda message: message.author == ctx.author and message.channel.id == ctx.channel.id
                     ),
-                    ctx.bot.wait_for(
-                        "reaction_add",
-                        timeout=180,
-                        check=lambda reaction, user: user.id == ctx.author.id and reaction.message.id == m.id
-                    ),
+                    v.wait()
                 ],
                 return_when=asyncio.FIRST_COMPLETED,
             )
@@ -148,17 +130,24 @@ class Handlers:
                 title=f"{emoji} {title}",
                 description=description,
                 colour=self.colours.red
-            ).set_footer(text="The request timed out"))
+            ).set_footer(text="The request timed out"), view=None)
             return Failed()
 
         for future in done:
             future.exception()
         for future in pending:
             future.cancel()
-
-        await m.clear_reactions()
-        response = done.pop().result()
-        if isinstance(response, discord.message.Message):
+        if v.selected:
+            if v.selected == "sk" and optional:
+                return default
+            await m.edit(embed=discord.Embed(
+                title=f"{emoji} {title}",
+                description=description,
+                colour=self.colours.red
+            ).set_footer(text="The request was cancelled"), view=None)
+            return Failed()
+        else:
+            response = done.pop().result()
             if response.channel.permissions_for(response.channel.guild.me).manage_messages:
                 await response.delete()
             if not multiple:
@@ -170,7 +159,7 @@ class Handlers:
                         title=f"{emoji} {title}",
                         description=description,
                         colour=self.colours.red
-                    ).set_footer(text="Role could not be found"))
+                    ).set_footer(text="Role could not be found"), view=None)
                     return Failed()
             else:
                 roles = []
@@ -181,15 +170,6 @@ class Handlers:
                     except commands.RoleNotFound:
                         continue
                 return roles
-        else:
-            if response[0].emoji.name == "Tick" and optional:
-                return default
-            await m.edit(embed=discord.Embed(
-                title=f"{emoji} {title}",
-                description=description,
-                colour=self.colours.red
-            ).set_footer(text="The request was cancelled"))
-            return Failed()
 
     async def channelHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None, accepted=["text", "voice", "announcement", "stage"], multiple=False):
         if default:
@@ -198,14 +178,14 @@ class Handlers:
         description = f"{description}\nYou can send the channel name, ID or mention.\n{self.emojis().control.cross} Cancel" + \
             (f"\n{self.emojis().control.tick} {skip}" if optional else "") + \
             (f"\nYou can enter more than one channel at a time" if multiple else "")
+        v = self.interactions.createUI(ctx, [
+            self.interactions.Button(self.bot, emojis=self.emojis, id="ca", emoji="control.cross", title="Cancel")
+        ] + [self.interactions.Button(self.bot, emojis=self.emojis, id="sk", emoji="control.right", title="Skip", disabled=not optional)])
         await m.edit(embed=discord.Embed(
             title=f"{emoji} {title}",
             description=description,
             colour=self.colours.green
-        ).set_footer(text="Listening for your next message | Expected: Channel"))
-        await m.add_reaction(self.bot.get_emoji(self.emojis(idOnly=True).control.cross))
-        if optional:
-            await m.add_reaction(self.bot.get_emoji(self.emojis(idOnly=True).control.tick))
+        ).set_footer(text="Listening for your next message | Expected: Channel"), view=v)
         try:
             done, pending = await asyncio.wait(
                 [
@@ -214,11 +194,7 @@ class Handlers:
                         timeout=180,
                         check=lambda message: message.author == ctx.author and message.channel.id == ctx.channel.id
                     ),
-                    ctx.bot.wait_for(
-                        "reaction_add",
-                        timeout=180,
-                        check=lambda reaction, user: user.id == ctx.author.id and reaction.message.id == m.id
-                    ),
+                    v.wait()
                 ],
                 return_when=asyncio.FIRST_COMPLETED,
             )
@@ -234,10 +210,17 @@ class Handlers:
             future.exception()
         for future in pending:
             future.cancel()
-
-        await m.clear_reactions()
-        response = done.pop().result()
-        if isinstance(response, discord.message.Message):
+        if v.selected:
+            if v.selected == "sk" and optional:
+                return default
+            await m.edit(embed=discord.Embed(
+                title=f"{emoji} {title}",
+                description=description,
+                colour=self.colours.red
+            ).set_footer(text="The request was cancelled"))
+            return Failed()
+        else:
+            response = done.pop().result()
             if response.channel.permissions_for(response.channel.guild.me).manage_messages:
                 await response.delete()
             if not multiple:
@@ -304,15 +287,6 @@ class Handlers:
                         continue
                     channels.append(channel)
                 return channels
-        else:
-            if response[0].emoji.name == "Tick" and optional:
-                return default
-            await m.edit(embed=discord.Embed(
-                title=f"{emoji} {title}",
-                description=description,
-                colour=self.colours.red
-            ).set_footer(text="The request was cancelled"))
-            return Failed()
 
     async def categoryHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None, returnNoneType=False):
         if default:
@@ -320,14 +294,14 @@ class Handlers:
         skip = f"Default: {default}" if default else "Skip"
         description = f"{description}\nYou can send the category name or ID.\n{self.emojis().control.cross} Cancel" + \
             (f"\n{self.emojis().control.tick} {skip}" if optional else "")
+        v = self.interactions.createUI(ctx, [
+            self.interactions.Button(self.bot, emojis=self.emojis, id="ca", emoji="control.cross", title="Cancel")
+        ] + [self.interactions.Button(self.bot, emojis=self.emojis, id="sk", emoji="control.right", title="Skip", disabled=not optional)])
         await m.edit(embed=discord.Embed(
             title=f"{emoji} {title}",
             description=description,
             colour=self.colours.green
-        ).set_footer(text="Listening for your next message | Expected: Category"))
-        await m.add_reaction(self.bot.get_emoji(self.emojis(idOnly=True).control.cross))
-        if optional:
-            await m.add_reaction(self.bot.get_emoji(self.emojis(idOnly=True).control.tick))
+        ).set_footer(text="Listening for your next message | Expected: Category"), view=v)
         try:
             done, pending = await asyncio.wait(
                 [
@@ -336,11 +310,7 @@ class Handlers:
                         timeout=180,
                         check=lambda message: message.author == ctx.author and message.channel.id == ctx.channel.id
                     ),
-                    ctx.bot.wait_for(
-                        "reaction_add",
-                        timeout=180,
-                        check=lambda reaction, user: user.id == ctx.author.id and reaction.message.id == m.id
-                    ),
+                    v.wait()
                 ],
                 return_when=asyncio.FIRST_COMPLETED,
             )
@@ -356,10 +326,17 @@ class Handlers:
             future.exception()
         for future in pending:
             future.cancel()
-
-        await m.clear_reactions()
-        response = done.pop().result()
-        if isinstance(response, discord.message.Message):
+        if v.selected:
+            if v.selected == "sk" and optional:
+                return default
+            await m.edit(embed=discord.Embed(
+                title=f"{emoji} {title}",
+                description=description,
+                colour=self.colours.red
+            ).set_footer(text="The request was cancelled"))
+            return Failed()
+        else:
+            response = done.pop().result()
             if response.channel.permissions_for(response.channel.guild.me).manage_messages:
                 await response.delete()
             try:
@@ -374,15 +351,6 @@ class Handlers:
                     colour=self.colours.red
                 ).set_footer(text="Category could not be found"))
                 return Failed()
-        else:
-            if response[0].emoji.name == "Tick" and optional:
-                return default
-            await m.edit(embed=discord.Embed(
-                title=f"{emoji} {title}",
-                description=description,
-                colour=self.colours.red
-            ).set_footer(text="The request was cancelled"))
-            return Failed()
 
     async def intHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None):
         if default:
@@ -390,14 +358,14 @@ class Handlers:
         skip = f"Default: {default}" if default else "Skip"
         description = f"{description}\n{self.emojis().control.cross} Cancel" + \
             (f"\n{self.emojis().control.tick} {skip}" if optional else "")
+        v = self.interactions.createUI(ctx, [
+            self.interactions.Button(self.bot, emojis=self.emojis, id="ca", emoji="control.cross", title="Cancel")
+        ] + [self.interactions.Button(self.bot, emojis=self.emojis, id="sk", emoji="control.right", title="Skip", disabled=not optional)])
         await m.edit(embed=discord.Embed(
             title=f"{emoji} {title}",
             description=description,
             colour=self.colours.green
-        ).set_footer(text="Listening for your next message | Expected: Number"))
-        await m.add_reaction(self.bot.get_emoji(self.emojis(idOnly=True).control.cross))
-        if optional:
-            await m.add_reaction(self.bot.get_emoji(self.emojis(idOnly=True).control.tick))
+        ).set_footer(text="Listening for your next message | Expected: Number"), view=v)
         try:
             done, pending = await asyncio.wait(
                 [
@@ -406,11 +374,7 @@ class Handlers:
                         timeout=180,
                         check=lambda message: message.author == ctx.author and message.channel.id == ctx.channel.id
                     ),
-                    ctx.bot.wait_for(
-                        "reaction_add",
-                        timeout=180,
-                        check=lambda reaction, user: user.id == ctx.author.id and reaction.message.id == m.id
-                    ),
+                    v.wait()
                 ],
                 return_when=asyncio.FIRST_COMPLETED,
             )
@@ -427,9 +391,17 @@ class Handlers:
         for future in pending:
             future.cancel()
 
-        await m.clear_reactions()
-        response = done.pop().result()
-        if isinstance(response, discord.message.Message):
+        if v.selected:
+            if v.selected == "sk" and optional:
+                return default
+            await m.edit(embed=discord.Embed(
+                title=f"{emoji} {title}",
+                description=description,
+                colour=self.colours.red
+            ).set_footer(text="The request was cancelled"))
+            return Failed()
+        else:
+            response = done.pop().result()
             if response.channel.permissions_for(response.channel.guild.me).manage_messages:
                 await response.delete()
             try:
@@ -441,15 +413,6 @@ class Handlers:
                     colour=self.colours.red
                 ).set_footer(text="An invalid number was provided"))
                 return Failed()
-        else:
-            if response[0].emoji.name == "Tick" and optional:
-                return default
-            await m.edit(embed=discord.Embed(
-                title=f"{emoji} {title}",
-                description=description,
-                colour=self.colours.red
-            ).set_footer(text="The request was cancelled"))
-            return Failed()
 
     async def strHandler(self, ctx, m, emoji=None, title="", description="", optional=False, default=None):
         if default:
@@ -457,14 +420,14 @@ class Handlers:
         skip = f"Default: {default}" if default else "Skip"
         description = f"{description}\n{self.emojis().control.cross} Cancel" + \
             (f"\n{self.emojis().control.tick} {skip}" if optional else "")
+        v = self.interactions.createUI(ctx, [
+            self.interactions.Button(self.bot, emojis=self.emojis, id="ca", emoji="control.cross", title="Cancel")
+        ] + [self.interactions.Button(self.bot, emojis=self.emojis, id="sk", emoji="control.right", title="Skip", disabled=not optional)])
         await m.edit(embed=discord.Embed(
             title=f"{emoji} {title}",
             description=description,
             colour=self.colours.green
-        ).set_footer(text="Listening for your next message | Expected: Text"))
-        await m.add_reaction(self.bot.get_emoji(self.emojis(idOnly=True).control.cross))
-        if optional:
-            await m.add_reaction(self.bot.get_emoji(self.emojis(idOnly=True).control.tick))
+        ).set_footer(text="Listening for your next message | Expected: Text"), view=v)
         try:
             done, pending = await asyncio.wait(
                 [
@@ -473,11 +436,7 @@ class Handlers:
                         timeout=180,
                         check=lambda message: message.author == ctx.author and message.channel.id == ctx.channel.id
                     ),
-                    ctx.bot.wait_for(
-                        "reaction_add",
-                        timeout=180,
-                        check=lambda reaction, user: user.id == ctx.author.id and reaction.message.id == m.id
-                    ),
+                    v.wait()
                 ],
                 return_when=asyncio.FIRST_COMPLETED,
             )
@@ -494,14 +453,8 @@ class Handlers:
         for future in pending:
             future.cancel()
 
-        await m.clear_reactions()
-        response = done.pop().result()
-        if isinstance(response, discord.message.Message):
-            if response.channel.permissions_for(response.channel.guild.me).manage_messages:
-                await response.delete()
-            return str(response.content)
-        else:
-            if response[0].emoji.name == "Tick" and optional:
+        if v.selected:
+            if v.selected == "sk" and optional:
                 return default
             await m.edit(embed=discord.Embed(
                 title=f"{emoji} {title}",
@@ -509,52 +462,11 @@ class Handlers:
                 colour=self.colours.red
             ).set_footer(text="The request was cancelled"))
             return Failed()
-
-    async def reactionCollector(self, ctx=None, m=None, reactions=[], collect=True, task=None):
-        for r in reactions:
-            await asyncio.sleep(0.1)
-            await m.add_reaction(self.bot.get_emoji(self.emojis(idOnly=True)(r)))
-
-        if not collect:
-            return
-
-        try:
-            done, pending = await asyncio.wait(
-                [
-                    ctx.bot.wait_for(
-                        "reaction_add",
-                        timeout=180,
-                        check=lambda reaction, user: user.id == ctx.author.id and reaction.message.id == m.id and isinstance(reaction.emoji, discord.Emoji)
-                    ),
-                    ctx.bot.wait_for(
-                        "reaction_remove",
-                        timeout=180,
-                        check=lambda reaction, user: user.id == ctx.author.id and reaction.message.id == m.id and isinstance(reaction.emoji, discord.Emoji)
-                    ),
-                ],
-                return_when=asyncio.FIRST_COMPLETED,
-            )
-        except (asyncio.exceptions.TimeoutError, TimeoutError, asyncio.exceptions.CancelledError):
-            return Failed()
-
-        for future in done:
-            future.exception()
-        for future in pending:
-            future.cancel()
-
-        if task:
-            await asyncio.wait_for(task, timeout=10)
-            await asyncio.sleep(0.1)
-        try:
-            reaction = done.pop().result()[0]
-        except asyncio.TimeoutError:
-            return Failed()
-        if ctx.guild:
-            try:
-                await m.remove_reaction(reaction, ctx.author)
-            except discord.HTTPException:
-                pass
-        return reaction
+        else:
+            response = done.pop().result()
+            if response.channel.permissions_for(response.channel.guild.me).manage_messages:
+                await response.delete()
+            return str(response.content)
 
     async def checkPerms(self, ctx, m, permission, emoji, action, user=True, me=True, edit=True):
         if not getattr(ctx.channel.permissions_for(ctx.author), permission) and user:

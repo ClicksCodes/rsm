@@ -1,9 +1,13 @@
 import typing
 import discord
+from discord import interactions
+import datetime
 from discord.ext import commands
+from discord.ext.commands.converter import T
 
 from cogs.consts import *
 from cogs.handlers import Handlers
+from cogs import interactions
 
 
 class Public(commands.Cog):
@@ -12,6 +16,70 @@ class Public(commands.Cog):
         self.emojis = Emojis
         self.colours = Cols()
         self.handlers = Handlers(self.bot)
+        self.interactions = interactions
+
+    @commands.Cog.listener()
+    async def on_interaction(self, interaction):
+        if "type" not in interaction.data:
+            return
+        if interaction.data["type"] == 2:
+            if interaction.data["name"] == "Flag for moderators":
+                data = self.handlers.fileManager(interaction.guild)
+                if data["log_info"]["staff"]:
+                    await interaction.guild.get_channel(data["log_info"]["channel"]).send(embed=discord.Embed(
+                        title=f"Member flagged",
+                        description=f"**Flagged by:** {interaction.user.mention}\n"
+                                    f"**Member flagged:** {interaction.guild.get_member(interaction.data['target_id']).mention}\n"
+                                    f"**Flagged at:** {self.handlers.strf(datetime.datetime.now())}\n",
+                        colour=self.colours.red
+                    ))
+                    await interaction.response.send_message(embed=discord.Embed(
+                        title=f"Member flagged",
+                        description=f"Member flagged successfully",
+                        colour=self.colours.green
+                    ), ephemeral=True)
+                else:
+                    await interaction.response.send_message(embed=discord.Embed(
+                        title=f"Not accepting flags",
+                        description=f"This server is not accepting member flags",
+                        colour=self.colours.red
+                    ), ephemeral=True)
+        elif interaction.data["type"] == 3:
+            if interaction.data["name"] == "Show message data":
+                await interaction.response.send_message(embed=loading_embed, ephemeral=True)
+                m = await interaction.original_message()
+                await self._showdata(m, interaction.data, interaction.channel)
+            elif interaction.data["name"] == "Flag for moderators":
+                await interaction.response.send_message(embed=loading_embed, ephemeral=True)
+                m = await interaction.original_message()
+                return await m.edit(embed=discord.Embed(
+                    title=f"Coming soon",
+                    description=f"Sadly, this feature is not yet added. It is, however, being actively developed",
+                    colour=self.colours.red
+                ))
+        elif interaction.type.name == "application_command" and interaction.guild:
+            pass
+            # if interaction.data["name"] == "apply":
+
+    async def _showdata(self, m, data, channel):
+        mes = await channel.fetch_message(data["target_id"])
+        await m.edit(embed=discord.Embed(
+            title=f"Message data",
+            description=f"Authour: {mes.author.mention}\n"
+                        f"Attachments: \n" + "".join([
+                            f"> [[URL]]({n.url}) | Type: `{n.content_type}` | File: `{n.filename}`" +
+                            (f" | Size: `{n.width}x{n.height}`" if hasattr(n, "height") else "") +
+                            "\n"
+                            for n in mes.attachments
+                        ]) +
+                        f"Sent: {self.handlers.betterDelta(mes.created_at)}\n"
+                        f"Jump URL:\n> {mes.jump_url}\n"
+                        f"Edited: {self.handlers.betterDelta(mes.edited_at) if mes.edited_at else 'Never'}\n"
+                        f"Mentioned everyone: {'Yes' if mes.mention_everyone else 'No'}\n"
+                        f"Nonce: `{mes.nonce}`\n"
+                        f"ID: `{mes.id}`",
+            colour=self.colours.green
+        ))
 
     @commands.command()
     @commands.guild_only()

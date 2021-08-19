@@ -5,6 +5,7 @@ from discord.ext import commands
 
 from cogs.consts import *
 from cogs.handlers import Handlers, Failed
+from cogs import interactions
 
 
 class Info(commands.Cog):
@@ -13,20 +14,22 @@ class Info(commands.Cog):
         self.emojis = Emojis
         self.colours = Cols()
         self.handlers = Handlers(self.bot)
+        self.interactions = interactions
 
     async def _userinfo(self, ctx, m, user):
-        task = asyncio.create_task(self.handlers.reactionCollector(
-            ctx,
-            m,
-            reactions=[
-                "control.cross", "control.left", "control.right",
-                "member.join", "role.create", "guild.settings",
-                "role.messages", "member.bot.join", "channel.voice.create"
-            ],
-            collect=False
-        ))
         page = 0
         while True:
+            v = self.interactions.createUI(ctx, [
+                self.interactions.Button(self.bot, emojis=self.emojis, id="cl", emoji="control.cross"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="le", emoji="control.left"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="ri", emoji="control.right"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="mj", emoji="member.join", title="Info"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="rc", emoji="role.create", title="Roles"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="gs", emoji="guild.settings", title="Server"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="rm", emoji="role.messages", title="Messages"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="bj", emoji="member.bot.join", title="Members"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="vc", emoji="channel.voice.create", title="Voice"),
+            ])
             permList = dict(user.guild_permissions)
             page = max(0, min(page, 5))
             match page:
@@ -106,7 +109,7 @@ class Info(commands.Cog):
                                     f"**Joined this server:** {self.handlers.betterDelta(user.joined_at)}\n"
                                     f"**Join position:** {sum(m.joined_at < user.joined_at for m in ctx.guild.members if m.joined_at is not None)}\n",
                         colour=self.colours.green
-                    ).set_thumbnail(url=user.avatar.url).set_footer(text="Bots cannot detect if a user has Nitro"))
+                    ).set_thumbnail(url=user.avatar.url).set_footer(text="Bots cannot detect if a user has Nitro"), view=v)
                 case 1:
                     await m.edit(embed=discord.Embed(
                         title=f"{self.emojis().member.join} User info",
@@ -115,7 +118,7 @@ class Info(commands.Cog):
                                     f"**Roles:** {len(user.roles)-1}\n" +
                                     ", ".join([r.mention for r in reversed(user.roles[1:])]),
                         colour=self.colours.green
-                    ).set_thumbnail(url=user.avatar.url))
+                    ).set_thumbnail(url=user.avatar.url), view=v)
                 case 2:
                     perms = [
                         "view_audit_log", ("view_guild_insights", "View server insights"), ("manage_guild", "Manage server"),
@@ -129,7 +132,7 @@ class Info(commands.Cog):
                                     f"**Server**\n"
                                     f"{self.handlers.genPerms(perms, permList)}",
                         colour=self.colours.green
-                    ).set_thumbnail(url=user.avatar.url))
+                    ).set_thumbnail(url=user.avatar.url), view=v)
                 case 3:
                     perms = [
                         "read_messages", "send_messages", ("send_tts_messages", "Send TTS messages"),
@@ -144,7 +147,7 @@ class Info(commands.Cog):
                                     f"**Messages**\n"
                                     f"{self.handlers.genPerms(perms, permList)}",
                         colour=self.colours.green
-                    ).set_thumbnail(url=user.avatar.url))
+                    ).set_thumbnail(url=user.avatar.url), view=v)
                 case 4:
                     perms = [
                         "kick_members", "ban_members",
@@ -157,7 +160,7 @@ class Info(commands.Cog):
                                     f"**Members**\n"
                                     f"{self.handlers.genPerms(perms, permList)}",
                         colour=self.colours.green
-                    ).set_thumbnail(url=user.avatar.url))
+                    ).set_thumbnail(url=user.avatar.url), view=v)
                 case 5:
                     perms = [
                         ("connect", "Join voice chats"), ("speak", "Talk in voice chats"), ("stream", "Stream in voice chats"),
@@ -171,39 +174,23 @@ class Info(commands.Cog):
                                     f"**Voice**\n"
                                     f"{self.handlers.genPerms(perms, permList)}",
                         colour=self.colours.green
-                    ).set_thumbnail(url=user.avatar.url))
-            reaction = await self.handlers.reactionCollector(
-                ctx,
-                m,
-                task=task
-            )
-            if isinstance(reaction, Failed):
-                break
-            match reaction.emoji.name:
-                case "Left": page -= 1
-                case "Right": page += 1
-                case "MemberJoin": page = 0
-                case "RoleCreate": page = 1
-                case "ServerRole": page = 2
-                case "MessagesRole": page = 3
-                case "BotJoin": page = 4
-                case "VoiceCreate": page = 5
+                    ).set_thumbnail(url=user.avatar.url), view=v)
+            await v.wait()
+            match v.selected:
+                case "le": page -= 1
+                case "ri": page += 1
+                case "mj": page = 0
+                case "rc": page = 1
+                case "gs": page = 2
+                case "rm": page = 3
+                case "bj": page = 4
+                case "vc": page = 5
                 case _: break
-        await asyncio.sleep(0.1)
-        await m.clear_reactions()
         embed = m.embeds[0]
         embed.colour = self.colours.red
-        await m.edit(embed=embed)
+        await m.edit(embed=embed, view=None)
 
     async def _help(self, ctx, m, mob):
-        task = asyncio.create_task(self.handlers.reactionCollector(
-            ctx,
-            m,
-            reactions=[
-                "control.cross", "control.left", "control.right"
-            ],
-            collect=False
-        ))
         n = "\n"
         p = ctx.prefix
         descriptions = [
@@ -272,24 +259,25 @@ class Info(commands.Cog):
                 break
             split.append([headings[x]])
         while True:
+            v = self.interactions.createUI(ctx, [
+                self.interactions.Button(self.bot, emojis=self.emojis, id="cl", emoji="control.cross"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="le", emoji="control.left"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="ri", emoji="control.right"),
+            ])
             await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().rsm.help} Help",
                 description="\n".join([desc for desc in split[page]]),
                 colour=self.colours.green
-            ))
-            reaction = await self.handlers.reactionCollector(ctx, m, task=task)
-            if isinstance(reaction, Failed):
-                break
-            match reaction.emoji.name:
-                case "Left": page -= 1
-                case "Right": page += 1
+            ), view=v)
+            await v.wait()
+            match v.selected:
+                case "le": page -= 1
+                case "ri": page += 1
                 case _: break
             page = max(0, min(page, len(split)))
-        if not isinstance(ctx.channel, discord.channel.DMChannel) and not ctx.channel.permissions_for(ctx.me).manage_messages:
-            await m.clear_reactions()
         embed = m.embeds[0]
         embed.colour = self.colours.red
-        await m.edit(embed=embed)
+        await m.edit(embed=embed, view=None)
 
     @commands.command(aliases=["userinfo", "whois"])
     @commands.guild_only()
