@@ -1,12 +1,13 @@
 import discord
 import typing
 import datetime
+from discord import interactions
 import humanize
 from discord.ext import commands
 
 from cogs.consts import *
 from cogs.handlers import Handlers, Failed
-
+from cogs import interactions
 
 class Punish(commands.Cog):
     def __init__(self, bot):
@@ -14,6 +15,24 @@ class Punish(commands.Cog):
         self.emojis = Emojis
         self.colours = Cols()
         self.handlers = Handlers(self.bot)
+        self.interactions = interactions
+
+
+    @commands.Cog.listener()
+    async def on_interaction(self, interaction):
+        if "type" not in interaction.data:
+            return
+        if interaction.data["type"] == 2 and interaction.guild:
+            if interaction.data["name"] == "Punish":
+                guild = self.bot.get_guild(interaction.guild.id)
+                member = guild.get_member(int(interaction.data["target_id"]))
+                await interaction.response.send_message(embed=loading_embed, ephemeral=True)
+                m = await interaction.original_message()
+                ctx = self.interactions.CustomCTX(self.bot, interaction.user, interaction.guild, interaction.channel, interaction=interaction, m=m)
+                await self._punish(ctx, m, member, reason=None)
+        elif interaction.type.name == "application_command" and interaction.guild:
+            pass
+            # if interaction.data["name"] == "apply":
 
     @commands.command()
     @commands.guild_only()
@@ -49,6 +68,10 @@ class Punish(commands.Cog):
     @commands.guild_only()
     async def punish(self, ctx, member: typing.Optional[discord.Member], *, reason: typing.Optional[str]):
         m = await ctx.send(embed=loading_embed)
+        ctx = self.interactions.CustomCTX(self.bot, ctx.author, ctx.guild, ctx.channel, m=m, message=ctx.message)
+        await self._punish(ctx, m, member, reason)
+
+    async def _punish(self, ctx, m, member: typing.Optional[discord.Member], reason: typing.Optional[str]):
         if not member:
             member = await self.handlers.memberHandler(
                 ctx=ctx,
@@ -60,6 +83,14 @@ class Punish(commands.Cog):
             if isinstance(member, Failed):
                 return
 
+        v = self.interactions.createUI(ctx, [
+            self.interactions.Button(self.bot, emojis=self.emojis, id="wa", title="Warn", emoji="punish.warn"),
+            self.interactions.Button(self.bot, emojis=self.emojis, id="ch", title="Clear history", emoji="punish.clear_history"),
+            self.interactions.Button(self.bot, emojis=self.emojis, id="ki", title="Kick", emoji="punish.kick"),
+            self.interactions.Button(self.bot, emojis=self.emojis, id="sb", title="Softban", emoji="punish.soft_ban"),
+            self.interactions.Button(self.bot, emojis=self.emojis, id="ba", title="Ban", emoji="punish.ban"),
+            self.interactions.Button(self.bot, emojis=self.emojis, id="cr", emoji="control.cross"),
+        ])
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().punish.warn} Punish",
             description=f"Punishing user {member.mention}\n\n"
@@ -70,25 +101,14 @@ class Punish(commands.Cog):
                         f"{self.emojis().punish.ban} Ban\n"
                         f"{self.emojis().control.cross} Cancel",
             colour=self.colours.green
-        ))
-        reaction = await self.handlers.reactionCollector(ctx, m, reactions=[
-            "punish.warn",
-            "punish.clear_history",
-            "punish.kick",
-            "punish.soft_ban",
-            "punish.ban",
-            "control.cross"
-        ])
-        await m.clear_reactions()
-        if isinstance(reaction, Failed):
-            return
-
-        match reaction.emoji.name:
-            case "PunishWarn": await self._warn(ctx, m, member, reason)
-            case "PunishHistory": await self._clear(ctx, m, member, reason)
-            case "PunishKick": await self._kick(ctx, m, member, reason)
-            case "PunishSoftBan": await self._softban(ctx, m, member, reason)
-            case "PunishBan": await self._ban(ctx, m, member, reason)
+        ), view=v)
+        await v.wait()
+        match v.selected:
+            case "wa": await self._warn(ctx, m, member, reason)
+            case "ph": await self._clear(ctx, m, member, reason)
+            case "ki": await self._kick(ctx, m, member, reason)
+            case "sb": await self._softban(ctx, m, member, reason)
+            case "ba": await self._ban(ctx, m, member, reason)
             case _:
                 await m.edit(embed=discord.Embed(
                     title=f"{self.emojis().punish.warn} Punish",
@@ -130,14 +150,11 @@ class Punish(commands.Cog):
                 return
 
         try:
-            try:
-                await member.send(embed=discord.Embed(
-                    title=f"{self.emojis().punish.warn} Warn",
-                    description=f"You have been warned in {ctx.guild.name}" + (f" for:\n> {reason}" if reason else ""),
-                    colour=self.colours.yellow
-                ))
-            except discord.errors.Forbidden:
-                pass
+            await member.send(embed=discord.Embed(
+                title=f"{self.emojis().punish.warn} Warn",
+                description=f"You have been warned in {ctx.guild.name}" + (f" for:\n> {reason}" if reason else ""),
+                colour=self.colours.yellow
+            ))
             await self.handlers.sendLog(
                 emoji=self.emojis().punish.warn,
                 type="Member warned",
@@ -154,13 +171,13 @@ class Punish(commands.Cog):
                 title=f"{self.emojis().punish.warn} Warn",
                 description=f"{member.mention} was successfully warned" + (f" for:\n> {reason}" if reason else ""),
                 colour=self.colours.green
-            ))
-        except discord.errors.Forbidden:
+            ), view=None)
+        except discord.errors.HTTPException:
             return await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().punish.warn} Warn",
                 description=f"An error occurred while warning {member.mention}",
                 colour=self.colours.red
-            ).set_footer(text="403 Forbidden"))
+            ).set_footer(text="403 Forbidden"), view=None)
 
     async def _clear(self, ctx, m, member=None, count=None):
         if isinstance(await self.handlers.checkPerms(ctx, m, "manage_messages", self.emojis().punish.clear_history, "clear someones history"), Failed):
@@ -213,13 +230,13 @@ class Punish(commands.Cog):
                 title=f"{self.emojis().punish.clear_history} Clear",
                 description=f"Successfully cleared {len(deleted)} messages by {member.mention}",
                 colour=self.colours.green
-            ))
-        except discord.errors.Forbidden:
+            ), view=None)
+        except discord.errors.HTTPException:
             return await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().punish.clear_history} Clear",
                 description=f"An error occurred while clearing {member.mention}",
                 colour=self.colours.red
-            ).set_footer(text="403 Forbidden"))
+            ).set_footer(text="403 Forbidden"), view=None)
 
     async def _kick(self, ctx, m, member=None, reason=None):
         if isinstance(await self.handlers.checkPerms(ctx, m, "kick_members", self.emojis().punish.kick, "kick someone"), Failed):
@@ -269,20 +286,20 @@ class Punish(commands.Cog):
                     description=f"You have been kicked from {ctx.guild.name}" + (f" for:\n> {reason}" if reason else ""),
                     colour=self.colours.red
                 ))
-            except discord.errors.Forbidden:
+            except discord.errors.HTTPException:
                 pass
             await ctx.guild.kick(member, reason=(reason if reason else "No reason provided"))
             return await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().punish.kick} Kick",
                 description=f"{member.mention} was successfully kicked" + (f" for:\n> {reason}" if reason else ""),
                 colour=self.colours.green
-            ))
-        except discord.errors.Forbidden:
+            ), view=None)
+        except discord.errors.HTTPException:
             return await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().punish.kick} Kick",
                 description=f"An error occurred while kicking {member.mention}",
                 colour=self.colours.red
-            ).set_footer(text="403 Forbidden"))
+            ).set_footer(text="403 Forbidden"), view=None)
 
     async def _softban(self, ctx, m, member=None, reason=None):
         if isinstance(await self.handlers.checkPerms(ctx, m, "kick_members", self.emojis().punish.soft_ban, "softban someone"), Failed):
@@ -332,7 +349,7 @@ class Punish(commands.Cog):
                     description=f"You have been softbanned from {ctx.guild.name}" + (f" for:\n> {reason}" if reason else ""),
                     colour=self.colours.yellow
                 ))
-            except discord.errors.Forbidden:
+            except discord.errors.HTTPException:
                 pass
             await ctx.guild.ban(member, reason=(("RSM Softban | " + reason) if reason else "RSM Softban | No reason provided"), delete_message_days=7)
             await ctx.guild.unban(member, reason=(reason if reason else "RSM Softban"))
@@ -357,13 +374,13 @@ class Punish(commands.Cog):
                 title=f"{self.emojis().punish.soft_ban} Softban",
                 description=f"{member.mention} was successfully softbanned" + (f" for:\n> {reason}" if reason else ""),
                 colour=self.colours.green
-            ))
-        except discord.errors.Forbidden:
+            ), view=None)
+        except discord.errors.HTTPException:
             return await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().punish.soft_ban} Softban",
                 description=f"An error occurred while softbanning {member.mention}",
                 colour=self.colours.red
-            ).set_footer(text="403 Forbidden"))
+            ).set_footer(text="403 Forbidden"), view=None)
 
     async def _ban(self, ctx, m, member=None, reason=None):
         if isinstance(await self.handlers.checkPerms(ctx, m, "ban_members", self.emojis().punish.ban, "ban someone"), Failed):
@@ -385,14 +402,14 @@ class Punish(commands.Cog):
                 title=f"{self.emojis().punish.ban} Ban",
                 description=f"{member.mention} is higher or the same level as you and cannot be banned",
                 colour=self.colours.red
-            ).set_footer(text="403 Forbidden"))
+            ).set_footer(text="403 Forbidden"), view=None)
 
         if member.top_role.position >= ctx.me.top_role.position:
             return await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().punish.ban} Ban",
                 description=f"{member.mention} is higher or the same level as me and cannot be banned",
                 colour=self.colours.red
-            ).set_footer(text="403 Forbidden"))
+            ).set_footer(text="403 Forbidden"), view=None)
 
         if not reason:
             reason = await self.handlers.strHandler(
@@ -420,13 +437,13 @@ class Punish(commands.Cog):
                 title=f"{self.emojis().punish.ban} Ban",
                 description=f"{member.mention} was successfully banned" + (f" for:\n> {reason}" if reason else ""),
                 colour=self.colours.green
-            ))
+            ), view=None)
         except discord.HTTPException:
             return await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().punish.ban} Ban",
                 description=f"An error occurred while banning {member.mention}",
                 colour=self.colours.red
-            ).set_footer(text="403 Forbidden"))
+            ).set_footer(text="403 Forbidden"), view=None)
 
 
 def setup(bot):
