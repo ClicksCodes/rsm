@@ -37,7 +37,7 @@ class Users(commands.Cog):
         await asyncio.sleep(1)
         kick = await self.handlers.getAuditLogEntry(member.guild, type=discord.AuditLogAction.kick)
         ban = await self.handlers.getAuditLogEntry(member.guild, type=discord.AuditLogAction.ban)
-        if datetime.datetime.utcnow() - datetime.timedelta(seconds=5) < kick.created_at.replace(tzinfo=None) < datetime.datetime.utcnow() + datetime.timedelta(seconds=5):
+        if kick and datetime.datetime.utcnow() - datetime.timedelta(seconds=5) < kick.created_at.replace(tzinfo=None) < datetime.datetime.utcnow() + datetime.timedelta(seconds=5):
             await self.handlers.sendLog(
                 emoji=self.emojis().member.kick,
                 type=f"Member kicked",
@@ -55,7 +55,7 @@ class Users(commands.Cog):
                     "Server member count": len(member.guild.members)
                 }
             )
-        elif datetime.datetime.utcnow() - datetime.timedelta(seconds=5) < ban.created_at.replace(tzinfo=None) < datetime.datetime.utcnow() + datetime.timedelta(seconds=5):
+        elif ban and datetime.datetime.utcnow() - datetime.timedelta(seconds=5) < ban.created_at.replace(tzinfo=None) < datetime.datetime.utcnow() + datetime.timedelta(seconds=5):
             if ban.reason.startswith("RSM Softban"):
                 return
             await self.handlers.sendLog(
