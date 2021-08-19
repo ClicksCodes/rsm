@@ -367,7 +367,7 @@ class Guild(commands.Cog):
                 "Mentionable by anyone": "Yes" if role.mentionable else "No",
                 "Members who had this role": len(role.members),
                 "ID": f"`{role.id}`",
-                "Created": self.handlers.betterDelta(role.created_at),
+                "Created": self.handlers.betterDelta(role.created_at.replace(tzinfo=None)),
                 "Deleted": self.handlers.betterDelta(datetime.datetime.utcnow()),
                 "Deleted by": f"{audit.user.name} ({audit.user.mention})"
             }

@@ -72,7 +72,7 @@ class RSM(commands.Cog):
     @commands.command()
     async def ping(self, ctx):
         m = await ctx.send(embed=loading_embed)
-        time = m.created_at - ctx.message.created_at
+        time = m.created_at.replace(tzinfo=None) - ctx.message.created_at.replace(tzinfo=None)
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().slowmode.on} Pong",
             description=f"Latency is: `{int(time.microseconds / 1000)}ms`",

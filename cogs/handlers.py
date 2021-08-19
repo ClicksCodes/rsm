@@ -614,12 +614,12 @@ class Handlers:
     def convertMessage(self, message, includeNames=True):
         if message.content:
             if includeNames:
-                return f"{message.author.name} {self.strf(message.created_at)}\n{message.content}"
+                return f"{message.author.name} {self.strf(message.created_at.replace(tzinfo=None))}\n{message.content}"
             return message.content
         elif len(message.embeds) >= 1:
             strings = []
             if includeNames:
-                strings.append(f"{message.author.name} {self.strf(message.created_at)}\n")
+                strings.append(f"{message.author.name} {self.strf(message.created_at.replace(tzinfo=None))}\n")
             for embed in message.embeds:
                 string = ""
                 string += "| " + embed.title

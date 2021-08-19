@@ -71,9 +71,9 @@ class Public(commands.Cog):
                     f"> [[URL]]({n.url}) | Type: `{n.content_type}` | File: `{n.filename}`" +
                     (f" | Size: `{n.width}x{n.height}`" if hasattr(n, "height") else "") + "\n" for n in mes.attachments
                 ]) +
-                f"Sent: {self.handlers.betterDelta(mes.created_at)}\n"
+                f"Sent: {self.handlers.betterDelta(mes.created_at.replace(tzinfo=None))}\n"
                 f"Jump URL:\n> {mes.jump_url}\n"
-                f"Edited: {self.handlers.betterDelta(mes.edited_at) if mes.edited_at else 'Never'}\n"
+                f"Edited: {self.handlers.betterDelta(mes.edited_at.replace(tzinfo=None)) if mes.edited_at else 'Never'}\n"
                 f"Mentioned everyone: {'Yes' if mes.mention_everyone else 'No'}\n"
                 f"Nonce: `{mes.nonce}`\n"
                 f"ID: `{mes.id}`"
@@ -130,7 +130,7 @@ class Public(commands.Cog):
         await m.edit(embed=discord.Embed(
             title="Server stats",
             description=f"**Name:** {g.name}\n"
-                        f"**Created:** {self.handlers.betterDelta(g.created_at)}\n"
+                        f"**Created:** {self.handlers.betterDelta(g.created_at.replace(tzinfo=None))}\n"
                         f"**Region:** {region}\n"
                         f"**Emojis:** {len(g.emojis)}\n> {' '.join([str(e) for e in g.emojis][:25])}{'...' if len(g.emojis) > 25 else ''}\n"
                         f"**Icon:** [[discord.com]]({g.icon.url})\n"

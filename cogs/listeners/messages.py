@@ -31,7 +31,7 @@ class Messages(commands.Cog):
                     "Mentions": len(message.mentions),
                     "Sent by": message.author.mention,
                     "Sent in": message.channel.mention,
-                    "Sent": self.handlers.betterDelta(message.created_at),
+                    "Sent": self.handlers.betterDelta(message.created_at.replace(tzinfo=None)),
                     "Attachments": len(message.attachments)
                 },
                 jump_url=message.jump_url
@@ -47,7 +47,7 @@ class Messages(commands.Cog):
                     "Mentions": len(message.mentions),
                     "Sent by": message.author.mention,
                     "Sent in": message.channel.mention,
-                    "Sent": self.handlers.betterDelta(message.created_at),
+                    "Sent": self.handlers.betterDelta(message.created_at.replace(tzinfo=None)),
                     "Attachments": len(message.attachments)
                 },
                 jump_url=message.jump_url
@@ -63,7 +63,7 @@ class Messages(commands.Cog):
                     "Mentions": len(message.mentions),
                     "Sent by": message.author.mention,
                     "Sent in": message.channel.mention,
-                    "Sent": self.handlers.betterDelta(message.created_at),
+                    "Sent": self.handlers.betterDelta(message.created_at.replace(tzinfo=None)),
                     "Attachments": len(message.attachments)
                 },
                 jump_url=message.jump_url
@@ -84,8 +84,8 @@ class Messages(commands.Cog):
                 "Mentions": len(message.mentions),
                 "Sent by": f"{message.author.name} ({message.author.mention})",
                 "Sent in": message.channel.mention,
-                "Sent": self.handlers.betterDelta(message.created_at),
-                "Edited": self.handlers.betterDelta(message.edited_at),
+                "Sent": self.handlers.betterDelta(message.created_at.replace(tzinfo=None)),
+                "Edited": self.handlers.betterDelta(message.edited_at.replace(tzinfo=None)),
                 "Deleted": self.handlers.strf(datetime.datetime.utcnow()),
                 "Attachments": len(message.attachments)
             }
@@ -112,8 +112,8 @@ class Messages(commands.Cog):
                 "Attachments": f"{len(before.attachments)} -> {len(after.attachments)} ({'+' if achange >= 0 else ''}{achange})",
                 "Sent by": after.author.mention,
                 "Sent in": after.channel.mention,
-                "Sent": self.handlers.betterDelta(before.created_at),
-                "Edited": self.handlers.strf(after.edited_at)
+                "Sent": self.handlers.betterDelta(before.created_at.replace(tzinfo=None)),
+                "Edited": self.handlers.strf(after.edited_at.replace(tzinfo=None))
             },
             jump_url=after.jump_url
         )

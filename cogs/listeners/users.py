@@ -25,8 +25,8 @@ class Users(commands.Cog):
             colour=self.colours.green,
             data={
                 "Name": f"{member.name} ({member.mention})",
-                "Joined": self.handlers.strf(member.joined_at),
-                "Account created": self.handlers.betterDelta(member.created_at),
+                "Joined": self.handlers.strf(member.joined_at.replace(tzinfo=None)),
+                "Account created": self.handlers.betterDelta(member.created_at.replace(tzinfo=None)),
                 "ID": f"`{member.id}`",
                 "Server member count": len(member.guild.members)
             }
@@ -45,12 +45,12 @@ class Users(commands.Cog):
                 colour=self.colours.red,
                 data={
                     "Name": f"{member.name} ({member.mention})",
-                    "Joined": self.handlers.betterDelta(member.joined_at),
+                    "Joined": self.handlers.betterDelta(member.joined_at.replace(tzinfo=None)),
                     "Kicked": self.handlers.strf(datetime.datetime.utcnow()),
                     "Kicked by": f"{kick.user.name} ({kick.user.mention})",
                     "Reason": f"\n> {kick.reason}",
-                    "Time in server": humanize.naturaldelta(datetime.datetime.utcnow()-member.joined_at),
-                    "Account created": self.handlers.betterDelta(member.created_at),
+                    "Time in server": humanize.naturaldelta(datetime.datetime.utcnow()-member.joined_at.replace(tzinfo=None)),
+                    "Account created": self.handlers.betterDelta(member.created_at.replace(tzinfo=None)),
                     "ID": f"`{member.id}`",
                     "Server member count": len(member.guild.members)
                 }
@@ -65,12 +65,12 @@ class Users(commands.Cog):
                 colour=self.colours.red,
                 data={
                     "Name": f"{member.name} ({member.mention})",
-                    "Joined": self.handlers.betterDelta(member.joined_at),
+                    "Joined": self.handlers.betterDelta(member.joined_at.replace(tzinfo=None)),
                     "Banned": self.handlers.strf(datetime.datetime.utcnow()),
                     "Banned by": f"{ban.user.name} ({ban.user.mention})",
                     "Reason": f"\n> {kick.reason}",
-                    "Time in server": humanize.naturaldelta(datetime.datetime.utcnow()-member.joined_at),
-                    "Account created": self.handlers.betterDelta(member.created_at),
+                    "Time in server": humanize.naturaldelta(datetime.datetime.utcnow()-member.joined_at.replace(tzinfo=None)),
+                    "Account created": self.handlers.betterDelta(member.created_at.replace(tzinfo=None)),
                     "ID": f"`{member.id}`",
                     "Server member count": len(member.guild.members)
                 }
@@ -83,10 +83,10 @@ class Users(commands.Cog):
                 colour=self.colours.red,
                 data={
                     "Name": f"{member.name} ({member.mention})",
-                    "Joined": self.handlers.betterDelta(member.joined_at),
+                    "Joined": self.handlers.betterDelta(member.joined_at.replace(tzinfo=None)),
                     "Left": self.handlers.strf(datetime.datetime.utcnow()),
-                    "Time in server": humanize.naturaldelta(datetime.datetime.utcnow()-member.joined_at),
-                    "Account created": self.handlers.betterDelta(member.created_at),
+                    "Time in server": humanize.naturaldelta(datetime.datetime.utcnow()-member.joined_at.replace(tzinfo=None)),
+                    "Account created": self.handlers.betterDelta(member.created_at.replace(tzinfo=None)),
                     "ID": f"`{member.id}`",
                     "Server member count": len(member.guild.members)
                 }
@@ -111,7 +111,7 @@ class Users(commands.Cog):
                 "Unbanned": self.handlers.strf(datetime.datetime.utcnow()),
                 "Unbanned by": f"{audit.user.name} ({audit.user.mention})",
                 "Reason": f"\n> {audit.reason}",
-                "Account created": self.handlers.betterDelta(user.created_at),
+                "Account created": self.handlers.betterDelta(user.created_at.replace(tzinfo=None)),
                 "ID": f"`{user.id}`"
             }
         )
