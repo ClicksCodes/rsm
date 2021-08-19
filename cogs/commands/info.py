@@ -250,7 +250,7 @@ class Info(commands.Cog):
         split = [[headings[x]]]
         for desc in descriptions:
             for command in desc:
-                if len("\n".join([split[-1][-1]])) + len(command) > 2000 - 200:
+                if len("\n".join([split[-1][-1]])) + len(command) > 2000 - 400:
                     split.append([headings[x]])
                 split[-1].append(command)
             split[-1].append(

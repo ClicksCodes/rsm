@@ -85,7 +85,7 @@ class Messages(commands.Cog):
                 "Sent by": f"{message.author.name} ({message.author.mention})",
                 "Sent in": message.channel.mention,
                 "Sent": self.handlers.betterDelta(message.created_at.replace(tzinfo=None)),
-                "Edited": self.handlers.betterDelta(message.edited_at.replace(tzinfo=None)),
+                "Edited": self.handlers.betterDelta(message.edited_at.replace(tzinfo=None)) if message.edited_at else "Never",
                 "Deleted": self.handlers.strf(datetime.datetime.utcnow()),
                 "Attachments": len(message.attachments)
             }
