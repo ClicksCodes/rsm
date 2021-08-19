@@ -41,8 +41,7 @@ class Listeners(commands.Cog):
         if message.guild and self.handlers.is_text_banned(message.content, message.guild, message.author, message.channel):
             if message.channel.permissions_for(message.channel.guild.me).manage_messages:
                 return await message.delete()
-
-        if not message.channel.nsfw:
+        if not hasattr(message.channel, "nsfw") or not message.channel.nsfw:
             for attachment in message.attachments:
                 nsfw, _, score, image = await self.handlers.is_pfp_nsfw(attachment.proxy_url)
                 if nsfw:
