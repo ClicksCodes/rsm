@@ -9,6 +9,7 @@ from cogs.consts import *
 from cogs.handlers import Handlers, Failed
 from cogs import interactions
 
+
 class Punish(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -16,7 +17,6 @@ class Punish(commands.Cog):
         self.colours = Cols()
         self.handlers = Handlers(self.bot)
         self.interactions = interactions
-
 
     @commands.Cog.listener()
     async def on_interaction(self, interaction):

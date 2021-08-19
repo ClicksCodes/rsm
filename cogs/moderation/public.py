@@ -65,19 +65,19 @@ class Public(commands.Cog):
         mes = await channel.fetch_message(data["target_id"])
         await m.edit(embed=discord.Embed(
             title=f"Message data",
-            description=f"Authour: {mes.author.mention}\n"
-                        f"Attachments: \n" + "".join([
-                            f"> [[URL]]({n.url}) | Type: `{n.content_type}` | File: `{n.filename}`" +
-                            (f" | Size: `{n.width}x{n.height}`" if hasattr(n, "height") else "") +
-                            "\n"
-                            for n in mes.attachments
-                        ]) +
-                        f"Sent: {self.handlers.betterDelta(mes.created_at)}\n"
-                        f"Jump URL:\n> {mes.jump_url}\n"
-                        f"Edited: {self.handlers.betterDelta(mes.edited_at) if mes.edited_at else 'Never'}\n"
-                        f"Mentioned everyone: {'Yes' if mes.mention_everyone else 'No'}\n"
-                        f"Nonce: `{mes.nonce}`\n"
-                        f"ID: `{mes.id}`",
+            description=(
+                f"Authour: {mes.author.mention}\n"
+                f"Attachments: \n" + "".join([
+                    f"> [[URL]]({n.url}) | Type: `{n.content_type}` | File: `{n.filename}`" +
+                    (f" | Size: `{n.width}x{n.height}`" if hasattr(n, "height") else "") + "\n" for n in mes.attachments
+                ]) +
+                f"Sent: {self.handlers.betterDelta(mes.created_at)}\n"
+                f"Jump URL:\n> {mes.jump_url}\n"
+                f"Edited: {self.handlers.betterDelta(mes.edited_at) if mes.edited_at else 'Never'}\n"
+                f"Mentioned everyone: {'Yes' if mes.mention_everyone else 'No'}\n"
+                f"Nonce: `{mes.nonce}`\n"
+                f"ID: `{mes.id}`"
+            ),
             colour=self.colours.green
         ))
 

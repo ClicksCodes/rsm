@@ -1,6 +1,7 @@
 import discord
 from cogs.consts import *
 
+
 class Button(discord.ui.Button):
     def __init__(self, bot, title=None, style="secondary", disabled=False, url=None, emoji=None, id=None, emojis=None):
         super().__init__(

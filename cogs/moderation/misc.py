@@ -384,7 +384,7 @@ class Misc(commands.Cog):
         members = False
         add = True
         tick = self.emojis().control.tick
-        cross = self.emojis().control.crossllect=False
+        cross = self.emojis().control.cross
         while True:
             v = self.interactions.createUI(ctx, [
                 self.interactions.Button(self.bot, emojis=self.emojis, id="cr", emoji="control.cross"),
@@ -768,7 +768,7 @@ class Misc(commands.Cog):
                     await member.ban(reason="nameban", delete_message_days=7)
                     count += 1
                     await asyncio.sleep(0.1)
-                except:
+                except discord.HTTPException:
                     failed += 1
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().member.ban} Nameban",

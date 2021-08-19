@@ -253,7 +253,10 @@ class Info(commands.Cog):
                 if len("\n".join([split[-1][-1]])) + len(command) > 2000 - 200:
                     split.append([headings[x]])
                 split[-1].append(command)
-            split[-1].append("[[Invite]](https://discord.com/api/oauth2/authorize?client_id=715989276382462053&permissions=121295465718&scope=bot%20applications.commands) | [[Support]](https://discord.gg/bPaNnxe)")
+            split[-1].append(
+                "[[Invite]](https://discord.com/api/oauth2/authorize?client_id=715989276382462053&permissions=121295465718&scope=bot%20applications.commands)"
+                " | [[Support]](https://discord.gg/bPaNnxe)"
+            )
             x += 1
             if x == len(headings):
                 break
