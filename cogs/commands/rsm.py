@@ -28,12 +28,8 @@ class RSM(commands.Cog):
             description=suggestion,
             colour=self.colours.yellow
         ))
-        asyncio.create_task(self.handlers.reactionCollector(
-            ctx,
-            s,
-            reactions=["control.tick", "control.cross"],
-            collect=False
-        ))
+        await s.add_reaction(self.bot.emojis().control.tick)
+        await s.add_reaction(self.bot.emojis().control.cross)
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().icon.add} Suggestion",
             description="Your suggestion has been sent to the developers",

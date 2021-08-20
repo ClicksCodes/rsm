@@ -269,7 +269,7 @@ class Auto(commands.Cog):
                         title="Filters",
                         description="What should happen if a new members username breaks the rules?\n`1` Nothing | `2` Change nickname | `3` Kick | `4` Ban"
                     )
-                    if isinstance(words, Failed):
+                    if isinstance(val, Failed):
                         continue
                     data = self.handlers.fileManager(ctx.guild.id)
                     match val:

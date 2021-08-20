@@ -349,9 +349,10 @@ class Misc(commands.Cog):
                 self.interactions.Button(self.bot, emojis=self.emojis, id="mj", emoji="member.join"),
                 self.interactions.Button(self.bot, emojis=self.emojis, id="vc", emoji="voice.connect"),
             ])
+            pageemojis = ["role.messages", "channel.text.create", "guild.settings", "member.join", "voice.connect"]
             await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().guild.settings} Settings",
-                description=f"{self.bot.get_emoji(self.emojis(idOnly=True)(emojis[page]))} **{pages[page]['name']}**\n\n" + desc,
+                description=f"{self.bot.get_emoji(self.emojis(idOnly=True)(pageemojis[page]))} **{pages[page]['name']}**\n\n" + desc,
                 colour=self.colours.green
             ), view=v)
             await v.wait()
