@@ -5,6 +5,7 @@ from config import config
 
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
+from fastapi.responses import JSONResponse
 
 
 app = FastAPI()
@@ -42,6 +43,19 @@ async def role(guild: int, role: int, user: int, secret: str, code):
     except Exception as e:
         print(e)
         return PlainTextResponse("400", 400)
+
+
+@app.get("/auth/{code}/user/{uid}")
+async def mutuals(code, uid):
+    from global_vars import bot
+    if code != config.urlsecret:
+        return PlainTextResponse("403", 403)
+    guilds = []
+    for guild in bot.guilds:
+        for member in guild.members:
+            if member.id == int(uid):
+                guilds.append(guild.id)
+    return JSONResponse(guilds, "200")
 
 
 def setup(bot):

@@ -3,4 +3,5 @@
 /tmp/*.png
 __pycache__
 .idea
+addSlash.py
 venv

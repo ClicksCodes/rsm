@@ -26,10 +26,10 @@ class Public(commands.Cog):
             if interaction.data["name"] == "Flag for moderators":
                 data = self.handlers.fileManager(interaction.guild)
                 if data["log_info"]["staff"]:
-                    await interaction.guild.get_channel(data["log_info"]["channel"]).send(embed=discord.Embed(
+                    await interaction.guild.get_channel(data["log_info"]["staff"]).send(embed=discord.Embed(
                         title=f"Member flagged",
                         description=f"**Flagged by:** {interaction.user.mention}\n"
-                                    f"**Member flagged:** {interaction.guild.get_member(interaction.data['target_id']).mention}\n"
+                                    f"**Member flagged:** {interaction.guild.get_member(int(interaction.data['target_id'])).mention}\n"
                                     f"**Flagged at:** {self.handlers.strf(datetime.datetime.now())}\n",
                         colour=self.colours.red
                     ))
@@ -50,11 +50,32 @@ class Public(commands.Cog):
                 m = await interaction.original_message()
                 await self._showdata(m, interaction.data, interaction.channel)
             elif interaction.data["name"] == "Flag for moderators":
+                return
                 await interaction.response.send_message(embed=loading_embed, ephemeral=True)
                 m = await interaction.original_message()
+                if datetime.datetime.strptime(interaction.data["resolved"]["messages"][interaction.data["target_id"]]["timestamp"][:-5], "%Y-%m-%dT%H:%M:%S.%f+") > datetime.datetime.utcnow() - datetime.timedelta(seconds=1):
+                    return await m.edit(embed=discord.Embed(
+                        title=f"Too fast",
+                        description=f"Please wait before reporting a message (This helps to reduce bots)",
+                        colour=self.colours.red
+                    ))
+                import random
+                if interaction.user.joined_at.replace(tzinfo=None) > (datetime.datetime.utcnow() - datetime.timedelta(days=7)):
+                    return await m.edit(embed=discord.Embed(
+                        title=f"Flagged",
+                        description=f"This message was flagged successfully",
+                        colour=self.colours.yellow
+                    ))
+                if interaction.data["target_id"] not in self.bot.mem["flags"]:
+                    self.bot.mem["flags"][interaction.data["target_id"]] = {}
+                self.bot.mem["flags"][interaction.data["target_id"]][str(interaction.data["id"])] = datetime.datetime.utcnow()
+
+                if len(self.bot.mem["flags"][interaction.data["target_id"]]) >= 3:
+                    mes = await interaction.channel.fetch_message(interaction.data["target_id"])
+                    await mes.delete()
                 return await m.edit(embed=discord.Embed(
-                    title=f"Coming soon",
-                    description=f"Sadly, this feature is not yet added. It is, however, being actively developed",
+                    title=f"Flagged",
+                    description=f"This message was flagged successfully",
                     colour=self.colours.red
                 ))
         elif interaction.type.name == "application_command" and interaction.guild:
