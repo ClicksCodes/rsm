@@ -1,6 +1,6 @@
 import datetime
 import discord
-from discord import player
+import typing
 import uvicorn
 from cogs.handlers import Handlers
 from cogs.consts import *
@@ -46,6 +46,13 @@ async def role(guild: int, role: int, user: int, secret: str, code):
         print(e)
         return PlainTextResponse("400", 400)
 
+@app.get("/in/{guild}")
+async def inGuild(guild: int):
+    from global_vars import bot
+    if guild in [g.id for g in bot.guilds]:
+        return PlainTextResponse("True", 200)
+    return PlainTextResponse("False", 404)
+
 
 @app.get("/auth/{code}/user/{uid}")
 async def mutuals(code, uid):
@@ -64,7 +71,7 @@ from pydantic import BaseModel
 class Item(BaseModel):
     guild_id: int
     created_by: int
-    questions: int
+    questions: typing.Optional[int]
     name: str
     auth: str
 
@@ -94,7 +101,7 @@ async def create(item: Item):
 
 
 @app.post("/clicksforms/edit")
-async def create(item: Item):
+async def edit(item: Item):
     from global_vars import bot
     data = dict(item)
     if data["auth"] != config.cfToken:
@@ -118,7 +125,7 @@ async def create(item: Item):
 
 
 @app.post("/clicksforms/delete")
-async def create(item: Item):
+async def delete(item: Item):
     from global_vars import bot
     data = dict(item)
     if data["auth"] != config.cfToken:
@@ -138,6 +145,30 @@ async def create(item: Item):
         }
     )
     return PlainTextResponse("200", 200)
+
+
+@app.post("/clicksforms/apply")
+async def apply(item: Item):
+    from global_vars import bot
+    data = dict(item)
+    if data["auth"] != config.cfToken:
+        return PlainTextResponse("403", 403)
+    g = bot.apihandlers.fileManager(int(data["guild_id"]), create=False)
+    if g is False:
+        return PlainTextResponse("404", 404)
+    await bot.apihandlers.sendLog(
+        emoji=emojis().bots.clicksforms,
+        type="User applied",
+        server=int(data["guild_id"]),
+        colour=colours.green,
+        data={
+            "User": f"{bot.get_user(data['created_by']).name} ({bot.get_user(data['created_by']).mention})",
+            "Form": data['name'],
+            "Applied": bot.apihandlers.strf(datetime.datetime.utcnow())
+        }
+    )
+    return PlainTextResponse("200", 200)
+
 
 def setup(bot):
     start(bot)
