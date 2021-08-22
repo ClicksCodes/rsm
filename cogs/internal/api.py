@@ -1,5 +1,8 @@
+import datetime
 import discord
+from discord import player
 import uvicorn
+from cogs.handlers import Handlers
 from cogs.consts import *
 from config import config
 
@@ -12,7 +15,6 @@ app = FastAPI()
 colours = Cols()
 emojis = Emojis
 
-
 @app.get("/")
 def root():
     from global_vars import bot
@@ -20,7 +22,7 @@ def root():
 
 
 @app.get("/stage")
-async def root():
+async def stage():
     return PlainTextResponse(str(config.stage.name))
 
 
@@ -58,11 +60,91 @@ async def mutuals(code, uid):
     return JSONResponse(guilds, "200")
 
 
+from pydantic import BaseModel
+class Item(BaseModel):
+    guild_id: int
+    created_by: int
+    questions: int
+    name: str
+    auth: str
+
+
+@app.post("/clicksforms/create")
+async def create(item: Item):
+    from global_vars import bot
+    data = dict(item)
+    if data["auth"] != config.cfToken:
+        return PlainTextResponse("403", 403)
+    g = bot.apihandlers.fileManager(int(data["guild_id"]), create=False)
+    if g is False:
+        return PlainTextResponse("404", 404)
+    await bot.apihandlers.sendLog(
+        emoji=emojis().bots.clicksforms,
+        type="Form created",
+        server=int(data["guild_id"]),
+        colour=colours.green,
+        data={
+            "Created by": f"{bot.get_user(data['created_by']).name} ({bot.get_user(data['created_by']).mention})",
+            "Name": data['name'],
+            "Questions": data['questions'],
+            "Created": bot.apihandlers.strf(datetime.datetime.utcnow())
+        }
+    )
+    return PlainTextResponse("200", 200)
+
+
+@app.post("/clicksforms/edit")
+async def create(item: Item):
+    from global_vars import bot
+    data = dict(item)
+    if data["auth"] != config.cfToken:
+        return PlainTextResponse("403", 403)
+    g = bot.apihandlers.fileManager(int(data["guild_id"]), create=False)
+    if g is False:
+        return PlainTextResponse("404", 404)
+    await bot.apihandlers.sendLog(
+        emoji=emojis().bots.clicksforms,
+        type="Form edited",
+        server=int(data["guild_id"]),
+        colour=colours.yellow,
+        data={
+            "Edited by": f"{bot.get_user(data['created_by']).name} ({bot.get_user(data['created_by']).mention})",
+            "Name": data['name'],
+            "Questions": data['questions'],
+            "Edited": bot.apihandlers.strf(datetime.datetime.utcnow())
+        }
+    )
+    return PlainTextResponse("200", 200)
+
+
+@app.post("/clicksforms/delete")
+async def create(item: Item):
+    from global_vars import bot
+    data = dict(item)
+    if data["auth"] != config.cfToken:
+        return PlainTextResponse("403", 403)
+    g = bot.apihandlers.fileManager(int(data["guild_id"]), create=False)
+    if g is False:
+        return PlainTextResponse("404", 404)
+    await bot.apihandlers.sendLog(
+        emoji=emojis().bots.clicksforms,
+        type="Form deleted",
+        server=int(data["guild_id"]),
+        colour=colours.red,
+        data={
+            "Deleted by": f"{bot.get_user(data['created_by']).name} ({bot.get_user(data['created_by']).mention})",
+            "Name": data['name'],
+            "Deleted": bot.apihandlers.strf(datetime.datetime.utcnow())
+        }
+    )
+    return PlainTextResponse("200", 200)
+
 def setup(bot):
     start(bot)
 
 
 def start(bot):
+    bot.apihandlers = Handlers(bot)
     config = uvicorn.Config(app, host="0.0.0.0", port=10000, lifespan="on", access_log=False, log_level="critical")
     server = uvicorn.Server(config)
     server.config.setup_event_loop()

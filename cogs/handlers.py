@@ -487,7 +487,7 @@ class Handlers:
             return Failed()
         return
 
-    def fileManager(self, guild, action: str = "r", **kwargs):
+    def fileManager(self, guild, action: str = "r", create=True, **kwargs):
         if not isinstance(guild, int):
             guild = guild.id
 
@@ -516,13 +516,16 @@ class Handlers:
                     return entry
 
                 except FileNotFoundError:
-                    t = template
-                    t["guild_info"]["id"] = guild
-                    t["guild_info"]["joined_at"] = str(self.bot.get_guild(guild).me.joined_at)
+                    if create:
+                        t = template
+                        t["guild_info"]["id"] = guild
+                        t["guild_info"]["joined_at"] = str(self.bot.get_guild(guild).me.joined_at)
 
-                    with open(f"data/guilds/{guild}.json", "x") as f:
-                        json.dump(t, f, indent=2)
-                    return t
+                        with open(f"data/guilds/{guild}.json", "x") as f:
+                            json.dump(t, f, indent=2)
+                        return t
+                    else:
+                        return False
 
                 except (json.decoder.JSONDecodeError, AttributeError):
                     if os.path.exists(f"data/backup/{guild}.json"):

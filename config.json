@@ -47,5 +47,7 @@
     "colour": "Cyan",
 
     "prefixes": ["m!", "m1", "M!", "M1"],
-    "prefixes-dev": ["t!", "t1", "T!", "T1"]
+    "prefixes-dev": ["t!", "t1", "T!", "T1"],
+
+    "cfToken": "elxoU6cqMnQ5ghdrRW7IA5F0Iu4oFEYgoayOse5BN7piYQt2nsajDyRFBo4XZySOQdoFWu7ZjI7FMd6jf4vXGTp9zQ56xiUNvXK3"
 }
