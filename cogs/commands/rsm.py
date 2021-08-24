@@ -28,8 +28,8 @@ class RSM(commands.Cog):
             description=suggestion,
             colour=self.colours.yellow
         ))
-        await s.add_reaction(self.bot.emojis().control.tick)
-        await s.add_reaction(self.bot.emojis().control.cross)
+        await s.add_reaction(self.emojis().control.tick)
+        await s.add_reaction(self.emojis().control.cross)
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().icon.add} Suggestion",
             description="Your suggestion has been sent to the developers",

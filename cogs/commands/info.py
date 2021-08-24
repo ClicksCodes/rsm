@@ -248,16 +248,15 @@ class Info(commands.Cog):
             f"{self.emojis().punish.warn} Failsafes\n"
         ]
         split = [[headings[x]]]
+        extra = "[[Invite]](https://discord.com/api/oauth2/authorize?client_id=715989276382462053&permissions=121295465718&scope=bot%20applications.commands)" + \
+                " | [[Support]](https://discord.gg/bPaNnxe)\nWe've also released a free application bot, ClicksForms, which has integrations with RSM - " + \
+                "[[Invite]](https://discord.com/api/oauth2/authorize?client_id=805392054678192169&permissions=268823552&scope=bot%20applications.commands)"
         for desc in descriptions:
             for command in desc:
-                if len("\n".join([split[-1][-1]])) + len(command) > 2000 - 400:
+                if len("\n".join([split[-1][-1]])) + len(command) > 2000 - len(extra):
                     split.append([headings[x]])
                 split[-1].append(command)
-            split[-1].append(
-                "[[Invite]](https://discord.com/api/oauth2/authorize?client_id=715989276382462053&permissions=121295465718&scope=bot%20applications.commands)"
-                " | [[Support]](https://discord.gg/bPaNnxe) | We've also released a free application bot, with integration with RSM - "
-                "[[Invite]](https://discord.com/api/oauth2/authorize?client_id=805392054678192169&permissions=268823552&scope=bot%20applications.commands)"
-            )
+            split[-1].append(extra)
             x += 1
             if x == len(headings):
                 break
@@ -265,8 +264,8 @@ class Info(commands.Cog):
         while True:
             v = self.interactions.createUI(ctx, [
                 self.interactions.Button(self.bot, emojis=self.emojis, id="cl", emoji="control.cross"),
-                self.interactions.Button(self.bot, emojis=self.emojis, id="le", emoji="control.left"),
-                self.interactions.Button(self.bot, emojis=self.emojis, id="ri", emoji="control.right"),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="le", emoji="control.left", disabled=(page == 0)),
+                self.interactions.Button(self.bot, emojis=self.emojis, id="ri", emoji="control.right", disabled=(page == len(split) - 1)),
             ])
             await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().rsm.help} Help",
@@ -278,7 +277,7 @@ class Info(commands.Cog):
                 case "le": page -= 1
                 case "ri": page += 1
                 case _: break
-            page = max(0, min(page, len(split)))
+            page = max(0, min(page, len(split)-1))
         embed = m.embeds[0]
         embed.colour = self.colours.red
         await m.edit(embed=embed, view=None)

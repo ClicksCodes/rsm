@@ -38,7 +38,7 @@ class Tags(commands.Cog):
     async def tag(self, ctx, *, name: typing.Optional[str]):
         m = await ctx.send(embed=loading_embed)
         data = self.handlers.fileManager(ctx.guild)["tags"]
-        if name.lower() in data:
+        if name and name.lower() in data:
             return await m.edit(embed=discord.Embed(
                 title=f"{self.emojis().channel.store.create} Tag",
                 description=str(data[name.lower()]),
