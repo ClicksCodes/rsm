@@ -71,7 +71,7 @@ class RSM(commands.Cog):
         time = m.created_at.replace(tzinfo=None) - ctx.message.created_at.replace(tzinfo=None)
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().slowmode.on} Pong",
-            description=f"Latency is: `{int(time.microseconds / 1000)}ms`",
+            description=f"Latency is: `{int(time.microseconds / 10000)}ms`",
             colour=self.colours.green
         ))
 

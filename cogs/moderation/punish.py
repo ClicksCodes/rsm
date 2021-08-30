@@ -120,7 +120,7 @@ class Punish(commands.Cog):
                                 f"{self.emojis().punish.ban} Ban\n"
                                 f"{self.emojis().control.cross} Cancel",
                     colour=self.colours.red
-                ).set_footer(text="the Request timed out"))
+                ), view=None)
 
     async def _warn(self, ctx, m, member=None, reason=None):
         if isinstance(await self.handlers.checkPerms(ctx, m, "manage_messages", self.emojis().punish.warn, "warn someone", me=False), Failed):
