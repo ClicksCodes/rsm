@@ -73,6 +73,9 @@ class Item(BaseModel):
     guild_id: int
     created_by: int
     questions: typing.Optional[int]
+    service: typing.Optional[str]
+    service_url: typing.Optional[str]
+    verified: typing.Optional[bool]
     name: str
     auth: str
 
@@ -101,29 +104,32 @@ async def create(item: Item):
     return PlainTextResponse("200", 200)
 
 
-@app.post("/clicksforms/import/googleforms")
+@app.post("/clicksforms/import")
 async def create(item: Item):
-    from global_vars import bot
-    data = dict(item)
-    if data["auth"] != config.cfToken:
-        return PlainTextResponse("403", 403)
-    g = bot.apihandlers.fileManager(int(data["guild_id"]), create=False)
-    if g is False:
-        return PlainTextResponse("404", 404)
-    await bot.apihandlers.sendLog(
-        emoji=emojis().bots.clicksforms,
-        type="Form imported",
-        server=int(data["guild_id"]),
-        colour=colours.green,
-        data={
-            "Imported by": f"{bot.get_user(data['created_by']).name} ({bot.get_user(data['created_by']).mention})",
-            "Service": "Google Forms",
-            "Name": data['name'],
-            "Questions": data['questions'],
-            "Imported": bot.apihandlers.strf(datetime.datetime.utcnow())
-        }
-    )
-    return PlainTextResponse("200", 200)
+    try:
+        from global_vars import bot
+        data = dict(item)
+        if data["auth"] != config.cfToken:
+            return PlainTextResponse("403", 403)
+        g = bot.apihandlers.fileManager(int(data["guild_id"]), create=False)
+        if g is False:
+            return PlainTextResponse("404", 404)
+        await bot.apihandlers.sendLog(
+            emoji=f"{emojis()['verified' if data['verified'] else 'unverified']} {emojis().bots.clicksforms}",
+            type="Form imported",
+            server=int(data["guild_id"]),
+            colour=colours.green,
+            data={
+                "Imported by": f"{bot.get_user(data['created_by']).name} ({bot.get_user(data['created_by']).mention})",
+                "Service": f"[{data['service']}]({data['service_url']})",
+                "Name": data['name'],
+                "Questions": data['questions'],
+                "Imported": bot.apihandlers.strf(datetime.datetime.utcnow())
+            }
+        )
+        return PlainTextResponse("200", 200)
+    except Exception as e:
+        print(e)
 
 
 @app.post("/clicksforms/edit")
