@@ -127,7 +127,7 @@ async def service(item: Item):
                 "Imported": bot.apihandlers.strf(datetime.datetime.utcnow())
             },
             extra=(
-                f"This service has been verified as {service}" if data["verified"] else
+                f"This service has been verified as {data['service']}" if data["verified"] else
                 f"This service has not been verified. If this is your service and you would like to be verified, message us at https://discord.gg/bPaNnx"
             )
         )
