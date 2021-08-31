@@ -647,7 +647,7 @@ class Handlers:
         else:
             return None
 
-    async def sendLog(self, emoji, type, server, colour, data, jump_url=""):
+    async def sendLog(self, emoji, type, server, colour, data, jump_url="", extra=""):
         channel = self.getLogChannel(server)
         if channel is None:
             return
@@ -658,7 +658,7 @@ class Handlers:
             description="\n".join([f"**{k}:** {v}" for k, v in data.items()]) + jump_url,
             colour=colour,
             timestamp=datetime.datetime.utcnow()
-        ).set_footer(text="All times are in your timezone • Updates on channel refresh"))
+        ).set_footer(text=extra + (" • " if extra else "") + "All times are in your timezone • Updates on channel refresh"))
 
     async def is_pfp_nsfw(self, image_url):
         confidence = "80"

@@ -105,7 +105,7 @@ async def create(item: Item):
 
 
 @app.post("/clicksforms/import")
-async def create(item: Item):
+async def service(item: Item):
     try:
         from global_vars import bot
         data = dict(item)
@@ -125,7 +125,11 @@ async def create(item: Item):
                 "Name": data['name'],
                 "Questions": data['questions'],
                 "Imported": bot.apihandlers.strf(datetime.datetime.utcnow())
-            }
+            },
+            extra=(
+                f"This service has been verified as {service}" if data["verified"] else
+                f"This service has not been verified. If this is your service and you would like to be verified, message us at https://discord.gg/bPaNnx"
+            )
         )
         return PlainTextResponse("200", 200)
     except Exception as e:
