@@ -94,6 +94,8 @@ class Errors(commands.Cog):
                         colour=self.colours.red,
                     )
                 )
+            elif self.bot.user.id == 779388856536530984:
+                print("".join(traceback.format_exception(type(error), error, error.__traceback__)))
             else:
                 self.bot.errors += 1
                 tb = "".join(traceback.format_exception(type(error), error, error.__traceback__))

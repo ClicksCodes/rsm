@@ -249,7 +249,7 @@ class Info(commands.Cog):
         ]
         split = [[headings[x]]]
         extra = "[[Invite]](https://discord.com/api/oauth2/authorize?client_id=715989276382462053&permissions=121295465718&scope=bot%20applications.commands)" + \
-                " | [[Support]](https://discord.gg/bPaNnxe)\nWe've also released a free application bot, ClicksForms, which has integrations with RSM - " + \
+                " | [[Support]](https://discord.gg/bPaNnxe)\n\nWe've also released a free application bot, ClicksForms, which has integrations with RSM - " + \
                 "[[Invite]](https://discord.com/api/oauth2/authorize?client_id=805392054678192169&permissions=268823552&scope=bot%20applications.commands)"
         for desc in descriptions:
             for command in desc:

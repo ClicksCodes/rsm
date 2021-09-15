@@ -37,6 +37,7 @@
         "cogs.commands.info",
         "cogs.commands.reset",
         "cogs.commands.verify",
+        "cogs.commands.ad",
 
         "cogs.internal.loops",
         "cogs.internal.git",
