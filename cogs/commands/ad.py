@@ -134,7 +134,10 @@ class Ad(commands.Cog):
         draw.text(((cover.size[0] - font.getsize(text)[0]) // 2, 225), text=text, font=font, fill=(66, 66, 66, 255))  # Write name onto cover
 
         font = ImageFont.truetype("data/fonts/roboto/Roboto-Regular.ttf", size=44)  # Get font
-        invite = await ctx.guild.invites()
+        try:
+            invite = await ctx.guild.invites()
+        except discord.HTTPException:
+            invite = None
         url = ""
         if invite:
             url = invite[0].url
