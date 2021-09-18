@@ -127,7 +127,7 @@ class Verify(commands.Cog):
                 )
             )
         except discord.HTTPException:
-            await m.edit(
+            await m.channel.send(ctx.author.mention,
                 embed=discord.Embed(
                     title=f"{self.emojis().control.cross} Verify",
                     description=f"Your DMs are disabled - We need to DM your code in order to keep verification secure. Please enable them and try again.",
