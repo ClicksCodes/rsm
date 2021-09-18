@@ -95,12 +95,12 @@ class Ad(commands.Cog):
         rgbToUse = {k: np.mean(v, axis=0) for k, v in rgbToUse.items() if k not in ["gray", "black", "white"]}
         for k, v in rgbToUse.items():
             rgbToUse[k] = tuple(v)
-        if "teal" and "navy" in rgbToUse:
+        if "teal" in rgbToUse and "navy" in rgbToUse:
             teal = (rgbToUse["teal"][0], rgbToUse["teal"][1], rgbToUse["teal"][2])
             navy = (rgbToUse["navy"][0], rgbToUse["navy"][1], rgbToUse["navy"][2])
             rgbToUse["teal"] = ((teal[0] + navy[0]) / 2, (teal[1] + navy[1]) / 2, (teal[2] + navy[2]) / 2, 255)
             del rgbToUse["navy"]
-        if "red" and "maroon" in rgbToUse:
+        if "red" in rgbToUse and "maroon" in rgbToUse:
             red = (rgbToUse["red"][0], rgbToUse["red"][1], rgbToUse["red"][2])
             maroon = (rgbToUse["maroon"][0], rgbToUse["maroon"][1], rgbToUse["maroon"][2])
             rgbToUse["red"] = ((red[0] + maroon[0]) / 2, (red[1] + maroon[1]) / 2, (red[2] + maroon[2]) / 2, 255)
