@@ -53,7 +53,8 @@ class Public(commands.Cog):
                 return
                 await interaction.response.send_message(embed=loading_embed, ephemeral=True)
                 m = await interaction.original_message()
-                if datetime.datetime.strptime(interaction.data["resolved"]["messages"][interaction.data["target_id"]]["timestamp"][:-5], "%Y-%m-%dT%H:%M:%S.%f+") > datetime.datetime.utcnow() - datetime.timedelta(seconds=1):
+                if datetime.datetime.strptime(interaction.data["resolved"]["messages"][interaction.data["target_id"]]["timestamp"][:-5],
+                                              "%Y-%m-%dT%H:%M:%S.%f+") > datetime.datetime.utcnow() - datetime.timedelta(seconds=1):
                     return await m.edit(embed=discord.Embed(
                         title=f"Too fast",
                         description=f"Please wait before reporting a message (This helps to reduce bots)",

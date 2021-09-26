@@ -22,6 +22,7 @@ def palette(img):
     order = np.argsort(count)
     return palette[order[::-1]]
 
+
 def asvoid(arr):
     arr = np.ascontiguousarray(arr)
     return arr.view(np.dtype((np.void, arr.dtype.itemsize * arr.shape[-1])))
@@ -177,7 +178,6 @@ class Ad(commands.Cog):
             temp = temp.filter(ImageFilter.GaussianBlur(radius=15))  # Blur area
             main.paste(temp, box)  # Paste box onto cover
 
-
             main.paste(cover, (0, 0), cover)  # Paste cover onto main
             rad = 75
             circle = Image.new('L', (rad * 2, rad * 2), 0)
@@ -196,6 +196,7 @@ class Ad(commands.Cog):
             buf.seek(0)
             await ctx.send(file=discord.File(buf, filename="ad.png"))
             break
+
 
 def setup(bot):
     bot.add_cog(Ad(bot))

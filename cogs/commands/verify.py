@@ -127,13 +127,11 @@ class Verify(commands.Cog):
                 )
             )
         except discord.HTTPException:
-            await m.channel.send(ctx.author.mention,
-                embed=discord.Embed(
-                    title=f"{self.emojis().control.cross} Verify",
-                    description=f"Your DMs are disabled - We need to DM your code in order to keep verification secure. Please enable them and try again.",
-                    colour=self.colours.red,
-                ), delete_after=10
-            )
+            await m.channel.send(ctx.author.mention, embed=discord.Embed(
+                title=f"{self.emojis().control.cross} Verify",
+                description=f"Your DMs are disabled - We need to DM your code in order to keep verification secure. Please enable them and try again.",
+                colour=self.colours.red,
+            ), delete_after=10)
         await m.delete()
 
     @commands.command()

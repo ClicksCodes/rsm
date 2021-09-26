@@ -16,6 +16,7 @@ app = FastAPI(docs_url=None, redoc_url=None)
 colours = Cols()
 emojis = Emojis
 
+
 @app.get("/")
 def root():
     from global_vars import bot
