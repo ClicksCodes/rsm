@@ -97,6 +97,7 @@ class Info(commands.Cog):
                         else:
                             status += f"\n> **{activity.type.name.capitalize()}** {activity.name}"
 
+                    joinpos = sum(m.joined_at.replace(tzinfo=None) < user.joined_at.replace(tzinfo=None) for m in ctx.guild.members if m.joined_at is not None)
                     await m.edit(embed=discord.Embed(
                         title=f"{self.emojis().member.join} User info",
                         description=f"{flagstring}\n"
@@ -107,10 +108,7 @@ class Info(commands.Cog):
                                     f"**Status:** {status}\n"
                                     f"**Joined Discord:** {self.handlers.betterDelta(user.created_at.replace(tzinfo=None))}\n"
                                     f"**Joined this server:** {self.handlers.betterDelta(user.joined_at.replace(tzinfo=None))}\n"
-                                    f"**Join position:** { \
-                                        sum(m.joined_at.replace(tzinfo=None) < user.joined_at.replace(tzinfo=None) \
-                                        for m in ctx.guild.members if m.joined_at is not None) \
-                                    }\n",
+                                    f"**Join position:** {joinpos}\n",
                         colour=self.colours.green
                     ).set_thumbnail(url=user.avatar.url).set_footer(text="Bots cannot detect if a user has Nitro"), view=v)
                 case 1:

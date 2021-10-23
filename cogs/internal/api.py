@@ -11,10 +11,17 @@ from fastapi.responses import PlainTextResponse
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
+from cogs.internal.clicksdash import overview
 
 app = FastAPI(docs_url=None, redoc_url=None)
 colours = Cols()
 emojis = Emojis
+
+
+@app.get("/overview")
+async def overview_fetch(request: overview.Index):
+    from global_vars import bot
+    return await overview.overview(bot, request)
 
 
 @app.get("/")
