@@ -70,9 +70,9 @@ class Database:
         except orm.NoMatch:
             return []
 
-    async def removeAll(self, uid):
+    async def removeAll(self, uid, gid):
         c = 0
-        for entry in list(filter(lambda entry: str(entry.user) == str(uid), await Mutes.objects.all())):
+        for entry in list(filter(lambda entry: str(entry.user) == str(uid) and str(entry.guild) == str(gid), await Mutes.objects.all())):
             c += 1
             await entry.delete()
         return c
@@ -126,7 +126,7 @@ class Mute(commands.Cog):
             member = await guild.fetch_member(int(unmute.user))
         await member.remove_roles(rid)
         try:
-            await self.db.removeAll(uid=unmute.user)
+            await self.db.removeAll(uid=unmute.user, gid=unmute.guild)
         except orm.NoMatch:
             pass
 
@@ -194,7 +194,7 @@ class Mute(commands.Cog):
                 "ID": f"`{member.id}`",
         })
         try:
-            await self.db.removeAll(uid=interaction.data["user"])
+            await self.db.removeAll(uid=interaction.data["user"], gid=interaction.guild.id)
         except orm.NoMatch:
             pass
 
