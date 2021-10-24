@@ -70,10 +70,12 @@ class Modmail(commands.Cog):
                         returnNoneType=True
                     )
                     if not isinstance(category, Failed):
+                        m = await ctx.channel.fetch_message(m.id)
                         embed = m.embeds[0]
                         await m.edit(embed=embed.set_footer(text="Reading"))
                         data = self.handlers.fileManager(ctx.guild)
                         data["modmail"]["cat"] = category.id
+                        m = await ctx.channel.fetch_message(m.id)
                         embed = m.embeds[0]
                         await m.edit(embed=embed.set_footer(text="Writing"))
                         self.handlers.fileManager(ctx.guild, "w", data=data)
@@ -87,10 +89,12 @@ class Modmail(commands.Cog):
                         default=3
                     )
                     if not isinstance(amount, Failed):
+                        m = await ctx.channel.fetch_message(m.id)
                         embed = m.embeds[0]
                         await m.edit(embed=embed.set_footer(text="Reading"))
                         data = self.handlers.fileManager(ctx.guild)
                         data["modmail"]["max"] = amount
+                        m = await ctx.channel.fetch_message(m.id)
                         embed = m.embeds[0]
                         await m.edit(embed=embed.set_footer(text="Writing"))
                         self.handlers.fileManager(ctx.guild, "w", data=data)
@@ -105,14 +109,17 @@ class Modmail(commands.Cog):
                         optional=True
                     )
                     if not isinstance(role, Failed):
+                        m = await ctx.channel.fetch_message(m.id)
                         embed = m.embeds[0]
                         await m.edit(embed=embed.set_footer(text="Reading"), view=None)
                         data = self.handlers.fileManager(ctx.guild)
                         data["modmail"]["mention"] = role.id
+                        m = await ctx.channel.fetch_message(m.id)
                         embed = m.embeds[0]
                         await m.edit(embed=embed.set_footer(text="Writing"))
                         self.handlers.fileManager(ctx.guild, "w", data=data)
                 case _: break
+        m = await ctx.channel.fetch_message(m.id)
         embed = m.embeds[0]
         embed.colour = self.colours.red
         await m.edit(embed=embed, view=None)

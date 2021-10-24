@@ -187,6 +187,7 @@ class Info(commands.Cog):
                 case "bj": page = 4
                 case "vc": page = 5
                 case _: break
+        m = await ctx.channel.fetch_message(m.id)
         embed = m.embeds[0]
         embed.colour = self.colours.red
         await m.edit(embed=embed, view=None)
@@ -279,6 +280,7 @@ class Info(commands.Cog):
                 case "ri": page += 1
                 case _: break
             page = max(0, min(page, len(split)-1))
+        m = await ctx.channel.fetch_message(m.id)
         embed = m.embeds[0]
         embed.colour = self.colours.red
         await m.edit(embed=embed, view=None)

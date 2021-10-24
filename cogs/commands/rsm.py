@@ -45,6 +45,7 @@ class RSM(commands.Cog):
                 await message.clear_reactions()
                 match payload.emoji.name:
                     case "Tick":
+                        m = await ctx.channel.fetch_message(m.id)
                         embed = message.embeds[0]
                         embed.colour = self.colours.green
                         embed.title = f"{self.emojis().control.tick} Accepted"
@@ -60,6 +61,7 @@ class RSM(commands.Cog):
                             collect=False
                         ))
                     case "Cross":
+                        m = await ctx.channel.fetch_message(m.id)
                         embed = message.embeds[0]
                         embed.colour = self.colours.red
                         embed.title = f"{self.emojis().control.cross} Rejected"

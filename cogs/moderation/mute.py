@@ -356,6 +356,7 @@ class Mute(commands.Cog):
                 colour=self.colours.yellow
             ), view=v)
             await v.wait()
+            m = await ctx.channel.fetch_message(m.id)
             embed = m.embeds[0]
             embed.title = f"{self.emojis().icon.loading} Mute"
             await m.edit(embed=embed, view=None)

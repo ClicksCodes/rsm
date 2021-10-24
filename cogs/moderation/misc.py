@@ -367,6 +367,7 @@ class Misc(commands.Cog):
                 case "vc": page = 4
                 case _: break
             page = max(0, min(page, 4))
+        m = await ctx.channel.fetch_message(m.id)
         embed = m.embeds[0]
         embed.colour = self.colours.red
         await m.edit(embed=embed, view=None)
@@ -411,6 +412,7 @@ class Misc(commands.Cog):
                 case "bo": bots = not bots
                 case "ad": add = not add
         if not apply:
+            m = await ctx.channel.fetch_message(m.id)
             embed = m.embeds[0]
             embed.colour = self.colours.red
             return await m.edit(embed=embed, view=v)
@@ -535,6 +537,7 @@ class Misc(commands.Cog):
                         members = []
                     data["log_info"]["ignore"]["members"] = members
                     self.handlers.fileManager(ctx.guild, "w", data=data)
+        m = await ctx.channel.fetch_message(m.id)
         embed = m.embeds[0]
         embed.colour = self.colours.red
         await m.edit(embed=embed, view=None)
@@ -617,6 +620,7 @@ class Misc(commands.Cog):
                             except discord.HTTPException:
                                 continue
                 page = max(0, min(page, len(cut) - 1))
+            m = await ctx.channel.fetch_message(m.id)
             embed = m.embeds[0]
             embed.colour = self.colours.red
             await m.edit(embed=embed, view=None)
@@ -730,6 +734,7 @@ class Misc(commands.Cog):
                     case "bj": page = 4
                     case "vc": page = 5
                     case _: break
+            m = await ctx.channel.fetch_message(m.id)
             embed = m.embeds[0]
             embed.colour = self.colours.red
             await m.edit(embed=embed, v=None)
