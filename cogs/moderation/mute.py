@@ -364,7 +364,7 @@ class Mute(commands.Cog):
                 send_messages="sm" in v.dropdowns["role"],
                 add_reactions="rm" in v.dropdowns["role"],
                 speak="vc" in v.dropdowns["role"]
-            ), colour=0x424242)
+            ), colour=0x000000)
             try:
                 await r.edit(position=interaction.guild.me.top_role.position - 1)
             except discord.HTTPException:
