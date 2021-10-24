@@ -235,6 +235,7 @@ class Mute(commands.Cog):
                     ))
             elif interaction.data["options"][0]["options"][0]["value"]:
                 entry = self.handlers.fileManager(interaction.guild.id)
+                role = interaction.guild.get_role(int(interaction.data["options"][0]["options"][0]["value"]))
                 if role.position >= interaction.guild.me.top_role.position:
                     await m.edit(embed=discord.Embed(
                         title=f"{self.emojis().punish.mute} Mute",
