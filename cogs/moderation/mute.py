@@ -276,7 +276,7 @@ class Mute(commands.Cog):
             timestamp = None
         else:
             time = 0
-            units = [("days", 86400), ("hours", 3600), ("minutes", 60), ("seconds", 1)]
+            units = [("days", 60 * 60 * 24), ("hours", 60 * 60), ("minutes", 60), ("seconds", 1)]
             for unit, value in units:
                 if unit in data:
                     time += int(data[unit]) * value
@@ -310,7 +310,7 @@ class Mute(commands.Cog):
         try:
             await interaction.guild.get_member(int(data["user"])).send(embed=discord.Embed(
                 title=f"{self.emojis().punish.mute} Mute",
-                description=f"You have been muted in {interaction.guild.name} for {data['reason'] if 'reason' in data else 'No reason provided'}",
+                description=f"You have been muted in {interaction.guild.name} {('for ' + data['reason']) if 'reason' in data else 'with no reason provided'}",
                 colour=self.colours.red
             ))
         except discord.HTTPException:
