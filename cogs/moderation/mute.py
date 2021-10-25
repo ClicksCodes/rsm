@@ -296,14 +296,14 @@ class Mute(commands.Cog):
 
         if timestamp:
             e = "T" if (datetime.datetime.fromtimestamp(timestamp).date() == datetime.datetime.utcnow().date()) else "F"
-            e = f"<t:{timestamp}:{e}>"
+            e = f"until <t:{timestamp}:{e}> (<t:{timestamp}:R>)"
 
         entry = self.handlers.fileManager(interaction.guild.id)
         await interaction.guild.get_member(int(data["user"])).add_roles(interaction.guild.get_role(int(entry["mute"]["role"])))
 
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().punish.mute} Mute",
-            description=f"{interaction.guild.get_member(int(data['user'])).mention} has been muted {'permanently' if not timestamp else {e}}",
+            description=f"{interaction.guild.get_member(int(data['user'])).mention} has been muted {'permanently' if not timestamp else e}",
             colour=self.colours.green
         ), view=None)
 
