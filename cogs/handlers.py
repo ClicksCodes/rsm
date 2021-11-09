@@ -497,7 +497,7 @@ class Handlers:
                     title=f"{emoji} Missing permissions",
                     description=f"You need the `{permission}` permission to {action}.",
                     colour=self.colours.red
-                ))
+                ), view=None)
             return Failed()
         if not getattr(ctx.channel.permissions_for(ctx.me), permission) and me:
             if edit:
@@ -505,7 +505,7 @@ class Handlers:
                     title=f"{emoji} Missing permissions",
                     description=f"I need the `{permission}` permission to {action}.",
                     colour=self.colours.red
-                ))
+                ), view=None)
             return Failed()
         return
 

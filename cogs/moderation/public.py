@@ -60,7 +60,6 @@ class Public(commands.Cog):
                         description=f"Please wait before reporting a message (This helps to reduce bots)",
                         colour=self.colours.red
                     ))
-                import random
                 if interaction.user.joined_at.replace(tzinfo=None) > (datetime.datetime.utcnow() - datetime.timedelta(days=7)):
                     return await m.edit(embed=discord.Embed(
                         title=f"Flagged",
@@ -69,11 +68,18 @@ class Public(commands.Cog):
                     ))
                 if interaction.data["target_id"] not in self.bot.mem["flags"]:
                     self.bot.mem["flags"][interaction.data["target_id"]] = {}
-                self.bot.mem["flags"][interaction.data["target_id"]][str(interaction.data["id"])] = datetime.datetime.utcnow()
+                self.bot.mem["flags"][interaction.data["target_id"]][str(interaction.user.id)] = datetime.datetime.utcnow()
 
                 if len(self.bot.mem["flags"][interaction.data["target_id"]]) >= 3:
                     mes = await interaction.channel.fetch_message(interaction.data["target_id"])
                     await mes.delete()
+
+                if str(interaction.user.id) in self.bot.mem["flags"][interaction.data["target_id"]]:
+                    return await m.edit(embed=discord.Embed(
+                        title=f"Already flagged",
+                        description=f"You cannot flag a message twice",
+                        colour=self.colours.red
+                    ))
                 return await m.edit(embed=discord.Embed(
                     title=f"Flagged",
                     description=f"This message was flagged successfully",

@@ -120,7 +120,13 @@ class Mute(commands.Cog):
                 return
         rid = guild.get_role(int(entry["mute"]["role"]))
         if rid is None:
-            rid = await guild.fetch_role(int(entry["mute"]["role"]))
+            rid = await guild.fetch_roles()
+            for role in rid:
+                if role.id == int(entry["mute"]["role"]):
+                    rid = role
+                    break
+        if rid is None:
+            return
         member = guild.get_member(int(unmute.user))
         if member is None:
             member = await guild.fetch_member(int(unmute.user))
