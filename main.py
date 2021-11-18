@@ -10,7 +10,7 @@ bot.allowed_mentions = discord.AllowedMentions(users=True, roles=True, replied_u
 
 bot.uptime = datetime.datetime.now()
 bot.mem = {"flags": {}}
-bot.version = "2.3.0:B"
+bot.version = "2.3.0:C"
 bot.flags = {}
 bot.muteMem = {}
 
