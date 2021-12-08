@@ -362,7 +362,7 @@ class Punish(commands.Cog):
                     "Name": f"{member.name} ({member.mention})",
                     "Joined": self.handlers.betterDelta(member.joined_at.replace(tzinfo=None)),
                     "Softbanned": self.handlers.strf(datetime.datetime.utcnow()),
-                    "Softbanned by": f"{ctx.author.name} ({ctx.author.user.mention})",
+                    "Softbanned by": f"{ctx.author.name} ({ctx.author.mention})",
                     "Reason": f"\n> {reason}",
                     "Time in server": humanize.naturaldelta(datetime.datetime.utcnow()-member.joined_at.replace(tzinfo=None)),
                     "Account created": self.handlers.betterDelta(member.created_at.replace(tzinfo=None)),

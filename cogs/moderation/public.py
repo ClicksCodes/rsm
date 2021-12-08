@@ -127,11 +127,12 @@ class Public(commands.Cog):
     async def guild(self, ctx):
         m = await ctx.send(embed=loading_embed)
         g = ctx.guild
+        ecf = "Failed to fetch"
         match g.explicit_content_filter.name:
             case "disabled": ecf = "Disabled"
             case "no_role": ecf = "Everyone with no role"
             case "all_members": ecf = "Everyone"
-            case _: ecf = "Failed to fetch"
+        region = "Failed to fetch"
         match g.region.name:
             case "amsterdam": region = ":flag_an: The Netherlands"
             case "brazil": region = ":flag_br: Brazil"
@@ -154,7 +155,6 @@ class Public(commands.Cog):
             case "vip_amsterdam": region = ":flag_an: The Netherlands (VIP)"
             case "vip_us_east": region = ":flag_us: USA (East, VIP)"
             case "vip_us_west": region = ":flag_us: USA (West, VIP)"
-            case "_": region = "Failed to fetch"
         await m.edit(embed=discord.Embed(
             title="Server stats",
             description=f"**Name:** {g.name}\n"
