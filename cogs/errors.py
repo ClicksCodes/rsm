@@ -103,7 +103,7 @@ class Errors(commands.Cog):
                         f"Guild id:{(ctx.guild.id if ctx.guild else 'N/A') if ctx else ''}\n\n{tb}".split("\n")
                     )
                 ])
-                with open("./words.txt") as f:
+                with open("./data/words.txt") as f:
                     words = f.read().split("\n")
                 code = "-".join([random.choice(words) for _ in range(3)])
                 s = f"`{code}`: ```\n```"

@@ -422,7 +422,7 @@ class Guild(commands.Cog):
             g = before[0].guild
         else:
             return
-        audit = await self.handlers.getAuditLogEntry(g, type=discord.AuditLogAction.guild_update)
+        audit = await self.handlers.getAuditLogEntry(g, type=discord.AuditLogAction.emoji_update)
         if not audit or audit.user.bot:
             return
         added = []

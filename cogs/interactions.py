@@ -40,7 +40,7 @@ class Option(discord.SelectOption):
     def __init__(self, id, title, description):
         super().__init__(
             value=id,
-            title=title,
+            label=title,
             description=description
         )
         self.cb = id

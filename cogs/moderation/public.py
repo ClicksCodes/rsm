@@ -53,13 +53,13 @@ class Public(commands.Cog):
                 return
                 await interaction.response.send_message(embed=loading_embed, ephemeral=True)
                 m = await interaction.original_message()
-                if datetime.datetime.strptime(interaction.data["resolved"]["messages"][interaction.data["target_id"]]["timestamp"][:-5], "%Y-%m-%dT%H:%M:%S.%f+") > datetime.datetime.utcnow() - datetime.timedelta(seconds=1):
+                if datetime.datetime.strptime(interaction.data["resolved"]["messages"][interaction.data["target_id"]]["timestamp"][:-5],
+                                              "%Y-%m-%dT%H:%M:%S.%f+") > datetime.datetime.utcnow() - datetime.timedelta(seconds=1):
                     return await m.edit(embed=discord.Embed(
                         title=f"Too fast",
                         description=f"Please wait before reporting a message (This helps to reduce bots)",
                         colour=self.colours.red
                     ))
-                import random
                 if interaction.user.joined_at.replace(tzinfo=None) > (datetime.datetime.utcnow() - datetime.timedelta(days=7)):
                     return await m.edit(embed=discord.Embed(
                         title=f"Flagged",
@@ -68,11 +68,18 @@ class Public(commands.Cog):
                     ))
                 if interaction.data["target_id"] not in self.bot.mem["flags"]:
                     self.bot.mem["flags"][interaction.data["target_id"]] = {}
-                self.bot.mem["flags"][interaction.data["target_id"]][str(interaction.data["id"])] = datetime.datetime.utcnow()
+                self.bot.mem["flags"][interaction.data["target_id"]][str(interaction.user.id)] = datetime.datetime.utcnow()
 
                 if len(self.bot.mem["flags"][interaction.data["target_id"]]) >= 3:
                     mes = await interaction.channel.fetch_message(interaction.data["target_id"])
                     await mes.delete()
+
+                if str(interaction.user.id) in self.bot.mem["flags"][interaction.data["target_id"]]:
+                    return await m.edit(embed=discord.Embed(
+                        title=f"Already flagged",
+                        description=f"You cannot flag a message twice",
+                        colour=self.colours.red
+                    ))
                 return await m.edit(embed=discord.Embed(
                     title=f"Flagged",
                     description=f"This message was flagged successfully",
@@ -120,11 +127,12 @@ class Public(commands.Cog):
     async def guild(self, ctx):
         m = await ctx.send(embed=loading_embed)
         g = ctx.guild
+        ecf = "Failed to fetch"
         match g.explicit_content_filter.name:
             case "disabled": ecf = "Disabled"
             case "no_role": ecf = "Everyone with no role"
             case "all_members": ecf = "Everyone"
-            case _: ecf = "Failed to fetch"
+        region = "Failed to fetch"
         match g.region.name:
             case "amsterdam": region = ":flag_an: The Netherlands"
             case "brazil": region = ":flag_br: Brazil"
@@ -147,7 +155,6 @@ class Public(commands.Cog):
             case "vip_amsterdam": region = ":flag_an: The Netherlands (VIP)"
             case "vip_us_east": region = ":flag_us: USA (East, VIP)"
             case "vip_us_west": region = ":flag_us: USA (West, VIP)"
-            case "_": region = "Failed to fetch"
         await m.edit(embed=discord.Embed(
             title="Server stats",
             description=f"**Name:** {g.name}\n"

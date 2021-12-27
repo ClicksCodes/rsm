@@ -136,7 +136,10 @@ class Listeners(commands.Cog):
                     except discord.HTTPException:
                         pass
                     return await member.ban(reason="RSM - Username broke rules")
-        nsfw, _, score, image = await self.handlers.is_pfp_nsfw(str(member.avatar.with_format("png")))
+        try:
+            nsfw, _, score, image = await self.handlers.is_pfp_nsfw(str(member.avatar.with_format("png")))
+        except AttributeError:
+            return
         if nsfw:
             try:
                 await member.send(embed=discord.Embed(

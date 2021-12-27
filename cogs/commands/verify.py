@@ -66,29 +66,32 @@ class Verify(commands.Cog):
                 description="We are just checking that your profile picture is safe for work",
                 colour=self.colours.yellow
             ).set_footer(text="Requesting"))
-            nsfw, _, score, image = await self.handlers.is_pfp_nsfw(str(ctx.author.avatar.url))
-            if nsfw or image:
-                buf = io.BytesIO()
-                image.save(buf, format="png")
-                buf.seek(0)
-                if data["log_info"]["staff"]:
-                    await self.bot.get_channel(data["log_info"]["staff"]).send(
-                        file=discord.File(buf, filename="SPOILER_image.png", spoiler=True),
+            try:
+                nsfw, _, score, image = await self.handlers.is_pfp_nsfw(str(ctx.author.avatar.url))
+                if nsfw or image:
+                    buf = io.BytesIO()
+                    image.save(buf, format="png")
+                    buf.seek(0)
+                    if data["log_info"]["staff"]:
+                        await self.bot.get_channel(data["log_info"]["staff"]).send(
+                            file=discord.File(buf, filename="SPOILER_image.png", spoiler=True),
+                            embed=discord.Embed(
+                                title=f"{self.emojis().control.cross} Verify - NSFW avatar detected",
+                                description=f"**Member:** {ctx.author.name} ({ctx.author.mention})\n"
+                                            f"**Confidence:** {round(score, 2)}%\nAbove is the list of detections found",
+                                colour=self.colours.red
+                            ).set_footer(text="No filter is 100% accurate and therefore no action was taken")
+                        )
+                    return await m.edit(
                         embed=discord.Embed(
-                            title=f"{self.emojis().control.cross} Verify - NSFW avatar detected",
-                            description=f"**Member:** {ctx.author.name} ({ctx.author.mention})\n"
-                                        f"**Confidence:** {round(score, 2)}%\nAbove is the list of detections found",
-                            colour=self.colours.red
-                        ).set_footer(text="No filter is 100% accurate and therefore no action was taken")
+                            title=f"{self.emojis().control.cross} Verify",
+                            description=f"Your avatar was detected as NSFW. Please contact the moderators to verify manually",
+                            colour=self.colours.red,
+                        ).set_footer(text="No filter is 100% accurate and therefore no action was taken"),
+                        delete_after=10
                     )
-                return await m.edit(
-                    embed=discord.Embed(
-                        title=f"{self.emojis().control.cross} Verify",
-                        description=f"Your avatar was detected as NSFW. Please contact the moderators to verify manually",
-                        colour=self.colours.red,
-                    ).set_footer(text="No filter is 100% accurate and therefore no action was taken"),
-                    delete_after=10
-                )
+            except AttributeError:
+                pass
         await m.edit(embed=discord.Embed(
             title=f"{self.emojis().icon.loading} Verify",
             description=f"All looks good, please wait",

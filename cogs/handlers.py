@@ -23,6 +23,28 @@ with open("data/template.json") as f:
     template = json.load(f)
 
 
+class CustomCTX:
+    def __init__(self, bot, author, guild, channel, message=None, interaction=None, m=None):
+        self.me = bot
+        self.author = author
+        self.guild = guild
+        self.message = message
+        self.channel = channel
+        self.interaction = interaction
+        self.m = m
+
+    async def delete(self):
+        if self.message:
+            await self.m.delete()
+            return await self.message.delete()
+        if self.interaction:
+            return await self.m.edit(embed=discord.Embed(
+                title="Closed",
+                description="Dismiss this message to close it",
+                color=Colours().red
+            ).set_footer(text="Discord does not, in fact, let you delete messages only you can see :/"), view=None)
+
+
 class Handlers:
     def __init__(self, bot):
         self.colours = Cols()
@@ -475,7 +497,7 @@ class Handlers:
                     title=f"{emoji} Missing permissions",
                     description=f"You need the `{permission}` permission to {action}.",
                     colour=self.colours.red
-                ))
+                ), view=None)
             return Failed()
         if not getattr(ctx.channel.permissions_for(ctx.me), permission) and me:
             if edit:
@@ -483,7 +505,7 @@ class Handlers:
                     title=f"{emoji} Missing permissions",
                     description=f"I need the `{permission}` permission to {action}.",
                     colour=self.colours.red
-                ))
+                ), view=None)
             return Failed()
         return
 
@@ -573,6 +595,9 @@ class Handlers:
                 data["wordfilter"] = {"ignore": {"roles": [], "channels": [], "members": [], "delta": None}, "strict": [], "soft": []}
             data["wordfilter"]["punishment"] = data.get("nameban", "change")
         if data["version"] == 2:
+            data["version"] = 3
+            data["mute"] = {"role": None}
+        if data["version"] == 3:
             pass
         return data
 

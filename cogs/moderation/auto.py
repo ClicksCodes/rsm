@@ -101,6 +101,7 @@ class Auto(commands.Cog):
                         case 3:
                             await self.invite(ctx, m)
             page = max(0, min(page, 3))
+        m = await ctx.channel.fetch_message(m.id)
         embed = m.embeds[0]
         embed.color = self.colours.red
         await m.edit(embed=embed, view=None)
@@ -148,6 +149,7 @@ class Auto(commands.Cog):
                     )
                     if isinstance(members, Failed):
                         continue
+                    m = await ctx.channel.fetch_message(m.id)
                     embed = m.embeds[0].set_footer(text="Reading")
                     await m.edit(embed=embed, view=None)
                     data = self.handlers.fileManager(ctx.guild.id)
@@ -167,6 +169,7 @@ class Auto(commands.Cog):
                     )
                     if isinstance(roles, Failed):
                         continue
+                    m = await ctx.channel.fetch_message(m.id)
                     embed = m.embeds[0].set_footer(text="Reading")
                     await m.edit(embed=embed, view=None)
                     data = self.handlers.fileManager(ctx.guild.id)
@@ -186,6 +189,7 @@ class Auto(commands.Cog):
                     )
                     if isinstance(channels, Failed):
                         continue
+                    m = await ctx.channel.fetch_message(m.id)
                     embed = m.embeds[0].set_footer(text="Reading")
                     await m.edit(embed=embed, view=None)
                     data = self.handlers.fileManager(ctx.guild.id)
@@ -352,6 +356,7 @@ class Auto(commands.Cog):
                         role = None
                     else:
                         role = role.id
+                    m = await ctx.channel.fetch_message(m.id)
                     embed = m.embeds[0].set_footer(text="Reading")
                     await m.edit(embed=embed)
                     data = self.handlers.fileManager(ctx.guild.id)
@@ -370,6 +375,7 @@ class Auto(commands.Cog):
                     )
                     if isinstance(message, Failed):
                         continue
+                    m = await ctx.channel.fetch_message(m.id)
                     embed = m.embeds[0].set_footer(text="Reading")
                     await m.edit(embed=embed)
                     data = self.handlers.fileManager(ctx.guild.id)
@@ -396,6 +402,7 @@ class Auto(commands.Cog):
                         channel = "dm"
                     else:
                         channel = channel.id
+                    m = await ctx.channel.fetch_message(m.id)
                     embed = m.embeds[0].set_footer(text="Reading")
                     await m.edit(embed=embed)
                     data = self.handlers.fileManager(ctx.guild.id)
@@ -429,6 +436,7 @@ class Auto(commands.Cog):
             await v.wait()
             match v.selected:
                 case "1n":
+                    m = await ctx.channel.fetch_message(m.id)
                     embed = m.embeds[0].set_footer(text="Reading")
                     await m.edit(embed=embed)
                     data = self.handlers.fileManager(ctx.guild.id)
@@ -448,6 +456,7 @@ class Auto(commands.Cog):
                     )
                     if isinstance(members, Failed):
                         continue
+                    m = await ctx.channel.fetch_message(m.id)
                     embed = m.embeds[0].set_footer(text="Reading")
                     await m.edit(embed=embed)
                     data = self.handlers.fileManager(ctx.guild.id)
@@ -467,6 +476,7 @@ class Auto(commands.Cog):
                     )
                     if isinstance(roles, Failed):
                         continue
+                    m = await ctx.channel.fetch_message(m.id)
                     embed = m.embeds[0].set_footer(text="Reading")
                     await m.edit(embed=embed)
                     data = self.handlers.fileManager(ctx.guild.id)
@@ -487,6 +497,7 @@ class Auto(commands.Cog):
                     )
                     if isinstance(channels, Failed):
                         continue
+                    m = await ctx.channel.fetch_message(m.id)
                     embed = m.embeds[0].set_footer(text="Reading")
                     await m.edit(embed=embed)
                     data = self.handlers.fileManager(ctx.guild.id)
