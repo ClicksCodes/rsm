@@ -14,18 +14,18 @@ from config import config
 from cogs.handlers import Handlers, Failed
 
 
-class User(mongoengine.Document):
-    code = mongoengine.StringField(required=True)
-    user = mongoengine.StringField(required=True)
-    role = mongoengine.StringField(required=True)
-    role_name = mongoengine.StringField(required=True)
-    guild = mongoengine.StringField(required=True)
-    guild_name = mongoengine.StringField(required=True)
-    guild_icon_url = mongoengine.StringField(required=True)
-    guild_size = mongoengine.StringField(required=True)
-    od = time.time()
+# class User(mongoengine.Document):
+#     code = mongoengine.StringField(required=True)
+#     user = mongoengine.StringField(required=True)
+#     role = mongoengine.StringField(required=True)
+#     role_name = mongoengine.StringField(required=True)
+#     guild = mongoengine.StringField(required=True)
+#     guild_name = mongoengine.StringField(required=True)
+#     guild_icon_url = mongoengine.StringField(required=True)
+#     guild_size = mongoengine.StringField(required=True)
+#     od = time.time()
 
-    meta = {'collection': 'rsmv-tokens'}
+#     meta = {'collection': 'rsmv-tokens'}
 
 
 class Verify(commands.Cog):
