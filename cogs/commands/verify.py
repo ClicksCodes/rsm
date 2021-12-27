@@ -127,12 +127,6 @@ class Verify(commands.Cog):
                 url = f"https://clicksminuteper.net/rsmv?code={code}",
             )
         ])
-        await m.edit(embed=discord.Embed(
-            title=f"{self.emojis().control.tick} Verify",
-            description=f"Please click the link below to verify your account, "
-                        f"or click [here](htts://clicksminuteper.net/rsmv?code={code})",
-            colour=self.colours.green
-        ), view=v)
         # try:
         #     mongoengine.connect(
         #         'rsm',
@@ -159,13 +153,12 @@ class Verify(commands.Cog):
         #         delete_after=10
         #     )
         try:
-            await ctx.author.send(
-                embed=discord.Embed(
-                    title=f"{self.emojis().control.tick} Verify",
-                    description=f"In order to verify yourself in {ctx.guild.name}, you need to go [here](https://clicksminuteper.net/rsmv?code={code}) and complete the CAPTCHA.",
-                    colour=self.colours.green,
-                )
-            )
+            await ctx.author.send(embed=discord.Embed(
+                title=f"{self.emojis().control.tick} Verify",
+                description=f"Please click the link below to verify your account, "
+                            f"or click [here](htts://clicksminuteper.net/rsmv?code={code})",
+                colour=self.colours.green
+            ), view=v)
         except discord.HTTPException:
             await m.channel.send(ctx.author.mention,
                 embed=discord.Embed(
@@ -174,6 +167,12 @@ class Verify(commands.Cog):
                     colour=self.colours.red,
                 ), delete_after=10
             )
+        await m.edit(embed=discord.Embed(
+            title=f"{self.emojis().icon.loading} Verify",
+            description=f"All looks good, check your DMs for a link",
+            colour=self.colours.green
+        ).set_footer(text="Sent"))
+        await asyncio.sleep(10)
         await m.delete()
 
     @commands.command()
