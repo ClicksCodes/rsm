@@ -49,7 +49,7 @@ async def role(guild: int, role: int, user: int, secret: str, code):
         return PlainTextResponse("400", 400)
 
 
-@app.get("/verify/code")
+@app.get("/verify/{code}")
 async def verify(code):
     from global_vars import bot
     if code in bot.rsmv:
