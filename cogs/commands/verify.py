@@ -108,7 +108,7 @@ class Verify(commands.Cog):
         #                 ),
         #                 delete_after=10
         #             )
-        a = 5
+        a = 4
         code = secrets.token_urlsafe(a)
         while code in self.bot.rsmv:
             code = secrets.token_urlsafe(a)
