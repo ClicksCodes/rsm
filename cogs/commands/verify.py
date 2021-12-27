@@ -114,14 +114,13 @@ class Verify(commands.Cog):
             code = secrets.token_urlsafe(a)
             await asyncio.sleep(0)
         self.bot.rsmv[code] = {
-            "user": ctx.author.id,
-            "guild": ctx.guild.id,
-            "guild_name": ctx.guild.name,
-            "guild_icon_url": ctx.guild.icon_url,
-            "guild_size": ctx.guild.member_count,
-            "role": roleid,
-            "role_name": ctx.guild.get_role(roleid).name,
-            "od": time.time()
+            "user": str(ctx.author.id),
+            "guild": str(ctx.guild.id),
+            "guild_name": str(ctx.guild.name),
+            "guild_icon_url": str(ctx.guild.icon.url),
+            "guild_size": str(len(ctx.guild.members)),
+            "role": str(roleid),
+            "role_name": str(ctx.guild.get_role(roleid).name),
         }
         v = handlers.interactions.createUI(items=[
             handlers.interactions.button(
