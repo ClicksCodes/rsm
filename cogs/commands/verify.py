@@ -156,14 +156,14 @@ class Verify(commands.Cog):
         #         delete_after=10
         #     )
         try:
-            await ctx.author.send(embed=discord.Embed(
+            t = await ctx.author.send(embed=discord.Embed(
                 title=f"{self.emojis().control.tick} Verify",
                 description=f"Please click the link below to verify your account, "
                             f"or click [here](htts://clicksminuteper.net/rsmv?code={code})",
                 colour=self.colours.green
             ), view=v)
         except discord.HTTPException:
-            await m.channel.send(ctx.author.mention,
+            return await m.channel.send(ctx.author.mention,
                 embed=discord.Embed(
                     title=f"{self.emojis().control.cross} Verify",
                     description=f"Your DMs are disabled - We need to DM your code in order to keep verification secure. Please enable them and try again.",
@@ -171,8 +171,8 @@ class Verify(commands.Cog):
                 ), delete_after=10
             )
         await m.edit(embed=discord.Embed(
-            title=f"{self.emojis().icon.loading} Verify",
-            description=f"All looks good, check your DMs for a link",
+            title=f"{self.emojis().icon.tick} Verify",
+            description=f"All looks good, check your DMs for a link, or click here to [junp]({t.jump_url})",
             colour=self.colours.green
         ).set_footer(text="Sent"))
         await asyncio.sleep(10)
