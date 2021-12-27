@@ -35,7 +35,7 @@ async def stage():
     return PlainTextResponse(str(config.stage.name))
 
 
-@app.get("/role/gid/{guild}/rid/{role}/user/{user}/secret/{secret}/code/{code}")
+@app.get("/verify/{guild}/{role}/{user}/{secret}/{code}")
 async def role(guild: int, role: int, user: int, secret: str, code):
     from global_vars import bot
     try:
@@ -50,10 +50,19 @@ async def role(guild: int, role: int, user: int, secret: str, code):
             description=f"You are now verified in {g.name}. The `@{bot.get_guild(guild).get_role(role).name}` role has now been given.",
             colour=colours.green
         ))
+        del bot.rsmv[code]
         return PlainTextResponse("200", 200)
     except Exception as e:
         print(e)
         return PlainTextResponse("400", 400)
+
+
+@app.get("/verify/{code}")
+async def verify(code):
+    from global_vars import bot
+    if code in bot.rsmv:
+        return JSONResponse(bot.rsmv[code], "200")
+    return JSONResponse({"error": "404"}, "404")
 
 
 @app.get("/in/{guild}")
