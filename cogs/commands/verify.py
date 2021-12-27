@@ -124,9 +124,9 @@ class Verify(commands.Cog):
         }
         v = self.handlers.interactions.createUI(items=[
             self.handlers.interactions.Button(
-                label = "Verify",
-                style = "url",
-                url = f"https://clicksminuteper.net/rsmv?code={code}",
+                title="Verify",
+                style="url",
+                url=f"https://clicksminuteper.net/rsmv?code={code}",
             )
         ])
         # try:
