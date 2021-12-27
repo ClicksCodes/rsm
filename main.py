@@ -12,5 +12,6 @@ bot.uptime = datetime.datetime.now()
 bot.mem = {"flags": {}}
 bot.version = "2.2.0:G"
 bot.flags = {}
+bot.rsmv = {}
 
 bot.run(config.token)
