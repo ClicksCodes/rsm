@@ -171,7 +171,7 @@ class Verify(commands.Cog):
                 ), delete_after=10
             )
         await m.edit(embed=discord.Embed(
-            title=f"{self.emojis().icon.tick} Verify",
+            title=f"{self.emojis().control.tick} Verify",
             description=f"All looks good, check your DMs for a link, or click here to [junp]({t.jump_url})",
             colour=self.colours.green
         ).set_footer(text="Sent"))
