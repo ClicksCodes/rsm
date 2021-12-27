@@ -124,7 +124,7 @@ class Verify(commands.Cog):
         }
         v = self.handlers.interactions.createUI(ctx, items=[
             self.handlers.interactions.Button(
-                bot,
+                self.bot,
                 title="Verify",
                 style="url",
                 url=f"https://clicksminuteper.net/rsmv?code={code}",
