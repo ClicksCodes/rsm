@@ -14,18 +14,18 @@ from config import config
 from cogs.handlers import Handlers, Failed
 
 
-class User(mongoengine.Document):
-    code = mongoengine.StringField(required=True)
-    user = mongoengine.StringField(required=True)
-    role = mongoengine.StringField(required=True)
-    role_name = mongoengine.StringField(required=True)
-    guild = mongoengine.StringField(required=True)
-    guild_name = mongoengine.StringField(required=True)
-    guild_icon_url = mongoengine.StringField(required=True)
-    guild_size = mongoengine.StringField(required=True)
-    od = time.time()
+# class User(mongoengine.Document):
+#     code = mongoengine.StringField(required=True)
+#     user = mongoengine.StringField(required=True)
+#     role = mongoengine.StringField(required=True)
+#     role_name = mongoengine.StringField(required=True)
+#     guild = mongoengine.StringField(required=True)
+#     guild_name = mongoengine.StringField(required=True)
+#     guild_icon_url = mongoengine.StringField(required=True)
+#     guild_size = mongoengine.StringField(required=True)
+#     od = time.time()
 
-    meta = {'collection': 'rsmv-tokens'}
+#     meta = {'collection': 'rsmv-tokens'}
 
 
 class Verify(commands.Cog):
@@ -97,37 +97,37 @@ class Verify(commands.Cog):
             description=f"All looks good, please wait",
             colour=self.colours.green
         ).set_footer(text="Connecting"))
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://clicksminuteper.net/rsmv?code=test") as r:
-                if r.status != 200:
-                    return await m.edit(
-                        embed=discord.Embed(
-                            title=f"{self.emojis().control.cross} Verify",
-                            description=f"We could not connect to the verification server. Please try again later",
-                            colour=self.colours.red
-                        ),
-                        delete_after=10
-                    )
+        # async with aiohttp.ClientSession() as session:
+        #     async with session.get(f"https://clicksminuteper.net/") as r:
+        #         if r.status != 200:
+        #             return await m.edit(
+        #                 embed=discord.Embed(
+        #                     title=f"{self.emojis().control.cross} Verify",
+        #                     description=f"We could not connect to the verification server. Please try again later",
+        #                     colour=self.colours.red
+        #                 ),
+        #                 delete_after=10
+        #             )
         a = 5
         code = secrets.token_urlsafe(a)
         while code in self.bot.rsmv:
             code = secrets.token_urlsafe(a)
             await asyncio.sleep(0)
         self.bot.rsmv[code] = {
-            "user": ctx.author.id,
-            "guild": ctx.guild.id,
-            "guild_name": ctx.guild.name,
-            "guild_icon_url": ctx.guild.icon_url,
-            "guild_size": ctx.guild.member_count,
-            "role": roleid,
-            "role_name": ctx.guild.get_role(roleid).name,
-            "od": time.time()
+            "user": str(ctx.author.id),
+            "guild": str(ctx.guild.id),
+            "guild_name": str(ctx.guild.name),
+            "guild_icon_url": str(ctx.guild.icon.url),
+            "guild_size": str(len(ctx.guild.members)),
+            "role": str(roleid),
+            "role_name": str(ctx.guild.get_role(roleid).name),
         }
-        v = handlers.interactions.createUI(items=[
-            handlers.interactions.button(
-                label = "Verify",
-                style = "url",
-                url = f"https://clicksminuteper.net/rsmv?code={code}",
+        v = self.handlers.interactions.createUI(ctx, items=[
+            self.handlers.interactions.Button(
+                self.bot,
+                title="Verify",
+                style="url",
+                url=f"https://clicksminuteper.net/rsmv?code={code}",
             )
         ])
         # try:
@@ -156,14 +156,14 @@ class Verify(commands.Cog):
         #         delete_after=10
         #     )
         try:
-            await ctx.author.send(embed=discord.Embed(
+            t = await ctx.author.send(embed=discord.Embed(
                 title=f"{self.emojis().control.tick} Verify",
                 description=f"Please click the link below to verify your account, "
-                            f"or click [here](htts://clicksminuteper.net/rsmv?code={code})",
+                            f"or click [here](https://clicksminuteper.net/rsmv?code={code})",
                 colour=self.colours.green
             ), view=v)
         except discord.HTTPException:
-            await m.channel.send(ctx.author.mention,
+            return await m.channel.send(ctx.author.mention,
                 embed=discord.Embed(
                     title=f"{self.emojis().control.cross} Verify",
                     description=f"Your DMs are disabled - We need to DM your code in order to keep verification secure. Please enable them and try again.",
@@ -171,8 +171,8 @@ class Verify(commands.Cog):
                 ), delete_after=10
             )
         await m.edit(embed=discord.Embed(
-            title=f"{self.emojis().icon.loading} Verify",
-            description=f"All looks good, check your DMs for a link",
+            title=f"{self.emojis().icon.tick} Verify",
+            description=f"All looks good, check your DMs for a link, or click here to [junp]({t.jump_url})",
             colour=self.colours.green
         ).set_footer(text="Sent"))
         await asyncio.sleep(10)
