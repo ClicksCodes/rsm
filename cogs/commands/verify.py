@@ -159,7 +159,7 @@ class Verify(commands.Cog):
             t = await ctx.author.send(embed=discord.Embed(
                 title=f"{self.emojis().control.tick} Verify",
                 description=f"Please click the link below to verify your account, "
-                            f"or click [here](htts://clicksminuteper.net/rsmv?code={code})",
+                            f"or click [here](https://clicksminuteper.net/rsmv?code={code})",
                 colour=self.colours.green
             ), view=v)
         except discord.HTTPException:
