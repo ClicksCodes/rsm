@@ -61,8 +61,8 @@ async def role(guild: int, role: int, user: int, secret: str, code):
 async def verify(code: str):
     from global_vars import bot
     if code in bot.rsmv:
-        return JSONResponse(bot.rsmv[code], "200")
-    return JSONResponse({"error": "404"}, "404")
+        return JSONResponse(bot.rsmv[code], 200)
+    return JSONResponse({"error": "404"}, 404)
 
 
 @app.get("/in/{guild}")
