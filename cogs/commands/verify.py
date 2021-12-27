@@ -97,17 +97,17 @@ class Verify(commands.Cog):
             description=f"All looks good, please wait",
             colour=self.colours.green
         ).set_footer(text="Connecting"))
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://clicksminuteper.net/rsmv?code=test") as r:
-                if r.status != 200:
-                    return await m.edit(
-                        embed=discord.Embed(
-                            title=f"{self.emojis().control.cross} Verify",
-                            description=f"We could not connect to the verification server. Please try again later",
-                            colour=self.colours.red
-                        ),
-                        delete_after=10
-                    )
+        # async with aiohttp.ClientSession() as session:
+        #     async with session.get(f"https://clicksminuteper.net/") as r:
+        #         if r.status != 200:
+        #             return await m.edit(
+        #                 embed=discord.Embed(
+        #                     title=f"{self.emojis().control.cross} Verify",
+        #                     description=f"We could not connect to the verification server. Please try again later",
+        #                     colour=self.colours.red
+        #                 ),
+        #                 delete_after=10
+        #             )
         a = 5
         code = secrets.token_urlsafe(a)
         while code in self.bot.rsmv:
