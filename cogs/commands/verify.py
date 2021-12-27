@@ -123,7 +123,7 @@ class Verify(commands.Cog):
             "role_name": str(ctx.guild.get_role(roleid).name),
         }
         v = self.handlers.interactions.createUI(items=[
-            self.handlers.interactions.button(
+            self.handlers.interactions.Button(
                 label = "Verify",
                 style = "url",
                 url = f"https://clicksminuteper.net/rsmv?code={code}",
