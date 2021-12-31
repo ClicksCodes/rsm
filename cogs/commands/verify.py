@@ -92,9 +92,9 @@ class Verify(commands.Cog):
                         colour=self.colours.red
                     ))
         def _gencode(length=5):
-            return [random.choice(
+            return "".join([random.choice(
                 "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890-_"
-            ) for _ in range(length)]
+            ) for _ in range(length)])
         code = _gencode(5)
         while code in self.bot.rsmv:
             code = _gencode(5)
