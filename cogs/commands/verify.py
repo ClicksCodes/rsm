@@ -83,13 +83,14 @@ class Verify(commands.Cog):
         ).set_footer(text="Connecting"))
         async with aiohttp.ClientSession() as session:
             async with session.get("https://clicksminuteper.net") as r:
-                if await r.status != 200:
-                    return await m.edit(embed=discord.Embed(
-                        title=f"{self.emojis().icon.loading} Verify",
-                        description=f"Our servers appear to be down, please contact the moderators "
-                                    f"or try again later.",
-                        colour=self.colours.red
-                    ))
+                resp = await r.status
+        if resp != 200:
+            return await m.edit(embed=discord.Embed(
+                title=f"{self.emojis().icon.loading} Verify",
+                description=f"Our servers appear to be down, please contact the moderators "
+                            f"or try again later.",
+                colour=self.colours.red
+            ))
         def _gencode(length=5):
             return [random.choice(
                 "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890-_"
