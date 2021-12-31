@@ -88,7 +88,7 @@ class Verify(commands.Cog):
                     return await m.edit(embed=discord.Embed(
                         title=f"{self.emojis().icon.loading} Verify",
                         description=f"Our servers appear to be down, please contact the moderators "
-                                    f"or try again later.",
+                                    f"or try again later and we will fix this as soon as possible.",
                         colour=self.colours.red
                     ))
         def _gencode(length=5):
@@ -119,8 +119,7 @@ class Verify(commands.Cog):
         try:
             t = await ctx.author.send(embed=discord.Embed(
                 title=f"{self.emojis().control.tick} Verify",
-                description=f"To verify your account, click the button below "
-                            f"or click [here](https://clicksminuteper.net/rsmv?code={code}) and"
+                description=f"To verify yourself in {ctx.guild.name}, click the button below and"
                             f"complete the check.",
                 colour=self.colours.green
             ), view=v)
