@@ -1,31 +1,15 @@
-import aiohttp
 import asyncio
-import discord
-import typing
-from discord.ext import commands
 import io
-# import mongoengine
-# import pymongo
-import time
 import secrets
+import time
+import typing
 
+import aiohttp
+import discord
 from cogs.consts import *
+from cogs.handlers import Failed, Handlers
 from config import config
-from cogs.handlers import Handlers, Failed
-
-
-# class User(mongoengine.Document):
-#     code = mongoengine.StringField(required=True)
-#     user = mongoengine.StringField(required=True)
-#     role = mongoengine.StringField(required=True)
-#     role_name = mongoengine.StringField(required=True)
-#     guild = mongoengine.StringField(required=True)
-#     guild_name = mongoengine.StringField(required=True)
-#     guild_icon_url = mongoengine.StringField(required=True)
-#     guild_size = mongoengine.StringField(required=True)
-#     od = time.time()
-
-#     meta = {'collection': 'rsmv-tokens'}
+from discord.ext import commands
 
 
 class Verify(commands.Cog):
@@ -97,21 +81,22 @@ class Verify(commands.Cog):
             description=f"All looks good, please wait",
             colour=self.colours.green
         ).set_footer(text="Connecting"))
-        # async with aiohttp.ClientSession() as session:
-        #     async with session.get(f"https://clicksminuteper.net/") as r:
-        #         if r.status != 200:
-        #             return await m.edit(
-        #                 embed=discord.Embed(
-        #                     title=f"{self.emojis().control.cross} Verify",
-        #                     description=f"We could not connect to the verification server. Please try again later",
-        #                     colour=self.colours.red
-        #                 ),
-        #                 delete_after=10
-        #             )
-        a = 4
-        code = secrets.token_urlsafe(a)
+        async with aiohttp.ClientSession() as session:
+            async with session.get("https://clicksminuteper.net") as r:
+                if await r.status != 200:
+                    return await m.edit(embed=discord.Embed(
+                        title=f"{self.emojis().icon.loading} Verify",
+                        description=f"Our servers appear to be down, please contact the moderators "
+                                    f"or try again later.",
+                        colour=self.colours.red
+                    ))
+        def _gencode(length=5):
+            return [random.choice(
+                "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890-_"
+            ) for _ in range(length)]
+        code = _gencode(5)
         while code in self.bot.rsmv:
-            code = secrets.token_urlsafe(a)
+            code = _gencode(5)
             await asyncio.sleep(0)
         self.bot.rsmv[code] = {
             "user": str(ctx.author.id),
@@ -130,36 +115,12 @@ class Verify(commands.Cog):
                 url=f"https://clicksminuteper.net/rsmv?code={code}",
             )
         ])
-        # try:
-        #     mongoengine.connect(
-        #         'rsm',
-        #         host=config.mongoUrl
-        #     )
-        #     code = secrets.token_urlsafe(16)
-        #     User(
-        #         code=str(code),
-        #         user=str(ctx.author.id),
-        #         role=str(roleid),
-        #         role_name=str(ctx.guild.get_role(roleid).name),
-        #         guild=str(ctx.guild.id),
-        #         guild_name=str(ctx.guild.name),
-        #         guild_icon_url=str(ctx.guild.icon.url),
-        #         guild_size=str(len(ctx.guild.members))
-        #     ).save()
-        # except (TypeError, pymongo.errors.ServerSelectionTimeoutError):
-        #     return await m.edit(
-        #         embed=discord.Embed(
-        #             title=f"{self.emojis().control.cross} Verify",
-        #             description=f"Our database appears to be down, and could not connect. Please contact the moderators in order to verify manually",
-        #             colour=self.colours.red,
-        #         ).set_footer(text="Connection failed"),
-        #         delete_after=10
-        #     )
         try:
             t = await ctx.author.send(embed=discord.Embed(
                 title=f"{self.emojis().control.tick} Verify",
-                description=f"Please click the link below to verify your account, "
-                            f"or click [here](https://clicksminuteper.net/rsmv?code={code})",
+                description=f"To verify your account, click the button below "
+                            f"or click [here](https://clicksminuteper.net/rsmv?code={code}) and"
+                            f"complete the check.",
                 colour=self.colours.green
             ), view=v)
         except discord.HTTPException:
@@ -174,9 +135,7 @@ class Verify(commands.Cog):
             title=f"{self.emojis().control.tick} Verify",
             description=f"All looks good, check your DMs for a link, or click here to [jump]({t.jump_url})",
             colour=self.colours.green
-        ).set_footer(text="Sent"))
-        await asyncio.sleep(10)
-        await m.delete()
+        ).set_footer(text="Sent"), delete_after=10)
 
     @commands.command()
     @commands.guild_only()
