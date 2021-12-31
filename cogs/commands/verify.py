@@ -119,7 +119,7 @@ class Verify(commands.Cog):
         try:
             t = await ctx.author.send(embed=discord.Embed(
                 title=f"{self.emojis().control.tick} Verify",
-                description=f"To verify yourself in {ctx.guild.name}, click the button below and"
+                description=f"To verify yourself in {ctx.guild.name}, click the button below and "
                             f"complete the check.",
                 colour=self.colours.green
             ), view=v)
