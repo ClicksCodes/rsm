@@ -123,19 +123,19 @@ class Verify(commands.Cog):
                             f"complete the check.",
                 colour=self.colours.green
             ), view=v)
+            return await m.edit(embed=discord.Embed(
+                title=f"{self.emojis().control.tick} Verify",
+                description=f"All looks good, check your DMs for a link, or click here to [jump]({t.jump_url})",
+                colour=self.colours.green
+            ).set_footer(text="Sent"), delete_after=10)
         except discord.HTTPException:
-            return await m.channel.send(ctx.author.mention,
+            return await m.edit(ctx.author.mention,
                 embed=discord.Embed(
                     title=f"{self.emojis().control.cross} Verify",
                     description=f"Your DMs are disabled - We need to DM your code in order to keep verification secure. Please enable them and try again.",
                     colour=self.colours.red,
                 ), delete_after=10
             )
-        await m.edit(embed=discord.Embed(
-            title=f"{self.emojis().control.tick} Verify",
-            description=f"All looks good, check your DMs for a link, or click here to [jump]({t.jump_url})",
-            colour=self.colours.green
-        ).set_footer(text="Sent"), delete_after=10)
 
     @commands.command()
     @commands.guild_only()
