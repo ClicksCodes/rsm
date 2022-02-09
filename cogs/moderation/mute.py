@@ -120,8 +120,8 @@ class Mute(commands.Cog):
                 return
         rid = guild.get_role(int(entry["mute"]["role"]))
         if rid is None:
-            rid = await guild.fetch_roles()
-            for role in rid:
+            guildroles = await guild.fetch_roles()
+            for role in guildroles:
                 if role.id == int(entry["mute"]["role"]):
                     rid = role
                     break
