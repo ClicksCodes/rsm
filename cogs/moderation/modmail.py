@@ -191,7 +191,12 @@ class Modmail(commands.Cog):
     @commands.guild_only()
     async def close(self, ctx):
         data = self.handlers.fileManager(ctx.guild)
-
+        if ctx.channel.category == None:
+            return await m.edit(embed=discord.Embed(
+                title=f"{self.emojis().guild.modmail.open} Modmail",
+                description=f"This does not appear to be a modmail ticket. Please check the channel is correct or contact the [developers](https://discord.gg/bPaNnxe) if you expected this to work.",
+                colour=self.colours.red
+            ))
         if ctx.channel.category.id == data["modmail"]["cat"]:
             if ctx.channel.topic.split(" ")[1] == "Active":
                 m = await ctx.send(embed=discord.Embed(
