@@ -138,10 +138,8 @@ class Verify(commands.Cog):
         #     )
 
         try:
-            if secret != config.urlsecret:
-                return PlainTextResponse("403", 403)
-            g = bot.get_guild(guild)
-            mem = await ctx.author
+            g = ctx.guild
+            mem = ctx.author
 
             await mem.add_roles(g.get_role(role))
             await mem.send(embed=discord.Embed(
