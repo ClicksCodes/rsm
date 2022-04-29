@@ -83,7 +83,7 @@ class Verify(commands.Cog):
             colour=self.colours.green
         ).set_footer(text="Connecting"))
         # async with aiohttp.ClientSession() as session:
-        #     async with session.get("https://clicksminuteper.net") as r:
+        #     async with session.get("https://clicks.codes") as r:
         #         if r.status != 200:
         #             return await m.edit(embed=discord.Embed(
         #                 title=f"{self.emojis().icon.loading} Verify",
@@ -113,7 +113,7 @@ class Verify(commands.Cog):
         #         self.bot,
         #         title="Verify",
         #         style="url",
-        #         url=f"https://clicksminuteper.net/rsmv?code={code}",
+        #         url=f"https://clicks.codes/rsmv?code={code}",
         #     )
         # ])
         # try:
