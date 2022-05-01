@@ -82,76 +82,60 @@ class Verify(commands.Cog):
             description=f"All looks good, please wait",
             colour=self.colours.green
         ).set_footer(text="Connecting"))
-        # async with aiohttp.ClientSession() as session:
-        #     async with session.get("https://clicks.codes") as r:
-        #         if r.status != 200:
-        #             return await m.edit(embed=discord.Embed(
-        #                 title=f"{self.emojis().icon.loading} Verify",
-        #                 description=f"Our servers appear to be down, please contact the moderators "
-        #                             f"or try again later and we will fix this as soon as possible.",
-        #                 colour=self.colours.red
-        #             ))
-        # def _gencode(length=5):
-        #     return "".join([random.choice(
-        #         "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890-_"
-        #     ) for _ in range(length)])
-        # code = _gencode(5)
-        # while code in self.bot.rsmv:
-        #     code = _gencode(5)
-        #     await asyncio.sleep(0)
-        # self.bot.rsmv[code] = {
-        #     "user": str(ctx.author.id),
-        #     "guild": str(ctx.guild.id),
-        #     "guild_name": str(ctx.guild.name),
-        #     "guild_icon_url": str(ctx.guild.icon.url),
-        #     "guild_size": str(len(ctx.guild.members)),
-        #     "role": str(roleid),
-        #     "role_name": str(ctx.guild.get_role(roleid).name),
-        # }
-        # v = self.handlers.interactions.createUI(ctx, items=[
-        #     self.handlers.interactions.Button(
-        #         self.bot,
-        #         title="Verify",
-        #         style="url",
-        #         url=f"https://clicks.codes/rsmv?code={code}",
-        #     )
-        # ])
-        # try:
-        #     t = await ctx.author.send(embed=discord.Embed(
-        #         title=f"{self.emojis().control.tick} Verify",
-        #         description=f"To verify yourself in {ctx.guild.name}, click the button below and "
-        #                     f"complete the check.",
-        #         colour=self.colours.green
-        #     ), view=v)
-        #     return await m.edit(embed=discord.Embed(
-        #         title=f"{self.emojis().control.tick} Verify",
-        #         description=f"All looks good, check your DMs for a link, or click here to [jump]({t.jump_url})",
-        #         colour=self.colours.green
-        #     ).set_footer(text="Sent"), delete_after=10)
-        # except discord.HTTPException:
-        #     return await m.edit(ctx.author.mention,
-        #         embed=discord.Embed(
-        #             title=f"{self.emojis().control.cross} Verify",
-        #             description=f"Your DMs are disabled - We need to DM your code in order to keep verification secure. Please enable them and try again.",
-        #             colour=self.colours.red,
-        #         ), delete_after=10
-        #     )
-
+        async with aiohttp.ClientSession() as session:
+            async with session.get("https://clicks.codes") as r:
+                if r.status != 200:
+                    return await m.edit(embed=discord.Embed(
+                        title=f"{self.emojis().icon.loading} Verify",
+                        description=f"Our servers appear to be down, please contact the moderators "
+                                    f"or try again later and we will fix this as soon as possible.",
+                        colour=self.colours.red
+                    ))
+        def _gencode(length=5):
+            return "".join([random.choice(
+                "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890-_"
+            ) for _ in range(length)])
+        code = _gencode(5)
+        while code in self.bot.rsmv:
+            code = _gencode(5)
+            await asyncio.sleep(0)
+        self.bot.rsmv[code] = {
+            "user": str(ctx.author.id),
+            "guild": str(ctx.guild.id),
+            "guild_name": str(ctx.guild.name),
+            "guild_icon_url": str(ctx.guild.icon.url),
+            "guild_size": str(len(ctx.guild.members)),
+            "role": str(roleid),
+            "role_name": str(ctx.guild.get_role(roleid).name),
+        }
+        v = self.handlers.interactions.createUI(ctx, items=[
+            self.handlers.interactions.Button(
+                self.bot,
+                title="Verify",
+                style="url",
+                url=f"https://clicks.codes/rsmv?code={code}",
+            )
+        ])
         try:
-            g = ctx.guild
-            mem = ctx.author
-
-            await mem.add_roles(g.get_role(role))
-            await mem.send(embed=discord.Embed(
-                title=f"{emojis().control.tick} Verified",
-                description=f"You are now verified in {g.name}. The `@{bot.get_guild(guild).get_role(role).name}` role has now been given.",
-                colour=colours.green
-            ))
-            # del bot.rsmv[code]
-            # return PlainTextResponse("200", 200)
-        except Exception as e:
-            print(e)
-            # return PlainTextResponse("400", 400)
+            t = await ctx.author.send(embed=discord.Embed(
+                title=f"{self.emojis().control.tick} Verify",
+                description=f"To verify yourself in {ctx.guild.name}, click the button below and "
+                            f"complete the check.",
+                colour=self.colours.green
+            ), view=v)
+            return await m.edit(embed=discord.Embed(
+                title=f"{self.emojis().control.tick} Verify",
+                description=f"All looks good, check your DMs for a link, or click here to [jump]({t.jump_url})",
+                colour=self.colours.green
+            ).set_footer(text="Sent"), delete_after=10)
+        except discord.HTTPException:
+            return await m.edit(ctx.author.mention,
+                embed=discord.Embed(
+                    title=f"{self.emojis().control.cross} Verify",
+                    description=f"Your DMs are disabled - We need to DM your code in order to keep verification secure. Please enable them and try again.",
+                    colour=self.colours.red,
+                ), delete_after=10
+            )
 
     @commands.command()
     @commands.guild_only()
