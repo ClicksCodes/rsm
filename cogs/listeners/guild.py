@@ -78,7 +78,7 @@ class Guild(commands.Cog):
                 server=channel.guild.id,
                 colour=self.colours.red,
                 data={
-                    "Name": f"#{channel.name}",
+                    "Name": f"{channel.name}",
                     "Deleted": self.handlers.strf(datetime.datetime.now()),
                     "Deleted by": f"{audit.user.name} ({audit.user.mention})",
                     "ID": f"`{channel.id}`"
